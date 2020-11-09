@@ -4,42 +4,37 @@
 #include <thread>
 
 #include "core/interfaces.hpp"
-
-#ifdef _DEBUG
-constexpr static bool IS_DEBUG = true;
-#else
-constexpr static bool IS_DEBUG = false;
-#endif
+#include "core/patterns.hpp"
 
 unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
   using namespace std::chrono_literals;
 
   interfaces::initialize();
+  patterns::initialize();
 
   // @todo: initialize hooks
 
-  if constexpr (IS_DEBUG) {
-    while (!GetAsyncKeyState(VK_DELETE) && !GetAsyncKeyState(VK_END))
-      std::this_thread::sleep_for(50ms);
+#ifdef _DEBUG
+  while (!GetAsyncKeyState(VK_DELETE) && !GetAsyncKeyState(VK_END))
+    std::this_thread::sleep_for(50ms);
 
-    // @todo: uninitialize hooks
+  // @todo: uninitialize hooks
 
-    FreeLibraryAndExitThread(static_cast<HMODULE>(dll_instance), 0);
-  }
+  FreeLibraryAndExitThread(static_cast<HMODULE>(dll_instance), 0);
+#endif
 
   return 0ul;
 }
 
 void handle_process_attach(const LPVOID dll_instance) {
-  if constexpr (IS_DEBUG) {
-    const auto thread_handle = CreateThread(nullptr, 0, initial_thread, dll_instance, 0, nullptr);
+#ifdef _DEBUG
+  const auto thread_handle = CreateThread(nullptr, 0, initial_thread, dll_instance, 0, nullptr);
 
-    if (thread_handle != nullptr)
-      CloseHandle(thread_handle);
-  }
-  else {
-    initial_thread(dll_instance);
-  }
+  if (thread_handle != nullptr)
+    CloseHandle(thread_handle);
+#else
+  initial_thread(dll_instance);
+#endif
 }
 
 // ReSharper disable once CppInconsistentNaming

@@ -87,11 +87,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\interfaces.cpp" />
+    <ClCompile Include="core\patterns.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="utils\hash.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp" />
+    <ClInclude Include="core\patterns.hpp" />
     <ClInclude Include="thirdparty\xorstr\xorstr.hpp" />
     <ClInclude Include="utils\hash.hpp" />
   </ItemGroup>

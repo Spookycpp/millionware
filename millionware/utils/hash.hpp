@@ -11,8 +11,6 @@ namespace hash
     return string[0] == 0 ? hash : fnv(&string[1], (hash ^ string[1]) * FNV_PRIME);
   }
 
-#define FORCE_CT(value) (static_cast<decltype(value)>(hash::ct_wrapper<decltype(value), value>::VALUE))
-
   template<typename T, T Value>
   struct ct_wrapper
   {
@@ -22,3 +20,7 @@ namespace hash
     };
   };
 }
+
+#define FORCE_CT(value) (static_cast<decltype(value)>(hash::ct_wrapper<decltype(value), value>::VALUE))
+#define HASH_FNV(string) hash::fnv(string)
+#define HASH_FNV_CT(string) FORCE_CT(HASH_FNV(string))

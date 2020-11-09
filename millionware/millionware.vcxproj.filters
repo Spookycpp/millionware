@@ -24,6 +24,9 @@
     <ClCompile Include="utils\hash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\patterns.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utils\hash.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\patterns.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
