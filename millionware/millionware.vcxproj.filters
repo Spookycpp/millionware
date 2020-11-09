@@ -27,6 +27,15 @@
     <ClCompile Include="core\patterns.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\hooks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks\present.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks\reset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">
@@ -39,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\patterns.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\hooks.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

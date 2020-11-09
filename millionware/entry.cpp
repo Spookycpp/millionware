@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 
+#include "core/hooks.hpp"
 #include "core/interfaces.hpp"
 #include "core/patterns.hpp"
 
@@ -11,14 +12,13 @@ unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
 
   interfaces::initialize();
   patterns::initialize();
-
-  // @todo: initialize hooks
+  hooks::initialize();
 
 #ifdef _DEBUG
   while (!GetAsyncKeyState(VK_DELETE) && !GetAsyncKeyState(VK_END))
     std::this_thread::sleep_for(50ms);
 
-  // @todo: uninitialize hooks
+  hooks::shutdown();
 
   FreeLibraryAndExitThread(static_cast<HMODULE>(dll_instance), 0);
 #endif
