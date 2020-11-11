@@ -16,10 +16,10 @@ inline void error_and_quit(const uint32_t error_code) {
   char buffer[128];
 
   sprintf_s(buffer, sizeof buffer, XORSTR(
-    "Fatal error during initialization. \n"
-    "Please reach out to us via a ticket. \n"
-    "Additional info: E03 %08X"
-  ), error_code);
+              "Fatal error during initialization. \n"
+              "Please reach out to us via a ticket. \n"
+              "Additional info: E03 %08X"
+            ), error_code);
 
   MessageBoxA(nullptr, buffer, nullptr, MB_OK | MB_ICONERROR);
   TerminateProcess(GetCurrentProcess(), -1);
