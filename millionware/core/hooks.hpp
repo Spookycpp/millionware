@@ -1,9 +1,18 @@
 #pragma once
 
+#include <mutex>
+
+struct hook_storage_t
+{
+  uintptr_t original;
+
+  std::mutex call_mutex;
+};
+
 namespace hooks
 {
-  inline uintptr_t original_present = 0;
-  inline uintptr_t original_reset = 0;
+  inline hook_storage_t present;
+  inline hook_storage_t reset;
 
   void initialize();
   void shutdown();

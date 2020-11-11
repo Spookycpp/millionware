@@ -6,6 +6,7 @@
 #include "core/hooks.hpp"
 #include "core/interfaces.hpp"
 #include "core/patterns.hpp"
+#include "utils/render.hpp"
 
 unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
   using namespace std::chrono_literals;
@@ -19,6 +20,7 @@ unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
     std::this_thread::sleep_for(50ms);
 
   hooks::shutdown();
+  render::shutdown();
 
   FreeLibraryAndExitThread(static_cast<HMODULE>(dll_instance), 0);
 #endif

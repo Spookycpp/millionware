@@ -22,7 +22,7 @@ struct interface_entry_t
 };
 
 __declspec(dllexport) interface_entry_t g_interfaces[] = {
-  {"client.dll", "VClient008", 0, 0, 0},
+  {"client.dll", "VClient018", 0, 0, 0},
   {"client.dll", "VClientEntityList003", 0, 0, 0},
   {"engine.dll", "VEngineClient014", 0, 0, 0},
   {"inputsystem.dll", "InputSystemVersion001", 0, 0, 0},
@@ -57,10 +57,27 @@ inline uintptr_t get_interface(const uint32_t module_hash, const uint32_t interf
 
 void interfaces::initialize() {
 #ifdef _DEBUG
-  // @todo: initialize interfaces
+  using create_interface_t = uintptr_t(*)(const char*, int);
+
+  for (auto& entry : g_interfaces) {
+    const auto module_handle = GetModuleHandleA(entry.module_name);
+
+    if (module_handle != nullptr) {
+      const auto create_iface = reinterpret_cast<create_interface_t>(GetProcAddress(module_handle, XORSTR("CreateInterface")));
+
+      if (create_iface != nullptr)
+        entry.address = create_iface(entry.interface_name, 0);
+    }
+
+    entry.module_hash = hash::fnv(entry.module_name);
+    entry.interface_hash = hash::fnv(entry.interface_name);
+
+    memset(entry.module_name, 0, sizeof entry.module_name);
+    memset(entry.interface_name, 0, sizeof entry.interface_name);
+  }
 #endif
 
-  client = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient008"));
+  client = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient018"));
   entity_list = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClientEntityList003"));
   engine_client = get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014"));
   input_system = get_interface(HASH_FNV_CT("inputsystem.dll"), HASH_FNV_CT("InputSystemVersion001"));
