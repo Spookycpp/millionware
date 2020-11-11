@@ -13,5 +13,5 @@ namespace render
   void begin_frame();
   void finish_frame();
 
-  void rect();
+  void rect(int test);
 }

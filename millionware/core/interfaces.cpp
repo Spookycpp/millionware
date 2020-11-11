@@ -77,9 +77,9 @@ void interfaces::initialize() {
   }
 #endif
 
-  client = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient018"));
-  entity_list = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClientEntityList003"));
-  engine_client = get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014"));
+  client = reinterpret_cast<c_base_client_dll*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient018")));
+  entity_list = reinterpret_cast<c_entity_list*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClientEntityList003")));
+  engine_client = reinterpret_cast<c_engine_client*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014")));
   input_system = get_interface(HASH_FNV_CT("inputsystem.dll"), HASH_FNV_CT("InputSystemVersion001"));
   game_movement = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("GameMovement001"));
   event_manager = get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("GAMEEVENTSMANAGER002"));

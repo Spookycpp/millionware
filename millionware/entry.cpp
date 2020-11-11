@@ -5,6 +5,7 @@
 
 #include "core/hooks.hpp"
 #include "core/interfaces.hpp"
+#include "core/netvars.hpp"
 #include "core/patterns.hpp"
 #include "utils/render.hpp"
 
@@ -12,6 +13,7 @@ unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
   using namespace std::chrono_literals;
 
   interfaces::initialize();
+  netvars::initialize();
   patterns::initialize();
   hooks::initialize();
 

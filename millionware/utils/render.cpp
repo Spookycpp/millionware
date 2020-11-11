@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstdint>
 
 #include "render.hpp"
@@ -79,7 +80,7 @@ void render::finish_frame() {
   }
 } 
 
-void render::rect() {
+void render::rect(const int test) {
   struct vertex_t
   {
     float x, y, z, r;
@@ -87,11 +88,14 @@ void render::rect() {
     uint32_t color;
   };
 
+  const auto health_pt = std::clamp(static_cast<float>(test) / 100.0f, 0.0f, 1.0f);
+  const auto redness = static_cast<int>(health_pt * 255.0f);
+
   vertex_t vertices[] = {
-    {0.0f, 0.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(255, 0, 0, 255)},
-    {48.0f, 0.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(255, 0, 0, 255)},
-    {0.0f, 48.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(255, 0, 0, 255)},
-    {48.0f, 48.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(255, 0, 0, 255)},
+    {0.0f, 0.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
+    {48.0f, 0.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
+    {0.0f, 48.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
+    {48.0f, 48.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
   };
 
   d3d9_device->SetTexture(0, nullptr);
