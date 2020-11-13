@@ -190,7 +190,7 @@ struct vector2_t
     return *this;
   }
 
-  [[nodiscard]] float length() const {
+  float length() const {
     return std::sqrtf(x * x + y * y);
   }
 };
@@ -302,15 +302,15 @@ struct vector3_t
     return *this;
   }
 
-  [[nodiscard]] float length() const {
+  float length() const {
     return std::sqrtf(x * x + y * y + z * z);
   }
 
-  [[nodiscard]] float length_2d() const {
+  float length_2d() const {
     return std::sqrtf(x * x + y * y);
   }
 
-  [[nodiscard]] constexpr float dot_product(const vector3_t& rhs) const {
+  constexpr float dot_product(const vector3_t& rhs) const {
     return x * rhs.x + y * rhs.y + z * rhs.z;
   }
 };

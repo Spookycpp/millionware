@@ -18,17 +18,17 @@ namespace netvars
       int offset;
       int recv_type;
 
-      netvar_node_t(const int offset, const int recv_type)
+      netvar_node_t(int offset, int recv_type)
         : offset(offset), recv_type(recv_type) {
       }
     };
 
-    inline int get_offset_recursive(const netvar_tree_t& map, const int offset, const uint32_t hash) {
+    inline int get_offset_recursive(netvar_tree_t& map, int offset, uint32_t hash) {
       return offset + map.at(hash)->offset;
     }
 
     template <typename... Args>
-    int get_offset_recursive(const netvar_tree_t& map, const int offset, const uint32_t hash, Args... args) {
+    int get_offset_recursive(netvar_tree_t& map, int offset, uint32_t hash, Args... args) {
       const auto& node = map.at(hash);
 
       return get_offset_recursive(node->nodes, offset + node->offset, args...);

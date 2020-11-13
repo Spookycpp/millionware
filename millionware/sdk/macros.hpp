@@ -1,17 +1,15 @@
 #pragma once
 
 #include <cstdint>
-#include <utility>
 
 #include "../core/netvars.hpp"
-
-extern void error_and_quit(int error_code, uint32_t error_info);
+#include "../utils/error.hpp"
 
 template <typename T, const size_t Index, typename... Args>
-constexpr T call_vfunc(const uintptr_t class_base, Args&&... args) {
-  using vfunc_fn = T(__thiscall*)(uintptr_t, Args ...);
+constexpr T call_vfunc(uintptr_t class_base, Args... args) {
+	using vfunc_fn = T(__thiscall*)(uintptr_t, Args...);
 
-  return reinterpret_cast<vfunc_fn**>(class_base)[0][Index](class_base, args...);
+	return reinterpret_cast<vfunc_fn**>(class_base)[0][Index](class_base, args...);
 }
 
 #define VIRTUAL_METHOD(return_type, name, index, args, ...)                                 \
@@ -23,7 +21,7 @@ constexpr T call_vfunc(const uintptr_t class_base, Args&&... args) {
   inline type& name() {                                                           \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                  \
     if (offset == 0)                                                              \
-      error_and_quit(3, HASH_FNV_CT(#name));                                      \
+      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));           \
     return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset);  \
   }
 
@@ -31,7 +29,7 @@ constexpr T call_vfunc(const uintptr_t class_base, Args&&... args) {
   inline type* name() {                                                         \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                \
     if (offset == 0)                                                            \
-      error_and_quit(3, HASH_FNV_CT(#name));                                    \
+      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));         \
     return reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
   }
 
@@ -39,7 +37,7 @@ constexpr T call_vfunc(const uintptr_t class_base, Args&&... args) {
   inline type& name() {                                                                               \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                                      \
     if (offset == 0)                                                                                  \
-      error_and_quit(3, HASH_FNV_CT(#name));                                                          \
+      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));                               \
     return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset + additional_offset);  \
   }
 
@@ -47,6 +45,6 @@ constexpr T call_vfunc(const uintptr_t class_base, Args&&... args) {
   inline type* name() {                                                                             \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                                    \
     if (offset == 0)                                                                                \
-      error_and_quit(3, HASH_FNV_CT(#name));                                                        \
+      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));                             \
     return reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset + additional_offset); \
   }

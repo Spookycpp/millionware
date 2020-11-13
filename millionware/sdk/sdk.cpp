@@ -10,7 +10,7 @@ bool c_base_handle::operator ==(const c_base_handle& other) const {
   return handle == other.handle;
 }
 
-bool c_base_handle::operator ==(const c_entity* entity) const {
+bool c_base_handle::operator ==(c_entity* entity) const {
   return get() == entity;
 }
 
@@ -18,7 +18,7 @@ bool c_base_handle::operator !=(const c_base_handle& other) const {
   return handle != other.handle;
 }
 
-bool c_base_handle::operator !=(const c_entity* entity) const {
+bool c_base_handle::operator !=(c_entity* entity) const {
   return get() != entity;
 }
 

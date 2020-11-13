@@ -1,10 +1,10 @@
-#include <Windows.h>
-
 #include <cstdio>
 #include <cstring>
-#include <string_view>
+#include <string>
+#include <Windows.h>
 
 #include "../thirdparty/xorstr/xorstr.hpp"
+#include "../utils/error.hpp"
 #include "../utils/hash.hpp"
 #include "patterns.hpp"
 
@@ -20,12 +20,12 @@ struct pattern_entry_t
 };
 
 __declspec(dllexport) pattern_entry_t g_patterns[] = {
-  {"gameoverlayrenderer.dll", "55 8B EC 83 EC 40 B9 ? ? ? ? 53 56", 0, 0, 0},
-  {"gameoverlayrenderer.dll", "55 8B EC 64 A1 00 00 00 00 B9 ? ? ? ? 6A FF 68 ? ? ? ? 50 64 89 25 00 00 00 00", 0, 0, 0},
+  {"vguimatsurface.dll", "55 8B EC 83 E4 C0 83 EC 38", 0, 0, 0},
+  {"vguimatsurface.dll", "8B 0D ? ? ? ? 56 C6 05", 0, 0, 0},
   {"client.dll", "56 8B F1 85 F6 74 31", 0, 0, 0},
 };
 
-inline uintptr_t get_pattern(const uint32_t module_hash, const uint32_t pattern_hash) {
+inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
   for (const auto& entry : g_patterns) {
     if (entry.module_hash != module_hash || entry.pattern_hash != pattern_hash)
       continue;
@@ -36,17 +36,7 @@ inline uintptr_t get_pattern(const uint32_t module_hash, const uint32_t pattern_
     return entry.address;
   }
 
-  char buffer[128];
-
-  sprintf_s(buffer, sizeof buffer, XORSTR(
-              "Fatal error during initialization. \n"
-              "Please reach out to us via a ticket. \n"
-              "Additional info: E02 %08X %08X"
-            ), module_hash, pattern_hash);
-
-  MessageBoxA(nullptr, buffer, nullptr, MB_OK | MB_ICONERROR);
-
-  // TerminateProcess(GetCurrentProcess(), -1);
+  utils::error_and_exit(e_error_code::PATTERNS, module_hash, pattern_hash);
 
   return 0;
 }
@@ -92,15 +82,15 @@ void patterns::initialize() {
       }
     }
 
-    entry.module_hash = hash::fnv(entry.module_name);
-    entry.pattern_hash = hash::fnv(entry.pattern);
+    entry.module_hash = HASH_FNV(entry.module_name);
+    entry.pattern_hash = HASH_FNV(entry.pattern);
 
     memset(entry.module_name, 0, sizeof entry.module_name);
     memset(entry.pattern, 0, sizeof entry.pattern);
   }
 #endif
 
-  d3d9_present = get_pattern(HASH_FNV_CT("gameoverlayrenderer.dll"), HASH_FNV_CT("55 8B EC 83 EC 40 B9 ? ? ? ? 53 56"));
-  d3d9_reset = get_pattern(HASH_FNV_CT("gameoverlayrenderer.dll"), HASH_FNV_CT("55 8B EC 64 A1 00 00 00 00 B9 ? ? ? ? 6A FF 68 ? ? ? ? 50 64 89 25 00 00 00 00"));
+  engine_vgui_start_drawing = get_pattern(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("55 8B EC 83 E4 C0 83 EC 38"));
+  engine_vgui_finish_drawing = get_pattern(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("8B 0D ? ? ? ? 56 C6 05"));
   player_has_bomb = get_pattern(HASH_FNV_CT("client.dll"), HASH_FNV_CT("56 8B F1 85 F6 74 31"));
 }

@@ -47,15 +47,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\cheat\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)out\cheat\$(Configuration)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(SolutionDir)dependencies\freetype\include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(SolutionDir)dependencies\freetype\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='stable|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\cheat\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)out\cheat\$(Configuration)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(SolutionDir)dependencies\freetype\include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(SolutionDir)dependencies\freetype\lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
@@ -68,6 +68,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>freetype.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4098 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='stable|Win32'">
@@ -87,6 +89,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>freetype.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4098 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -95,15 +99,16 @@
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\patterns.cpp" />
     <ClCompile Include="entry.cpp" />
-    <ClCompile Include="hooks\present.cpp" />
-    <ClCompile Include="hooks\reset.cpp" />
+    <ClCompile Include="hooks\engine_paint.cpp" />
+    <ClCompile Include="hooks\screen_size_changed.cpp" />
     <ClCompile Include="sdk\sdk.cpp" />
     <ClCompile Include="thirdparty\minhook\buffer.c" />
     <ClCompile Include="thirdparty\minhook\hde\hde32.c" />
     <ClCompile Include="thirdparty\minhook\hde\hde64.c" />
     <ClCompile Include="thirdparty\minhook\hook.c" />
     <ClCompile Include="thirdparty\minhook\trampoline.c" />
-    <ClCompile Include="utils\hash.cpp" />
+    <ClCompile Include="utils\error.cpp" />
+    <ClCompile Include="utils\math.cpp" />
     <ClCompile Include="utils\render.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -114,9 +119,12 @@
     <ClInclude Include="sdk\base_handle.hpp" />
     <ClInclude Include="sdk\client_class.hpp" />
     <ClInclude Include="sdk\client_dll.hpp" />
+    <ClInclude Include="sdk\color.hpp" />
     <ClInclude Include="sdk\engine_client.hpp" />
+    <ClInclude Include="sdk\engine_vgui.hpp" />
     <ClInclude Include="sdk\entity.hpp" />
     <ClInclude Include="sdk\entity_list.hpp" />
+    <ClInclude Include="sdk\font_flag.hpp" />
     <ClInclude Include="sdk\macros.hpp" />
     <ClInclude Include="sdk\matrix.hpp" />
     <ClInclude Include="sdk\network_channel.hpp" />
@@ -124,6 +132,8 @@
     <ClInclude Include="sdk\recv_props.hpp" />
     <ClInclude Include="sdk\typedefs.hpp" />
     <ClInclude Include="sdk\vector.hpp" />
+    <ClInclude Include="sdk\vertex.hpp" />
+    <ClInclude Include="sdk\vgui.hpp" />
     <ClInclude Include="thirdparty\minhook\buffer.h" />
     <ClInclude Include="thirdparty\minhook\hde\hde32.h" />
     <ClInclude Include="thirdparty\minhook\hde\hde64.h" />
@@ -133,7 +143,9 @@
     <ClInclude Include="thirdparty\minhook\minhook.h" />
     <ClInclude Include="thirdparty\minhook\trampoline.h" />
     <ClInclude Include="thirdparty\xorstr\xorstr.hpp" />
+    <ClInclude Include="utils\error.hpp" />
     <ClInclude Include="utils\hash.hpp" />
+    <ClInclude Include="utils\math.hpp" />
     <ClInclude Include="utils\render.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

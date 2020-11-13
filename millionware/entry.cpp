@@ -18,7 +18,7 @@ unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
   hooks::initialize();
 
 #ifdef _DEBUG
-  while (!GetAsyncKeyState(VK_DELETE) && !GetAsyncKeyState(VK_END))
+  while (!GetAsyncKeyState(VK_DELETE) || !GetAsyncKeyState(VK_END))
     std::this_thread::sleep_for(50ms);
 
   hooks::shutdown();

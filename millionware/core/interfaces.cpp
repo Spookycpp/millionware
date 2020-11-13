@@ -1,14 +1,13 @@
+#include <array>
+#include <cstdio>
+#include <stdexcept>
 #include <Windows.h>
 #include <winternl.h>
 
-#include <array>
-#include <cstdio>
-
-#include "../utils/hash.hpp"
 #include "../thirdparty/xorstr/xorstr.hpp"
+#include "../utils/error.hpp"
+#include "../utils/hash.hpp"
 #include "interfaces.hpp"
-
-#include <stdexcept>
 
 struct interface_entry_t
 {
@@ -25,12 +24,14 @@ __declspec(dllexport) interface_entry_t g_interfaces[] = {
   {"client.dll", "VClient018", 0, 0, 0},
   {"client.dll", "VClientEntityList003", 0, 0, 0},
   {"engine.dll", "VEngineClient014", 0, 0, 0},
+  {"engine.dll", "VEngineVGui001", 0, 0, 0},
+  {"vguimatsurface.dll", "VGUI_Surface031", 0, 0, 0},
   {"inputsystem.dll", "InputSystemVersion001", 0, 0, 0},
   {"client.dll", "GameMovement001", 0, 0, 0},
   {"engine.dll", "GAMEEVENTSMANAGER002", 0, 0, 0},
 };
 
-inline uintptr_t get_interface(const uint32_t module_hash, const uint32_t interface_hash) {
+inline uintptr_t get_interface(uint32_t module_hash, uint32_t interface_hash) {
   for (const auto& entry : g_interfaces) {
     if (entry.module_hash != module_hash || entry.interface_hash != interface_hash)
       continue;
@@ -41,16 +42,7 @@ inline uintptr_t get_interface(const uint32_t module_hash, const uint32_t interf
     return entry.address;
   }
 
-  char buffer[128];
-
-  sprintf_s(buffer, sizeof buffer, XORSTR(
-              "Fatal error during initialization. \n"
-              "Please reach out to us via a ticket. \n"
-              "Additional info: E01 %08X %08X"
-            ), module_hash, interface_hash);
-
-  MessageBoxA(nullptr, buffer, nullptr, MB_OK | MB_ICONERROR);
-  TerminateProcess(GetCurrentProcess(), -1);
+  utils::error_and_exit(e_error_code::INTERFACES, module_hash, interface_hash);
 
   return 0;
 }
@@ -69,8 +61,8 @@ void interfaces::initialize() {
         entry.address = create_iface(entry.interface_name, 0);
     }
 
-    entry.module_hash = hash::fnv(entry.module_name);
-    entry.interface_hash = hash::fnv(entry.interface_name);
+    entry.module_hash = HASH_FNV(entry.module_name);
+    entry.interface_hash = HASH_FNV(entry.interface_name);
 
     memset(entry.module_name, 0, sizeof entry.module_name);
     memset(entry.interface_name, 0, sizeof entry.interface_name);
@@ -80,6 +72,8 @@ void interfaces::initialize() {
   client = reinterpret_cast<c_base_client_dll*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient018")));
   entity_list = reinterpret_cast<c_entity_list*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClientEntityList003")));
   engine_client = reinterpret_cast<c_engine_client*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014")));
+  engine_vgui = reinterpret_cast<c_engine_vgui*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineVGui001")));
+  vgui_surface = reinterpret_cast<c_vgui_surface*>(get_interface(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("VGUI_Surface031")));
   input_system = get_interface(HASH_FNV_CT("inputsystem.dll"), HASH_FNV_CT("InputSystemVersion001"));
   game_movement = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("GameMovement001"));
   event_manager = get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("GAMEEVENTSMANAGER002"));

@@ -1,103 +1,305 @@
-#include <algorithm>
-#include <cstdint>
+#include <array>
 
+#include "../core/interfaces.hpp"
+#include "math.hpp"
 #include "render.hpp"
 
-struct device_state_t
-{
-  uint32_t state_id;
-  uint32_t new_value;
-  uint32_t old_value;
-};
+static std::array<vgui_font_t, static_cast<int>(e_font::MAX)> fonts;
+static std::array<vgui_texture_t, static_cast<int>(e_texture::MAX)> textures;
 
-static LPDIRECT3DDEVICE9 d3d9_device = nullptr;
-static LPDIRECT3DVERTEXDECLARATION9 vertex_decl = nullptr;
-static LPDIRECT3DVERTEXSHADER9 vertex_shader = nullptr;
+static int screen_width = 0;
+static int screen_height = 0;
 
-static uint32_t device_fvf = 0;
-static device_state_t device_states[] = {
-  {D3DRS_LIGHTING, FALSE, 0},
-  {D3DRS_FOGENABLE, FALSE, 0},
-  {D3DRS_CULLMODE, D3DCULL_NONE, 0},
-  {D3DRS_FILLMODE, D3DFILL_SOLID, 0},
-  {D3DRS_ZENABLE, FALSE, 0},
-  {D3DRS_SCISSORTESTENABLE, TRUE, 0},
-  {D3DRS_ZWRITEENABLE, TRUE, 0},
-  {D3DRS_STENCILENABLE, FALSE, 0},
-  {D3DRS_MULTISAMPLEANTIALIAS, FALSE, 0},
-  {D3DRS_ANTIALIASEDLINEENABLE, FALSE, 0},
-  {D3DRS_ALPHABLENDENABLE, TRUE, 0},
-  {D3DRS_ALPHATESTENABLE, FALSE, 0},
-  {D3DRS_SEPARATEALPHABLENDENABLE, TRUE, 0},
-  {D3DRS_SRCBLEND, D3DBLEND_SRCALPHA, 0},
-  {D3DRS_SRCBLENDALPHA, D3DBLEND_INVDESTALPHA, 0},
-  {D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA, 0},
-  {D3DRS_DESTBLENDALPHA, D3DBLEND_ONE, 0},
-  {D3DRS_SRGBWRITEENABLE, FALSE, 0},
-  {D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA, 0},
-};
+constexpr vgui_font_t& get_font(e_font font) {
+	return fonts[static_cast<int>(font)];
+}
 
-void render::initialize(const LPDIRECT3DDEVICE9 device) {
-  d3d9_device = device;
+constexpr vgui_texture_t& get_texture(e_texture texture) {
+	return textures[static_cast<int>(texture)];
+}
 
-  create_objects();
+std::vector<vertex_t> generate_rounded_rect_vertices(int x, int y, int width, int height, int radius, int corners) {
+	std::vector<vertex_t> vertices;
+
+	const auto radius_f = static_cast<float>(radius);
+	const auto round_top_left = (corners & CORNER_TOP_LEFT) != 0;
+	const auto round_top_right = (corners & CORNER_TOP_RIGHT) != 0;
+	const auto round_bottom_left = (corners & CORNER_BOTTOM_LEFT) != 0;
+	const auto round_bottom_right = (corners & CORNER_BOTTOM_RIGHT) != 0;
+
+	vertices.reserve(
+		(round_top_left ? 6 : 1) +
+		(round_top_right ? 6 : 1) +
+		(round_bottom_left ? 6 : 1) +
+		(round_bottom_right ? 6 : 1)
+	);
+
+	for (auto i = 0; i < 4; i++) {
+		const auto round_corner =
+			i == 0 && round_top_right ||
+			i == 1 && round_bottom_right ||
+			i == 2 && round_bottom_left ||
+			i == 3 && round_top_left;
+
+		if (!round_corner) {
+			vertices.emplace_back(vertex_t(vector2_t(static_cast<float>(i < 2 ? x + width : x), static_cast<float>(i % 3 ? y + height : y)), 0.0f));
+		}
+		else {
+			const auto vert_x = static_cast<float>(x + (i < 2 ? width - radius : radius));
+			const auto vert_y = static_cast<float>(y + (i % 3 ? height - radius : radius));
+
+			for (auto j = 0; j < 6; j++) {
+				const auto angle = math::deg_to_rad(90.0f * i + 15.0f * j);
+
+				vertices.emplace_back(vertex_t(vector2_t(vert_x + radius_f * std::sin(angle), vert_y - radius_f * std::cos(angle)), 0.0f));
+			}
+		}
+	}
+
+	return vertices;
+}
+
+void render::initialize() {
+	constexpr uint8_t white_pixel[] = { 255, 255, 255, 255 };
+
+	get_texture(e_texture::WHITE) = interfaces::vgui_surface->create_texture(true);
+
+	interfaces::vgui_surface->update_texture(get_texture(e_texture::WHITE), white_pixel, 1, 1);
+
+	refresh_fonts();
 }
 
 void render::shutdown() {
-  destroy_objects();
+	interfaces::vgui_surface->delete_texture(get_texture(e_texture::WHITE));
 }
 
-void render::create_objects() {
+void render::refresh_fonts() {
+	get_font(e_font::SEGOE_UI_11) = interfaces::vgui_surface->create_font();
+	get_font(e_font::SEGOE_UI_13) = interfaces::vgui_surface->create_font();
 
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_11), "Segoe UI", 11, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_13), "Segoe UI", 13, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
+
+	interfaces::engine_client->get_screen_size(screen_width, screen_height);
 }
 
-void render::destroy_objects() {
+void render::reset_clip() {
+	set_clip(0, 0, screen_width, screen_height);
 
+	interfaces::vgui_surface->clipping_enabled = false;
 }
 
-void render::begin_frame() {
-  d3d9_device->GetFVF(reinterpret_cast<DWORD*>(&device_fvf));
-  d3d9_device->GetVertexDeclaration(&vertex_decl);
-  d3d9_device->GetVertexShader(&vertex_shader);
-
-  d3d9_device->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
-
-  for (auto& state : device_states) {
-    const auto render_state = static_cast<D3DRENDERSTATETYPE>(state.state_id);
-
-    d3d9_device->GetRenderState(render_state, reinterpret_cast<DWORD*>(&state.old_value));
-    d3d9_device->SetRenderState(render_state, state.new_value);
-  }
+void render::set_clip(int x1, int y1, int x2, int y2) {
+	interfaces::vgui_surface->clipping_enabled = true;
+	interfaces::vgui_surface->set_clip_rect(x1, y1, x2, y2);
 }
 
-void render::finish_frame() {
-  d3d9_device->SetFVF(device_fvf);
-  d3d9_device->SetVertexDeclaration(vertex_decl);
-  d3d9_device->SetVertexShader(vertex_shader);
+void render::set_clip(const point_t& position, const point_t& size) {
+	set_clip(position.x, position.y, position.x + size.x, position.y + size.y);
+}
 
-  for (auto& state : device_states) {
-    d3d9_device->SetRenderState(static_cast<D3DRENDERSTATETYPE>(state.state_id), state.old_value);
-  }
-} 
+void render::line(int x1, int y1, int x2, int y2, const color_t& color) {
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->draw_line(x1, y1, x2, y2);
+}
 
-void render::rect(const int test) {
-  struct vertex_t
-  {
-    float x, y, z, r;
+void render::rect(int x, int y, int width, int height, const color_t& color) {
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->draw_rectangle(x, y, width, height);
+}
 
-    uint32_t color;
-  };
+void render::rect_rounded(int x, int y, int width, int height, int radius, int corners, const color_t& color) {
+	const auto vertices = generate_rounded_rect_vertices(x, y, width, height, radius, corners);
 
-  const auto health_pt = std::clamp(static_cast<float>(test) / 100.0f, 0.0f, 1.0f);
-  const auto redness = static_cast<int>(health_pt * 255.0f);
+	interfaces::vgui_surface->set_texture(get_texture(e_texture::WHITE));
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->draw_textured_polyline(vertices.data(), vertices.size());
+}
 
-  vertex_t vertices[] = {
-    {0.0f, 0.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
-    {48.0f, 0.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
-    {0.0f, 48.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
-    {48.0f, 48.0f, 0.01f, 0.01f, D3DCOLOR_RGBA(redness, 0, 0, 255)},
-  };
+void render::fill_rect(int x, int y, int width, int height, const color_t& color) {
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->fill_rectangle(x, y, width, height);
+}
 
-  d3d9_device->SetTexture(0, nullptr);
-  d3d9_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vertices, sizeof vertex_t);
+void render::fill_rect_rounded(int x, int y, int width, int height, int radius, int corners, const color_t& color) {
+	const auto vertices = generate_rounded_rect_vertices(x, y, width, height, radius, corners);
+
+	interfaces::vgui_surface->set_texture(get_texture(e_texture::WHITE));
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->draw_textured_polygon(vertices.data(), vertices.size());
+}
+
+void render::gradient_h(int x, int y, int width, int height, const color_t& start_color, const color_t& end_color) {
+	interfaces::vgui_surface->set_draw_color(start_color);
+	interfaces::vgui_surface->fill_faded_rectangle(x, y, width, height, 255, 255, true);
+
+	interfaces::vgui_surface->set_draw_color(end_color);
+	interfaces::vgui_surface->fill_faded_rectangle(x, y, width, height, 0, 255, true);
+}
+
+void render::gradient_v(int x, int y, int width, int height, const color_t& start_color, const color_t& end_color) {
+	interfaces::vgui_surface->set_draw_color(start_color);
+	interfaces::vgui_surface->fill_faded_rectangle(x, y, width, height, 255, 255, false);
+
+	interfaces::vgui_surface->set_draw_color(end_color);
+	interfaces::vgui_surface->fill_faded_rectangle(x, y, width, height, 0, 255, false);
+}
+
+void render::gradient_h_rounded(int x, int y, int width, int height, int radius, int corners, const color_t& start_color, const color_t& end_color) {
+	const auto round_top_left = (corners & CORNER_TOP_LEFT) != 0;
+	const auto round_top_right = (corners & CORNER_TOP_RIGHT) != 0;
+	const auto round_bottom_left = (corners & CORNER_BOTTOM_LEFT) != 0;
+	const auto round_bottom_right = (corners & CORNER_BOTTOM_RIGHT) != 0;
+
+	round_top_left
+		? fill_rect_rounded(x, y, radius, radius, radius, CORNER_TOP_LEFT, start_color)
+		: fill_rect(x, y, radius, radius, start_color);
+	round_top_right
+		? fill_rect_rounded(x + width - radius, y, radius, radius, radius, CORNER_TOP_RIGHT, end_color)
+		: fill_rect(x + width - radius, y, radius, radius, end_color);
+	round_bottom_left
+		? fill_rect_rounded(x, y + height - radius, radius, radius, radius, CORNER_BOTTOM_LEFT, start_color)
+		: fill_rect(x, y + height - radius, radius, radius, start_color);
+	round_bottom_right
+		? fill_rect_rounded(x + width - radius, y + height - radius, radius, radius, radius, CORNER_BOTTOM_RIGHT, end_color)
+		: fill_rect(x + width - radius, y + height - radius, radius, radius, end_color);
+
+	fill_rect(x, y + radius, radius, height - radius * 2, start_color);
+	fill_rect(x + width - radius, y + radius, radius, height - radius * 2, end_color);
+
+	gradient_h(x + radius, y, width - radius * 2, height, start_color, end_color);
+}
+
+void render::gradient_v_rounded(int x, int y, int width, int height, int radius, int corners, const color_t& start_color, const color_t& end_color) {
+	const auto round_top_left = (corners & CORNER_TOP_LEFT) != 0;
+	const auto round_top_right = (corners & CORNER_TOP_RIGHT) != 0;
+	const auto round_bottom_left = (corners & CORNER_BOTTOM_LEFT) != 0;
+	const auto round_bottom_right = (corners & CORNER_BOTTOM_RIGHT) != 0;
+
+	round_top_left
+		? fill_rect_rounded(x, y, radius, radius, radius, CORNER_TOP_LEFT, start_color)
+		: fill_rect(x, y, radius, radius, start_color);
+	round_top_right
+		? fill_rect_rounded(x + width - radius, y, radius, radius, radius, CORNER_TOP_RIGHT, start_color)
+		: fill_rect(x + width - radius, y, radius, radius, start_color);
+	round_bottom_left
+		? fill_rect_rounded(x, y + height - radius, radius, radius, radius, CORNER_BOTTOM_LEFT, end_color)
+		: fill_rect(x, y + height - radius, radius, radius, end_color);
+	round_bottom_right
+		? fill_rect_rounded(x + width - radius, y + height - radius, radius, radius, radius, CORNER_BOTTOM_RIGHT, end_color)
+		: fill_rect(x + width - radius, y + height - radius, radius, radius, end_color);
+
+	fill_rect(x + radius, y, width - radius * 2, radius, start_color);
+	fill_rect(x + radius, y + height - radius, width - radius * 2, radius, end_color);
+
+	gradient_v(x, y + radius, width, height - radius * 2, start_color, end_color);
+}
+
+void render::texture(int x, int y, int width, int height, e_texture texture, const color_t& color) {
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->set_texture(get_texture(texture));
+	interfaces::vgui_surface->draw_textured_rect(x, y, width, height);
+}
+
+void render::triangle(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color) {
+	const vertex_t vertices[] = {
+		{ vector2_t(static_cast<float>(x1), static_cast<float>(y1)), vector2_t(0.0f) },
+		{ vector2_t(static_cast<float>(x2), static_cast<float>(y2)), vector2_t(0.0f) },
+		{ vector2_t(static_cast<float>(x3), static_cast<float>(y3)), vector2_t(0.0f) },
+	};
+
+	interfaces::vgui_surface->set_texture(get_texture(e_texture::WHITE));
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->draw_textured_polygon(vertices, 3);
+}
+
+void render::triangle_outline(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color) {
+	const vertex_t vertices[] = {
+		{ vector2_t(static_cast<float>(x1), static_cast<float>(y1)), vector2_t(0.0f) },
+		{ vector2_t(static_cast<float>(x2), static_cast<float>(y2)), vector2_t(0.0f) },
+		{ vector2_t(static_cast<float>(x3), static_cast<float>(y3)), vector2_t(0.0f) },
+	};
+
+	interfaces::vgui_surface->set_texture(get_texture(e_texture::WHITE));
+	interfaces::vgui_surface->set_draw_color(color);
+	interfaces::vgui_surface->draw_textured_polyline(vertices, 3);
+}
+
+void render::text(int x, int y, e_font font, const color_t& color, std::wstring_view string) {
+	interfaces::vgui_surface->set_text_color(color);
+	interfaces::vgui_surface->set_text_font(get_font(font));
+	interfaces::vgui_surface->set_text_pos(x, y);
+	interfaces::vgui_surface->render_text(string, string.size());
+}
+
+void render::text(int x, int y, e_font font, const color_t& color, std::string_view string) {
+	text(x, y, font, color, std::wstring(string.begin(), string.end()));
+}
+
+void render::line(const point_t& start, const point_t& end, const color_t& color) {
+	line(start.x, start.y, end.x, end.y, color);
+}
+
+void render::rect(const point_t& position, const point_t& size, const color_t& color) {
+	rect(position.x, position.y, size.x, size.y, color);
+}
+
+void render::rect_rounded(const point_t& position, const point_t& size, int radius, int corners, const color_t& color) {
+	rect_rounded(position.x, position.y, size.x, size.y, radius, corners, color);
+}
+
+void render::fill_rect(const point_t& position, const point_t& size, const color_t& color) {
+	fill_rect(position.x, position.y, size.x, size.y, color);
+}
+
+void render::fill_rect_rounded(const point_t& position, const point_t& size, int radius, int corners, const color_t& color) {
+	fill_rect_rounded(position.x, position.y, size.x, size.y, radius, corners, color);
+}
+
+void render::gradient_h(const point_t& position, const point_t& size, const color_t& start_color, const color_t& end_color) {
+	gradient_h(position.x, position.y, size.x, size.y, start_color, end_color);
+}
+
+void render::gradient_v(const point_t& position, const point_t& size, const color_t& start_color, const color_t& end_color) {
+	gradient_v(position.x, position.y, size.x, size.y, start_color, end_color);
+}
+
+void render::gradient_h_rounded(const point_t& position, const point_t& size, int radius, int corners, const color_t& start_color, const color_t& end_color) {
+	gradient_h_rounded(position.x, position.y, size.x, size.y, radius, corners, start_color, end_color);
+}
+
+void render::gradient_v_rounded(const point_t& position, const point_t& size, int radius, int corners, const color_t& start_color, const color_t& end_color) {
+	gradient_v_rounded(position.x, position.y, size.x, size.y, radius, corners, start_color, end_color);
+}
+
+void render::texture(const point_t& position, const point_t& size, e_texture texture_, const color_t& tint) {
+	texture(position.x, position.y, size.x, size.y, texture_, tint);
+}
+
+void render::triangle(const point_t& point1, const point_t& point2, const point_t& point3, const color_t& color) {
+	triangle(point1.x, point1.y, point2.x, point2.y, point3.x, point3.y, color);
+}
+
+void render::triangle_outline(const point_t& point1, const point_t& point2, const point_t& point3, const color_t& color) {
+	triangle_outline(point1.x, point1.y, point2.x, point2.y, point3.x, point3.y, color);
+}
+
+void render::text(const point_t& position, e_font font, const color_t& color, std::wstring_view string) {
+	text(position.x, position.y, font, color, string);
+}
+
+void render::text(const point_t& position, e_font font, const color_t& color, std::string_view string) {
+	text(position.x, position.y, font, color, string);
+}
+
+point_t render::measure_text(e_font font, std::wstring_view string) {
+	int width, height;
+
+	interfaces::vgui_surface->calculate_text_size(get_font(font), string, width, height);
+
+	return point_t(width, height);
+}
+
+point_t render::measure_text(e_font font, std::string_view string) {
+	return measure_text(font, std::wstring(string.begin(), string.end()));
 }

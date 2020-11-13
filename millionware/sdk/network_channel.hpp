@@ -10,6 +10,6 @@ public:
   VIRTUAL_METHOD(bool, is_loopback, 6, ());
   VIRTUAL_METHOD(bool, is_timing_out, 7, ());
   VIRTUAL_METHOD(bool, is_playback, 8, ());
-  VIRTUAL_METHOD(float, get_latency, 9, (int flow), flow);
-  VIRTUAL_METHOD(float, get_average_latency, 10, (int flow), flow);
+  VIRTUAL_METHOD(float, get_latency, 9, (const int flow), flow);
+  VIRTUAL_METHOD(float, get_average_latency, 10, (const int flow), flow);
 };

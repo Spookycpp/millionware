@@ -1,63 +1,63 @@
-#include <Windows.h>
-
 #include <d3dx9.h>
 #include <stdio.h>
+#include <Windows.h>
 
 #include "../thirdparty/minhook/minhook.h"
 #include "../thirdparty/xorstr/xorstr.hpp"
+#include "../utils/error.hpp"
 #include "../utils/hash.hpp"
 #include "hooks.hpp"
+#include "interfaces.hpp"
 #include "patterns.hpp"
 
-extern long __fastcall present_hook(uintptr_t ecx, uintptr_t edx, LPDIRECT3DDEVICE9 device, const RECT* source_rect, const RECT* dest_rect, HWND dest_window_override, const RGNDATA* dirty_region);
-extern long __fastcall reset_hook(uintptr_t ecx, uintptr_t edx, const D3DPRESENT_PARAMETERS* presentation_parameters);
+#define ADD_HOOK(storage)                                                                                 \
+  if (MH_CreateHook(reinterpret_cast<LPVOID>(storage.function), reinterpret_cast<LPVOID>(storage.detour), \
+                    reinterpret_cast<LPVOID*>(&storage.original)) != MH_OK)                               \
+  {                                                                                                       \
+    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("set up " #storage));                          \
+  }
 
-void error_and_quit(const int error_code, const uint32_t error_info) {
-  char buffer[128];
+#define REMOVE_HOOK(storage)                                                      \
+  if (MH_RemoveHook(reinterpret_cast<LPVOID>(storage.function)) != MH_OK)         \
+    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("remove " #storage));
 
-  sprintf_s(buffer, sizeof buffer, XORSTR(
-              "Fatal error during initialization. \n"
-              "Please reach out to us via a ticket. \n"
-              "Additional info: E%02d %08X"
-            ), error_code, error_info);
+extern void __fastcall engine_paint_hook(uintptr_t, uintptr_t, int);
+extern void __fastcall screen_size_changed_hook(uintptr_t, uintptr_t, int, int);
 
-  MessageBoxA(nullptr, buffer, nullptr, MB_OK | MB_ICONERROR);
-  TerminateProcess(GetCurrentProcess(), -1);
-}
-
-inline uintptr_t get_vfunc_address(const uintptr_t base_address, const size_t index) {
-  return reinterpret_cast<uintptr_t**>(base_address)[0][index];
+template <typename T>
+inline uintptr_t get_vfunc_address(T* base_interface, size_t index) {
+  return reinterpret_cast<uintptr_t**>(base_interface)[0][index];
 }
 
 void hooks::initialize() {
   if (MH_Initialize() != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("minhook initialization"));
+    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("minhook initialization"));
 
-  if (MH_CreateHook(reinterpret_cast<LPVOID>(patterns::d3d9_present), static_cast<LPVOID>(present_hook), reinterpret_cast<LPVOID*>(&present.original)) != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("create d3d9 present"));
+  engine_paint.function = get_vfunc_address(interfaces::engine_vgui, 14);
+  engine_paint.detour = reinterpret_cast<uintptr_t>(&engine_paint_hook);
 
-  if (MH_CreateHook(reinterpret_cast<LPVOID>(patterns::d3d9_reset), static_cast<LPVOID>(reset_hook), reinterpret_cast<LPVOID*>(&reset.original)) != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("create d3d9 reset"));
+  screen_size_changed.function = get_vfunc_address(interfaces::vgui_surface, 116);
+  screen_size_changed.detour = reinterpret_cast<uintptr_t>(&screen_size_changed_hook);
+
+  ADD_HOOK(engine_paint);
+  ADD_HOOK(screen_size_changed);
 
   if (MH_EnableHook(nullptr) != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("enable all hooks"));
+    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("enable all hooks"));
 }
 
 void hooks::shutdown() {
   if (MH_DisableHook(nullptr) != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("disable all hooks"));
+    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("disable all hooks"));
 
-  if (MH_RemoveHook(reinterpret_cast<LPVOID>(patterns::d3d9_present)) != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("remove d3d9 present"));
-
-  if (MH_RemoveHook(reinterpret_cast<LPVOID>(patterns::d3d9_reset)) != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("remove d3d9 reset"));
+  REMOVE_HOOK(engine_paint);
+  REMOVE_HOOK(screen_size_changed);
 
   // make sure we can hold the call guards, so that means the hook isnt running
   // and we can safely free the trampoline code and shit and exit out!
-  const auto _1 = std::lock_guard<std::mutex>(present.call_mutex);
-  const auto _2 = std::lock_guard<std::mutex>(reset.call_mutex);
+  const auto _1 = std::lock_guard(engine_paint.call_mutex);
+  const auto _2 = std::lock_guard(screen_size_changed.call_mutex);
 
   if (MH_Uninitialize() != MH_OK)
-    error_and_quit(2, HASH_FNV_CT("minhook uninitialization"));
+    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("minhook uninitialization"));
 }

@@ -28,7 +28,7 @@ public:
 	VIRTUAL_METHOD(vector3_t&, get_render_origin, 1, ());
 	VIRTUAL_METHOD(vector3_t&, get_render_angles, 2, ());
 	VIRTUAL_METHOD(bool, should_draw, 3, ());
-	VIRTUAL_METHOD(bool, setup_bones, 13, (matrix3x4_t* bone_to_world_out, int32_t max_bones, int32_t bone_mask, float current_time), bone_to_world_out, max_bones, bone_mask, current_time);
+	VIRTUAL_METHOD(bool, setup_bones, 13, (matrix3x4_t* bone_to_world_out, const int max_bones, const int bone_mask, const float current_time), bone_to_world_out, max_bones, bone_mask, current_time);
 };
 
 class c_entity

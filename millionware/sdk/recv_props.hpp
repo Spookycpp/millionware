@@ -19,7 +19,7 @@ enum class e_send_prop_type : int
 struct recv_prop_t
 {
   const char* var_name;
-  int recv_type;
+  e_send_prop_type recv_type;
   int flags;
   int string_buffer_size;
   bool inside_array;
