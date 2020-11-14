@@ -7,6 +7,7 @@
 #include "core/interfaces.hpp"
 #include "core/netvars.hpp"
 #include "core/patterns.hpp"
+#include "menu/menu.hpp"
 #include "utils/render.hpp"
 
 unsigned long __stdcall initial_thread(const LPVOID dll_instance) {

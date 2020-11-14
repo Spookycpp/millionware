@@ -96,6 +96,8 @@
   <ItemGroup>
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
+    <ClCompile Include="gui\gui.cpp" />
+    <ClCompile Include="menu\menu.cpp" />
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\patterns.cpp" />
     <ClCompile Include="entry.cpp" />
@@ -114,6 +116,8 @@
   <ItemGroup>
     <ClInclude Include="core\hooks.hpp" />
     <ClInclude Include="core\interfaces.hpp" />
+    <ClInclude Include="gui\gui.hpp" />
+    <ClInclude Include="menu\menu.hpp" />
     <ClInclude Include="core\netvars.hpp" />
     <ClInclude Include="core\patterns.hpp" />
     <ClInclude Include="sdk\base_handle.hpp" />
@@ -134,6 +138,7 @@
     <ClInclude Include="sdk\vector.hpp" />
     <ClInclude Include="sdk\vertex.hpp" />
     <ClInclude Include="sdk\vgui.hpp" />
+    <ClInclude Include="sdk\debug_overlay.hpp" />
     <ClInclude Include="thirdparty\minhook\buffer.h" />
     <ClInclude Include="thirdparty\minhook\hde\hde32.h" />
     <ClInclude Include="thirdparty\minhook\hde\hde64.h" />

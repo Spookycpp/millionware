@@ -22,6 +22,7 @@ struct interface_entry_t
 
 __declspec(dllexport) interface_entry_t g_interfaces[] = {
   {"client.dll", "VClient018", 0, 0, 0},
+  {"engine.dll", "VDebugOverlay004", 0, 0, 0},
   {"client.dll", "VClientEntityList003", 0, 0, 0},
   {"engine.dll", "VEngineClient014", 0, 0, 0},
   {"engine.dll", "VEngineVGui001", 0, 0, 0},
@@ -70,6 +71,7 @@ void interfaces::initialize() {
 #endif
 
   client = reinterpret_cast<c_base_client_dll*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient018")));
+  debug_overlay = reinterpret_cast<c_debug_overlay*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VDebugOverlay004")));
   entity_list = reinterpret_cast<c_entity_list*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClientEntityList003")));
   engine_client = reinterpret_cast<c_engine_client*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014")));
   engine_vgui = reinterpret_cast<c_engine_vgui*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineVGui001")));

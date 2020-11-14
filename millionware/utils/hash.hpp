@@ -11,6 +11,10 @@ namespace utils
     return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[1]) * FNV_PRIME);
   }
 
+  constexpr uint32_t hash_fnv(const wchar_t* string, uint32_t hash = FNV_BASIS) {
+    return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[1]) * FNV_PRIME);
+  }
+
   template<typename T, T Value>
   struct ct_wrapper
   {

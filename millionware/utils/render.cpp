@@ -74,11 +74,11 @@ void render::shutdown() {
 }
 
 void render::refresh_fonts() {
-	get_font(e_font::SEGOE_UI_11) = interfaces::vgui_surface->create_font();
-	get_font(e_font::SEGOE_UI_13) = interfaces::vgui_surface->create_font();
+	get_font(e_font::SEGOE_UI_14) = interfaces::vgui_surface->create_font();
+	get_font(e_font::SEGOE_UI_16) = interfaces::vgui_surface->create_font();
 
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_11), "Segoe UI", 11, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_13), "Segoe UI", 13, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_14), "Segoe UI", 14, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_16), "Segoe UI", 16, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
 
 	interfaces::engine_client->get_screen_size(screen_width, screen_height);
 }

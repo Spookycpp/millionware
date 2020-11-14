@@ -1,17 +1,14 @@
 #pragma once
 
-#include <d3d9.h>
-#include <d3dx9.h>
-#include <freetype/freetype.h>
-#include <map>
 #include <string>
 
 #include "../sdk/color.hpp"
+#include "../sdk/vector.hpp"
 
 enum class e_font
 {
-  SEGOE_UI_11,
-  SEGOE_UI_13,
+  SEGOE_UI_14,
+  SEGOE_UI_16,
 
   MAX,
 };

@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "../sdk/client_dll.hpp"
+#include "../sdk/debug_overlay.hpp"
 #include "../sdk/engine_client.hpp"
 #include "../sdk/engine_vgui.hpp"
 #include "../sdk/entity_list.hpp"
@@ -11,6 +12,7 @@
 namespace interfaces
 {
   inline c_base_client_dll* client = nullptr;
+  inline c_debug_overlay* debug_overlay = nullptr;
   inline c_entity_list* entity_list = nullptr;
   inline c_engine_client* engine_client = nullptr;
   inline c_engine_vgui* engine_vgui = nullptr;
