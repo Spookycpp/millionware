@@ -15,11 +15,10 @@ struct window_context_t
 	std::vector<std::wstring> tabs;
 	std::vector<std::wstring> categories;
 
-	std::unordered_map<int, int> tabs_selected_category;
-	std::unordered_map<int, int> tabs_hover_time;
-	std::unordered_map<int, int> category_hover_time;
-	std::unordered_map<uint32_t, int> element_hover_time;
-	std::unordered_map<uint32_t, int> element_interact_time;
+	std::unordered_map<int, int> tabs_selected_category_;
+	std::unordered_map<int, float> tabs_hover_animation_;
+	std::unordered_map<int, float> category_hover_animation_;
+	std::unordered_map<uint32_t, float> element_hover_animation_;
 
 	bool open;
 	bool dragging;
@@ -35,6 +34,11 @@ struct window_context_t
 	point_t size;
 
 	int current_tab;
+
+	int& tabs_selected_category(int key);
+	float& tabs_hover_animation(int key);
+	float& category_hover_animation(int key);
+	float& element_hover_animation(uint32_t key);
 
 	point_t pop();
 

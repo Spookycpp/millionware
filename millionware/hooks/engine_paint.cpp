@@ -4,6 +4,7 @@
 #include "../core/interfaces.hpp"
 #include "../menu/menu.hpp"
 #include "../thirdparty/xorstr/xorstr.hpp"
+#include "../utils/input.hpp"
 #include "../utils/render.hpp"
 
 std::once_flag initialize_renderer;
@@ -16,6 +17,7 @@ void __fastcall engine_paint_hook(uintptr_t ecx, uintptr_t edx, int mode) {
 	if (mode & PAINT_MODE_UI_PANELS) {
 		interfaces::vgui_surface->start_drawing();
 
+		input::update();
 		menu::frame();
 
 		interfaces::vgui_surface->finish_drawing();

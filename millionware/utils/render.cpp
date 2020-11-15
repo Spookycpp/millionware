@@ -1,6 +1,7 @@
 #include <array>
 
 #include "../core/interfaces.hpp"
+#include "../thirdparty/xorstr/xorstr.hpp"
 #include "math.hpp"
 #include "render.hpp"
 
@@ -77,8 +78,8 @@ void render::refresh_fonts() {
 	get_font(e_font::SEGOE_UI_14) = interfaces::vgui_surface->create_font();
 	get_font(e_font::SEGOE_UI_16) = interfaces::vgui_surface->create_font();
 
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_14), "Segoe UI", 14, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_16), "Segoe UI", 16, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_14), XORSTR("Segoe UI"), 14, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_16), XORSTR("Segoe UI"), 16, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
 
 	interfaces::engine_client->get_screen_size(screen_width, screen_height);
 }

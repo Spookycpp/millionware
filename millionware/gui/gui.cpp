@@ -1,4 +1,8 @@
+#include <algorithm>
+
+#include "../core/interfaces.hpp"
 #include "../utils/hash.hpp"
+#include "../utils/input.hpp"
 #include "../utils/render.hpp"
 #include "gui.hpp"
 
@@ -16,6 +20,44 @@ constexpr static auto WINDOW_SIDEBAR_SIZE = 135;
 
 static std::unordered_map<uint32_t, window_context_t> windows;
 static std::vector<uint32_t> window_order;
+
+inline float linear_ease(float start, float end, float t) {
+	const auto delta = end - start;
+
+	return start + delta * t;
+}
+
+inline float animation_interval(float interval = 0.035f) {
+	return interfaces::global_vars->frame_time * (1.0f / interval);
+}
+
+int& window_context_t::tabs_selected_category(int key) {
+	if (tabs_selected_category_.find(key) == tabs_selected_category_.end())
+		tabs_selected_category_[key] = 0;
+
+	return tabs_selected_category_[key];
+}
+
+float& window_context_t::tabs_hover_animation(int key) {
+	if (tabs_hover_animation_.find(key) == tabs_hover_animation_.end())
+		tabs_hover_animation_[key] = 0;
+
+	return tabs_hover_animation_[key];
+}
+
+float& window_context_t::category_hover_animation(int key) {
+	if (category_hover_animation_.find(key) == category_hover_animation_.end())
+		category_hover_animation_[key] = 0;
+
+	return category_hover_animation_[key];
+}
+
+float& window_context_t::element_hover_animation(uint32_t key) {
+	if (element_hover_animation_.find(key) == element_hover_animation_.end())
+		element_hover_animation_[key] = 0;
+
+	return element_hover_animation_[key];
+}
 
 point_t window_context_t::pop() {
 	const auto top = window_cursor_pos.top();
@@ -42,8 +84,36 @@ uint32_t window_context_t::do_hash(const wchar_t* string) {
 }
 
 void window_context_t::window(std::wstring_view title, const std::function<void()>& callback) {
+	if (input::is_key_pressed(VK_INSERT))
+		open = !open;
+
 	if (!open)
 		return;
+
+	const auto title_size = render::measure_text(e_font::SEGOE_UI_16, title);
+
+	if (!dragging && input::is_key_pressed(VK_LBUTTON)) {
+		auto tab_offset = 20u;
+
+		for (auto i = 0u; i < tabs.size(); i++) {
+			const auto tab_text = tabs[tabs.size() - i - 1];
+			const auto tab_size = render::measure_text(e_font::SEGOE_UI_16, tab_text);
+
+			tab_offset += tab_size.x + 20;
+		}
+
+		if (input::is_in_bounds(position.x, position.y, position.x + size.x - tab_offset, position.y + WINDOW_HEADER_SIZE)) {
+			dragging = true;
+			drag_start_mouse = input::get_mouse_pos();
+			drag_start_position = position;
+		}
+	}
+	else if (dragging && input::is_key_down(VK_LBUTTON)) {
+		position = drag_start_position + input::get_mouse_pos() - drag_start_mouse;
+	}
+	else if (dragging && input::is_key_released(VK_LBUTTON)) {
+		dragging = false;
+	}
 
 	tabs.clear();
 	categories.clear();
@@ -56,8 +126,6 @@ void window_context_t::window(std::wstring_view title, const std::function<void(
 	render::fill_rect_rounded(position.x, position.y, size.x, WINDOW_HEADER_SIZE, WINDOW_FRAME_CORNER_RADIUS, CORNER_TOP, WINDOW_HEADER_BACKGROUND_COLOR);
 	render::fill_rect_rounded(position.x, position.y + WINDOW_HEADER_SIZE, WINDOW_SIDEBAR_SIZE, size.y - WINDOW_HEADER_SIZE, WINDOW_FRAME_CORNER_RADIUS, CORNER_BOTTOM_LEFT, WINDOW_SIDEBAR_BACKGROUND_COLOR);
 
-	const auto title_size = render::measure_text(e_font::SEGOE_UI_16, title);
-
 	render::text(position.x + 16, position.y + WINDOW_HEADER_SIZE / 2 - title_size.y / 2, e_font::SEGOE_UI_16, GUI_REGULAR_TEXT_COLOR, title);
 
 	push(position.x + WINDOW_SIDEBAR_SIZE + WINDOW_FRAME_CONTENT_PADDING, position.y + WINDOW_HEADER_SIZE + WINDOW_FRAME_CONTENT_PADDING);
@@ -68,12 +136,28 @@ void window_context_t::window(std::wstring_view title, const std::function<void(
 	std::invoke(callback);
 
 	for (auto i = 0u, offset = 0u; i < tabs.size(); i++) {
-		const auto tab_text = tabs[tabs.size() - i - 1];
+		const auto tab_index = tabs.size() - i - 1;
+		const auto tab_text = tabs[tab_index];
 		const auto tab_size = render::measure_text(e_font::SEGOE_UI_16, tab_text);
-		const auto selected = current_tab == tabs.size() - i - 1;
 
-		render::text(position.x + size.x - 16 - offset - tab_size.x, position.y + WINDOW_HEADER_SIZE / 2 - tab_size.y / 2,
-			e_font::SEGOE_UI_16, selected ? GUI_REGULAR_TEXT_COLOR : GUI_DIMMED_TEXT_COLOR, tab_text);
+		const auto selected = current_tab == tab_index;
+		const auto hovered = input::is_in_bounds(
+			position.x + size.x - 16 - offset - tab_size.x,
+			position.y + WINDOW_HEADER_SIZE / 2 - tab_size.y / 2,
+			position.x + size.x - 16 - offset,
+			position.y + WINDOW_HEADER_SIZE / 2 + tab_size.y / 2
+		);
+
+		auto& tab_animation = tabs_hover_animation(tab_index);
+
+		tab_animation = linear_ease(tab_animation, selected ? 1.0f : hovered ? 0.5f : 0.0f, animation_interval());
+
+		const auto tab_color = GUI_DIMMED_TEXT_COLOR.r + static_cast<int>((GUI_REGULAR_TEXT_COLOR.r - GUI_DIMMED_TEXT_COLOR.r) * tab_animation);
+
+		if (hovered && input::is_key_pressed(VK_LBUTTON))
+			current_tab = tab_index;
+
+		render::text(position.x + size.x - 16 - offset - tab_size.x, position.y + WINDOW_HEADER_SIZE / 2 - tab_size.y / 2, e_font::SEGOE_UI_16, color_t(tab_color), tab_text);
 
 		offset += tab_size.x + 20;
 	}
@@ -82,8 +166,24 @@ void window_context_t::window(std::wstring_view title, const std::function<void(
 		const auto category_text = categories[i];
 		const auto category_size = render::measure_text(e_font::SEGOE_UI_16, category_text);
 
-		render::text(position.x + 24, position.y + WINDOW_HEADER_SIZE + 24 - category_size.y / 2 + offset,
-			e_font::SEGOE_UI_16, tabs_selected_category[current_tab] == i ? GUI_REGULAR_TEXT_COLOR : GUI_DIMMED_TEXT_COLOR, category_text);
+		const auto selected = tabs_selected_category(current_tab) == i;
+		const auto hovered = input::is_in_bounds(
+			position.x + 24,
+			position.y + WINDOW_HEADER_SIZE + 24 - category_size.y / 2 + offset,
+			position.x + 24 + category_size.x,
+			position.y + WINDOW_HEADER_SIZE + 24 + category_size.y / 2 + offset
+		);
+
+		auto& category_animation = category_hover_animation(i);
+
+		category_animation = linear_ease(category_animation, selected ? 1.0f : hovered ? 0.5f : 0.0f, animation_interval());
+
+		const auto category_color = GUI_DIMMED_TEXT_COLOR.r + static_cast<int>((GUI_REGULAR_TEXT_COLOR.r - GUI_DIMMED_TEXT_COLOR.r) * category_animation);
+
+		if (hovered && input::is_key_pressed(VK_LBUTTON))
+			tabs_selected_category(current_tab) = i;
+
+		render::text(position.x + 24, position.y + WINDOW_HEADER_SIZE + 24 - category_size.y / 2 + offset, e_font::SEGOE_UI_16, color_t(category_color), category_text);
 
 		offset += category_size.y + 8;
 	}
@@ -97,12 +197,9 @@ void window_context_t::tab(std::wstring_view title, const std::function<void()>&
 }
 
 void window_context_t::category(std::wstring_view title, const std::function<void()>& callback) {
-	if (tabs_selected_category.find(current_tab) == tabs_selected_category.end())
-		tabs_selected_category.insert_or_assign(current_tab, 0);
-
 	categories.push_back(title.data());
 
-	if (categories.size() == tabs_selected_category[current_tab] + 1)
+	if (categories.size() == tabs_selected_category(current_tab) + 1)
 		std::invoke(callback);
 }
 

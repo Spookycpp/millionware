@@ -14,6 +14,7 @@ struct hook_storage_t
 namespace hooks
 {
   inline hook_storage_t engine_paint;
+  inline hook_storage_t lock_cursor;
   inline hook_storage_t screen_size_changed;
 
   void initialize();

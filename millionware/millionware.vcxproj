@@ -97,6 +97,7 @@
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
     <ClCompile Include="gui\gui.cpp" />
+    <ClCompile Include="hooks\lock_cursor.cpp" />
     <ClCompile Include="menu\menu.cpp" />
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\patterns.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="thirdparty\minhook\hook.c" />
     <ClCompile Include="thirdparty\minhook\trampoline.c" />
     <ClCompile Include="utils\error.cpp" />
+    <ClCompile Include="utils\input.cpp" />
     <ClCompile Include="utils\math.cpp" />
     <ClCompile Include="utils\render.cpp" />
   </ItemGroup>
@@ -129,6 +131,7 @@
     <ClInclude Include="sdk\entity.hpp" />
     <ClInclude Include="sdk\entity_list.hpp" />
     <ClInclude Include="sdk\font_flag.hpp" />
+    <ClInclude Include="sdk\global_vars.hpp" />
     <ClInclude Include="sdk\macros.hpp" />
     <ClInclude Include="sdk\matrix.hpp" />
     <ClInclude Include="sdk\network_channel.hpp" />
@@ -139,6 +142,7 @@
     <ClInclude Include="sdk\vertex.hpp" />
     <ClInclude Include="sdk\vgui.hpp" />
     <ClInclude Include="sdk\debug_overlay.hpp" />
+    <ClInclude Include="sdk\input_system.hpp" />
     <ClInclude Include="thirdparty\minhook\buffer.h" />
     <ClInclude Include="thirdparty\minhook\hde\hde32.h" />
     <ClInclude Include="thirdparty\minhook\hde\hde64.h" />
@@ -150,6 +154,7 @@
     <ClInclude Include="thirdparty\xorstr\xorstr.hpp" />
     <ClInclude Include="utils\error.hpp" />
     <ClInclude Include="utils\hash.hpp" />
+    <ClInclude Include="utils\input.hpp" />
     <ClInclude Include="utils\math.hpp" />
     <ClInclude Include="utils\render.hpp" />
   </ItemGroup>
