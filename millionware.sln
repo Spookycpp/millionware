@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "millionware", "millionware\millionware.vcxproj", "{0D355C37-506E-4887-B719-361FFF5B7340}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "injector", "injector\injector.vcxproj", "{405AD3CC-0C52-40C5-938B-81555208F8C5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0D355C37-506E-4887-B719-361FFF5B7340} = {0D355C37-506E-4887-B719-361FFF5B7340}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

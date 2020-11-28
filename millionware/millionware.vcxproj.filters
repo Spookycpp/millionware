@@ -96,6 +96,12 @@
     <ClCompile Include="hooks\level_shutdown_pre_entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="features\misc\misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\aimbot\aimbot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">
@@ -237,6 +243,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sdk\user_cmd.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\misc\misc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\aimbot\aimbot.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

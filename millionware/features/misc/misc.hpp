@@ -1,6 +1,6 @@
 #pragma once
 
-namespace features::misc
+namespace features::misc 
 {
 
 }

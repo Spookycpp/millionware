@@ -8,6 +8,8 @@ bool __fastcall hooks::create_move_hook(uintptr_t ecx, uintptr_t edx, float fram
 	if (user_cmd->buttons & BUTTON_IN_JUMP && !(cheat::local_player->flags() & ENTITY_FLAG_ONGROUND))
 		user_cmd->buttons &= ~BUTTON_IN_JUMP;
 
+	user_cmd->buttons |= BUTTON_IN_BULLRUSH;
+
 	reinterpret_cast<decltype(&create_move_hook)>(hooks::create_move.original)(ecx, edx, frame_time, user_cmd);
 
 	return false;

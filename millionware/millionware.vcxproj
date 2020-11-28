@@ -100,6 +100,8 @@
     <ClCompile Include="core\cheat.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
+    <ClCompile Include="features\aimbot\aimbot.cpp" />
+    <ClCompile Include="features\misc\misc.cpp" />
     <ClCompile Include="features\visuals\chams.cpp" />
     <ClCompile Include="features\visuals\esp.cpp" />
     <ClCompile Include="gui\gui.cpp" />
@@ -129,6 +131,8 @@
     <ClInclude Include="core\cheat.hpp" />
     <ClInclude Include="core\hooks.hpp" />
     <ClInclude Include="core\interfaces.hpp" />
+    <ClInclude Include="features\aimbot\aimbot.hpp" />
+    <ClInclude Include="features\misc\misc.hpp" />
     <ClInclude Include="features\visuals\chams.hpp" />
     <ClInclude Include="features\visuals\esp.hpp" />
     <ClInclude Include="gui\gui.hpp" />
