@@ -5,10 +5,6 @@ VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "millionware", "millionware\millionware.vcxproj", "{0D355C37-506E-4887-B719-361FFF5B7340}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "loader-server", "loader-server\loader-server.vcxproj", "{8F0DEB31-2F7A-425F-A020-393DBF1F4B02}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "loader-client", "loader-client\loader-client.vcxproj", "{D25032D9-5452-4B24-AAC0-C797414606DB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|x86 = debug|x86
@@ -19,14 +15,6 @@ Global
 		{0D355C37-506E-4887-B719-361FFF5B7340}.debug|x86.Build.0 = debug|Win32
 		{0D355C37-506E-4887-B719-361FFF5B7340}.stable|x86.ActiveCfg = stable|Win32
 		{0D355C37-506E-4887-B719-361FFF5B7340}.stable|x86.Build.0 = stable|Win32
-		{8F0DEB31-2F7A-425F-A020-393DBF1F4B02}.debug|x86.ActiveCfg = debug|Win32
-		{8F0DEB31-2F7A-425F-A020-393DBF1F4B02}.debug|x86.Build.0 = debug|Win32
-		{8F0DEB31-2F7A-425F-A020-393DBF1F4B02}.stable|x86.ActiveCfg = stable|Win32
-		{8F0DEB31-2F7A-425F-A020-393DBF1F4B02}.stable|x86.Build.0 = stable|Win32
-		{D25032D9-5452-4B24-AAC0-C797414606DB}.debug|x86.ActiveCfg = debug|Win32
-		{D25032D9-5452-4B24-AAC0-C797414606DB}.debug|x86.Build.0 = debug|Win32
-		{D25032D9-5452-4B24-AAC0-C797414606DB}.stable|x86.ActiveCfg = stable|Win32
-		{D25032D9-5452-4B24-AAC0-C797414606DB}.stable|x86.Build.0 = stable|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,22 +4,22 @@
 
 #include "typedefs.hpp"
 
-enum class e_send_prop_type : int
+enum e_send_prop_type : int
 {
-  INT32 = 0,
-  FLOAT,
-  VECTOR3,
-  VECTOR2,
-  STRING,
-  ARRAY,
-  DATA_TABLE,
-  INT64,
+  SEND_PROP_TYPE_INT32 = 0,
+  SEND_PROP_TYPE_FLOAT,
+  SEND_PROP_TYPE_VECTOR3,
+  SEND_PROP_TYPE_VECTOR2,
+  SEND_PROP_TYPE_STRING,
+  SEND_PROP_TYPE_ARRAY,
+  SEND_PROP_TYPE_DATA_TABLE,
+  SEND_PROP_TYPE_INT64,
 };
 
 struct recv_prop_t
 {
   const char* var_name;
-  e_send_prop_type recv_type;
+  int recv_type;
   int flags;
   int string_buffer_size;
   bool inside_array;

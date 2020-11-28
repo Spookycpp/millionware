@@ -1,225 +1,179 @@
+#define NOMINMAX
+
 #include <algorithm>
 
+#include "../core/cheat.hpp"
 #include "../core/interfaces.hpp"
 #include "../utils/hash.hpp"
 #include "../utils/input.hpp"
 #include "../utils/render.hpp"
 #include "gui.hpp"
 
-constexpr static auto GUI_DIMMED_TEXT_COLOR = color_t(130);
-constexpr static auto GUI_REGULAR_TEXT_COLOR = color_t(220);
+constexpr auto WINDOW_SIDEBAR_SIZE = 50;
+constexpr auto WINDOW_CONTENT_PADDING = 8;
+constexpr auto WINDOW_TABS_HEIGHT = 28;
 
-constexpr static auto WINDOW_FRAME_BORDER_COLOR = color_t(36);
-constexpr static auto WINDOW_FRAME_BACKGROUND_COLOR = color_t(20);
-constexpr static auto WINDOW_FRAME_CORNER_RADIUS = 4;
-constexpr static auto WINDOW_FRAME_CONTENT_PADDING = 6;
-constexpr static auto WINDOW_HEADER_BACKGROUND_COLOR = color_t(36);
-constexpr static auto WINDOW_HEADER_SIZE = 40;
-constexpr static auto WINDOW_SIDEBAR_BACKGROUND_COLOR = color_t(28);
-constexpr static auto WINDOW_SIDEBAR_SIZE = 135;
+static std::shared_ptr<window_context_t> ctx = nullptr;
 
-static std::unordered_map<uint32_t, window_context_t> windows;
-static std::vector<uint32_t> window_order;
+inline float handle_animation(float& state, float target, float rate = 0.035f) {
+	const auto interval = (1.0f / rate) * interfaces::global_vars->frame_time;
+	const auto delta = target - state;
 
-inline float linear_ease(float start, float end, float t) {
-	const auto delta = end - start;
-
-	return start + delta * t;
+	return state = std::clamp(state + delta * interval, 0.0f, 1.0f);
 }
 
-inline float animation_interval(float interval = 0.035f) {
-	return interfaces::global_vars->frame_time * (1.0f / interval);
+void gui::initialize() {
+	ctx = std::make_shared<window_context_t>();
+	{
+		ctx->is_open = true;
+		ctx->is_being_dragged = false;
+		ctx->is_being_resized = false;
+		ctx->current_tab = 0;
+
+		ctx->position = point_t(48);
+		ctx->min_size = point_t(600, 380);
+		ctx->size = ctx->min_size;
+	}
 }
 
-int& window_context_t::tabs_selected_category(int key) {
-	if (tabs_selected_category_.find(key) == tabs_selected_category_.end())
-		tabs_selected_category_[key] = 0;
-
-	return tabs_selected_category_[key];
+std::shared_ptr<window_context_t> gui::get_context() {
+	return ctx;
 }
 
-float& window_context_t::tabs_hover_animation(int key) {
-	if (tabs_hover_animation_.find(key) == tabs_hover_animation_.end())
-		tabs_hover_animation_[key] = 0;
+void gui::window(std::wstring_view title, const std::function<void()>& callback) {
+	if (input::is_key_pressed(VK_INSERT)) {
+		if (ctx->is_open) {
+			ctx->is_being_dragged = false;
+			ctx->is_being_resized = false;
+		}
 
-	return tabs_hover_animation_[key];
-}
+		ctx->is_open = !ctx->is_open;
+	}
 
-float& window_context_t::category_hover_animation(int key) {
-	if (category_hover_animation_.find(key) == category_hover_animation_.end())
-		category_hover_animation_[key] = 0;
-
-	return category_hover_animation_[key];
-}
-
-float& window_context_t::element_hover_animation(uint32_t key) {
-	if (element_hover_animation_.find(key) == element_hover_animation_.end())
-		element_hover_animation_[key] = 0;
-
-	return element_hover_animation_[key];
-}
-
-point_t window_context_t::pop() {
-	const auto top = window_cursor_pos.top();
-
-	window_cursor_pos.pop();
-
-	return top;
-}
-
-void window_context_t::push(const point_t& pos) {
-	window_cursor_pos.push(pos);
-}
-
-void window_context_t::push(int x, int y) {
-	push({ x, y });
-}
-
-uint32_t window_context_t::do_hash(const char* string) {
-	return parent_hash + HASH_FNV(string);
-}
-
-uint32_t window_context_t::do_hash(const wchar_t* string) {
-	return parent_hash + HASH_FNV(string);
-}
-
-void window_context_t::window(std::wstring_view title, const std::function<void()>& callback) {
-	if (input::is_key_pressed(VK_INSERT))
-		open = !open;
-
-	if (!open)
+	if (!ctx->is_open)
 		return;
 
-	const auto title_size = render::measure_text(e_font::SEGOE_UI_16, title);
+	// calculate widest tab
+	auto widest_tab_size = 0;
 
-	if (!dragging && input::is_key_pressed(VK_LBUTTON)) {
-		auto tab_offset = 20u;
+	for (const auto& tab_title : ctx->tabs) {
+		const auto tab_size = render::measure_text(e_font::UI_REGULAR, tab_title);
 
-		for (auto i = 0u; i < tabs.size(); i++) {
-			const auto tab_text = tabs[tabs.size() - i - 1];
-			const auto tab_size = render::measure_text(e_font::SEGOE_UI_16, tab_text);
-
-			tab_offset += tab_size.x + 20;
-		}
-
-		if (input::is_in_bounds(position.x, position.y, position.x + size.x - tab_offset, position.y + WINDOW_HEADER_SIZE)) {
-			dragging = true;
-			drag_start_mouse = input::get_mouse_pos();
-			drag_start_position = position;
-		}
-	}
-	else if (dragging && input::is_key_down(VK_LBUTTON)) {
-		position = drag_start_position + input::get_mouse_pos() - drag_start_mouse;
-	}
-	else if (dragging && input::is_key_released(VK_LBUTTON)) {
-		dragging = false;
+		if (tab_size.x > widest_tab_size)
+			widest_tab_size = tab_size.x;
 	}
 
-	tabs.clear();
-	categories.clear();
+	// handle dragging
+	const auto hovered_dragging_region = input::is_in_bounds(ctx->position, ctx->position + WINDOW_SIDEBAR_SIZE) ||
+		input::is_in_bounds(
+			ctx->position.x + WINDOW_SIDEBAR_SIZE + WINDOW_CONTENT_PADDING + (widest_tab_size + WINDOW_CONTENT_PADDING * 2) * ctx->tabs.size(), ctx->position.y,
+			ctx->position.x + ctx->size.x, ctx->position.y + WINDOW_TABS_HEIGHT + WINDOW_CONTENT_PADDING);
 
-	while (!window_cursor_pos.empty())
-		window_cursor_pos.pop();
+	if (!ctx->is_being_dragged && hovered_dragging_region && input::is_key_pressed(VK_LBUTTON)) {
+		ctx->is_being_dragged = true;
+		ctx->interaction_start_point = ctx->position;
+		ctx->interaction_mouse_pos = input::get_mouse_pos();
+	}
+	else if (ctx->is_being_dragged && input::is_key_down(VK_LBUTTON)) {
+		const auto new_position = ctx->interaction_start_point + input::get_mouse_pos() - ctx->interaction_mouse_pos;
 
-	render::fill_rect_rounded(position - 1, size + 1, WINDOW_FRAME_CORNER_RADIUS, CORNER_ALL, WINDOW_FRAME_BORDER_COLOR);
-	render::fill_rect_rounded(position, size, WINDOW_FRAME_CORNER_RADIUS, CORNER_ALL, WINDOW_FRAME_BACKGROUND_COLOR);
-	render::fill_rect_rounded(position.x, position.y, size.x, WINDOW_HEADER_SIZE, WINDOW_FRAME_CORNER_RADIUS, CORNER_TOP, WINDOW_HEADER_BACKGROUND_COLOR);
-	render::fill_rect_rounded(position.x, position.y + WINDOW_HEADER_SIZE, WINDOW_SIDEBAR_SIZE, size.y - WINDOW_HEADER_SIZE, WINDOW_FRAME_CORNER_RADIUS, CORNER_BOTTOM_LEFT, WINDOW_SIDEBAR_BACKGROUND_COLOR);
-
-	render::text(position.x + 16, position.y + WINDOW_HEADER_SIZE / 2 - title_size.y / 2, e_font::SEGOE_UI_16, GUI_REGULAR_TEXT_COLOR, title);
-
-	push(position.x + WINDOW_SIDEBAR_SIZE + WINDOW_FRAME_CONTENT_PADDING, position.y + WINDOW_HEADER_SIZE + WINDOW_FRAME_CONTENT_PADDING);
-
-	working_area_size.x = size.x - WINDOW_SIDEBAR_SIZE - WINDOW_FRAME_CONTENT_PADDING * 2;
-	working_area_size.y = size.y - WINDOW_HEADER_SIZE - WINDOW_FRAME_CONTENT_PADDING * 2;
-
-	std::invoke(callback);
-
-	for (auto i = 0u, offset = 0u; i < tabs.size(); i++) {
-		const auto tab_index = tabs.size() - i - 1;
-		const auto tab_text = tabs[tab_index];
-		const auto tab_size = render::measure_text(e_font::SEGOE_UI_16, tab_text);
-
-		const auto selected = current_tab == tab_index;
-		const auto hovered = input::is_in_bounds(
-			position.x + size.x - 16 - offset - tab_size.x,
-			position.y + WINDOW_HEADER_SIZE / 2 - tab_size.y / 2,
-			position.x + size.x - 16 - offset,
-			position.y + WINDOW_HEADER_SIZE / 2 + tab_size.y / 2
-		);
-
-		auto& tab_animation = tabs_hover_animation(tab_index);
-
-		tab_animation = linear_ease(tab_animation, selected ? 1.0f : hovered ? 0.5f : 0.0f, animation_interval());
-
-		const auto tab_color = GUI_DIMMED_TEXT_COLOR.r + static_cast<int>((GUI_REGULAR_TEXT_COLOR.r - GUI_DIMMED_TEXT_COLOR.r) * tab_animation);
-
-		if (hovered && input::is_key_pressed(VK_LBUTTON))
-			current_tab = tab_index;
-
-		render::text(position.x + size.x - 16 - offset - tab_size.x, position.y + WINDOW_HEADER_SIZE / 2 - tab_size.y / 2, e_font::SEGOE_UI_16, color_t(tab_color), tab_text);
-
-		offset += tab_size.x + 20;
+		ctx->position.x = std::max(WINDOW_CONTENT_PADDING, std::min(cheat::screen_size.x - ctx->size.x - WINDOW_CONTENT_PADDING, new_position.x));
+		ctx->position.y = std::max(WINDOW_CONTENT_PADDING, std::min(cheat::screen_size.y - ctx->size.y - WINDOW_CONTENT_PADDING, new_position.y));
+	}
+	else if (ctx->is_being_dragged && input::is_key_released(VK_LBUTTON)) {
+		ctx->is_being_dragged = false;
 	}
 
-	for (auto i = 0u, offset = 0u; i < categories.size(); i++) {
-		const auto category_text = categories[i];
-		const auto category_size = render::measure_text(e_font::SEGOE_UI_16, category_text);
+	// handle resizing
+	if (!ctx->is_being_resized && input::is_in_bounds(ctx->position + ctx->size - WINDOW_CONTENT_PADDING, ctx->position + ctx->size) && input::is_key_pressed(VK_LBUTTON)) {
+		ctx->is_being_resized = true;
+		ctx->interaction_start_point = ctx->size;
+		ctx->interaction_mouse_pos = input::get_mouse_pos();
+	}
+	else if (ctx->is_being_resized && input::is_key_down(VK_LBUTTON)) {
+		const auto new_size = ctx->interaction_start_point + input::get_mouse_pos() - ctx->interaction_mouse_pos;
 
-		const auto selected = tabs_selected_category(current_tab) == i;
-		const auto hovered = input::is_in_bounds(
-			position.x + 24,
-			position.y + WINDOW_HEADER_SIZE + 24 - category_size.y / 2 + offset,
-			position.x + 24 + category_size.x,
-			position.y + WINDOW_HEADER_SIZE + 24 + category_size.y / 2 + offset
-		);
+		ctx->size.x = std::min(std::max(new_size.x, ctx->min_size.x), cheat::screen_size.x - ctx->position.x - WINDOW_CONTENT_PADDING);
+		ctx->size.y = std::min(std::max(new_size.y, ctx->min_size.y), cheat::screen_size.y - ctx->position.y - WINDOW_CONTENT_PADDING);
+	}
+	else if (ctx->is_being_resized && input::is_key_released(VK_LBUTTON)) {
+		ctx->is_being_resized = false;
+	}
 
-		auto& category_animation = category_hover_animation(i);
+	// clear up previous state
+	ctx->tabs.clear();
+	ctx->categories.clear();
+	ctx->is_calculating_layout = false;
 
-		category_animation = linear_ease(category_animation, selected ? 1.0f : hovered ? 0.5f : 0.0f, animation_interval());
+	// useful stuff ig
+	const auto title_size = render::measure_text(e_font::UI_REGULAR, title);
 
-		const auto category_color = GUI_DIMMED_TEXT_COLOR.r + static_cast<int>((GUI_REGULAR_TEXT_COLOR.r - GUI_DIMMED_TEXT_COLOR.r) * category_animation);
+	// draw window frame
+	render::fill_rect_rounded(ctx->position - 1, ctx->size + 2, 3, CORNER_ALL, color_t(64, 64, 70));
+	render::fill_rect_rounded(ctx->position, ctx->size, 3, CORNER_ALL, color_t(32, 32, 35));
+	render::fill_rect_rounded(ctx->position.x, ctx->position.y, WINDOW_SIDEBAR_SIZE, ctx->size.y, 3, CORNER_LEFT, color_t(46, 46, 50));
+	render::fill_rect_rounded(ctx->position.x, ctx->position.y, WINDOW_SIDEBAR_SIZE, WINDOW_SIDEBAR_SIZE, 3, CORNER_TOP_LEFT, color_t(64, 64, 70));
 
-		if (hovered && input::is_key_pressed(VK_LBUTTON))
-			tabs_selected_category(current_tab) = i;
+	render::texture(ctx->position + WINDOW_SIDEBAR_SIZE / 2 - 16, 32, e_texture::MW_LOGO_32, color_t(240));
 
-		render::text(position.x + 24, position.y + WINDOW_HEADER_SIZE + 24 - category_size.y / 2 + offset, e_font::SEGOE_UI_16, color_t(category_color), category_text);
+	// set up state for layout calculation
+	ctx->is_calculating_layout = false;
+	ctx->working_area = point_t(ctx->size.x - WINDOW_SIDEBAR_SIZE - WINDOW_CONTENT_PADDING * 2, ctx->size.y - WINDOW_TABS_HEIGHT - WINDOW_CONTENT_PADDING * 3);
+	ctx->cursor_pos = point_t(ctx->position.x + WINDOW_SIDEBAR_SIZE + WINDOW_CONTENT_PADDING, ctx->position.y + WINDOW_TABS_HEIGHT + WINDOW_CONTENT_PADDING * 2);
+	ctx->inline_cursor_pos = -1;
 
-		offset += category_size.y + 8;
+	callback();
+
+	// draw tabs and categories
+	render::line(ctx->position.x + WINDOW_SIDEBAR_SIZE + WINDOW_CONTENT_PADDING, ctx->position.y + WINDOW_CONTENT_PADDING + WINDOW_TABS_HEIGHT,
+		ctx->position.x + ctx->size.x - WINDOW_CONTENT_PADDING, ctx->position.y + WINDOW_CONTENT_PADDING + WINDOW_TABS_HEIGHT, color_t(46, 46, 50));
+
+	for (auto i = 0u; i < ctx->tabs.size(); i++) {
+		const auto tab_size = render::measure_text(e_font::UI_REGULAR, ctx->tabs[i]);
+		const auto tab_width = widest_tab_size + WINDOW_CONTENT_PADDING * 2;
+		const auto tab_position = point_t(ctx->position.x + WINDOW_SIDEBAR_SIZE + WINDOW_CONTENT_PADDING + tab_width * i, ctx->position.y + WINDOW_CONTENT_PADDING);
+		const auto tab_box_size = point_t(tab_width, WINDOW_TABS_HEIGHT);
+		const auto hovered = input::is_in_bounds(tab_position, tab_position + tab_box_size);
+
+		if (hovered && input::is_key_released(VK_LBUTTON))
+			ctx->current_tab = i;
+
+		const auto tab_animation = handle_animation(ctx->tab_animation(i), ctx->current_tab == i ? 1.0f : hovered ? 0.5f : 0.0f, 0.06f);
+		const auto line_animation = handle_animation(ctx->tab_line(i), ctx->current_tab == i ? 1.0f : 0.0f, 0.1f);
+
+		const auto tab_color = 120 + static_cast<int>(120.0f * tab_animation);
+		const auto line_color = 46 + static_cast<int>(14.0f * line_animation);
+
+		render::line(tab_position.x, tab_position.y + tab_box_size.y, tab_position.x + tab_box_size.x, tab_position.y + tab_box_size.y, color_t(line_color));
+		render::text(tab_position.x + tab_box_size.x / 2 - tab_size.x / 2, ctx->position.y + (WINDOW_TABS_HEIGHT + WINDOW_CONTENT_PADDING) / 2 - tab_size.y / 2, e_font::UI_REGULAR, color_t(tab_color), ctx->tabs[i]);
+	}
+
+	for (auto i = 0u; i < ctx->categories.size(); i++) {
+		auto& category_index = ctx->current_category(ctx->current_tab);
+
+		const auto category_position = point_t(ctx->position.x, ctx->position.y + WINDOW_SIDEBAR_SIZE * (i + 1));
+		const auto hovered = input::is_in_bounds(category_position, category_position + WINDOW_SIDEBAR_SIZE);
+
+		if (hovered && input::is_key_released(VK_LBUTTON))
+			category_index = i;
+
+		const auto category_animation = handle_animation(ctx->category_animation(i), category_index == i ? 1.0f : hovered ? 0.5f : 0.0f, 0.06f);
+		const auto category_color = 120 + static_cast<int>(120.0f * category_animation);
+
+		render::texture(category_position + WINDOW_SIDEBAR_SIZE / 2 - 11, 22, ctx->categories[i], category_color);
 	}
 }
 
-void window_context_t::tab(std::wstring_view title, const std::function<void()>& callback) {
-	tabs.push_back(title.data());
+void gui::tab(std::wstring_view title, const std::function<void()>& callback) {
+	ctx->tabs.push_back(title.data());
 
-	if (tabs.size() == current_tab + 1)
-		std::invoke(callback);
+	if (ctx->current_tab == ctx->tabs.size() - 1)
+		callback();
 }
 
-void window_context_t::category(std::wstring_view title, const std::function<void()>& callback) {
-	categories.push_back(title.data());
+void gui::category(e_texture icon, const std::function<void()>& callback) {
+	ctx->categories.push_back(icon);
 
-	if (categories.size() == tabs_selected_category(current_tab) + 1)
-		std::invoke(callback);
-}
-
-window_context_t& gui::get_window(uint32_t hash) {
-	if (windows.find(hash) == windows.end()) {
-		window_context_t ctx;
-
-		ctx.open = true;
-		ctx.dragging = false;
-
-		ctx.parent_hash = 0;
-		ctx.blocking_hash = 0;
-		ctx.current_tab = 0;
-
-		ctx.position = point_t(48);
-		ctx.size = point_t(600, 380);
-
-		windows.insert({ hash, ctx });
-		window_order.push_back(hash);
-	}
-
-	return windows[hash];
+	if (ctx->current_category(ctx->current_tab) == ctx->categories.size() - 1)
+		callback();
 }

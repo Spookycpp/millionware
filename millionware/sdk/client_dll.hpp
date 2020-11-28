@@ -8,3 +8,5 @@ class c_base_client_dll
 public:
   VIRTUAL_METHOD(client_class_t*, get_all_classes, 8, ());
 };
+
+class c_client_mode;

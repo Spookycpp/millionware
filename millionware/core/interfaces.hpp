@@ -14,6 +14,7 @@
 namespace interfaces
 {
   inline c_base_client_dll* client = nullptr;
+  inline c_client_mode* client_mode = nullptr;
   inline c_debug_overlay* debug_overlay = nullptr;
   inline c_entity_list* entity_list = nullptr;
   inline c_global_vars_base* global_vars = nullptr;

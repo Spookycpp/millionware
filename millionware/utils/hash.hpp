@@ -6,13 +6,14 @@ namespace utils
 {
   constexpr static uint32_t FNV_BASIS = 0x811C9DC5;
   constexpr static uint32_t FNV_PRIME = 0x01000193;
+  constexpr static uint32_t HASH_COMBINE_VALUE = 0x9e3779b9;
 
   constexpr uint32_t hash_fnv(const char* string, uint32_t hash = FNV_BASIS) {
-    return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[1]) * FNV_PRIME);
+    return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[0]) * FNV_PRIME);
   }
 
   constexpr uint32_t hash_fnv(const wchar_t* string, uint32_t hash = FNV_BASIS) {
-    return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[1]) * FNV_PRIME);
+    return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[0]) * FNV_PRIME);
   }
 
   template<typename T, T Value>

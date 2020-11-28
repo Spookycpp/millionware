@@ -41,6 +41,8 @@ public:
   VIRTUAL_METHOD(void, fill_faded_rectangle, 123, (int x, int y, int width, int height, int start_alpha, int end_alpha, bool horizontal), x, y, x + width, y + height, start_alpha, end_alpha, horizontal);
   VIRTUAL_METHOD(void, get_clip_rect, 146, (int& x1, int& y1, int& x2, int& y2), &x1, &y1, &x2, &y2);
   VIRTUAL_METHOD(void, set_clip_rect, 147, (int x1, int y1, int x2, int y2), x1, y1, x2, y2);
+  VIRTUAL_METHOD(void, set_alpha_multiplier, 113, (float alpha), alpha);
+  VIRTUAL_METHOD(float, get_alpha_multiplier, 114, ());
 
   void start_drawing() {
     return reinterpret_cast<void(__thiscall*)(c_vgui_surface*)>(patterns::engine_vgui_start_drawing)(this);

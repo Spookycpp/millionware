@@ -7,53 +7,64 @@
 #include <vector>
 
 #include "../sdk/vector.hpp"
+#include "../utils/render.hpp"
+
+#define HELPER_METHOD(type, name, initial_value)    \
+  inline type& name(int index) {                    \
+    if (name##_map.find(index) == name##_map.end()) \
+      name##_map[index] = initial_value;            \
+    return name##_map[index];                       \
+  }
 
 struct window_context_t
 {
-	std::stack<point_t> window_cursor_pos;
+  // basic window info
+  bool is_open;
 
-	std::vector<std::wstring> tabs;
-	std::vector<std::wstring> categories;
+  point_t position;
+  point_t min_size;
+  point_t size;
 
-	std::unordered_map<int, int> tabs_selected_category_;
-	std::unordered_map<int, float> tabs_hover_animation_;
-	std::unordered_map<int, float> category_hover_animation_;
-	std::unordered_map<uint32_t, float> element_hover_animation_;
+  // tabs and categories info
+  std::vector<std::wstring> tabs;
+  std::vector<e_texture> categories;
 
-	bool open;
-	bool dragging;
+  int current_tab;
 
-	uint32_t parent_hash;
-	uint32_t blocking_hash;
+  // tab specific info
+  std::unordered_map<int, int> current_category_map;
+  std::unordered_map<int, float> tab_animation_map;
+  std::unordered_map<int, float> tab_line_map;
+  std::unordered_map<int, float> category_animation_map;
 
-	point_t drag_start_mouse;
-	point_t drag_start_position;
+  // window interaction info
+  bool is_being_dragged;
+  bool is_being_resized;
 
-	point_t working_area_size;
-	point_t position;
-	point_t size;
+  point_t interaction_start_point;
+  point_t interaction_mouse_pos;
 
-	int current_tab;
+  // children layout info
+  bool is_calculating_layout;
 
-	int& tabs_selected_category(int key);
-	float& tabs_hover_animation(int key);
-	float& category_hover_animation(int key);
-	float& element_hover_animation(uint32_t key);
+  point_t working_area;
+  point_t cursor_pos;
+  point_t inline_cursor_pos;
 
-	point_t pop();
-
-	void push(const point_t& pos);
-	void push(int x, int y);
-
-	uint32_t do_hash(const char* string);
-	uint32_t do_hash(const wchar_t* string);
-
-	void window(std::wstring_view title, const std::function<void()>& callback);
-	void tab(std::wstring_view title, const std::function<void()>& callback);
-	void category(std::wstring_view title, const std::function<void()>& callback);
+  // helper methods
+  HELPER_METHOD(int, current_category, 0);
+  HELPER_METHOD(float, tab_animation, 0.0f);
+  HELPER_METHOD(float, tab_line, 0.0f);
+  HELPER_METHOD(float, category_animation, 0.0f);
 };
 
 namespace gui
 {
-	window_context_t& get_window(uint32_t hash);
+	void initialize();
+
+	std::shared_ptr<window_context_t> get_context();
+
+  void window(std::wstring_view title, const std::function<void()>& callback);
+  void tab(std::wstring_view title, const std::function<void()>& callback);
+  void category(e_texture icon, const std::function<void()>& callback);
 }

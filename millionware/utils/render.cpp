@@ -1,15 +1,19 @@
-#include <array>
+#define STB_IMAGE_IMPLEMENTATION
 
+#include <array>
+#include <stack>
+
+#include "../core/cheat.hpp"
 #include "../core/interfaces.hpp"
+#include "../resources/textures.hpp"
+#include "../thirdparty/stb/stb_image.h"
 #include "../thirdparty/xorstr/xorstr.hpp"
 #include "math.hpp"
 #include "render.hpp"
 
+static std::stack<std::pair<point_t, point_t>> clip_rect_stack;
 static std::array<vgui_font_t, static_cast<int>(e_font::MAX)> fonts;
 static std::array<vgui_texture_t, static_cast<int>(e_texture::MAX)> textures;
-
-static int screen_width = 0;
-static int screen_height = 0;
 
 constexpr vgui_font_t& get_font(e_font font) {
 	return fonts[static_cast<int>(font)];
@@ -17,6 +21,16 @@ constexpr vgui_font_t& get_font(e_font font) {
 
 constexpr vgui_texture_t& get_texture(e_texture texture) {
 	return textures[static_cast<int>(texture)];
+}
+
+inline void update_texture_from_png(e_texture texture, const uint8_t* data, int size, int width, int height) {
+	int image_width, image_height, channels;
+
+	const auto image_data = stbi_load_from_memory(data, size, &image_width, &image_height, &channels, 4);
+
+	interfaces::vgui_surface->update_texture(get_texture(texture), image_data, image_width, image_height);
+
+	stbi_image_free(image_data);
 }
 
 std::vector<vertex_t> generate_rounded_rect_vertices(int x, int y, int width, int height, int radius, int corners) {
@@ -64,39 +78,62 @@ void render::initialize() {
 	constexpr uint8_t white_pixel[] = { 255, 255, 255, 255 };
 
 	get_texture(e_texture::WHITE) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::MW_LOGO_32) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::QUESTION_MARK_22) = interfaces::vgui_surface->create_texture(true);
 
 	interfaces::vgui_surface->update_texture(get_texture(e_texture::WHITE), white_pixel, 1, 1);
+
+	update_texture_from_png(e_texture::MW_LOGO_32, resources::textures::MW_LOGO_32, sizeof resources::textures::MW_LOGO_32, 32, 32);
+	update_texture_from_png(e_texture::QUESTION_MARK_22, resources::textures::QUESTION_MARK_22, sizeof resources::textures::QUESTION_MARK_22, 22, 22);
 
 	refresh_fonts();
 }
 
-void render::shutdown() {
-	interfaces::vgui_surface->delete_texture(get_texture(e_texture::WHITE));
-}
-
 void render::refresh_fonts() {
-	get_font(e_font::SEGOE_UI_14) = interfaces::vgui_surface->create_font();
-	get_font(e_font::SEGOE_UI_16) = interfaces::vgui_surface->create_font();
+	get_font(e_font::UI_REGULAR) = interfaces::vgui_surface->create_font();
 
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_14), XORSTR("Segoe UI"), 14, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::SEGOE_UI_16), XORSTR("Segoe UI"), 16, 500, 0, 0, FONT_FLAG_ANTI_ALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_REGULAR), XORSTR("Segoe UI"), 16, 500, 0, 0, FONT_FLAG_ANTIALIAS);
 
-	interfaces::engine_client->get_screen_size(screen_width, screen_height);
+	interfaces::engine_client->get_screen_size(cheat::screen_size.x, cheat::screen_size.y);
+
+	reset_clip();
 }
 
 void render::reset_clip() {
-	set_clip(0, 0, screen_width, screen_height);
+	while (!clip_rect_stack.empty())
+		clip_rect_stack.pop();
 
+	interfaces::vgui_surface->clipping_enabled = true;
+	interfaces::vgui_surface->set_clip_rect(0, 0, cheat::screen_size.x, cheat::screen_size.y);
 	interfaces::vgui_surface->clipping_enabled = false;
 }
 
-void render::set_clip(int x1, int y1, int x2, int y2) {
+void render::pop_clip() {
+	if (!clip_rect_stack.empty())
+		clip_rect_stack.pop();
+
+	if (!clip_rect_stack.empty()) {
+		const auto& [min, max] = clip_rect_stack.top();
+
+		interfaces::vgui_surface->clipping_enabled = true;
+		interfaces::vgui_surface->set_clip_rect(min.x, min.y, max.x, max.y);
+	}
+	else {
+		interfaces::vgui_surface->clipping_enabled = true;
+		interfaces::vgui_surface->set_clip_rect(0, 0, cheat::screen_size.x, cheat::screen_size.y);
+		interfaces::vgui_surface->clipping_enabled = false;
+	}
+}
+
+void render::push_clip(int x1, int y1, int x2, int y2) {
+	clip_rect_stack.push(std::make_pair(point_t(x1, y1), point_t(x2, y2)));
+
 	interfaces::vgui_surface->clipping_enabled = true;
 	interfaces::vgui_surface->set_clip_rect(x1, y1, x2, y2);
 }
 
-void render::set_clip(const point_t& position, const point_t& size) {
-	set_clip(position.x, position.y, position.x + size.x, position.y + size.y);
+void render::push_clip(const point_t& position, const point_t& size) {
+	push_clip(position.x, position.y, position.x + size.x, position.y + size.y);
 }
 
 void render::line(int x1, int y1, int x2, int y2, const color_t& color) {

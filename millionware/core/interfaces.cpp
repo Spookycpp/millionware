@@ -71,10 +71,10 @@ void interfaces::initialize() {
 #endif
 
   client = reinterpret_cast<c_base_client_dll*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient018")));
+  client_mode = **reinterpret_cast<c_client_mode***>(reinterpret_cast<uintptr_t**>(client)[0][10] + 5);
   debug_overlay = reinterpret_cast<c_debug_overlay*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VDebugOverlay004")));
   entity_list = reinterpret_cast<c_entity_list*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClientEntityList003")));
-  // global_vars = reinterpret_cast<c_global_vars_base*>(*reinterpret_cast<uintptr_t*>(patterns::global_vars_base + 1));
-  global_vars = **reinterpret_cast<c_global_vars_base***>((*reinterpret_cast<uintptr_t**>(client))[11] + 10);
+  global_vars = **reinterpret_cast<c_global_vars_base***>(reinterpret_cast<uintptr_t**>(client)[0][11] + 10);
   engine_client = reinterpret_cast<c_engine_client*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014")));
   engine_vgui = reinterpret_cast<c_engine_vgui*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineVGui001")));
   vgui_surface = reinterpret_cast<c_vgui_surface*>(get_interface(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("VGUI_Surface031")));

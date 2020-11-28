@@ -16,6 +16,9 @@
     <ProjectGuid>{0d355c37-506e-4887-b719-361fff5b7340}</ProjectGuid>
     <RootNamespace>millionware</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <VcpkgConfiguration Condition="'$(Configuration)'=='debug'">Debug</VcpkgConfiguration>
+    <VcpkgConfiguration Condition="'$(Configuration)'=='stable'">Release</VcpkgConfiguration>
+    <VcpkgTriplet Condition="'$(Platform)'=='Win32'">x86-windows-static</VcpkgTriplet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
@@ -94,9 +97,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\cheat.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
+    <ClCompile Include="features\visuals\chams.cpp" />
+    <ClCompile Include="features\visuals\esp.cpp" />
     <ClCompile Include="gui\gui.cpp" />
+    <ClCompile Include="hooks\create_move.cpp" />
+    <ClCompile Include="hooks\frame_stage_notify.cpp" />
+    <ClCompile Include="hooks\level_init_post_entity.cpp" />
+    <ClCompile Include="hooks\level_shutdown_pre_entity.cpp" />
     <ClCompile Include="hooks\lock_cursor.cpp" />
     <ClCompile Include="menu\menu.cpp" />
     <ClCompile Include="core\netvars.cpp" />
@@ -116,12 +126,16 @@
     <ClCompile Include="utils\render.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core\cheat.hpp" />
     <ClInclude Include="core\hooks.hpp" />
     <ClInclude Include="core\interfaces.hpp" />
+    <ClInclude Include="features\visuals\chams.hpp" />
+    <ClInclude Include="features\visuals\esp.hpp" />
     <ClInclude Include="gui\gui.hpp" />
     <ClInclude Include="menu\menu.hpp" />
     <ClInclude Include="core\netvars.hpp" />
     <ClInclude Include="core\patterns.hpp" />
+    <ClInclude Include="resources\textures.hpp" />
     <ClInclude Include="sdk\base_handle.hpp" />
     <ClInclude Include="sdk\client_class.hpp" />
     <ClInclude Include="sdk\client_dll.hpp" />
@@ -138,6 +152,7 @@
     <ClInclude Include="sdk\player_info.hpp" />
     <ClInclude Include="sdk\recv_props.hpp" />
     <ClInclude Include="sdk\typedefs.hpp" />
+    <ClInclude Include="sdk\user_cmd.hpp" />
     <ClInclude Include="sdk\vector.hpp" />
     <ClInclude Include="sdk\vertex.hpp" />
     <ClInclude Include="sdk\vgui.hpp" />
@@ -151,6 +166,7 @@
     <ClInclude Include="thirdparty\minhook\hde\table64.h" />
     <ClInclude Include="thirdparty\minhook\minhook.h" />
     <ClInclude Include="thirdparty\minhook\trampoline.h" />
+    <ClInclude Include="thirdparty\stb\stb_image.h" />
     <ClInclude Include="thirdparty\xorstr\xorstr.hpp" />
     <ClInclude Include="utils\error.hpp" />
     <ClInclude Include="utils\hash.hpp" />

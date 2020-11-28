@@ -1,15 +1,15 @@
 #include <mutex>
 
+#include "../core/cheat.hpp"
 #include "../core/hooks.hpp"
 #include "../core/interfaces.hpp"
 #include "../menu/menu.hpp"
-#include "../thirdparty/xorstr/xorstr.hpp"
 #include "../utils/input.hpp"
 #include "../utils/render.hpp"
 
-std::once_flag initialize_renderer;
+static std::once_flag initialize_renderer;
 
-void __fastcall engine_paint_hook(uintptr_t ecx, uintptr_t edx, int mode) {
+void __fastcall hooks::engine_paint_hook(uintptr_t ecx, uintptr_t edx, int mode) {
 	const auto _ = std::lock_guard(hooks::engine_paint.call_mutex);
 
 	std::call_once(initialize_renderer, render::initialize);

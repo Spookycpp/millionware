@@ -7,8 +7,7 @@
 
 enum class e_font
 {
-  SEGOE_UI_14,
-  SEGOE_UI_16,
+  UI_REGULAR,
 
   MAX,
 };
@@ -16,6 +15,9 @@ enum class e_font
 enum class e_texture
 {
   WHITE,
+
+  MW_LOGO_32,
+  QUESTION_MARK_22,
 
   MAX,
 };
@@ -40,13 +42,13 @@ enum e_corner
 namespace render
 {
   void initialize();
-  void shutdown();
-
   void refresh_fonts();
 
   void reset_clip();
-  void set_clip(int x1, int y1, int x2, int y2);
-  void set_clip(const point_t& position, const point_t& size);
+  void pop_clip();
+
+  void push_clip(int x1, int y1, int x2, int y2);
+  void push_clip(const point_t& position, const point_t& size);
 
   void line(int x1, int y1, int x2, int y2, const color_t& color);
   void rect(int x, int y, int width, int height, const color_t& color);

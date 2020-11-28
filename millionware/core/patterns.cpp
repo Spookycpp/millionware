@@ -20,7 +20,6 @@ struct pattern_entry_t
 };
 
 __declspec(dllexport) pattern_entry_t g_patterns[] = {
-  {"client.dll", "A1 ? ? ? ? 76 61 F3 0F 10 40 10 0F 2F C1", 0, 0, 0},
   {"vguimatsurface.dll", "55 8B EC 83 E4 C0 83 EC 38", 0, 0, 0},
   {"vguimatsurface.dll", "8B 0D ? ? ? ? 56 C6 05", 0, 0, 0},
   {"client.dll", "56 8B F1 85 F6 74 31", 0, 0, 0},
@@ -91,7 +90,6 @@ void patterns::initialize() {
   }
 #endif
 
-  global_vars_base = get_pattern(HASH_FNV_CT("client.dll"), HASH_FNV_CT("A1 ? ? ? ? 76 61 F3 0F 10 40 10 0F 2F C1"));
   engine_vgui_start_drawing = get_pattern(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("55 8B EC 83 E4 C0 83 EC 38"));
   engine_vgui_finish_drawing = get_pattern(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("8B 0D ? ? ? ? 56 C6 05"));
   player_has_bomb = get_pattern(HASH_FNV_CT("client.dll"), HASH_FNV_CT("56 8B F1 85 F6 74 31"));
