@@ -145,11 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="inject.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="misc_utils.hpp" />
-    <ClInclude Include="win_utils.hpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
