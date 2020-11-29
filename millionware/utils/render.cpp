@@ -26,6 +26,9 @@ constexpr vgui_texture_t& get_texture(e_texture texture) {
 inline void update_texture_from_png(e_texture texture, const uint8_t* data, int size, int width, int height) {
 	int image_width, image_height, channels;
 
+	stbi_set_flip_vertically_on_load(false);
+	stbi_set_flip_vertically_on_load_thread(false);
+
 	const auto image_data = stbi_load_from_memory(data, size, &image_width, &image_height, &channels, 4);
 
 	interfaces::vgui_surface->update_texture(get_texture(texture), image_data, image_width, image_height);
@@ -80,19 +83,31 @@ void render::initialize() {
 	get_texture(e_texture::WHITE) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::MW_LOGO_32) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::QUESTION_MARK_22) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::LEGIT_22) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::VISUALS_22) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::MISC_22) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::CHANGERS_22) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::PROFILE_22) = interfaces::vgui_surface->create_texture(true);
 
 	interfaces::vgui_surface->update_texture(get_texture(e_texture::WHITE), white_pixel, 1, 1);
 
 	update_texture_from_png(e_texture::MW_LOGO_32, resources::textures::MW_LOGO_32, sizeof resources::textures::MW_LOGO_32, 32, 32);
 	update_texture_from_png(e_texture::QUESTION_MARK_22, resources::textures::QUESTION_MARK_22, sizeof resources::textures::QUESTION_MARK_22, 22, 22);
+	update_texture_from_png(e_texture::LEGIT_22, resources::textures::LEGIT_22, sizeof resources::textures::LEGIT_22, 22, 22);
+	update_texture_from_png(e_texture::VISUALS_22, resources::textures::VISUALS_22, sizeof resources::textures::VISUALS_22, 22, 22);
+	update_texture_from_png(e_texture::MISC_22, resources::textures::MISC_22, sizeof resources::textures::MISC_22, 22, 22);
+	update_texture_from_png(e_texture::CHANGERS_22, resources::textures::CHANGERS_22, sizeof resources::textures::CHANGERS_22, 22, 22);
+	update_texture_from_png(e_texture::PROFILE_22, resources::textures::PROFILE_22, sizeof resources::textures::PROFILE_22, 22, 22);
 
 	refresh_fonts();
 }
 
 void render::refresh_fonts() {
 	get_font(e_font::UI_REGULAR) = interfaces::vgui_surface->create_font();
+	get_font(e_font::UI_GROUP) = interfaces::vgui_surface->create_font();
 
 	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_REGULAR), XORSTR("Segoe UI"), 16, 500, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_GROUP), XORSTR("Segoe UI"), 14, 700, 0, 0, FONT_FLAG_ANTIALIAS);
 
 	interfaces::engine_client->get_screen_size(cheat::screen_size.x, cheat::screen_size.y);
 

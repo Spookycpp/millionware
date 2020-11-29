@@ -26,16 +26,16 @@ struct window_context_t
   point_t size;
 
   // tabs and categories info
-  std::vector<std::wstring> tabs;
-  std::vector<e_texture> categories;
+  std::vector<e_texture> tabs;
+  std::vector<std::wstring> categories;
 
   int current_tab;
 
   // tab specific info
   std::unordered_map<int, int> current_category_map;
   std::unordered_map<int, float> tab_animation_map;
-  std::unordered_map<int, float> tab_line_map;
   std::unordered_map<int, float> category_animation_map;
+  std::unordered_map<int, float> category_line_map;
 
   // window interaction info
   bool is_being_dragged;
@@ -51,11 +51,20 @@ struct window_context_t
   point_t cursor_pos;
   point_t inline_cursor_pos;
 
+  uint32_t parent_hash;
+  uint32_t blocking_hash;
+
+  // group box positioning info
+  bool group_box_flip;
+
+  int group_box_left_offset;
+  int group_box_right_offset;
+
   // helper methods
   HELPER_METHOD(int, current_category, 0);
   HELPER_METHOD(float, tab_animation, 0.0f);
-  HELPER_METHOD(float, tab_line, 0.0f);
   HELPER_METHOD(float, category_animation, 0.0f);
+  HELPER_METHOD(float, category_line, 0.0f);
 };
 
 namespace gui
@@ -65,6 +74,7 @@ namespace gui
 	std::shared_ptr<window_context_t> get_context();
 
   void window(std::wstring_view title, const std::function<void()>& callback);
-  void tab(std::wstring_view title, const std::function<void()>& callback);
-  void category(e_texture icon, const std::function<void()>& callback);
+  void tab(e_texture icon, const std::function<void()>& callback);
+  void category(std::wstring_view title, const std::function<void()>& callback);
+  void group(std::wstring_view title, const std::function<void()>& callback);
 }

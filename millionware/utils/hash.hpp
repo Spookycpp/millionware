@@ -6,14 +6,21 @@ namespace utils
 {
   constexpr static uint32_t FNV_BASIS = 0x811C9DC5;
   constexpr static uint32_t FNV_PRIME = 0x01000193;
-  constexpr static uint32_t HASH_COMBINE_VALUE = 0x9e3779b9;
 
   constexpr uint32_t hash_fnv(const char* string, uint32_t hash = FNV_BASIS) {
     return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[0]) * FNV_PRIME);
   }
 
+  constexpr uint32_t hash_fnv(const char* data, int data_size, uint32_t hash = FNV_BASIS) {
+    return data_size == 0 ? hash : hash_fnv(&data[1], data_size - 1, (hash ^ data[0]) * FNV_PRIME);
+  }
+
   constexpr uint32_t hash_fnv(const wchar_t* string, uint32_t hash = FNV_BASIS) {
     return string[0] == 0 ? hash : hash_fnv(&string[1], (hash ^ string[0]) * FNV_PRIME);
+  }
+
+  constexpr uint32_t hash_fnv(uint32_t other_hash, uint32_t hash = FNV_BASIS) {
+    return hash_fnv(reinterpret_cast<const char*>(&other_hash), sizeof uint32_t, hash);
   }
 
   template<typename T, T Value>
@@ -27,5 +34,5 @@ namespace utils
 }
 
 #define FORCE_CT(value) (static_cast<decltype(value)>(utils::ct_wrapper<decltype(value), value>::VALUE))
-#define HASH_FNV(string) utils::hash_fnv(string)
-#define HASH_FNV_CT(string) FORCE_CT(HASH_FNV(string))
+#define HASH_FNV(...) utils::hash_fnv(__VA_ARGS__)
+#define HASH_FNV_CT(...) FORCE_CT(HASH_FNV(__VA_ARGS__))

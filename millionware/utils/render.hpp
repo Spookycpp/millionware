@@ -8,6 +8,7 @@
 enum class e_font
 {
   UI_REGULAR,
+  UI_GROUP,
 
   MAX,
 };
@@ -18,6 +19,11 @@ enum class e_texture
 
   MW_LOGO_32,
   QUESTION_MARK_22,
+  LEGIT_22,
+  VISUALS_22,
+  MISC_22,
+  CHANGERS_22,
+  PROFILE_22,
 
   MAX,
 };
