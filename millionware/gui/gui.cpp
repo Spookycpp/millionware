@@ -130,10 +130,10 @@ void gui::window(std::wstring_view title, const std::function<void()>& callback)
 	const auto title_size = render::measure_text(e_font::UI_REGULAR, title);
 
 	// draw window frame
-	render::fill_rect(ctx->position - 1, ctx->size + 2, color_t(64));
-	render::fill_rect(ctx->position, ctx->size, color_t(32));
-	render::fill_rect(ctx->position.x, ctx->position.y, WINDOW_SIDEBAR_SIZE, ctx->size.y, color_t(46));
-	render::fill_rect(ctx->position.x, ctx->position.y, WINDOW_SIDEBAR_SIZE, WINDOW_SIDEBAR_SIZE, color_t(64));
+	render::fill_rect_rounded(ctx->position - 1, ctx->size + 2, 3, CORNER_ALL, color_t(64));
+	render::fill_rect_rounded(ctx->position, ctx->size, 3, CORNER_ALL, color_t(32));
+	render::fill_rect_rounded(ctx->position.x, ctx->position.y, WINDOW_SIDEBAR_SIZE, ctx->size.y, 3, CORNER_LEFT, color_t(46));
+	render::fill_rect_rounded(ctx->position.x, ctx->position.y, WINDOW_SIDEBAR_SIZE, WINDOW_SIDEBAR_SIZE, 3, CORNER_TOP_LEFT, color_t(64));
 
 	render::texture(ctx->position + WINDOW_SIDEBAR_SIZE / 2 - 16, 32, e_texture::MW_LOGO_32, color_t(240));
 
@@ -264,8 +264,8 @@ void gui::group(std::wstring_view title, const std::function<void()>& callback) 
 
 	render::text(box_position.x + 4, box_position.y, e_font::UI_GROUP, color_t(180), title);
 
-	render::fill_rect(background_pos - 1, background_size + 2, color_t(58));
-	render::fill_rect(background_pos, background_size, color_t(46));
+	render::fill_rect_rounded(background_pos - 1, background_size + 2, 3, CORNER_ALL, color_t(58));
+	render::fill_rect_rounded(background_pos, background_size, 3, CORNER_ALL, color_t(46));
 
 	ctx->cursor_pos = background_pos + WINDOW_CONTENT_PADDING;
 
@@ -317,9 +317,9 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 		const auto hover_color = color_t(12 + static_cast<int>(24.0f * hover_animation));
 		const auto toggle_color = accent_color.adjust_alpha(static_cast<int>(255.0f * toggle_animation));
 
-		render::fill_rect(cursor_pos - 1, TOGGLE_SIZE + 2, color_t(38));
-		render::fill_rect(cursor_pos, TOGGLE_SIZE, hover_color);
-		render::fill_rect(cursor_pos, TOGGLE_SIZE, toggle_color);
+		render::fill_rect_rounded(cursor_pos - 1, TOGGLE_SIZE + 2, 3, CORNER_ALL, color_t(38));
+		render::fill_rect_rounded(cursor_pos, TOGGLE_SIZE, 3, CORNER_ALL, hover_color);
+		render::fill_rect_rounded(cursor_pos, TOGGLE_SIZE, 3, CORNER_ALL, toggle_color);
 
 		if (config_value)
 			render::texture(cursor_pos + TOGGLE_SIZE / 2 - 6, 12, e_texture::CHECKMARK_12, color_t(255, toggle_color.a));
@@ -370,11 +370,15 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 		const auto hover_animation = handle_animation(ctx->element_hover_animation(this_hash), target_hover_animation, 0.06f);
 		const auto hover_color = color_t(200, static_cast<int>(50.0f * hover_animation));
 
-		render::fill_rect(slider_position - 1, slider_size + 2, color_t(38));
-		render::fill_rect(slider_position, slider_size, color_t(20));
+		render::fill_rect_rounded(slider_position - 1, slider_size + 2, 3, CORNER_ALL, color_t(38));
+		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, color_t(20));
 
-		render::fill_rect(slider_position, point_t(slider_fill_width, slider_size.y), config::get<color_t>(HASH_FNV_CT("ui.accent")).adjust_alpha(255));
-		render::fill_rect(slider_position, point_t(slider_fill_width, slider_size.y), hover_color);
+		render::push_clip(slider_position, point_t(slider_fill_width, slider_size.y));
+
+		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, config::get<color_t>(HASH_FNV_CT("ui.accent")).adjust_alpha(255));
+		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, hover_color);
+
+		render::pop_clip();
 
 		render::text(ctx->cursor_pos, e_font::UI_REGULAR, color_t(180), title);
 		render::text(ctx->cursor_pos.x + slider_size.x - value_label_size.x, ctx->cursor_pos.y, e_font::UI_REGULAR, color_t(180), value_label);
