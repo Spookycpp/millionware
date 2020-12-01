@@ -13,11 +13,11 @@
 #include "gui.hpp"
 
 constexpr auto WINDOW_SIDEBAR_SIZE = 44;
-constexpr auto WINDOW_CONTENT_PADDING = 8;
+constexpr auto WINDOW_CONTENT_PADDING = 7;
 constexpr auto WINDOW_TABS_HEIGHT = 28;
 
 constexpr auto TOGGLE_SIZE = 12;
-constexpr auto SLIDER_SIZE = 7;
+constexpr auto SLIDER_SIZE = 5;
 
 static std::shared_ptr<window_context_t> ctx = nullptr;
 
@@ -346,7 +346,7 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 		auto& config_value = config::get<T>(config_item);
 
 		const auto slider_progress = map_number<float>(static_cast<float>(config_value), static_cast<float>(min_value), static_cast<float>(max_value), 0.0f, 1.0f);
-		const auto slider_fill_width = std::clamp(static_cast<int>(static_cast<float>(slider_size.x) * slider_progress), 4, slider_size.x);
+		const auto slider_fill_width = std::clamp(static_cast<int>(static_cast<float>(slider_size.x) * slider_progress), 0, slider_size.x);
 		const auto hovered_mouse = input::is_in_bounds(slider_position, slider_position + slider_size);
 		const auto hovered = !ctx->is_being_dragged && !ctx->is_being_resized && (ctx->blocking_hash == 0 || ctx->blocking_hash == this_hash) && hovered_mouse;
 
