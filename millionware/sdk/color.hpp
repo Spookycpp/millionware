@@ -18,10 +18,6 @@ struct color_t
     : r(r), g(g), b(b), a(a) {
   }
 
-  constexpr uint32_t to_d3d_color() const {
-    return D3DCOLOR_RGBA(r, g, b, a);
-  }
-
   constexpr color_t adjust_alpha(const int new_alpha) const {
     return color_t(r, g, b, new_alpha);
   }

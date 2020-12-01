@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <Windows.h>
 
-#include "../thirdparty/xorstr/xorstr.hpp"
 #include "error.hpp"
+#include "xorstr.hpp"
 
 void utils::error_and_exit(e_error_code error) {
 	char buffer[128];

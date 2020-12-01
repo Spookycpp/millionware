@@ -3,9 +3,9 @@
 #include <string>
 #include <Windows.h>
 
-#include "../thirdparty/xorstr/xorstr.hpp"
 #include "../utils/error.hpp"
 #include "../utils/hash.hpp"
+#include "../utils/xorstr.hpp"
 #include "patterns.hpp"
 
 struct pattern_entry_t

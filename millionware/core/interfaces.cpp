@@ -4,9 +4,9 @@
 #include <Windows.h>
 #include <winternl.h>
 
-#include "../thirdparty/xorstr/xorstr.hpp"
 #include "../utils/error.hpp"
 #include "../utils/hash.hpp"
+#include "../utils/xorstr.hpp"
 #include "interfaces.hpp"
 
 struct interface_entry_t

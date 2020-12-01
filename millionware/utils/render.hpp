@@ -24,6 +24,7 @@ enum class e_texture
   MISC_22,
   CHANGERS_22,
   PROFILE_22,
+  CHECKMARK_12,
 
   MAX,
 };

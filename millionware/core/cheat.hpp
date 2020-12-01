@@ -15,7 +15,6 @@ namespace cheat
 
 	std::string_view get_username();
 	std::string_view get_access_token();
-	std::string_view get_build_name();
 
 	// global stuff
 	inline point_t screen_size;

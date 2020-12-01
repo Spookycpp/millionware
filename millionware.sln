@@ -12,36 +12,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "injector", "injector\inject
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		debug|x64 = debug|x64
 		debug|x86 = debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-		stable|x64 = stable|x64
 		stable|x86 = stable|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0D355C37-506E-4887-B719-361FFF5B7340}.debug|x64.ActiveCfg = debug|Win32
 		{0D355C37-506E-4887-B719-361FFF5B7340}.debug|x86.ActiveCfg = debug|Win32
 		{0D355C37-506E-4887-B719-361FFF5B7340}.debug|x86.Build.0 = debug|Win32
-		{0D355C37-506E-4887-B719-361FFF5B7340}.Release|x64.ActiveCfg = stable|Win32
-		{0D355C37-506E-4887-B719-361FFF5B7340}.Release|x64.Build.0 = stable|Win32
-		{0D355C37-506E-4887-B719-361FFF5B7340}.Release|x86.ActiveCfg = stable|Win32
-		{0D355C37-506E-4887-B719-361FFF5B7340}.Release|x86.Build.0 = stable|Win32
-		{0D355C37-506E-4887-B719-361FFF5B7340}.stable|x64.ActiveCfg = stable|Win32
 		{0D355C37-506E-4887-B719-361FFF5B7340}.stable|x86.ActiveCfg = stable|Win32
 		{0D355C37-506E-4887-B719-361FFF5B7340}.stable|x86.Build.0 = stable|Win32
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.debug|x64.ActiveCfg = Debug|x64
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.debug|x64.Build.0 = Debug|x64
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.debug|x86.ActiveCfg = Debug|Win32
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.debug|x86.Build.0 = Debug|Win32
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.Release|x64.ActiveCfg = Release|x64
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.Release|x64.Build.0 = Release|x64
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.Release|x86.ActiveCfg = Release|Win32
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.Release|x86.Build.0 = Release|Win32
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.stable|x64.ActiveCfg = Debug|x64
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.stable|x64.Build.0 = Debug|x64
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.stable|x86.ActiveCfg = Debug|Win32
-		{405AD3CC-0C52-40C5-938B-81555208F8C5}.stable|x86.Build.0 = Debug|Win32
+		{405AD3CC-0C52-40C5-938B-81555208F8C5}.debug|x86.ActiveCfg = debug|Win32
+		{405AD3CC-0C52-40C5-938B-81555208F8C5}.debug|x86.Build.0 = debug|Win32
+		{405AD3CC-0C52-40C5-938B-81555208F8C5}.stable|x86.ActiveCfg = stable|Win32
+		{405AD3CC-0C52-40C5-938B-81555208F8C5}.stable|x86.Build.0 = stable|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

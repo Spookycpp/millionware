@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 
+#include "core/config.hpp"
 #include "core/hooks.hpp"
 #include "core/interfaces.hpp"
 #include "core/netvars.hpp"
@@ -11,9 +12,10 @@
 #include "menu/menu.hpp"
 #include "utils/render.hpp"
 
-unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
+unsigned long __stdcall initial_thread(LPVOID dll_instance) {
   using namespace std::chrono_literals;
 
+  config::initialize();
   patterns::initialize();
   interfaces::initialize();
   netvars::initialize();
@@ -32,7 +34,7 @@ unsigned long __stdcall initial_thread(const LPVOID dll_instance) {
   return 0ul;
 }
 
-void handle_process_attach(const LPVOID dll_instance) {
+void handle_process_attach(LPVOID dll_instance) {
 #ifdef _DEBUG
   const auto thread_handle = CreateThread(nullptr, 0, initial_thread, dll_instance, 0, nullptr);
 
@@ -44,7 +46,7 @@ void handle_process_attach(const LPVOID dll_instance) {
 }
 
 // ReSharper disable once CppInconsistentNaming
-int __stdcall DllMain(const HINSTANCE dll_instance, const UINT call_reason, const LPVOID reserved) {
+int __stdcall DllMain(HINSTANCE dll_instance, UINT call_reason, LPVOID reserved) {
   if (call_reason == DLL_PROCESS_ATTACH)
     handle_process_attach(dll_instance);
 

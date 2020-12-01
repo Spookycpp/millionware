@@ -1,8 +1,7 @@
+#include <MinHook.h>
 #include <stdio.h>
 #include <Windows.h>
 
-#include "../thirdparty/minhook/minhook.h"
-#include "../thirdparty/xorstr/xorstr.hpp"
 #include "../utils/error.hpp"
 #include "../utils/hash.hpp"
 #include "cheat.hpp"

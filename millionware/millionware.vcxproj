@@ -18,7 +18,7 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <VcpkgConfiguration Condition="'$(Configuration)'=='debug'">Debug</VcpkgConfiguration>
     <VcpkgConfiguration Condition="'$(Configuration)'=='stable'">Release</VcpkgConfiguration>
-    <VcpkgTriplet Condition="'$(Platform)'=='Win32'">x86-windows-static</VcpkgTriplet>
+    <VcpkgTriplet Condition="'$(Platform)'=='Win32'">x86-windows-static-md</VcpkgTriplet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
@@ -98,6 +98,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\cheat.cpp" />
+    <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
     <ClCompile Include="features\aimbot\aimbot.cpp" />
@@ -117,11 +118,6 @@
     <ClCompile Include="hooks\engine_paint.cpp" />
     <ClCompile Include="hooks\screen_size_changed.cpp" />
     <ClCompile Include="sdk\sdk.cpp" />
-    <ClCompile Include="thirdparty\minhook\buffer.c" />
-    <ClCompile Include="thirdparty\minhook\hde\hde32.c" />
-    <ClCompile Include="thirdparty\minhook\hde\hde64.c" />
-    <ClCompile Include="thirdparty\minhook\hook.c" />
-    <ClCompile Include="thirdparty\minhook\trampoline.c" />
     <ClCompile Include="utils\error.cpp" />
     <ClCompile Include="utils\input.cpp" />
     <ClCompile Include="utils\math.cpp" />
@@ -129,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\cheat.hpp" />
+    <ClInclude Include="core\config.hpp" />
     <ClInclude Include="core\hooks.hpp" />
     <ClInclude Include="core\interfaces.hpp" />
     <ClInclude Include="features\aimbot\aimbot.hpp" />
@@ -162,16 +159,7 @@
     <ClInclude Include="sdk\vgui.hpp" />
     <ClInclude Include="sdk\debug_overlay.hpp" />
     <ClInclude Include="sdk\input_system.hpp" />
-    <ClInclude Include="thirdparty\minhook\buffer.h" />
-    <ClInclude Include="thirdparty\minhook\hde\hde32.h" />
-    <ClInclude Include="thirdparty\minhook\hde\hde64.h" />
-    <ClInclude Include="thirdparty\minhook\hde\pstdint.h" />
-    <ClInclude Include="thirdparty\minhook\hde\table32.h" />
-    <ClInclude Include="thirdparty\minhook\hde\table64.h" />
-    <ClInclude Include="thirdparty\minhook\minhook.h" />
-    <ClInclude Include="thirdparty\minhook\trampoline.h" />
-    <ClInclude Include="thirdparty\stb\stb_image.h" />
-    <ClInclude Include="thirdparty\xorstr\xorstr.hpp" />
+    <ClInclude Include="utils\xorstr.hpp" />
     <ClInclude Include="utils\error.hpp" />
     <ClInclude Include="utils\hash.hpp" />
     <ClInclude Include="utils\input.hpp" />

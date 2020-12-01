@@ -1,26 +1,45 @@
+#include "../core/config.hpp"
 #include "../core/interfaces.hpp"
 #include "../gui/gui.hpp"
-#include "../thirdparty/xorstr/xorstr.hpp"
 #include "../utils/hash.hpp"
+#include "../utils/xorstr.hpp"
 #include "menu.hpp"
 
 void menu::frame() {
 	gui::window(XORSTR(L"millionware"), []() {
 		gui::tab(e_texture::LEGIT_22, []() {
-			const auto category_cb = []() {
-				gui::group(XORSTR(L"Aimbot"), []() {});
-				gui::group(XORSTR(L"Triggerbot"), []() {});
-				gui::group(XORSTR(L"Target selection"), []() {});
-				gui::group(XORSTR(L"Backtracking"), []() {});
+			const auto category_cb = [](uint32_t weapon_hash) {
+				return [weapon_hash]() {
+					gui::group(XORSTR(L"Aimbot"), [weapon_hash]() {
+						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.aimbot.enable")));
+						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.aimbot.slider1")), 0, 100);
+						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.aimbot.slider2")), 0.0f, 45.0f);
+					});
+					gui::group(XORSTR(L"Triggerbot"), [weapon_hash]() {
+						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.trigger.enable")));
+						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.trigger.slider1")), 0, 100);
+						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.trigger.slider2")), 0.0f, 45.0f);
+					});
+					gui::group(XORSTR(L"Target selection"), [weapon_hash]() {
+						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.target.enable")));
+						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.target.slider1")), 0, 100);
+						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.target.slider2")), 0.0f, 45.0f);
+					});
+					gui::group(XORSTR(L"Backtracking"), [weapon_hash]() {
+						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.backtrack.enable")));
+						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.backtrack.slider1")), 0, 100);
+						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.backtrack.slider2")), 0.0f, 45.0f);
+					});
+				};
 			};
 
-			gui::category(XORSTR(L"Pistols"), category_cb);
-			gui::category(XORSTR(L"Shotguns"), category_cb);
-			gui::category(XORSTR(L"SMG"), category_cb);
-			gui::category(XORSTR(L"Rifles"), category_cb);
-			gui::category(XORSTR(L"AWP"), category_cb);
-			gui::category(XORSTR(L"Scout"), category_cb);
-			gui::category(XORSTR(L"Auto snipers"), category_cb);
+			gui::category(XORSTR(L"Pistols"), category_cb(HASH_FNV_CT("pistols")));
+			gui::category(XORSTR(L"Shotguns"), category_cb(HASH_FNV_CT("shotguns")));
+			gui::category(XORSTR(L"SMG"), category_cb(HASH_FNV_CT("smg")));
+			gui::category(XORSTR(L"Rifles"), category_cb(HASH_FNV_CT("rifles")));
+			gui::category(XORSTR(L"AWP"), category_cb(HASH_FNV_CT("awp")));
+			gui::category(XORSTR(L"Scout"), category_cb(HASH_FNV_CT("scout")));
+			gui::category(XORSTR(L"Auto snipers"), category_cb(HASH_FNV_CT("auto")));
 		});
 		gui::tab(e_texture::VISUALS_22, []() {
 			const auto player_category_cb = []() {
