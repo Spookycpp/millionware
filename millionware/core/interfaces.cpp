@@ -26,6 +26,7 @@ __declspec(dllexport) interface_entry_t g_interfaces[] = {
   {"client.dll", "VClientEntityList003", 0, 0, 0},
   {"engine.dll", "VEngineClient014", 0, 0, 0},
   {"engine.dll", "VEngineVGui001", 0, 0, 0},
+  {"engine.dll", "IEngineSoundClient003", 0, 0, 0},
   {"vguimatsurface.dll", "VGUI_Surface031", 0, 0, 0},
   {"inputsystem.dll", "InputSystemVersion001", 0, 0, 0},
   {"client.dll", "GameMovement001", 0, 0, 0},
@@ -77,6 +78,7 @@ void interfaces::initialize() {
   global_vars = **reinterpret_cast<c_global_vars_base***>(reinterpret_cast<uintptr_t**>(client)[0][11] + 10);
   engine_client = reinterpret_cast<c_engine_client*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014")));
   engine_vgui = reinterpret_cast<c_engine_vgui*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineVGui001")));
+  engine_sound = reinterpret_cast<c_engine_sound*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("IEngineSoundClient003")));
   vgui_surface = reinterpret_cast<c_vgui_surface*>(get_interface(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("VGUI_Surface031")));
   input_system = reinterpret_cast<c_input_system*>(get_interface(HASH_FNV_CT("inputsystem.dll"), HASH_FNV_CT("InputSystemVersion001")));
   game_movement = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("GameMovement001"));

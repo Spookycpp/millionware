@@ -56,6 +56,9 @@ void hooks::initialize() {
   screen_size_changed.function = get_vfunc_address(interfaces::vgui_surface, 116);
   screen_size_changed.detour = reinterpret_cast<uintptr_t>(&screen_size_changed_hook);
 
+  emit_sound.function = get_vfunc_address(interfaces::engine_sound, 5);
+  emit_sound.detour = reinterpret_cast<uintptr_t>(&emit_sound_hook);
+
   ADD_HOOK(create_move);
   ADD_HOOK(level_init_post_entity);
   ADD_HOOK(level_shutdown_pre_entity);
@@ -63,6 +66,7 @@ void hooks::initialize() {
   ADD_HOOK(engine_paint);
   ADD_HOOK(lock_cursor);
   ADD_HOOK(screen_size_changed);
+  ADD_HOOK(emit_sound);
 
   if (MH_EnableHook(nullptr) != MH_OK)
     utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("enable all hooks"));
@@ -79,6 +83,7 @@ void hooks::shutdown() {
   REMOVE_HOOK(engine_paint);
   REMOVE_HOOK(lock_cursor);
   REMOVE_HOOK(screen_size_changed);
+  REMOVE_HOOK(emit_sound);
 
   // make sure we can hold the call guards, so that means the hook isnt running
   // and we can safely free the trampoline code and shit and exit out!
@@ -89,6 +94,7 @@ void hooks::shutdown() {
   const auto _5 = std::lock_guard(engine_paint.call_mutex);
   const auto _6 = std::lock_guard(lock_cursor.call_mutex);
   const auto _7 = std::lock_guard(screen_size_changed.call_mutex);
+  const auto _8 = std::lock_guard(emit_sound.call_mutex);
 
   if (MH_Uninitialize() != MH_OK)
     utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("minhook uninitialization"));

@@ -73,12 +73,14 @@ void menu::frame() {
 			gui::category(XORSTR(L"Removables"), removables_category_cb);
 		});
 		gui::tab(e_texture::MISC_22, []() {
-			const auto category_cb = []() {
-				gui::group(XORSTR(L"General"), []() {});
+			const auto miscellaneous_cb = []() {
+				gui::group(XORSTR(L"General"), []() {
+					gui::checkbox(XORSTR(L"Bunny hop"), HASH_FNV_CT("misc.movement.bunny_hop"));
+					gui::checkbox(XORSTR(L"Infinite duck"), HASH_FNV_CT("misc.movement.infinite_duck"));
+					gui::checkbox(XORSTR(L"Auto strafer"), HASH_FNV_CT("misc.movement.auto_strafer"));
+				});
 			};
-
-			gui::category(XORSTR(L"Matchmaking"), category_cb);
-			gui::category(XORSTR(L"Movement"), category_cb);
+			gui::category(XORSTR(L"Miscellaneous"), miscellaneous_cb);
 		});
 		gui::tab(e_texture::CHANGERS_22, []() {
 			const auto category_cb = []() {
