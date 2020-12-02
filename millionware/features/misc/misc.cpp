@@ -49,5 +49,31 @@ void features::misc::rank_reveal() {
 }
 
 void features::misc::aspect_ratio() {
-	//@todo: implement && convars
+	static const auto r_aspectratio = interfaces::convar_system->find(XOR("r_aspectratio"));
+
+	r_aspectratio->flags &= ~CONVAR_FLAG_DEVELOPMENTONLY;
+	r_aspectratio->set_value(config::get<float>(FNV("misc.other.aspect_ratio")));
+}
+
+void features::misc::clantag() {
+
+	static float next_time = -1.f;
+	static bool is_disabled = false;
+
+	static const auto set_clantag_fn = reinterpret_cast<int(__fastcall*)(const char*, const char*)>(patterns::set_clantag);
+
+	if (config::get<bool>(FNV_CT("misc.other.clantag"))) {
+
+		if (interfaces::global_vars->current_time >= next_time) {
+			set_clantag_fn(XOR("$ millionware"), XOR(""));
+
+			next_time = interfaces::global_vars->current_time + 1.f;
+		}
+
+		is_disabled = false;
+	}
+	else if (!is_disabled)	{
+		set_clantag_fn(XOR(""), XOR(""));
+		is_disabled = true;
+	}
 }

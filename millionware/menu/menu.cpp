@@ -75,6 +75,8 @@ void menu::frame() {
 					gui::checkbox(XOR(L"Bunny hop"), FNV_CT("misc.movement.bunny_hop"));
 					gui::checkbox(XOR(L"Infinite duck"), FNV_CT("misc.movement.infinite_duck"));
 					gui::checkbox(XOR(L"Auto strafer"), FNV_CT("misc.movement.auto_strafer"));
+					gui::slider(XOR(L"Aspect Ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
+					gui::checkbox(XOR(L"Clen Teg"), FNV_CT("misc.other.clantag"));
 				});
 			});
 		});

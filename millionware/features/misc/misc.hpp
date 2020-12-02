@@ -11,5 +11,6 @@ namespace features::misc {
 	void auto_accept();
 	void rank_reveal();
 	void aspect_ratio();
+	void clantag();
 
 }

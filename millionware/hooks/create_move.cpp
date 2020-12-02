@@ -10,6 +10,8 @@ bool __fastcall hooks::create_move_hook(uintptr_t ecx, uintptr_t edx, float fram
 	features::misc::bunny_hop(user_cmd);
 	features::misc::infinite_duck(user_cmd);
 	features::misc::auto_strafer(user_cmd);
+	features::misc::aspect_ratio();
+	features::misc::clantag();
 
 	reinterpret_cast<decltype(&create_move_hook)>(hooks::create_move.original)(ecx, edx, frame_time, user_cmd);
 

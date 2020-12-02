@@ -4,6 +4,8 @@
 
 #include "../utils/error.hpp"
 #include "../utils/hash.hpp"
+#include "../utils/xorstr.hpp"
+
 #include "cheat.hpp"
 #include "hooks.hpp"
 #include "interfaces.hpp"
@@ -102,4 +104,5 @@ void hooks::shutdown() {
 
   // revert what hooks might've possibly messed up
   interfaces::input_system->enable_input(true);
+  interfaces::convar_system->find(XOR("r_aspectratio"))->set_value(0.f);
 }

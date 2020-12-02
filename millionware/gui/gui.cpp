@@ -393,7 +393,7 @@ void gui::slider(std::wstring_view title, uint32_t config_item, int min_value, i
 }
 
 void gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value) {
-	slider_impl<float>(title, config_item, min_value, max_value, XOR(L"{:.0f}"));
+	slider_impl<float>(title, config_item, min_value, max_value, XOR(L"{:.1f}"));
 }
 
 void gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, std::wstring_view format_string) {
