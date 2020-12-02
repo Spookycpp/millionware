@@ -24,4 +24,5 @@ public:
   VIRTUAL_METHOD(bool, is_playing_demo, 82, ());
   VIRTUAL_METHOD(bool, is_recording_demo, 83, ());
   VIRTUAL_METHOD(bool, is_taking_screenshot, 92, ());
+  VIRTUAL_METHOD(const char*, execute_cmd, 108, ());
 };

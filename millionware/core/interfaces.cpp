@@ -24,6 +24,7 @@ struct interface_entry_t
 
 __declspec(dllexport) interface_entry_t g_interfaces[] = {
   {reinterpret_cast<uintptr_t*>(&interfaces::client), "client.dll", "VClient018", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::convar_system), "vstdlib.dll", "VEngineCvar007", 0, 0, 0},
   {reinterpret_cast<uintptr_t*>(&interfaces::debug_overlay), "engine.dll", "VDebugOverlay004", 0, 0, 0},
   {reinterpret_cast<uintptr_t*>(&interfaces::entity_list), "client.dll", "VClientEntityList003", 0, 0, 0},
   {reinterpret_cast<uintptr_t*>(&interfaces::engine_client), "engine.dll", "VEngineClient014", 0, 0, 0},

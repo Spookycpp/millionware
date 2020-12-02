@@ -148,6 +148,7 @@
     <ClInclude Include="sdk\client_class.hpp" />
     <ClInclude Include="sdk\client_dll.hpp" />
     <ClInclude Include="sdk\color.hpp" />
+    <ClInclude Include="sdk\convar.hpp" />
     <ClInclude Include="sdk\engine_client.hpp" />
     <ClInclude Include="sdk\engine_sound.hpp" />
     <ClInclude Include="sdk\engine_vgui.hpp" />

@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "../sdk/client_dll.hpp"
+#include "../sdk/convar.hpp"
 #include "../sdk/debug_overlay.hpp"
 #include "../sdk/engine_client.hpp"
 #include "../sdk/engine_vgui.hpp"
@@ -16,6 +17,7 @@ namespace interfaces {
 
   inline c_base_client_dll* client = nullptr;
   inline c_client_mode* client_mode = nullptr;
+  inline c_convar_system* convar_system = nullptr;
   inline c_debug_overlay* debug_overlay = nullptr;
   inline c_entity_list* entity_list = nullptr;
   inline c_global_vars_base* global_vars = nullptr;
