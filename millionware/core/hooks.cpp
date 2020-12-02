@@ -105,4 +105,7 @@ void hooks::shutdown() {
   // revert what hooks might've possibly messed up
   interfaces::input_system->enable_input(true);
   interfaces::convar_system->find(XOR("r_aspectratio"))->set_value(0.f);
+  interfaces::convar_system->find(XOR("@panorama_disable_blur"))->set_value(false);
+  interfaces::convar_system->find(XOR("mat_postprocess_enable"))->set_value(true);
+
 }
