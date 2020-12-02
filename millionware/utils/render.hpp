@@ -1,20 +1,19 @@
 #pragma once
 
+#include <functional>
 #include <string>
 
 #include "../sdk/color.hpp"
 #include "../sdk/vector.hpp"
 
-enum class e_font
-{
+enum class e_font {
   UI_REGULAR,
   UI_GROUP,
 
   MAX,
 };
 
-enum class e_texture
-{
+enum class e_texture {
   WHITE,
 
   MW_LOGO_32,
@@ -29,8 +28,7 @@ enum class e_texture
   MAX,
 };
 
-enum e_corner
-{
+enum e_corner {
   CORNER_NONE = 0,
 
   CORNER_TOP_LEFT = 1 << 0,
@@ -46,8 +44,8 @@ enum e_corner
   CORNER_ALL = CORNER_TOP | CORNER_RIGHT | CORNER_BOTTOM | CORNER_LEFT,
 };
 
-namespace render
-{
+namespace render {
+
   void initialize();
   void refresh_fonts();
 
@@ -56,6 +54,9 @@ namespace render
 
   void push_clip(int x1, int y1, int x2, int y2);
   void push_clip(const point_t& position, const point_t& size);
+
+  void clipped(int x1, int y1, int x2, int y2, const std::function<void()>& callback);
+  void clipped(const point_t& position, const point_t& size, const std::function<void()>& callback);
 
   void line(int x1, int y1, int x2, int y2, const color_t& color);
   void rect(int x, int y, int width, int height, const color_t& color);
@@ -89,4 +90,5 @@ namespace render
 
   point_t measure_text(e_font font, std::wstring_view string);
   point_t measure_text(e_font font, std::string_view string);
-};
+
+}

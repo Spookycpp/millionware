@@ -4,8 +4,7 @@
 
 #include "vector.hpp"
 
-enum e_button_flag
-{
+enum e_button_flag {
   BUTTON_IN_ATTACK = 1 << 0,
   BUTTON_IN_JUMP = 1 << 1,
   BUTTON_IN_DUCK = 1 << 2,
@@ -34,8 +33,7 @@ enum e_button_flag
   BUTTON_IN_ATTACK3 = 1 << 25,
 };
 
-struct user_cmd_t
-{
+struct user_cmd_t {
 private:
   char padding0_[4];
 

@@ -5,8 +5,7 @@
 #include "player_info.hpp"
 #include "vector.hpp"
 
-class c_engine_client
-{
+class c_engine_client {
 public:
   VIRTUAL_METHOD(void, get_screen_size, 5, (int& width, int& height), &width, &height);
   VIRTUAL_METHOD(void, server_command, 6, (const char* command, const bool send_reliably = true), command, send_reliably);

@@ -1,20 +1,11 @@
 #include "cheat.hpp"
 
-enum e_build_type
-{
-  BUILD_TYPE_STABLE,
-  BUILD_TYPE_BETA,
-  BUILD_TYPE_DEVELOPER,
-};
-
-struct cheat_info_t
-{
+struct cheat_info_t {
   uint32_t inject_time;
   uint32_t sub_expire;
 
   char username[32];
   char access_token[32];
-  char build_type;
 };
 
 __declspec(dllexport) cheat_info_t g_cheat_info;

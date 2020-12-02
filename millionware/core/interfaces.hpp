@@ -12,8 +12,8 @@
 #include "../sdk/input_system.hpp"
 #include "../sdk/vgui.hpp"
 
-namespace interfaces
-{
+namespace interfaces {
+
   inline c_base_client_dll* client = nullptr;
   inline c_client_mode* client_mode = nullptr;
   inline c_debug_overlay* debug_overlay = nullptr;
@@ -28,4 +28,5 @@ namespace interfaces
   inline uintptr_t event_manager = 0;
 
   void initialize();
+
 }

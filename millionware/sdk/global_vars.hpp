@@ -1,7 +1,6 @@
 #pragma once
 
-class c_global_vars_base
-{
+class c_global_vars_base {
 public:
   float real_time;
   int frame_count;

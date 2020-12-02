@@ -2,8 +2,7 @@
 
 #include <cstdint>
 
-struct player_info_t
-{
+struct player_info_t {
   uint64_t version;
   uint64_t xuid;
   char name[128];

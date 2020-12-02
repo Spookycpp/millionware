@@ -1,6 +1,7 @@
 #pragma once
 
-namespace menu
-{
+namespace menu {
+
 	void frame();
+
 }

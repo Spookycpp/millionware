@@ -1,6 +1,7 @@
 #pragma once
 
-namespace features::aimbot
-{
+namespace features::aimbot {
+
+	// @todo: implement
 
 }

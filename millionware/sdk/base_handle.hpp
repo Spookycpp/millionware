@@ -2,12 +2,10 @@
 
 class c_entity;
 
-class c_base_handle
-{
+class c_base_handle {
 public:
   explicit constexpr c_base_handle(unsigned long handle)
-    : handle(handle) {
-  }
+    : handle(handle) {}
 
   unsigned long handle;
 
@@ -20,4 +18,4 @@ public:
   bool operator !=(c_entity* entity) const;
 };
 
-const static c_base_handle INVALID_HANDLE = c_base_handle(0xFFFFFFFF);
+constexpr static c_base_handle INVALID_HANDLE = c_base_handle(0xFFFFFFFF);

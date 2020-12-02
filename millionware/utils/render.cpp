@@ -53,11 +53,7 @@ std::vector<vertex_t> generate_rounded_rect_vertices(int x, int y, int width, in
 	);
 
 	for (auto i = 0; i < 4; i++) {
-		const auto round_corner =
-			i == 0 && round_top_right ||
-			i == 1 && round_bottom_right ||
-			i == 2 && round_bottom_left ||
-			i == 3 && round_top_left;
+		const auto round_corner = i == 0 && round_top_right || i == 1 && round_bottom_right || i == 2 && round_bottom_left || i == 3 && round_top_left;
 
 		if (!round_corner) {
 			vertices.emplace_back(vertex_t(vector2_t(static_cast<float>(i < 2 ? x + width : x), static_cast<float>(i % 3 ? y + height : y)), 0.0f));
@@ -108,8 +104,8 @@ void render::refresh_fonts() {
 	get_font(e_font::UI_REGULAR) = interfaces::vgui_surface->create_font();
 	get_font(e_font::UI_GROUP) = interfaces::vgui_surface->create_font();
 
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_REGULAR), XORSTR("Segoe UI"), 16, 500, 0, 0, FONT_FLAG_ANTIALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_GROUP), XORSTR("Segoe UI"), 14, 700, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_REGULAR), XOR("Segoe UI"), 16, 500, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_GROUP), XOR("Segoe UI"), 14, 700, 0, 0, FONT_FLAG_ANTIALIAS);
 
 	interfaces::engine_client->get_screen_size(cheat::screen_size.x, cheat::screen_size.y);
 
@@ -117,8 +113,9 @@ void render::refresh_fonts() {
 }
 
 void render::reset_clip() {
-	while (!clip_rect_stack.empty())
+	while (!clip_rect_stack.empty()) {
 		clip_rect_stack.pop();
+	}
 
 	interfaces::vgui_surface->clipping_enabled = true;
 	interfaces::vgui_surface->set_clip_rect(0, 0, cheat::screen_size.x, cheat::screen_size.y);
@@ -151,6 +148,22 @@ void render::push_clip(int x1, int y1, int x2, int y2) {
 
 void render::push_clip(const point_t& position, const point_t& size) {
 	push_clip(position.x, position.y, position.x + size.x, position.y + size.y);
+}
+
+void render::clipped(int x1, int y1, int x2, int y2, const std::function<void()>& callback) {
+	push_clip(x1, y1, x2, y2);
+
+	callback();
+
+	pop_clip();
+}
+
+void render::clipped(const point_t& position, const point_t& size, const std::function<void()>& callback) {
+	push_clip(position, size);
+
+	callback();
+
+	pop_clip();
 }
 
 void render::line(int x1, int y1, int x2, int y2, const color_t& color) {
@@ -206,18 +219,10 @@ void render::gradient_h_rounded(int x, int y, int width, int height, int radius,
 	const auto round_bottom_left = (corners & CORNER_BOTTOM_LEFT) != 0;
 	const auto round_bottom_right = (corners & CORNER_BOTTOM_RIGHT) != 0;
 
-	round_top_left
-		? fill_rect_rounded(x, y, radius, radius, radius, CORNER_TOP_LEFT, start_color)
-		: fill_rect(x, y, radius, radius, start_color);
-	round_top_right
-		? fill_rect_rounded(x + width - radius, y, radius, radius, radius, CORNER_TOP_RIGHT, end_color)
-		: fill_rect(x + width - radius, y, radius, radius, end_color);
-	round_bottom_left
-		? fill_rect_rounded(x, y + height - radius, radius, radius, radius, CORNER_BOTTOM_LEFT, start_color)
-		: fill_rect(x, y + height - radius, radius, radius, start_color);
-	round_bottom_right
-		? fill_rect_rounded(x + width - radius, y + height - radius, radius, radius, radius, CORNER_BOTTOM_RIGHT, end_color)
-		: fill_rect(x + width - radius, y + height - radius, radius, radius, end_color);
+	round_top_left ? fill_rect_rounded(x, y, radius, radius, radius, CORNER_TOP_LEFT, start_color) : fill_rect(x, y, radius, radius, start_color);
+	round_top_right ? fill_rect_rounded(x + width - radius, y, radius, radius, radius, CORNER_TOP_RIGHT, end_color) : fill_rect(x + width - radius, y, radius, radius, end_color);
+	round_bottom_left ? fill_rect_rounded(x, y + height - radius, radius, radius, radius, CORNER_BOTTOM_LEFT, start_color) : fill_rect(x, y + height - radius, radius, radius, start_color);
+	round_bottom_right ? fill_rect_rounded(x + width - radius, y + height - radius, radius, radius, radius, CORNER_BOTTOM_RIGHT, end_color) : fill_rect(x + width - radius, y + height - radius, radius, radius, end_color);
 
 	fill_rect(x, y + radius, radius, height - radius * 2, start_color);
 	fill_rect(x + width - radius, y + radius, radius, height - radius * 2, end_color);
@@ -231,18 +236,10 @@ void render::gradient_v_rounded(int x, int y, int width, int height, int radius,
 	const auto round_bottom_left = (corners & CORNER_BOTTOM_LEFT) != 0;
 	const auto round_bottom_right = (corners & CORNER_BOTTOM_RIGHT) != 0;
 
-	round_top_left
-		? fill_rect_rounded(x, y, radius, radius, radius, CORNER_TOP_LEFT, start_color)
-		: fill_rect(x, y, radius, radius, start_color);
-	round_top_right
-		? fill_rect_rounded(x + width - radius, y, radius, radius, radius, CORNER_TOP_RIGHT, start_color)
-		: fill_rect(x + width - radius, y, radius, radius, start_color);
-	round_bottom_left
-		? fill_rect_rounded(x, y + height - radius, radius, radius, radius, CORNER_BOTTOM_LEFT, end_color)
-		: fill_rect(x, y + height - radius, radius, radius, end_color);
-	round_bottom_right
-		? fill_rect_rounded(x + width - radius, y + height - radius, radius, radius, radius, CORNER_BOTTOM_RIGHT, end_color)
-		: fill_rect(x + width - radius, y + height - radius, radius, radius, end_color);
+	round_top_left ? fill_rect_rounded(x, y, radius, radius, radius, CORNER_TOP_LEFT, start_color) : fill_rect(x, y, radius, radius, start_color);
+	round_top_right ? fill_rect_rounded(x + width - radius, y, radius, radius, radius, CORNER_TOP_RIGHT, start_color) : fill_rect(x + width - radius, y, radius, radius, start_color);
+	round_bottom_left ? fill_rect_rounded(x, y + height - radius, radius, radius, radius, CORNER_BOTTOM_LEFT, end_color) : fill_rect(x, y + height - radius, radius, radius, end_color);
+	round_bottom_right ? fill_rect_rounded(x + width - radius, y + height - radius, radius, radius, radius, CORNER_BOTTOM_RIGHT, end_color) : fill_rect(x + width - radius, y + height - radius, radius, radius, end_color);
 
 	fill_rect(x + radius, y, width - radius * 2, radius, start_color);
 	fill_rect(x + radius, y + height - radius, width - radius * 2, radius, end_color);

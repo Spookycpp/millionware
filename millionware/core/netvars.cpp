@@ -2,22 +2,22 @@
 #include "interfaces.hpp"
 #include "netvars.hpp"
 
-static netvars::detail::netvar_tree_t nodes = {};
+static detail::netvar_tree_t nodes = {};
 
-void populate_nodes(recv_table_t* recv_table, netvars::detail::netvar_tree_t& map) {
+void populate_nodes(recv_table_t* recv_table, detail::netvar_tree_t& map) {
 	for (auto i = 0; i < recv_table->prop_count; i++) {
 		const auto prop = &recv_table->props[i];
 
-		const auto prop_info = std::make_shared<netvars::detail::netvar_node_t>(prop->offset, static_cast<int>(prop->recv_type));
+		const auto prop_info = std::make_shared<detail::netvar_node_t>(prop->offset, static_cast<int>(prop->recv_type));
 
 		if (prop->recv_type == SEND_PROP_TYPE_DATA_TABLE)
 			populate_nodes(prop->data_table, prop_info->nodes);
 
-		map.emplace(HASH_FNV(prop->var_name), prop_info);
+		map.emplace(FNV(prop->var_name), prop_info);
 	}
 }
 
-const netvars::detail::netvar_tree_t& netvars::detail::get_nodes() {
+const detail::netvar_tree_t& detail::get_nodes() {
 	return nodes;
 }
 
@@ -29,6 +29,6 @@ void netvars::initialize() {
 
 		populate_nodes(recv_table, class_info->nodes);
 
-		nodes.emplace(HASH_FNV(recv_table->net_table_name), class_info);
+		nodes.emplace(FNV(recv_table->net_table_name), class_info);
 	}
 }

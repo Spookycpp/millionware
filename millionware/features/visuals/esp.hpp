@@ -1,6 +1,7 @@
 #pragma once
 
-namespace features::visuals::esp 
-{
+namespace features::visuals::esp {
+
+	// @todo: implement
 
 }

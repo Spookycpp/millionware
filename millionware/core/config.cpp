@@ -4,7 +4,7 @@
 
 void config::initialize() {
 	// @hint: define default config there
-	get<color_t>(HASH_FNV_CT("ui.accent")) = color_t(222, 7, 208);
+	get<color_t>(FNV_CT("ui.accent")) = color_t(222, 7, 208);
 }
 
 void config::save_to(std::string_view name) {

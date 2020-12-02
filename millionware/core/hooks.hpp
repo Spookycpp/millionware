@@ -4,8 +4,7 @@
 
 #include "../sdk/user_cmd.hpp"
 
-struct hook_storage_t
-{
+struct hook_storage_t {
   uintptr_t function = 0;
   uintptr_t detour = 0;
   uintptr_t original = 0;
@@ -13,8 +12,8 @@ struct hook_storage_t
   std::mutex call_mutex;
 };
 
-namespace hooks
-{
+namespace hooks {
+
   inline hook_storage_t create_move;
   inline hook_storage_t level_init_post_entity;
   inline hook_storage_t level_shutdown_pre_entity;
@@ -35,4 +34,5 @@ namespace hooks
 
   void initialize();
   void shutdown();
+
 }

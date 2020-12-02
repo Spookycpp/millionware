@@ -7,7 +7,7 @@
 void utils::error_and_exit(e_error_code error) {
 	char buffer[128];
 
-	sprintf_s(buffer, sizeof buffer, XORSTR(
+	sprintf_s(buffer, sizeof buffer, XOR(
 		"Fatal error during initialization. \n"
 		"Please reach out to us via a ticket. \n"
 		"Additional info: E%02d"
@@ -20,7 +20,7 @@ void utils::error_and_exit(e_error_code error) {
 void utils::error_and_exit(e_error_code error, uint32_t info1) {
 	char buffer[128];
 
-	sprintf_s(buffer, sizeof buffer, XORSTR(
+	sprintf_s(buffer, sizeof buffer, XOR(
 		"Fatal error during initialization. \n"
 		"Please reach out to us via a ticket. \n"
 		"Additional info: E%02d %08X"
@@ -33,7 +33,7 @@ void utils::error_and_exit(e_error_code error, uint32_t info1) {
 void utils::error_and_exit(e_error_code error, uint32_t info1, uint32_t info2) {
 	char buffer[164];
 
-	sprintf_s(buffer, sizeof buffer, XORSTR(
+	sprintf_s(buffer, sizeof buffer, XOR(
 		"Fatal error during initialization. \n"
 		"Please reach out to us via a ticket. \n"
 		"Additional info: E%02d %08X %08X"
@@ -46,7 +46,7 @@ void utils::error_and_exit(e_error_code error, uint32_t info1, uint32_t info2) {
 void utils::error_and_exit(e_error_code error, uint32_t info1, uint32_t info2, uint32_t info3) {
 	char buffer[164];
 
-	sprintf_s(buffer, sizeof buffer, XORSTR(
+	sprintf_s(buffer, sizeof buffer, XOR(
 		"Fatal error during initialization. \n"
 		"Please reach out to us via a ticket. \n"
 		"Additional info: E%02d %08X %08X %08X"

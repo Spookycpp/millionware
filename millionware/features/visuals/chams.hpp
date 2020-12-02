@@ -1,6 +1,7 @@
 #pragma once
 
-namespace features::visuals::chams
-{
+namespace features::visuals::chams {
+
+	// @todo: implement
 
 }

@@ -23,5 +23,5 @@ void __fastcall hooks::engine_paint_hook(uintptr_t ecx, uintptr_t edx, int mode)
 		interfaces::vgui_surface->finish_drawing();
 	}
 
-	return reinterpret_cast<decltype(&engine_paint_hook)>(hooks::engine_paint.original)(ecx, edx, mode);
+	reinterpret_cast<decltype(&engine_paint_hook)>(hooks::engine_paint.original)(ecx, edx, mode);
 }

@@ -2,8 +2,7 @@
 
 #include "macros.hpp"
 
-class c_net_channel_info
-{
+class c_net_channel_info {
 public:
   VIRTUAL_METHOD(const char*, get_name, 0, ());
   VIRTUAL_METHOD(const char*, get_address, 1, ());

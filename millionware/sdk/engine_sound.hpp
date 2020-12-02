@@ -1,5 +1,3 @@
 #pragma once
 
-class c_engine_sound
-{
-};
+class c_engine_sound {};

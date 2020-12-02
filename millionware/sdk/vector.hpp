@@ -3,18 +3,17 @@
 #include <cstdint>
 #include <cmath>
 
-struct point_t
-{
+struct point_t {
   int x, y;
 
-  constexpr point_t(const int x, const int y) : x(x), y(y) {
-  }
+  constexpr point_t(int x, int y)
+    : x(x), y(y) {}
 
-  constexpr point_t(const int scalar) : x(scalar), y(scalar) {
-  }
+  constexpr point_t(int scalar)
+    : x(scalar), y(scalar) {}
 
-  constexpr point_t() : x(0), y(0) {
-  }
+  constexpr point_t()
+    : x(0), y(0) {}
 
   point_t operator +(const point_t rhs) const {
     return point_t(x + rhs.x, y + rhs.y);
@@ -32,19 +31,19 @@ struct point_t
     return point_t(x / rhs.x, y / rhs.y);
   }
 
-  point_t operator +(const int rhs) const {
+  point_t operator +(int rhs) const {
     return point_t(x + rhs, y + rhs);
   }
 
-  point_t operator -(const int rhs) const {
+  point_t operator -(int rhs) const {
     return point_t(x - rhs, y - rhs);
   }
 
-  point_t operator *(const int rhs) const {
+  point_t operator *(int rhs) const {
     return point_t(x * rhs, y * rhs);
   }
 
-  point_t operator /(const int rhs) const {
+  point_t operator /(int rhs) const {
     return point_t(x / rhs, y / rhs);
   }
 
@@ -72,43 +71,42 @@ struct point_t
     return *this;
   }
 
-  point_t& operator +=(const int32_t rhs) {
+  point_t& operator +=(int rhs) {
     x += rhs;
     y += rhs;
     return *this;
   }
 
-  point_t& operator -=(const int32_t rhs) {
+  point_t& operator -=(int rhs) {
     x -= rhs;
     y -= rhs;
     return *this;
   }
 
-  point_t& operator *=(const int32_t rhs) {
+  point_t& operator *=(int rhs) {
     x *= rhs;
     y *= rhs;
     return *this;
   }
 
-  point_t& operator /=(const int32_t rhs) {
+  point_t& operator /=(int rhs) {
     x /= rhs;
     y /= rhs;
     return *this;
   }
 };
 
-struct vector2_t
-{
+struct vector2_t {
   float x, y;
 
-  constexpr vector2_t(const float x, const float y) : x(x), y(y) {
-  }
+  constexpr vector2_t(float x, float y)
+    : x(x), y(y) {}
 
-  constexpr vector2_t(const float scalar) : x(scalar), y(scalar) {
-  }
+  constexpr vector2_t(float scalar)
+    : x(scalar), y(scalar) {}
 
-  constexpr vector2_t() : x(0.0f), y(0.0f) {
-  }
+  constexpr vector2_t()
+    : x(0.0f), y(0.0f) {}
 
   vector2_t operator +(const vector2_t rhs) const {
     return vector2_t(x + rhs.x, y + rhs.y);
@@ -126,19 +124,19 @@ struct vector2_t
     return vector2_t(x / rhs.x, y / rhs.y);
   }
 
-  vector2_t operator +(const float rhs) const {
+  vector2_t operator +(float rhs) const {
     return vector2_t(x + rhs, y + rhs);
   }
 
-  vector2_t operator -(const float rhs) const {
+  vector2_t operator -(float rhs) const {
     return vector2_t(x - rhs, y - rhs);
   }
 
-  vector2_t operator *(const float rhs) const {
+  vector2_t operator *(float rhs) const {
     return vector2_t(x * rhs, y * rhs);
   }
 
-  vector2_t operator /(const float rhs) const {
+  vector2_t operator /(float rhs) const {
     return vector2_t(x / rhs, y / rhs);
   }
 
@@ -166,25 +164,25 @@ struct vector2_t
     return *this;
   }
 
-  vector2_t& operator +=(const float rhs) {
+  vector2_t& operator +=(float rhs) {
     x += rhs;
     y += rhs;
     return *this;
   }
 
-  vector2_t& operator -=(const float rhs) {
+  vector2_t& operator -=(float rhs) {
     x -= rhs;
     y -= rhs;
     return *this;
   }
 
-  vector2_t& operator *=(const float rhs) {
+  vector2_t& operator *=(float rhs) {
     x *= rhs;
     y *= rhs;
     return *this;
   }
 
-  vector2_t& operator /=(const float rhs) {
+  vector2_t& operator /=(float rhs) {
     x /= rhs;
     y /= rhs;
     return *this;
@@ -195,24 +193,23 @@ struct vector2_t
   }
 };
 
-struct vector3_t
-{
+struct vector3_t {
   float x, y, z;
 
-  constexpr vector3_t(const float x, const float y, const float z) : x(x), y(y), z(z) {
-  }
+  constexpr vector3_t(float x, float y, float z)
+    : x(x), y(y), z(z) {}
 
-  constexpr vector3_t(const vector2_t& vec) : x(vec.x), y(vec.y), z(0.0f) {
-  }
+  constexpr vector3_t(const vector2_t& vec)
+    : x(vec.x), y(vec.y), z(0.0f) {}
 
-  constexpr vector3_t(const vector2_t& vec, float z) : x(vec.x), y(vec.y), z(z) {
-  }
+  constexpr vector3_t(const vector2_t& vec, float z)
+    : x(vec.x), y(vec.y), z(z) {}
 
-  constexpr vector3_t(const float scalar) : x(scalar), y(scalar), z(scalar) {
-  }
+  constexpr vector3_t(float scalar)
+    : x(scalar), y(scalar), z(scalar) {}
 
-  constexpr vector3_t() : x(0.0f), y(0.0f), z(0.0f) {
-  }
+  constexpr vector3_t()
+    : x(0.0f), y(0.0f), z(0.0f) {}
 
   vector3_t operator +(const vector3_t& rhs) const {
     return vector3_t(x + rhs.x, y + rhs.y, z + rhs.z);
@@ -230,19 +227,19 @@ struct vector3_t
     return vector3_t(x / rhs.x, y / rhs.y, z / rhs.z);
   }
 
-  vector3_t operator +(const float rhs) const {
+  vector3_t operator +(float rhs) const {
     return vector3_t(x + rhs, y + rhs, z + rhs);
   }
 
-  vector3_t operator -(const float rhs) const {
+  vector3_t operator -(float rhs) const {
     return vector3_t(x - rhs, y - rhs, z - rhs);
   }
 
-  vector3_t operator *(const float rhs) const {
+  vector3_t operator *(float rhs) const {
     return vector3_t(x * rhs, y * rhs, z * rhs);
   }
 
-  vector3_t operator /(const float rhs) const {
+  vector3_t operator /(float rhs) const {
     return vector3_t(x / rhs, y / rhs, z / rhs);
   }
 
@@ -274,28 +271,28 @@ struct vector3_t
     return *this;
   }
 
-  vector3_t& operator +=(const float rhs) {
+  vector3_t& operator +=(float rhs) {
     x += rhs;
     y += rhs;
     z += rhs;
     return *this;
   }
 
-  vector3_t& operator -=(const float rhs) {
+  vector3_t& operator -=(float rhs) {
     x -= rhs;
     y -= rhs;
     z -= rhs;
     return *this;
   }
 
-  vector3_t& operator *=(const float rhs) {
+  vector3_t& operator *=(float rhs) {
     x *= rhs;
     y *= rhs;
     z *= rhs;
     return *this;
   }
 
-  vector3_t& operator /=(const float rhs) {
+  vector3_t& operator /=(float rhs) {
     x /= rhs;
     y /= rhs;
     z /= rhs;

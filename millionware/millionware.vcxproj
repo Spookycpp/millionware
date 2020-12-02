@@ -153,7 +153,6 @@
     <ClInclude Include="sdk\engine_vgui.hpp" />
     <ClInclude Include="sdk\entity.hpp" />
     <ClInclude Include="sdk\entity_list.hpp" />
-    <ClInclude Include="sdk\font_flag.hpp" />
     <ClInclude Include="sdk\global_vars.hpp" />
     <ClInclude Include="sdk\macros.hpp" />
     <ClInclude Include="sdk\matrix.hpp" />

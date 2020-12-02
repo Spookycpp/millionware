@@ -13,12 +13,12 @@
   if (MH_CreateHook(reinterpret_cast<LPVOID>(storage.function), reinterpret_cast<LPVOID>(storage.detour), \
                     reinterpret_cast<LPVOID*>(&storage.original)) != MH_OK)                               \
   {                                                                                                       \
-    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("set up " #storage));                          \
+    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("set up " #storage));                               \
   }
 
 #define REMOVE_HOOK(storage)                                                      \
   if (MH_RemoveHook(reinterpret_cast<LPVOID>(storage.function)) != MH_OK)         \
-    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("remove " #storage));
+    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("remove " #storage));
 
 template <typename T>
 inline uintptr_t get_vfunc_address(T* base_interface, size_t index) {
@@ -32,7 +32,7 @@ void hooks::initialize() {
 
   // initialize hooking engine
   if (MH_Initialize() != MH_OK)
-    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("minhook initialization"));
+    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("minhook initialize"));
 
   // add hooks
   create_move.function = get_vfunc_address(interfaces::client_mode, 24);
@@ -69,12 +69,12 @@ void hooks::initialize() {
   ADD_HOOK(emit_sound);
 
   if (MH_EnableHook(nullptr) != MH_OK)
-    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("enable all hooks"));
+    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("enable all hooks"));
 }
 
 void hooks::shutdown() {
   if (MH_DisableHook(nullptr) != MH_OK)
-    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("disable all hooks"));
+    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("disable all hooks"));
 
   REMOVE_HOOK(create_move);
   REMOVE_HOOK(level_init_post_entity);
@@ -96,8 +96,9 @@ void hooks::shutdown() {
   const auto _7 = std::lock_guard(screen_size_changed.call_mutex);
   const auto _8 = std::lock_guard(emit_sound.call_mutex);
 
+  // lets hope no hooks are running :D
   if (MH_Uninitialize() != MH_OK)
-    utils::error_and_exit(e_error_code::HOOKS, HASH_FNV_CT("minhook uninitialization"));
+    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("minhook uninitialize"));
 
   // revert what hooks might've possibly messed up
   interfaces::input_system->enable_input(true);

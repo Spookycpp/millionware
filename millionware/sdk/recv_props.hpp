@@ -4,8 +4,7 @@
 
 #include "typedefs.hpp"
 
-enum e_send_prop_type : int
-{
+enum e_send_prop_type {
   SEND_PROP_TYPE_INT32 = 0,
   SEND_PROP_TYPE_FLOAT,
   SEND_PROP_TYPE_VECTOR3,
@@ -16,8 +15,7 @@ enum e_send_prop_type : int
   SEND_PROP_TYPE_INT64,
 };
 
-struct recv_prop_t
-{
+struct recv_prop_t {
   const char* var_name;
   int recv_type;
   int flags;
@@ -35,8 +33,7 @@ struct recv_prop_t
   const char* parent_array_prop_name;
 };
 
-struct recv_table_t
-{
+struct recv_table_t {
   recv_prop_t* props;
   int prop_count;
   uintptr_t decoder;

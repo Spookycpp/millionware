@@ -11,6 +11,8 @@
 
 struct interface_entry_t
 {
+  uintptr_t* out_interface;
+
   char module_name[32];
   char interface_name[32];
 
@@ -21,16 +23,16 @@ struct interface_entry_t
 };
 
 __declspec(dllexport) interface_entry_t g_interfaces[] = {
-  {"client.dll", "VClient018", 0, 0, 0},
-  {"engine.dll", "VDebugOverlay004", 0, 0, 0},
-  {"client.dll", "VClientEntityList003", 0, 0, 0},
-  {"engine.dll", "VEngineClient014", 0, 0, 0},
-  {"engine.dll", "VEngineVGui001", 0, 0, 0},
-  {"engine.dll", "IEngineSoundClient003", 0, 0, 0},
-  {"vguimatsurface.dll", "VGUI_Surface031", 0, 0, 0},
-  {"inputsystem.dll", "InputSystemVersion001", 0, 0, 0},
-  {"client.dll", "GameMovement001", 0, 0, 0},
-  {"engine.dll", "GAMEEVENTSMANAGER002", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::client), "client.dll", "VClient018", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::debug_overlay), "engine.dll", "VDebugOverlay004", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::entity_list), "client.dll", "VClientEntityList003", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::engine_client), "engine.dll", "VEngineClient014", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::engine_vgui), "engine.dll", "VEngineVGui001", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::engine_sound), "engine.dll", "IEngineSoundClient003", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::vgui_surface), "vguimatsurface.dll", "VGUI_Surface031", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::input_system), "inputsystem.dll", "InputSystemVersion001", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::game_movement), "client.dll", "GameMovement001", 0, 0, 0},
+  {reinterpret_cast<uintptr_t*>(&interfaces::event_manager), "engine.dll", "GAMEEVENTSMANAGER002", 0, 0, 0},
 };
 
 inline uintptr_t get_interface(uint32_t module_hash, uint32_t interface_hash) {
@@ -57,30 +59,24 @@ void interfaces::initialize() {
     const auto module_handle = GetModuleHandleA(entry.module_name);
 
     if (module_handle != nullptr) {
-      const auto create_iface = reinterpret_cast<create_interface_t>(GetProcAddress(module_handle, XORSTR("CreateInterface")));
+      const auto create_iface = reinterpret_cast<create_interface_t>(GetProcAddress(module_handle, XOR("CreateInterface")));
 
       if (create_iface != nullptr)
         entry.address = create_iface(entry.interface_name, 0);
     }
 
-    entry.module_hash = HASH_FNV(entry.module_name);
-    entry.interface_hash = HASH_FNV(entry.interface_name);
+    entry.module_hash = FNV(entry.module_name);
+    entry.interface_hash = FNV(entry.interface_name);
 
     memset(entry.module_name, 0, sizeof entry.module_name);
     memset(entry.interface_name, 0, sizeof entry.interface_name);
   }
 #endif
 
-  client = reinterpret_cast<c_base_client_dll*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClient018")));
+  for (const auto& entry : g_interfaces) {
+    *entry.out_interface = get_interface(entry.module_hash, entry.interface_hash);
+  }
+
   client_mode = **reinterpret_cast<c_client_mode***>(reinterpret_cast<uintptr_t**>(client)[0][10] + 5);
-  debug_overlay = reinterpret_cast<c_debug_overlay*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VDebugOverlay004")));
-  entity_list = reinterpret_cast<c_entity_list*>(get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("VClientEntityList003")));
   global_vars = **reinterpret_cast<c_global_vars_base***>(reinterpret_cast<uintptr_t**>(client)[0][11] + 10);
-  engine_client = reinterpret_cast<c_engine_client*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineClient014")));
-  engine_vgui = reinterpret_cast<c_engine_vgui*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("VEngineVGui001")));
-  engine_sound = reinterpret_cast<c_engine_sound*>(get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("IEngineSoundClient003")));
-  vgui_surface = reinterpret_cast<c_vgui_surface*>(get_interface(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("VGUI_Surface031")));
-  input_system = reinterpret_cast<c_input_system*>(get_interface(HASH_FNV_CT("inputsystem.dll"), HASH_FNV_CT("InputSystemVersion001")));
-  game_movement = get_interface(HASH_FNV_CT("client.dll"), HASH_FNV_CT("GameMovement001"));
-  event_manager = get_interface(HASH_FNV_CT("engine.dll"), HASH_FNV_CT("GAMEEVENTSMANAGER002"));
 }

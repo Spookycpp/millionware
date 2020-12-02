@@ -8,6 +8,7 @@
 #include "../core/interfaces.hpp"
 #include "../utils/hash.hpp"
 #include "../utils/input.hpp"
+#include "../utils/math.hpp"
 #include "../utils/render.hpp"
 #include "../utils/xorstr.hpp"
 #include "gui.hpp"
@@ -26,16 +27,6 @@ inline float handle_animation(float& state, float target, float rate = 0.035f) {
 	const auto delta = target - state;
 
 	return state = std::clamp(state + delta * interval, 0.0f, 1.0f);
-}
-
-template <typename T>
-inline T map_number(T number, T in_min, T in_max, T out_min, T out_max) {
-	static_assert(std::is_arithmetic_v<T>, "type isn't arithmetic");
-
-	const auto slope = (out_max - out_min) / (in_max - in_min);
-	const auto output = out_min + slope * (number - in_min);
-
-	return output;
 }
 
 void gui::initialize() {
@@ -154,7 +145,7 @@ void gui::window(std::wstring_view title, const std::function<void()>& callback)
 		ctx->position.x + ctx->size.x - WINDOW_CONTENT_PADDING, ctx->position.y + WINDOW_CONTENT_PADDING + WINDOW_TABS_HEIGHT, color_t(46));
 
 	for (auto i = 0u; i < ctx->tabs.size(); i++) {
-		const auto tab_hash = HASH_FNV(HASH_FNV_CT("tab"), utils::FNV_BASIS + i);
+		const auto tab_hash = FNV(FNV_CT("tab"), utils::FNV_BASIS + i);
 		const auto tab_position = point_t(ctx->position.x, ctx->position.y + WINDOW_SIDEBAR_SIZE * (i + 1));
 		const auto hovered = input::is_in_bounds(tab_position, tab_position + WINDOW_SIDEBAR_SIZE);
 
@@ -186,7 +177,7 @@ void gui::window(std::wstring_view title, const std::function<void()>& callback)
 	for (auto i = 0u; i < ctx->categories.size(); i++) {
 		auto& category_index = ctx->current_category(ctx->current_tab);
 
-		const auto category_hash = HASH_FNV(ctx->categories[i].data());
+		const auto category_hash = FNV(ctx->categories[i].data());
 		const auto category_size = render::measure_text(e_font::UI_REGULAR, ctx->categories[i]);
 		const auto category_width = category_size.x + WINDOW_CONTENT_PADDING * 3;
 		const auto category_position = point_t(ctx->position.x + WINDOW_SIDEBAR_SIZE + WINDOW_CONTENT_PADDING + category_draw_offset, ctx->position.y + WINDOW_CONTENT_PADDING);
@@ -245,7 +236,7 @@ void gui::group(std::wstring_view title, const std::function<void()>& callback) 
 	const auto title_size = render::measure_text(e_font::UI_GROUP, title);
 	const auto background_pos = point_t(box_position.x, box_position.y + title_size.y + 6);
 
-	ctx->parent_hash += HASH_FNV(title.data());
+	ctx->parent_hash += FNV(title.data());
 	ctx->is_calculating_layout = true;
 
 	ctx->cursor_pos = background_pos + WINDOW_CONTENT_PADDING;
@@ -282,7 +273,7 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 	if (!ctx->is_calculating_layout) {
 		auto& config_value = config::get<bool>(config_item);
 
-		const auto this_hash = HASH_FNV(title.data(), ctx->parent_hash);
+		const auto this_hash = FNV(title.data(), ctx->parent_hash);
 		const auto title_size = render::measure_text(e_font::UI_REGULAR, title);
 		const auto title_position = point_t(cursor_pos.x + TOGGLE_SIZE + 10, cursor_pos.y + TOGGLE_SIZE / 2 - title_size.y / 2);
 		const auto hovered_mouse = input::is_in_bounds(cursor_pos.x, cursor_pos.y, cursor_pos.x + TOGGLE_SIZE + 10, cursor_pos.y + TOGGLE_SIZE) || input::is_in_bounds(title_position, title_position + title_size);
@@ -313,7 +304,7 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 		const auto hover_animation = handle_animation(ctx->element_hover_animation(this_hash), target_hover_animation, 0.06f);
 		const auto toggle_animation = handle_animation(ctx->element_animation(this_hash), target_toggle_animation, 0.06f);
 
-		const auto& accent_color = config::get<color_t>(HASH_FNV_CT("ui.accent"));
+		const auto& accent_color = config::get<color_t>(FNV_CT("ui.accent"));
 		const auto hover_color = color_t(12 + static_cast<int>(24.0f * hover_animation));
 		const auto toggle_color = accent_color.adjust_alpha(static_cast<int>(255.0f * toggle_animation));
 
@@ -336,7 +327,7 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 
 template <typename T = float>
 void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T max_value, std::wstring_view format_string) {
-	const auto this_hash = HASH_FNV(title.data(), ctx->parent_hash);
+	const auto this_hash = FNV(title.data(), ctx->parent_hash);
 	const auto title_size = render::measure_text(e_font::UI_REGULAR, title);
 	const auto group_box_width = ctx->working_area.x;
 	const auto slider_position = point_t(ctx->cursor_pos.x, ctx->cursor_pos.y + title_size.y + 4);
@@ -345,7 +336,7 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 	if (!ctx->is_calculating_layout) {
 		auto& config_value = config::get<T>(config_item);
 
-		const auto slider_progress = map_number<float>(static_cast<float>(config_value), static_cast<float>(min_value), static_cast<float>(max_value), 0.0f, 1.0f);
+		const auto slider_progress = math::map_range<float>(static_cast<float>(config_value), static_cast<float>(min_value), static_cast<float>(max_value), 0.0f, 1.0f);
 		const auto slider_fill_width = std::clamp(static_cast<int>(static_cast<float>(slider_size.x) * slider_progress), 0, slider_size.x);
 		const auto hovered_mouse = input::is_in_bounds(slider_position, slider_position + slider_size);
 		const auto hovered = !ctx->is_being_dragged && !ctx->is_being_resized && (ctx->blocking_hash == 0 || ctx->blocking_hash == this_hash) && hovered_mouse;
@@ -355,7 +346,7 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 		}
 		else if (ctx->blocking_hash == this_hash && input::is_key_down(VK_LBUTTON)) {
 			const auto mouse_relative_pos = input::get_mouse_pos() - slider_position;
-			const auto new_value = map_number<float>(static_cast<float>(mouse_relative_pos.x), 0.0f, static_cast<float>(slider_size.x), static_cast<float>(min_value), static_cast<float>(max_value));
+			const auto new_value = math::map_range<float>(static_cast<float>(mouse_relative_pos.x), 0.0f, static_cast<float>(slider_size.x), static_cast<float>(min_value), static_cast<float>(max_value));
 
 			config_value = static_cast<T>(std::clamp<float>(new_value, static_cast<float>(min_value), static_cast<float>(max_value)));
 		}
@@ -373,12 +364,10 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 		render::fill_rect_rounded(slider_position - 1, slider_size + 2, 3, CORNER_ALL, color_t(38));
 		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, color_t(20));
 
-		render::push_clip(slider_position, point_t(slider_fill_width, slider_size.y));
-
-		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, config::get<color_t>(HASH_FNV_CT("ui.accent")).adjust_alpha(255));
-		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, hover_color);
-
-		render::pop_clip();
+		render::clipped(slider_position, point_t(slider_fill_width, slider_size.y), [&]() {
+			render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, config::get<color_t>(FNV_CT("ui.accent")).adjust_alpha(255));
+			render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, hover_color);
+		});
 
 		render::text(ctx->cursor_pos, e_font::UI_REGULAR, color_t(180), title);
 		render::text(ctx->cursor_pos.x + slider_size.x - value_label_size.x, ctx->cursor_pos.y, e_font::UI_REGULAR, color_t(180), value_label);
@@ -392,7 +381,7 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 }
 
 void gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value) {
-	slider_impl<int>(title, config_item, min_value, max_value, XORSTR(L"{}"));
+	slider_impl<int>(title, config_item, min_value, max_value, XOR(L"{}"));
 }
 
 void gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, std::wstring_view format_string) {
@@ -404,7 +393,7 @@ void gui::slider(std::wstring_view title, uint32_t config_item, int min_value, i
 }
 
 void gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value) {
-	slider_impl<float>(title, config_item, min_value, max_value, XORSTR(L"{:.0f}"));
+	slider_impl<float>(title, config_item, min_value, max_value, XOR(L"{:.0f}"));
 }
 
 void gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, std::wstring_view format_string) {

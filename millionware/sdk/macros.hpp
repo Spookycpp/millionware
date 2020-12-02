@@ -21,7 +21,7 @@ constexpr T call_vfunc(uintptr_t class_base, Args... args) {
   inline type& name() {                                                           \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                  \
     if (offset == 0)                                                              \
-      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));           \
+      utils::error_and_exit(e_error_code::NETVARS, FNV_CT(#name));                \
     return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset);  \
   }
 
@@ -29,7 +29,7 @@ constexpr T call_vfunc(uintptr_t class_base, Args... args) {
   inline type* name() {                                                         \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                \
     if (offset == 0)                                                            \
-      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));         \
+      utils::error_and_exit(e_error_code::NETVARS, FNV_CT(#name));              \
     return reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
   }
 
@@ -37,7 +37,7 @@ constexpr T call_vfunc(uintptr_t class_base, Args... args) {
   inline type& name() {                                                                               \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                                      \
     if (offset == 0)                                                                                  \
-      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));                               \
+      utils::error_and_exit(e_error_code::NETVARS, FNV_CT(#name));                                    \
     return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset + additional_offset);  \
   }
 
@@ -45,6 +45,6 @@ constexpr T call_vfunc(uintptr_t class_base, Args... args) {
   inline type* name() {                                                                             \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                                    \
     if (offset == 0)                                                                                \
-      utils::error_and_exit(e_error_code::NETVARS, HASH_FNV_CT(#name));                             \
+      utils::error_and_exit(e_error_code::NETVARS, FNV_CT(#name));                                  \
     return reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset + additional_offset); \
   }

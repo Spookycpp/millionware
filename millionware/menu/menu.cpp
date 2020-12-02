@@ -6,99 +6,99 @@
 #include "menu.hpp"
 
 void menu::frame() {
-	gui::window(XORSTR(L"millionware"), []() {
+	gui::window(XOR(L"millionware"), []() {
 		gui::tab(e_texture::LEGIT_22, []() {
-			const auto category_cb = [](uint32_t weapon_hash) {
+			const auto make_weapon_category = [](uint32_t weapon_hash) {
 				return [weapon_hash]() {
-					gui::group(XORSTR(L"Aimbot"), [weapon_hash]() {
-						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.aimbot.enable")));
-						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.aimbot.slider1")), 0, 100);
-						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.aimbot.slider2")), 0.0f, 45.0f);
+					gui::group(XOR(L"Aimbot"), [weapon_hash]() {
+						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.aimbot.enable")));
+						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.aimbot.slider1")), 0, 100);
+						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.aimbot.slider2")), 0.0f, 45.0f);
 					});
-					gui::group(XORSTR(L"Triggerbot"), [weapon_hash]() {
-						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.trigger.enable")));
-						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.trigger.slider1")), 0, 100);
-						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.trigger.slider2")), 0.0f, 45.0f);
+					gui::group(XOR(L"Triggerbot"), [weapon_hash]() {
+						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.trigger.enable")));
+						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.trigger.slider1")), 0, 100);
+						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.trigger.slider2")), 0.0f, 45.0f);
 					});
-					gui::group(XORSTR(L"Target selection"), [weapon_hash]() {
-						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.target.enable")));
-						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.target.slider1")), 0, 100);
-						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.target.slider2")), 0.0f, 45.0f);
+					gui::group(XOR(L"Target selection"), [weapon_hash]() {
+						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.target.enable")));
+						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.target.slider1")), 0, 100);
+						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.target.slider2")), 0.0f, 45.0f);
 					});
-					gui::group(XORSTR(L"Backtracking"), [weapon_hash]() {
-						gui::checkbox(XORSTR(L"Enable"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.backtrack.enable")));
-						gui::slider(XORSTR(L"Slider 1"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.backtrack.slider1")), 0, 100);
-						gui::slider(XORSTR(L"Slider 2"), HASH_FNV(weapon_hash, HASH_FNV_CT(".legit.backtrack.slider2")), 0.0f, 45.0f);
+					gui::group(XOR(L"Backtracking"), [weapon_hash]() {
+						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.backtrack.enable")));
+						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.backtrack.slider1")), 0, 100);
+						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.backtrack.slider2")), 0.0f, 45.0f);
 					});
 				};
 			};
 
-			gui::category(XORSTR(L"Pistols"), category_cb(HASH_FNV_CT("pistols")));
-			gui::category(XORSTR(L"Shotguns"), category_cb(HASH_FNV_CT("shotguns")));
-			gui::category(XORSTR(L"SMG"), category_cb(HASH_FNV_CT("smg")));
-			gui::category(XORSTR(L"Rifles"), category_cb(HASH_FNV_CT("rifles")));
-			gui::category(XORSTR(L"AWP"), category_cb(HASH_FNV_CT("awp")));
-			gui::category(XORSTR(L"Scout"), category_cb(HASH_FNV_CT("scout")));
-			gui::category(XORSTR(L"Auto snipers"), category_cb(HASH_FNV_CT("auto")));
+			gui::category(XOR(L"Pistols"), make_weapon_category(FNV_CT("pistols")));
+			gui::category(XOR(L"Shotguns"), make_weapon_category(FNV_CT("shotguns")));
+			gui::category(XOR(L"SMG"), make_weapon_category(FNV_CT("smg")));
+			gui::category(XOR(L"Rifles"), make_weapon_category(FNV_CT("rifles")));
+			gui::category(XOR(L"AWP"), make_weapon_category(FNV_CT("awp")));
+			gui::category(XOR(L"Scout"), make_weapon_category(FNV_CT("scout")));
+			gui::category(XOR(L"Auto snipers"), make_weapon_category(FNV_CT("auto")));
 		});
 		gui::tab(e_texture::VISUALS_22, []() {
-			const auto player_category_cb = []() {
-				gui::group(XORSTR(L"ESP"), []() {});
-				gui::group(XORSTR(L"Models"), []() {});
-			};
-			const auto items_category_cb = []() {
-				gui::group(XORSTR(L"ESP"), []() {});
-				gui::group(XORSTR(L"Models"), []() {});
-			};
-			const auto viewmodel_category_cb = []() {
-				gui::group(XORSTR(L"General"), []() {});
-				gui::group(XORSTR(L"Models"), []() {});
-			};
-			const auto world_category_cb = []() {
-				gui::group(XORSTR(L"Environment"), []() {});
-				gui::group(XORSTR(L"Weather"), []() {});
-				gui::group(XORSTR(L"Props and walls"), []() {});
-			};
-			const auto removables_category_cb = []() {
-				gui::group(XORSTR(L"World"), []() {});
-				gui::group(XORSTR(L"Post-processing"), []() {});
-				gui::group(XORSTR(L"View model"), []() {});
-			};
-
-			gui::category(XORSTR(L"Enemies"), player_category_cb);
-			gui::category(XORSTR(L"Allies"), player_category_cb);
-			gui::category(XORSTR(L"Dropped items"), items_category_cb);
-			gui::category(XORSTR(L"View model"), viewmodel_category_cb);
-			gui::category(XORSTR(L"World"), world_category_cb);
-			gui::category(XORSTR(L"Removables"), removables_category_cb);
+			gui::category(XOR(L"Enemies"), []() {
+				gui::group(XOR(L"ESP"), []() {});
+				gui::group(XOR(L"Models"), []() {});
+			});
+			gui::category(XOR(L"Allies"), []() {
+				gui::group(XOR(L"ESP"), []() {});
+				gui::group(XOR(L"Models"), []() {});
+			});
+			gui::category(XOR(L"Dropped items"), []() {
+				gui::group(XOR(L"ESP"), []() {});
+				gui::group(XOR(L"Models"), []() {});
+			});
+			gui::category(XOR(L"View model"), []() {
+				gui::group(XOR(L"General"), []() {});
+				gui::group(XOR(L"Models"), []() {});
+			});
+			gui::category(XOR(L"World"), []() {
+				gui::group(XOR(L"Environment"), []() {});
+				gui::group(XOR(L"Weather"), []() {});
+				gui::group(XOR(L"Props and walls"), []() {});
+			});
+			gui::category(XOR(L"Removables"), []() {
+				gui::group(XOR(L"World"), []() {});
+				gui::group(XOR(L"Post-processing"), []() {});
+				gui::group(XOR(L"View model"), []() {});
+			});
 		});
 		gui::tab(e_texture::MISC_22, []() {
-			const auto miscellaneous_cb = []() {
-				gui::group(XORSTR(L"General"), []() {
-					gui::checkbox(XORSTR(L"Bunny hop"), HASH_FNV_CT("misc.movement.bunny_hop"));
-					gui::checkbox(XORSTR(L"Infinite duck"), HASH_FNV_CT("misc.movement.infinite_duck"));
-					gui::checkbox(XORSTR(L"Auto strafer"), HASH_FNV_CT("misc.movement.auto_strafer"));
+			gui::category(XOR(L"General"), []() {
+				gui::group(XOR(L"Movement"), []() {
+					gui::checkbox(XOR(L"Bunny hop"), FNV_CT("misc.movement.bunny_hop"));
+					gui::checkbox(XOR(L"Infinite duck"), FNV_CT("misc.movement.infinite_duck"));
+					gui::checkbox(XOR(L"Auto strafer"), FNV_CT("misc.movement.auto_strafer"));
 				});
-			};
-			gui::category(XORSTR(L"Miscellaneous"), miscellaneous_cb);
+			});
 		});
 		gui::tab(e_texture::CHANGERS_22, []() {
-			const auto category_cb = []() {
-				gui::group(XORSTR(L"General"), []() {});
-			};
-
-			gui::category(XORSTR(L"Knife and gloves"), category_cb);
-			gui::category(XORSTR(L"Weapon skins"), category_cb);
-			gui::category(XORSTR(L"Agents"), category_cb);
+			gui::category(XOR(L"Knife and gloves"), []() {
+				gui::group(XOR(L"General"), []() {});
+			});
+			gui::category(XOR(L"Weapon skins"), []() {
+				gui::group(XOR(L"General"), []() {});
+			});
+			gui::category(XOR(L"Agents"), []() {
+				gui::group(XOR(L"General"), []() {});
+			});
 		});
 		gui::tab(e_texture::PROFILE_22, []() {
-			const auto category_cb = []() {
-				gui::group(XORSTR(L"General"), []() {});
-			};
-
-			gui::category(XORSTR(L"User settings"), category_cb);
-			gui::category(XORSTR(L"Presets"), category_cb);
-			gui::category(XORSTR(L"Scripts"), category_cb);
+			gui::category(XOR(L"User settings"), []() {
+				gui::group(XOR(L"General"), []() {});
+			});
+			gui::category(XOR(L"Presets"), []() {
+				gui::group(XOR(L"General"), []() {});
+			});
+			gui::category(XOR(L"Scripts"), []() {
+				gui::group(XOR(L"General"), []() {});
+			});
 		});
 	});
 }

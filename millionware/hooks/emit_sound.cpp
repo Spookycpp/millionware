@@ -12,12 +12,8 @@ void __fastcall hooks::emit_sound_hook(uintptr_t ecx, uintptr_t edx, uintptr_t f
 {
 	const auto _ = std::lock_guard(hooks::emit_sound.call_mutex);
 
-	if (!strcmp(sample_name, XORSTR("UIPanorama.popup_accept_match_beep")))
+	if (FNV(sample_name) == FNV_CT("UIPanorama.popup_accept_match_beep"))
 		features::misc::auto_accept();
-
-	// giggle
-	/*if (strstr(sample_name, XORSTR("land")) != nullptr)
-		Beep(500, 500);*/
 
 	reinterpret_cast<decltype(&emit_sound_hook)>(hooks::emit_sound.original)(
 		ecx, edx, filter, entity_index, channel, sound_entry, sound_entry_hash, sample_name, volume, attenuation, seed, flags, pitch,

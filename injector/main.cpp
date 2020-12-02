@@ -4,8 +4,7 @@
 #include <thread>
 #include <Windows.h>
 
-struct handle_wrapper
-{
+struct handle_wrapper {
 	HANDLE handle;
 
 	handle_wrapper(HANDLE handle)

@@ -1,6 +1,21 @@
-#pragma once
+/*
+ * Copyright 2017 - 2020 Justas Masiulis
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-#include "hash.hpp"
+#ifndef JM_XORSTR_HPP
+#define JM_XORSTR_HPP
 
 #include <immintrin.h>
 #include <cstdint>
@@ -8,98 +23,194 @@
 #include <utility>
 #include <type_traits>
 
-namespace detail
-{
-  template <size_t Size>
-  __forceinline constexpr size_t buffer_size() {
-    return ((Size / 16) + (Size % 16 != 0)) * 2;
-  }
+#define XOR_(str) ::jm::xor_string([]() { return str; }, std::integral_constant<std::size_t, sizeof(str) / sizeof(*str)>{}, std::make_index_sequence<::jm::detail::_buffer_size<sizeof(str)>()>{})
+#define XOR(str) XOR_(str).crypt_get()
 
-  template <uint32_t Seed>
-  __forceinline constexpr uint32_t key_32() {
-    auto value = Seed;
+#ifdef _MSC_VER
+#define XORSTR_FORCEINLINE __forceinline
+#else
+#define XORSTR_FORCEINLINE __attribute__((always_inline)) inline
+#endif
 
-    for (const auto ch : __TIME__)
-      value = static_cast<uint32_t>((value ^ ch) * 0x01000193ull);
+#if defined(__clang__) || defined(__GNUC__)
+#define JM_XORSTR_LOAD_FROM_REG(x) ::jm::detail::load_from_reg(x)
+#else
+#define JM_XORSTR_LOAD_FROM_REG(x) (x)
+#endif
 
-    return value;
-  }
+namespace jm {
 
-  template <size_t Size>
-  __forceinline constexpr uint64_t key_64() {
-    constexpr auto first_part = key_32<0x811C9DC5 + Size>();
-    constexpr auto second_part = key_32<first_part>();
+  namespace detail {
 
-    return (static_cast<uint64_t>(first_part) << 32) | second_part;
-  }
+    template<std::size_t Size>
+    XORSTR_FORCEINLINE constexpr std::size_t _buffer_size()
+    {
+      return ((Size / 16) + (Size % 16 != 0)) * 2;
+    }
 
-  template <typename char_type_t, size_t Length, size_t N>
-  __forceinline constexpr uint64_t load_xored_str_32(uint64_t key, size_t idx, const char_type_t(&str)[Length]) {
-    constexpr auto value_size = sizeof char_type_t;
-    constexpr auto idx_offset = 8 / value_size;
-    
-    auto value = key;
+    template<std::uint32_t Seed>
+    XORSTR_FORCEINLINE constexpr std::uint32_t key4() noexcept
+    {
+      std::uint32_t value = Seed;
+      for (char c : __TIME__)
+        value = static_cast<std::uint32_t>((value ^ c) * 16777619ull);
+      return value;
+    }
 
-    for (auto i = 0; i < idx_offset && i + idx * idx_offset < N; i++)
-      value ^= static_cast<uint64_t>(static_cast<char_type_t>(str[i + idx * idx_offset])) << ((i % idx_offset) * 8 * value_size);
+    template<std::size_t S>
+    XORSTR_FORCEINLINE constexpr std::uint64_t key8()
+    {
+      constexpr auto first_part = key4<2166136261 + S>();
+      constexpr auto second_part = key4<first_part>();
+      return (static_cast<std::uint64_t>(first_part) << 32) | second_part;
+    }
 
-    return value;
-  }
+    // loads up to 8 characters of string into uint64 and xors it with the key
+    template<std::size_t N, class CharT>
+    XORSTR_FORCEINLINE constexpr std::uint64_t
+      load_xored_str8(std::uint64_t key, std::size_t idx, const CharT* str) noexcept
+    {
+      using cast_type = typename std::make_unsigned<CharT>::type;
+      constexpr auto value_size = sizeof(CharT);
+      constexpr auto idx_offset = 8 / value_size;
 
-  __forceinline uint64_t load_from_reg(uint64_t value) noexcept {
-    return value;
-  }
-}
+      std::uint64_t value = key;
+      for (std::size_t i = 0; i < idx_offset && i + idx * idx_offset < N; ++i)
+        value ^=
+        (std::uint64_t{ static_cast<cast_type>(str[i + idx * idx_offset]) }
+      << ((i % idx_offset) * 8 * value_size));
 
-template <typename char_type_t, size_t Size, typename Keys, typename Indices>
-class xor_string;
+      return value;
+    }
 
-template<typename char_type_t, size_t Size, uint64_t... Keys, size_t... Indices>
-class xor_string<char_type_t, Size, std::integer_sequence<uint64_t, Keys...>, std::index_sequence<Indices...>>
-{
-  alignas(((Size > 16) ? 32 : 16)) uint64_t storage_[sizeof...(Keys)];
+    // forces compiler to use registers instead of stuffing constants in rdata
+    XORSTR_FORCEINLINE std::uint64_t load_from_reg(std::uint64_t value) noexcept
+    {
+#if defined(__clang__) || defined(__GNUC__)
+      asm("" : "=r"(value) : "0"(value) : );
+#endif
+      return value;
+    }
 
-public:
-  __forceinline xor_string(const char_type_t(&str)[Size], std::integral_constant<size_t, Size>, std::index_sequence<Indices...>)
-    : storage_{ detail::load_xored_str_32<char_type_t, Size, Size>(Keys, Indices, str)... } {}
+    template<std::uint64_t V>
+    struct uint64_v {
+      constexpr static std::uint64_t value = V;
+    };
 
-  __forceinline constexpr size_t size() const {
-    return Size - 1;
-  }
+  } // namespace detail
 
-  __forceinline void crypt() {
-    alignas(((Size > 16) ? 32 : 16)) const uint64_t keys[] = { Keys... };
+  template<class CharT, std::size_t Size, class Keys, class Indices>
+  class xor_string;
 
-    ((Indices >= sizeof(storage_) / 32
-      ? static_cast<void>(0)
-      : _mm256_store_si256(reinterpret_cast<__m256i*>(storage_) + Indices, _mm256_xor_si256(_mm256_load_si256(reinterpret_cast<const __m256i*>(storage_) + Indices), _mm256_load_si256(reinterpret_cast<const __m256i*>(keys) + Indices)))), ...);
+  template<class CharT, std::size_t Size, std::uint64_t... Keys, std::size_t... Indices>
+  class xor_string<CharT, Size, std::integer_sequence<std::uint64_t, Keys...>, std::index_sequence<Indices...>> {
+#ifndef JM_XORSTR_DISABLE_AVX_INTRINSICS
+    constexpr static inline std::uint64_t alignment = ((Size > 16) ? 32 : 16);
+#else
+    constexpr static inline std::uint64_t alignment = 16;
+#endif
 
-    if constexpr (sizeof(storage_) % 32 != 0)
-      _mm_store_si128(reinterpret_cast<__m128i*>(storage_ + sizeof...(Keys) - 2), _mm_xor_si128(_mm_load_si128(reinterpret_cast<const __m128i*>(storage_ + sizeof...(Keys) - 2)), _mm_load_si128(reinterpret_cast<const __m128i*>(keys + sizeof...(Keys) - 2))));
-  }
+    alignas(alignment) std::uint64_t _storage[sizeof...(Keys)];
 
-  __forceinline const char_type_t* get() const {
-    return reinterpret_cast<const char_type_t*>(storage_);
-  }
+  public:
+    using value_type = CharT;
+    using size_type = std::size_t;
+    using pointer = CharT*;
+    using const_pointer = const CharT*;
 
-  __forceinline char_type_t* get() {
-    return reinterpret_cast<char_type_t*>(storage_);
-  }
+    template<class L>
+    XORSTR_FORCEINLINE xor_string(L l, std::integral_constant<std::size_t, Size>, std::index_sequence<Indices...>) noexcept
+      : _storage{ JM_XORSTR_LOAD_FROM_REG(detail::uint64_v<detail::load_xored_str8<Size>(Keys, Indices, l())>::value)... }
+    {}
 
-  __forceinline const char_type_t* crypt_get() const {
-    crypt();
+    XORSTR_FORCEINLINE constexpr size_type size() const noexcept
+    {
+      return Size - 1;
+    }
 
-    return get();
-  }
+    XORSTR_FORCEINLINE void crypt() noexcept
+    {
+#if defined(__clang__)
+      alignas(alignment)
+        std::uint64_t arr[]{ JM_XORSTR_LOAD_FROM_REG(Keys)... };
+      std::uint64_t* keys =
+        (std::uint64_t*)JM_XORSTR_LOAD_FROM_REG((std::uint64_t)arr);
+#else
+      alignas(alignment) std::uint64_t keys[]{ JM_XORSTR_LOAD_FROM_REG(Keys)... };
+#endif
 
-  __forceinline char_type_t* crypt_get() {
-    crypt();
+#ifndef JM_XORSTR_DISABLE_AVX_INTRINSICS
+      ((Indices >= sizeof(_storage) / 32 ? static_cast<void>(0) : _mm256_store_si256(
+        reinterpret_cast<__m256i*>(_storage) + Indices,
+        _mm256_xor_si256(
+          _mm256_load_si256(reinterpret_cast<const __m256i*>(_storage) + Indices),
+          _mm256_load_si256(reinterpret_cast<const __m256i*>(keys) + Indices)))), ...);
 
-    return get();
-  }
-};
+      if constexpr (sizeof(_storage) % 32 != 0)
+        _mm_store_si128(
+          reinterpret_cast<__m128i*>(_storage + sizeof...(Keys) - 2),
+          _mm_xor_si128(_mm_load_si128(reinterpret_cast<const __m128i*>(_storage + sizeof...(Keys) - 2)),
+            _mm_load_si128(reinterpret_cast<const __m128i*>(keys + sizeof...(Keys) - 2))));
+#else
+      ((Indices >= sizeof(_storage) / 16 ? static_cast<void>(0) : _mm_store_si128(
+        reinterpret_cast<__m128i*>(_storage) + Indices,
+        _mm_xor_si128(_mm_load_si128(reinterpret_cast<const __m128i*>(_storage) + Indices),
+          _mm_load_si128(reinterpret_cast<const __m128i*>(keys) + Indices)))), ...);
+#endif
+    }
 
-template<typename char_type_t, size_t Size, size_t... Indices>
-xor_string(const char_type_t(&str)[Size], std::integral_constant<size_t, Size>, std::index_sequence<Indices...>) -> xor_string<char_type_t, Size, std::integer_sequence<uint64_t, detail::key_32<Indices>()...>, std::index_sequence<Indices...>>;
+    XORSTR_FORCEINLINE const_pointer get() const noexcept
+    {
+      return reinterpret_cast<const_pointer>(_storage);
+    }
 
-#define XORSTR(str) xor_string(str, std::integral_constant<size_t, sizeof(str) / sizeof(str[0])>{}, std::make_index_sequence<detail::buffer_size<sizeof(str)>()>{}).crypt_get()
+    XORSTR_FORCEINLINE pointer get() noexcept
+    {
+      return reinterpret_cast<pointer>(_storage);
+    }
+
+    XORSTR_FORCEINLINE pointer crypt_get() noexcept
+    {
+      // crypt() function inlined by hand, because MSVC linker chokes when you have a lot of strings
+      // on 32 bit builds, so don't blame me for shit code :pepekms:
+#if defined(__clang__)
+      alignas(alignment)
+        std::uint64_t arr[]{ JM_XORSTR_LOAD_FROM_REG(Keys)... };
+      std::uint64_t* keys =
+        (std::uint64_t*)JM_XORSTR_LOAD_FROM_REG((std::uint64_t)arr);
+#else
+      alignas(alignment) std::uint64_t keys[]{ JM_XORSTR_LOAD_FROM_REG(Keys)... };
+#endif
+
+#ifndef JM_XORSTR_DISABLE_AVX_INTRINSICS
+      ((Indices >= sizeof(_storage) / 32 ? static_cast<void>(0) : _mm256_store_si256(
+        reinterpret_cast<__m256i*>(_storage) + Indices,
+        _mm256_xor_si256(
+          _mm256_load_si256(reinterpret_cast<const __m256i*>(_storage) + Indices),
+          _mm256_load_si256(reinterpret_cast<const __m256i*>(keys) + Indices)))), ...);
+
+      if constexpr (sizeof(_storage) % 32 != 0)
+        _mm_store_si128(
+          reinterpret_cast<__m128i*>(_storage + sizeof...(Keys) - 2),
+          _mm_xor_si128(_mm_load_si128(reinterpret_cast<const __m128i*>(_storage + sizeof...(Keys) - 2)),
+            _mm_load_si128(reinterpret_cast<const __m128i*>(keys + sizeof...(Keys) - 2))));
+#else
+      ((Indices >= sizeof(_storage) / 16 ? static_cast<void>(0) : _mm_store_si128(
+        reinterpret_cast<__m128i*>(_storage) + Indices,
+        _mm_xor_si128(_mm_load_si128(reinterpret_cast<const __m128i*>(_storage) + Indices),
+          _mm_load_si128(reinterpret_cast<const __m128i*>(keys) + Indices)))), ...);
+#endif
+      return (pointer)(_storage);
+    }
+  };
+
+  template<class L, std::size_t Size, std::size_t... Indices>
+  xor_string(L l, std::integral_constant<std::size_t, Size>, std::index_sequence<Indices...>)->xor_string<
+    std::remove_const_t<std::remove_reference_t<decltype(l()[0])>>,
+    Size,
+    std::integer_sequence<std::uint64_t, detail::key8<Indices>()...>,
+    std::index_sequence<Indices...>>;
+
+} // namespace jm
+
+#endif // include guard

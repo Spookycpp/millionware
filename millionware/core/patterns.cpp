@@ -8,8 +8,9 @@
 #include "../utils/xorstr.hpp"
 #include "patterns.hpp"
 
-struct pattern_entry_t
-{
+struct pattern_entry_t {
+  uintptr_t* out_pattern;
+
   char module_name[32];
   char pattern[128];
 
@@ -20,10 +21,10 @@ struct pattern_entry_t
 };
 
 __declspec(dllexport) pattern_entry_t g_patterns[] = {
-  {"vguimatsurface.dll", "55 8B EC 83 E4 C0 83 EC 38", 0, 0, 0},
-  {"vguimatsurface.dll", "8B 0D ? ? ? ? 56 C6 05", 0, 0, 0},
-  {"client.dll", "56 8B F1 85 F6 74 31", 0, 0, 0},
-  {"client.dll", "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12", 0, 0, 0},
+  {&patterns::engine_vgui_start_drawing, "vguimatsurface.dll", "55 8B EC 83 E4 C0 83 EC 38", 0, 0, 0},
+  {&patterns::engine_vgui_finish_drawing, "vguimatsurface.dll", "8B 0D ? ? ? ? 56 C6 05", 0, 0, 0},
+  {&patterns::player_has_bomb, "client.dll", "56 8B F1 85 F6 74 31", 0, 0, 0},
+  {&patterns::set_local_player_ready, "client.dll", "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12", 0, 0, 0},
 };
 
 inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
@@ -83,16 +84,15 @@ void patterns::initialize() {
       }
     }
 
-    entry.module_hash = HASH_FNV(entry.module_name);
-    entry.pattern_hash = HASH_FNV(entry.pattern);
+    entry.module_hash = FNV(entry.module_name);
+    entry.pattern_hash = FNV(entry.pattern);
 
     memset(entry.module_name, 0, sizeof entry.module_name);
     memset(entry.pattern, 0, sizeof entry.pattern);
   }
 #endif
 
-  engine_vgui_start_drawing = get_pattern(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("55 8B EC 83 E4 C0 83 EC 38"));
-  engine_vgui_finish_drawing = get_pattern(HASH_FNV_CT("vguimatsurface.dll"), HASH_FNV_CT("8B 0D ? ? ? ? 56 C6 05"));
-  player_has_bomb = get_pattern(HASH_FNV_CT("client.dll"), HASH_FNV_CT("56 8B F1 85 F6 74 31"));
-  set_local_player_ready = get_pattern(HASH_FNV_CT("client.dll"), HASH_FNV_CT("55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
+  for (const auto& entry : g_patterns) {
+    *entry.out_pattern = get_pattern(entry.module_hash, entry.pattern_hash);
+  }
 }

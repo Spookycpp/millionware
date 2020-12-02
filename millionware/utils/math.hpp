@@ -3,8 +3,8 @@
 #include "../sdk/matrix.hpp"
 #include "../sdk/vector.hpp"
 
-namespace math
-{
+namespace math {
+
   constexpr auto PI_F = 3.14159265358979323846f;
   constexpr auto PI_D = 3.141592653589793238462643383279502884;
 
@@ -33,4 +33,5 @@ namespace math
 
     return output;
   }
+
 }

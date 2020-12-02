@@ -167,9 +167,6 @@
     <ClInclude Include="utils\math.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sdk\font_flag.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sdk\engine_vgui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

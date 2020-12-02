@@ -4,17 +4,17 @@
 #include <string_view>
 #include <unordered_map>
 
-namespace config
-{
-  namespace detail
-  {
-    struct config_item_t
-    {
-      uint8_t data[64] = { 0 };
-    };
+namespace detail {
 
-    inline std::unordered_map<uint32_t, config_item_t> items = {};
-  }
+  struct config_item_t {
+    uint8_t data[64] = { 0 };
+  };
+
+  inline std::unordered_map<uint32_t, config_item_t> items = {};
+
+}
+
+namespace config {
 
   void initialize();
 
@@ -30,4 +30,5 @@ namespace config
 
     return *reinterpret_cast<T*>(detail::items[item].data);
   }
-};
+
+}

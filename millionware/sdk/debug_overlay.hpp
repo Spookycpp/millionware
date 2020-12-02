@@ -3,8 +3,7 @@
 #include "macros.hpp"
 #include "vector.hpp"
 
-class c_debug_overlay
-{
+class c_debug_overlay {
 	VIRTUAL_METHOD(int, screen_position, 13, (const vector3_t& in, vector3_t& out), &in, &out);
 
 public:

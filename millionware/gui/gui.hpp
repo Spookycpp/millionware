@@ -16,8 +16,7 @@
     return name##_map[index];                                     \
   }
 
-struct window_context_t
-{
+struct window_context_t {
   // basic window info
   bool is_open;
 
@@ -71,8 +70,8 @@ struct window_context_t
   HELPER_METHOD(uint32_t, float, element_animation, 0.0f);
 };
 
-namespace gui
-{
+namespace gui {
+
 	void initialize();
 
 	std::shared_ptr<window_context_t> get_context();
@@ -89,4 +88,5 @@ namespace gui
   void slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value);
   void slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, std::wstring_view format_string);
   void slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, const std::function<std::wstring_view(float)>& format_string_fn);
+
 }
