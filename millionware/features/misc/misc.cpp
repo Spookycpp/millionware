@@ -77,3 +77,22 @@ void features::misc::clantag() {
 		is_disabled = true;
 	}
 }
+
+void features::misc::name_spam() {
+	if (!config::get<bool>(FNV_CT("misc.other.name_spam")))
+		return;
+
+	static const auto name = interfaces::convar_system->find(XOR("name"));
+	name->callbacks.remove_all();
+	name->set_value(XOR("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"));
+}
+
+void features::misc::panoramic_blur() {
+	static const auto blur = interfaces::convar_system->find(XOR("@panorama_disable_blur"));
+	blur->set_value(config::get<bool>(FNV_CT("misc.other.disable_panorama_blur")));
+}
+
+void features::misc::post_processing() {
+	static const auto post_processing = interfaces::convar_system->find(XOR("mat_postprocess_enable"));
+	post_processing->set_value(!config::get<bool>(FNV_CT("misc.other.post_processing")));
+}

@@ -75,8 +75,11 @@ void menu::frame() {
 					gui::checkbox(XOR(L"Bunny hop"), FNV_CT("misc.movement.bunny_hop"));
 					gui::checkbox(XOR(L"Infinite duck"), FNV_CT("misc.movement.infinite_duck"));
 					gui::checkbox(XOR(L"Auto strafer"), FNV_CT("misc.movement.auto_strafer"));
-					gui::slider(XOR(L"Aspect Ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
-					gui::checkbox(XOR(L"Clen Teg"), FNV_CT("misc.other.clantag"));
+					gui::slider(XOR(L"Aspect ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
+					gui::checkbox(XOR(L"Clan tag"), FNV_CT("misc.other.clantag"));
+					gui::checkbox(XOR(L"Name spam"), FNV_CT("misc.other.name_spam"));
+					gui::checkbox(XOR(L"Disable panoramic blur"), FNV_CT("misc.other.disable_panorama_blur"));
+					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing"));
 				});
 			});
 		});

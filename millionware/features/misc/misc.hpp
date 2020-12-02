@@ -12,5 +12,8 @@ namespace features::misc {
 	void rank_reveal();
 	void aspect_ratio();
 	void clantag();
+	void name_spam();
+	void panoramic_blur();
+	void post_processing();
 
 }
