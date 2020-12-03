@@ -1,21 +1,18 @@
 #pragma once
 
-class c_entity;
-
-class c_base_handle {
-public:
-  explicit constexpr c_base_handle(unsigned long handle)
-    : handle(handle) {}
-
+struct base_handle_t {
   unsigned long handle;
 
-  c_entity* get() const;
+  explicit constexpr base_handle_t(unsigned long handle)
+    : handle(handle) {}
 
-  bool operator ==(const c_base_handle& other) const;
-  bool operator ==(c_entity* entity) const;
+  class c_entity* get() const;
 
-  bool operator !=(const c_base_handle& other) const;
-  bool operator !=(c_entity* entity) const;
+  bool operator ==(const base_handle_t& other) const;
+  bool operator ==(class c_entity* entity) const;
+
+  bool operator !=(const base_handle_t& other) const;
+  bool operator !=(class c_entity* entity) const;
 };
 
-constexpr static c_base_handle INVALID_HANDLE = c_base_handle(0xFFFFFFFF);
+constexpr static base_handle_t INVALID_HANDLE = base_handle_t(0xFFFFFFFF);

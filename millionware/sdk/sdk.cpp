@@ -1,25 +1,46 @@
 #include "../core/interfaces.hpp"
 #include "../core/patterns.hpp"
 #include "base_handle.hpp"
+#include "material_handle.hpp"
 
-c_entity* c_base_handle::get() const {
+c_entity* base_handle_t::get() const {
   return interfaces::entity_list->get_by_handle(*this);
 }
 
-bool c_base_handle::operator ==(const c_base_handle& other) const {
+bool base_handle_t::operator ==(const base_handle_t& other) const {
   return handle == other.handle;
 }
 
-bool c_base_handle::operator ==(c_entity* entity) const {
+bool base_handle_t::operator ==(c_entity* entity) const {
   return get() == entity;
 }
 
-bool c_base_handle::operator !=(const c_base_handle& other) const {
+bool base_handle_t::operator !=(const base_handle_t& other) const {
   return handle != other.handle;
 }
 
-bool c_base_handle::operator !=(c_entity* entity) const {
+bool base_handle_t::operator !=(c_entity* entity) const {
   return get() != entity;
+}
+
+material_t* material_handle_t::get() const {
+  return interfaces::material_system->get_material(*this);
+}
+
+bool material_handle_t::operator ==(const material_handle_t& other) const {
+  return handle == other.handle;
+}
+
+bool material_handle_t::operator ==(struct material_t* material) const {
+  return get() == material;
+}
+
+bool material_handle_t::operator !=(const material_handle_t& other) const {
+  return handle != other.handle;
+}
+
+bool material_handle_t::operator !=(struct material_t* material) const {
+  return get() != material;
 }
 
 c_player* c_entity::as_player() {

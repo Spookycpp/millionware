@@ -107,7 +107,7 @@ public:
 	NETVAR_DEFINITION(vector3_t, origin, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecOrigin"));
 	NETVAR_DEFINITION(vector3_t, view_offset, FNV_CT("DT_CSPlayer"), FNV_CT("m_vecViewOffset[0]"));
 	NETVAR_DEFINITION(matrix3x4_t, entity_to_world_matrix, -48, FNV_CT("DT_BaseEntity"), FNV_CT("m_CollisionGroup"));
-	NETVAR_DEFINITION(c_base_handle, owner_handle, FNV_CT("DT_BaseEntity"), FNV_CT("m_hOwnerEntity"));
+	NETVAR_DEFINITION(base_handle_t, owner_handle, FNV_CT("DT_BaseEntity"), FNV_CT("m_hOwnerEntity"));
 
   VIRTUAL_METHOD(c_collideable*, get_collideable, 3, ());
   VIRTUAL_METHOD(bool, is_player, 157, ());
@@ -135,8 +135,8 @@ public:
   NETVAR_DEFINITION(vector3_t, punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("m_viewPunchAngle"));
   NETVAR_DEFINITION(vector3_t, aim_punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("m_aimPunchAngle"));
   NETVAR_DEFINITION(vector3_t, velocity, FNV_CT("DT_BasePlayer"), FNV_CT("m_vecVelocity[0]"));
-  NETVAR_DEFINITION(c_base_handle, observer_target, FNV_CT("DT_BasePlayer"), FNV_CT("m_hObserverTarget"));
-  NETVAR_DEFINITION(c_base_handle, active_weapon_handle, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_hActiveWeapon"));
+  NETVAR_DEFINITION(base_handle_t, observer_target, FNV_CT("DT_BasePlayer"), FNV_CT("m_hObserverTarget"));
+  NETVAR_DEFINITION(base_handle_t, active_weapon_handle, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_hActiveWeapon"));
 
   bool has_bomb() const;
 };

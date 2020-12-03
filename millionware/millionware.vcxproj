@@ -150,6 +150,7 @@
     <ClInclude Include="sdk\client_dll.hpp" />
     <ClInclude Include="sdk\color.hpp" />
     <ClInclude Include="sdk\convar.hpp" />
+    <ClInclude Include="sdk\convar_system.hpp" />
     <ClInclude Include="sdk\engine_client.hpp" />
     <ClInclude Include="sdk\engine_sound.hpp" />
     <ClInclude Include="sdk\engine_vgui.hpp" />
@@ -157,12 +158,18 @@
     <ClInclude Include="sdk\entity_list.hpp" />
     <ClInclude Include="sdk\global_vars.hpp" />
     <ClInclude Include="sdk\macros.hpp" />
+    <ClInclude Include="sdk\material.hpp" />
+    <ClInclude Include="sdk\material_handle.hpp" />
+    <ClInclude Include="sdk\material_system.hpp" />
     <ClInclude Include="sdk\matrix.hpp" />
+    <ClInclude Include="sdk\model_render.hpp" />
     <ClInclude Include="sdk\network_channel.hpp" />
     <ClInclude Include="sdk\player_info.hpp" />
     <ClInclude Include="sdk\recv_props.hpp" />
     <ClInclude Include="sdk\typedefs.hpp" />
     <ClInclude Include="sdk\user_cmd.hpp" />
+    <ClInclude Include="sdk\valve_memory.hpp" />
+    <ClInclude Include="sdk\valve_vector.hpp" />
     <ClInclude Include="sdk\vector.hpp" />
     <ClInclude Include="sdk\vertex.hpp" />
     <ClInclude Include="sdk\vgui.hpp" />

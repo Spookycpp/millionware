@@ -83,7 +83,8 @@ void features::misc::name_spam() {
 		return;
 
 	static const auto name = interfaces::convar_system->find(XOR("name"));
-	name->callbacks.remove_all();
+
+	name->callbacks.element_count(0);
 	name->set_value(XOR("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"));
 }
 
