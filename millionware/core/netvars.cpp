@@ -6,8 +6,6 @@
 static detail::netvar_tree_t nodes = {};
 
 void populate_nodes(recv_table_t* recv_table, detail::netvar_tree_t& map) {
-	const auto localdata_str = XOR("localdata");
-
 	for (auto i = 0; i < recv_table->prop_count; i++) {
 		const auto prop = &recv_table->props[i];
 
