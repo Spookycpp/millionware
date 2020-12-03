@@ -59,27 +59,34 @@ void menu::frame() {
 				gui::group(XOR(L"Models"), []() {});
 			});
 			gui::category(XOR(L"World"), []() {
-				gui::group(XOR(L"Environment"), []() {});
 				gui::group(XOR(L"Weather"), []() {});
 				gui::group(XOR(L"Props and walls"), []() {});
 			});
 			gui::category(XOR(L"Removables"), []() {
-				gui::group(XOR(L"World"), []() {});
-				gui::group(XOR(L"Post-processing"), []() {});
-				gui::group(XOR(L"View model"), []() {});
+				gui::group(XOR(L"Environment"), []() {});
+
+				gui::group(XOR(L"Post-processing"), []() {
+					gui::slider(XOR(L"Aspect ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
+					gui::checkbox(XOR(L"Disable panoramic blur"), FNV_CT("misc.other.disable_panorama_blur"));
+					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing")); 
+				});
+
+				gui::group(XOR(L"Effects"), []() {
+					gui::slider(XOR(L"Aspect ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
+				});
 			});
 		});
 		gui::tab(e_texture::MISC_22, []() {
 			gui::category(XOR(L"General"), []() {
-				gui::group(XOR(L"Movement"), []() {
+				gui::group(XOR(L"Miscellaneous"), []() {
 					gui::checkbox(XOR(L"Bunny hop"), FNV_CT("misc.movement.bunny_hop"));
 					gui::checkbox(XOR(L"Infinite duck"), FNV_CT("misc.movement.infinite_duck"));
 					gui::checkbox(XOR(L"Auto strafer"), FNV_CT("misc.movement.auto_strafer"));
-					gui::slider(XOR(L"Aspect ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
 					gui::checkbox(XOR(L"Clan tag"), FNV_CT("misc.other.clantag"));
 					gui::checkbox(XOR(L"Name spam"), FNV_CT("misc.other.name_spam"));
-					gui::checkbox(XOR(L"Disable panoramic blur"), FNV_CT("misc.other.disable_panorama_blur"));
+					
 					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing"));
+
 				});
 			});
 		});
