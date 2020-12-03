@@ -20,7 +20,8 @@
 
 #define REMOVE_HOOK(storage)                                                      \
   if (MH_RemoveHook(reinterpret_cast<LPVOID>(storage.function)) != MH_OK)         \
-    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("remove " #storage));
+    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("remove " #storage));       \
+  const auto _##storage##_lock = std::lock_guard(storage.function);
 
 template <typename T>
 inline uintptr_t get_vfunc_address(T* base_interface, size_t index) {
@@ -97,19 +98,6 @@ void hooks::shutdown() {
   REMOVE_HOOK(screen_size_changed);
   REMOVE_HOOK(emit_sound);
 
-  // make sure we can hold the call guards, so that means the hook isnt running
-  // and we can safely free the trampoline code and shit and exit out!
-  const auto _1 = std::lock_guard(create_move.call_mutex);
-  const auto _2 = std::lock_guard(level_init_post_entity.call_mutex);
-  const auto _3 = std::lock_guard(level_shutdown_pre_entity.call_mutex);
-  const auto _4 = std::lock_guard(frame_stage_notify.call_mutex);
-  const auto _5 = std::lock_guard(engine_paint.call_mutex);
-  const auto _6 = std::lock_guard(lock_cursor.call_mutex);
-  const auto _7 = std::lock_guard(screen_size_changed.call_mutex);
-  const auto _8 = std::lock_guard(emit_sound.call_mutex);
-  const auto _9 = std::lock_guard(hk_is_playing_demo.call_mutex);
-  const auto _10 = std::lock_guard(override_config.call_mutex);
-
   // lets hope no hooks are running :D
   if (MH_Uninitialize() != MH_OK)
     utils::error_and_exit(e_error_code::HOOKS, FNV_CT("minhook uninitialize"));
@@ -119,5 +107,4 @@ void hooks::shutdown() {
   interfaces::convar_system->find(XOR("r_aspectratio"))->set_value(0.f);
   interfaces::convar_system->find(XOR("@panorama_disable_blur"))->set_value(false);
   interfaces::convar_system->find(XOR("mat_postprocess_enable"))->set_value(true);
-
 }
