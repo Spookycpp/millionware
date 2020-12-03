@@ -21,7 +21,7 @@
 #define REMOVE_HOOK(storage)                                                      \
   if (MH_RemoveHook(reinterpret_cast<LPVOID>(storage.function)) != MH_OK)         \
     utils::error_and_exit(e_error_code::HOOKS, FNV_CT("remove " #storage));       \
-  const auto _##storage##_lock = std::lock_guard(storage.function);
+  const auto _##storage##_lock = std::lock_guard(storage.call_mutex);
 
 template <typename T>
 inline uintptr_t get_vfunc_address(T* base_interface, size_t index) {
