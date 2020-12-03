@@ -56,17 +56,14 @@ void features::misc::aspect_ratio() {
 }
 
 void features::misc::clantag() {
-
-	static float next_time = -1.f;
-	static bool is_disabled = false;
+	static auto is_disabled = false;
+	static auto next_time = -1.0f;
 
 	static const auto set_clantag_fn = reinterpret_cast<int(__fastcall*)(const char*, const char*)>(patterns::set_clantag);
 
 	if (config::get<bool>(FNV_CT("misc.other.clantag"))) {
-
 		if (interfaces::global_vars->current_time >= next_time) {
 			set_clantag_fn(XOR("$ millionware"), XOR(""));
-
 			next_time = interfaces::global_vars->current_time + 1.f;
 		}
 
@@ -89,19 +86,20 @@ void features::misc::name_spam() {
 }
 
 void features::misc::panoramic_blur() {
-	static const auto blur = interfaces::convar_system->find(XOR("@panorama_disable_blur"));
-	blur->set_value(config::get<bool>(FNV_CT("misc.other.disable_panorama_blur")));
+	static const auto panorama_disable_blur = interfaces::convar_system->find(XOR("@panorama_disable_blur"));
+
+	panorama_disable_blur->set_value(config::get<bool>(FNV_CT("misc.other.disable_panorama_blur")));
 }
 
 void features::misc::post_processing() {
-	static const auto post_processing = interfaces::convar_system->find(XOR("mat_postprocess_enable"));
-	post_processing->set_value(!config::get<bool>(FNV_CT("misc.other.post_processing")));
+	static const auto mat_postprocess_enable = interfaces::convar_system->find(XOR("mat_postprocess_enable"));
+
+	mat_postprocess_enable->set_value(!config::get<bool>(FNV_CT("misc.other.post_processing")));
 }
 
 void features::misc::remove_flash() {
-	auto local = interfaces::entity_list->get_by_index(interfaces::engine_client->get_local_player())->as_player();
-	if (!local)
+	if (cheat::local_player == nullptr)
 		return;
 
-	local->flash_alpha() = config::get<int>(FNV_CT("misc.other.remove_flash")) ? 0.f : 255.f;
+	cheat::local_player->flash_alpha() = config::get<bool>(FNV_CT("misc.other.remove_flash")) ? 0.0f : 255.0f;
 }

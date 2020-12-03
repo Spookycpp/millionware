@@ -3,7 +3,7 @@
 #include <mutex>
 
 #include "../sdk/user_cmd.hpp"
-#include "../sdk/material_system.hpp"
+#include "../sdk/material_system_config.hpp"
 
 struct hook_storage_t {
   uintptr_t function = 0;
@@ -28,7 +28,7 @@ namespace hooks {
 
   extern bool __fastcall create_move_hook(uintptr_t, uintptr_t, float, user_cmd_t*);
   extern bool __fastcall playing_demo_hook(uintptr_t* ecx, uintptr_t* edx);
-  extern bool __fastcall override_config_hook(uintptr_t, uintptr_t, c_material_system_config* config, bool update);
+  extern bool __fastcall override_config_hook(uintptr_t, uintptr_t, material_system_config_t* config, bool update);
   extern void __fastcall level_init_post_entity_hook(uintptr_t, uintptr_t);
   extern void __fastcall level_shutdown_pre_entity_hook(uintptr_t, uintptr_t);
   extern void __fastcall frame_stage_notify_hook(uintptr_t, uintptr_t, int);

@@ -162,6 +162,7 @@
     <ClInclude Include="sdk\material.hpp" />
     <ClInclude Include="sdk\material_handle.hpp" />
     <ClInclude Include="sdk\material_system.hpp" />
+    <ClInclude Include="sdk\material_system_config.hpp" />
     <ClInclude Include="sdk\matrix.hpp" />
     <ClInclude Include="sdk\model_render.hpp" />
     <ClInclude Include="sdk\network_channel.hpp" />
