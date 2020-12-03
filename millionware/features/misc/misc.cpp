@@ -105,8 +105,3 @@ void features::misc::remove_flash() {
 
 	local->flash_alpha() = config::get<int>(FNV_CT("misc.other.remove_flash")) ? 0.f : 255.f;
 }
-
-void features::misc::fullbright() {
-	auto blur = interfaces::convar_system->find(XOR("mat_fullbright"));
-	blur->set_value(!config::get<bool>(FNV_CT("misc.other.world.fullbright")) ? 0 : 1);
-} 

@@ -43,6 +43,9 @@ void hooks::initialize() {
   hk_is_playing_demo.function = get_vfunc_address(interfaces::engine_client, 82);
   hk_is_playing_demo.detour = reinterpret_cast<uintptr_t>(&playing_demo_hook);
 
+  override_config.function = get_vfunc_address(interfaces::material_system, 21);
+  override_config.detour = reinterpret_cast<uintptr_t>(&override_config_hook);
+
   level_init_post_entity.function = get_vfunc_address(interfaces::client, 6);
   level_init_post_entity.detour = reinterpret_cast<uintptr_t>(&level_init_post_entity_hook);
 
@@ -66,6 +69,7 @@ void hooks::initialize() {
 
   ADD_HOOK(create_move);
   ADD_HOOK(hk_is_playing_demo);
+  ADD_HOOK(override_config);
   ADD_HOOK(level_init_post_entity);
   ADD_HOOK(level_shutdown_pre_entity);
   ADD_HOOK(frame_stage_notify);
@@ -84,6 +88,7 @@ void hooks::shutdown() {
 
   REMOVE_HOOK(create_move);
   REMOVE_HOOK(hk_is_playing_demo);
+  REMOVE_HOOK(override_config);
   REMOVE_HOOK(level_init_post_entity);
   REMOVE_HOOK(level_shutdown_pre_entity);
   REMOVE_HOOK(frame_stage_notify);
@@ -103,6 +108,7 @@ void hooks::shutdown() {
   const auto _7 = std::lock_guard(screen_size_changed.call_mutex);
   const auto _8 = std::lock_guard(emit_sound.call_mutex);
   const auto _9 = std::lock_guard(hk_is_playing_demo.call_mutex);
+  const auto _10 = std::lock_guard(override_config.call_mutex);
 
   // lets hope no hooks are running :D
   if (MH_Uninitialize() != MH_OK)

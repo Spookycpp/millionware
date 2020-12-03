@@ -17,5 +17,4 @@ namespace features::misc {
 	void post_processing();
 	void remove_flash();
 	void remove_smoke();
-	void fullbright();
 }

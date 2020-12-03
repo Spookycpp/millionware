@@ -60,7 +60,7 @@ void menu::frame() {
 			});
 			gui::category(XOR(L"Emviroment"), []() {
 				gui::group(XOR(L"World"), []() {
-					gui::checkbox(XOR(L"Fullbright"), FNV_CT("misc.other.world.fullbright"));
+					gui::checkbox(XOR(L"Fullbright"), FNV_CT("misc.other.world.full_bright"));
 				});
 				
 				gui::group(XOR(L"Props and walls"), []() {});
