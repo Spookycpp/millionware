@@ -15,6 +15,7 @@ struct hook_storage_t {
 namespace hooks {
 
   inline hook_storage_t create_move;
+  inline hook_storage_t hk_is_playing_demo;
   inline hook_storage_t level_init_post_entity;
   inline hook_storage_t level_shutdown_pre_entity;
   inline hook_storage_t frame_stage_notify;
@@ -24,6 +25,7 @@ namespace hooks {
   inline hook_storage_t emit_sound;
 
   extern bool __fastcall create_move_hook(uintptr_t, uintptr_t, float, user_cmd_t*);
+  extern bool __fastcall playing_demo_hook(uintptr_t* ecx, uintptr_t* edx);
   extern void __fastcall level_init_post_entity_hook(uintptr_t, uintptr_t);
   extern void __fastcall level_shutdown_pre_entity_hook(uintptr_t, uintptr_t);
   extern void __fastcall frame_stage_notify_hook(uintptr_t, uintptr_t, int);

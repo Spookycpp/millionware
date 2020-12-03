@@ -96,3 +96,16 @@ void features::misc::post_processing() {
 	static const auto post_processing = interfaces::convar_system->find(XOR("mat_postprocess_enable"));
 	post_processing->set_value(!config::get<bool>(FNV_CT("misc.other.post_processing")));
 }
+
+void features::misc::remove_flash() {
+	auto local = interfaces::entity_list->get_by_index(interfaces::engine_client->get_local_player())->as_player();
+	if (!local)
+		return;
+
+	local->flash_alpha() = config::get<int>(FNV_CT("misc.other.remove_flash")) ? 0.f : 255.f;
+}
+
+void features::misc::fullbright() {
+	auto blur = interfaces::convar_system->find(XOR("mat_fullbright"));
+	blur->set_value(!config::get<bool>(FNV_CT("misc.other.world.fullbright")) ? 0 : 1);
+} 

@@ -93,6 +93,9 @@
     <ClCompile Include="hooks\emit_sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hooks\hk_is_playing_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">

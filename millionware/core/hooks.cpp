@@ -40,6 +40,9 @@ void hooks::initialize() {
   create_move.function = get_vfunc_address(interfaces::client_mode, 24);
   create_move.detour = reinterpret_cast<uintptr_t>(&create_move_hook);
 
+  hk_is_playing_demo.function = get_vfunc_address(interfaces::engine_client, 82);
+  hk_is_playing_demo.detour = reinterpret_cast<uintptr_t>(&playing_demo_hook);
+
   level_init_post_entity.function = get_vfunc_address(interfaces::client, 6);
   level_init_post_entity.detour = reinterpret_cast<uintptr_t>(&level_init_post_entity_hook);
 
@@ -62,6 +65,7 @@ void hooks::initialize() {
   emit_sound.detour = reinterpret_cast<uintptr_t>(&emit_sound_hook);
 
   ADD_HOOK(create_move);
+  ADD_HOOK(hk_is_playing_demo);
   ADD_HOOK(level_init_post_entity);
   ADD_HOOK(level_shutdown_pre_entity);
   ADD_HOOK(frame_stage_notify);
@@ -79,6 +83,7 @@ void hooks::shutdown() {
     utils::error_and_exit(e_error_code::HOOKS, FNV_CT("disable all hooks"));
 
   REMOVE_HOOK(create_move);
+  REMOVE_HOOK(hk_is_playing_demo);
   REMOVE_HOOK(level_init_post_entity);
   REMOVE_HOOK(level_shutdown_pre_entity);
   REMOVE_HOOK(frame_stage_notify);
@@ -97,6 +102,7 @@ void hooks::shutdown() {
   const auto _6 = std::lock_guard(lock_cursor.call_mutex);
   const auto _7 = std::lock_guard(screen_size_changed.call_mutex);
   const auto _8 = std::lock_guard(emit_sound.call_mutex);
+  const auto _9 = std::lock_guard(hk_is_playing_demo.call_mutex);
 
   // lets hope no hooks are running :D
   if (MH_Uninitialize() != MH_OK)

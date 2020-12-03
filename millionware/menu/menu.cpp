@@ -58,17 +58,18 @@ void menu::frame() {
 				gui::group(XOR(L"General"), []() {});
 				gui::group(XOR(L"Models"), []() {});
 			});
-			gui::category(XOR(L"World"), []() {
-				gui::group(XOR(L"Weather"), []() {});
+			gui::category(XOR(L"Emviroment"), []() {
+				gui::group(XOR(L"World"), []() {
+					gui::checkbox(XOR(L"Fullbright"), FNV_CT("misc.other.world.fullbright"));
+				});
+				
 				gui::group(XOR(L"Props and walls"), []() {});
 			});
 			gui::category(XOR(L"Removables"), []() {
-				gui::group(XOR(L"Environment"), []() {});
-
 				gui::group(XOR(L"Post-processing"), []() {
-					gui::slider(XOR(L"Aspect ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
 					gui::checkbox(XOR(L"Disable panoramic blur"), FNV_CT("misc.other.disable_panorama_blur"));
 					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing")); 
+					gui::checkbox(XOR(L"Remove flash"), FNV_CT("misc.other.remove_flash"));
 				});
 
 				gui::group(XOR(L"Effects"), []() {
@@ -84,9 +85,8 @@ void menu::frame() {
 					gui::checkbox(XOR(L"Auto strafer"), FNV_CT("misc.movement.auto_strafer"));
 					gui::checkbox(XOR(L"Clan tag"), FNV_CT("misc.other.clantag"));
 					gui::checkbox(XOR(L"Name spam"), FNV_CT("misc.other.name_spam"));
+					gui::checkbox(XOR(L"Reveal money"), FNV_CT("misc.other.reveal_money"));
 					
-					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing"));
-
 				});
 			});
 		});
