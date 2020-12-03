@@ -69,7 +69,7 @@ void features::misc::clantag() {
 
 		is_disabled = false;
 	}
-	else if (!is_disabled)	{
+	else if (!is_disabled) {
 		set_clantag_fn(XOR(""), XOR(""));
 		is_disabled = true;
 	}

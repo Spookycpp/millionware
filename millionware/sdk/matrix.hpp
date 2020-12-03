@@ -1,5 +1,5 @@
 #pragma once
 
 struct matrix3x4_t {
-  float data[3][4];
+	float data[3][4];
 };

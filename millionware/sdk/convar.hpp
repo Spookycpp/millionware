@@ -52,7 +52,7 @@ public:
 
 private:
 	char padding2_[36];
-	
+
 public:
 	c_valve_vector<fn_change_callback_t> callbacks;
 

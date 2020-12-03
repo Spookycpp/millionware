@@ -296,7 +296,7 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 			target_hover_animation = 0.0f;
 			target_toggle_animation = 1.0f;
 		}
-		
+
 		if ((ctx->blocking_hash == 0 && !input::is_key_down(VK_LBUTTON) && hovered) || ctx->blocking_hash == this_hash) {
 			target_hover_animation = 1.0f;
 		}

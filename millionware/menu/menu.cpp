@@ -62,13 +62,13 @@ void menu::frame() {
 				gui::group(XOR(L"World"), []() {
 					gui::checkbox(XOR(L"Fullbright"), FNV_CT("misc.other.world.full_bright"));
 				});
-				
+
 				gui::group(XOR(L"Props and walls"), []() {});
 			});
 			gui::category(XOR(L"Removables"), []() {
 				gui::group(XOR(L"Post-processing"), []() {
 					gui::checkbox(XOR(L"Disable panoramic blur"), FNV_CT("misc.other.disable_panorama_blur"));
-					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing")); 
+					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing"));
 					gui::checkbox(XOR(L"Remove flash"), FNV_CT("misc.other.remove_flash"));
 				});
 
@@ -86,7 +86,7 @@ void menu::frame() {
 					gui::checkbox(XOR(L"Clan tag"), FNV_CT("misc.other.clantag"));
 					gui::checkbox(XOR(L"Name spam"), FNV_CT("misc.other.name_spam"));
 					gui::checkbox(XOR(L"Reveal money"), FNV_CT("misc.other.reveal_money"));
-					
+
 				});
 			});
 		});
