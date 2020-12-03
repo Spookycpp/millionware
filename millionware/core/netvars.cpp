@@ -1,17 +1,23 @@
 #include "../utils/hash.hpp"
+#include "../utils/xorstr.hpp"
 #include "interfaces.hpp"
 #include "netvars.hpp"
 
 static detail::netvar_tree_t nodes = {};
 
 void populate_nodes(recv_table_t* recv_table, detail::netvar_tree_t& map) {
+	const auto localdata_str = XOR("localdata");
+
 	for (auto i = 0; i < recv_table->prop_count; i++) {
 		const auto prop = &recv_table->props[i];
+
+		if (FNV(prop->var_name) == FNV_CT("baseclass") || prop->var_name[0] == '0' || prop->var_name[0] == '1' || prop->var_name[0] == '2')
+			continue;
 
 		const auto prop_info = std::make_shared<detail::netvar_node_t>(prop->offset, static_cast<int>(prop->recv_type));
 
 		if (prop->recv_type == SEND_PROP_TYPE_DATA_TABLE)
-			populate_nodes(prop->data_table, prop_info->nodes);
+			populate_nodes(prop->data_table, prop->offset == 0 ? map : prop_info->nodes);
 
 		map.emplace(FNV(prop->var_name), prop_info);
 	}
