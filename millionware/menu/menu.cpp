@@ -60,7 +60,11 @@ void menu::frame() {
 			});
 			gui::category(XOR(L"Emviroment"), []() {
 				gui::group(XOR(L"World"), []() {
+					gui::checkbox(XOR(L"Nightmode"), FNV_CT("misc.other.world.night_mode"));
 					gui::checkbox(XOR(L"Fullbright"), FNV_CT("misc.other.world.full_bright"));
+					gui::checkbox(XOR(L"Draw grey"), FNV_CT("misc.other.world.draw_grey"));
+					gui::checkbox(XOR(L"Low resolution"), FNV_CT("misc.other.world.low_resolution"));
+					gui::checkbox(XOR(L"Rainbow"), FNV_CT("misc.other.world.rainbow"));
 				});
 
 				gui::group(XOR(L"Props and walls"), []() {});
