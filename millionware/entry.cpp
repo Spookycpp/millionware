@@ -15,9 +15,9 @@
 unsigned long __stdcall initial_thread(LPVOID dll_instance) {
   using namespace std::chrono_literals;
 
-  config::initialize();
   patterns::initialize();
   interfaces::initialize();
+  config::initialize();
   netvars::initialize();
   gui::initialize();
   hooks::initialize();

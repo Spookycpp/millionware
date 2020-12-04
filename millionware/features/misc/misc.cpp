@@ -48,13 +48,6 @@ void features::misc::rank_reveal() {
 	interfaces::client->dispatch_user_msg(50, 0, 0, nullptr);
 }
 
-void features::misc::aspect_ratio() {
-	static const auto r_aspectratio = interfaces::convar_system->find(XOR("r_aspectratio"));
-
-	r_aspectratio->flags &= ~CONVAR_FLAG_DEVELOPMENTONLY;
-	r_aspectratio->set_value(config::get<float>(FNV("misc.other.aspect_ratio")));
-}
-
 void features::misc::clantag() {
 	static auto is_disabled = false;
 	static auto next_time = -1.0f;
@@ -101,5 +94,5 @@ void features::misc::remove_flash() {
 	if (cheat::local_player == nullptr)
 		return;
 
-	cheat::local_player->flash_alpha() = config::get<bool>(FNV_CT("misc.other.remove_flash")) ? 0.0f : 255.0f;
+	cheat::local_player->flash_alpha() = config::get<float>(FNV_CT("misc.other.flash_alpha"));
 }

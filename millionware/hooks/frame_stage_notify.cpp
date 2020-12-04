@@ -10,7 +10,6 @@ void __fastcall hooks::frame_stage_notify_hook(uintptr_t ecx, uintptr_t edx, int
 	if (frame_stage == FRAME_STAGE_START) {
 		features::misc::panoramic_blur();
 		features::misc::post_processing();
-		features::misc::aspect_ratio();
 		features::misc::clantag();
 		features::misc::name_spam();
 		features::misc::remove_flash();

@@ -73,10 +73,10 @@ void menu::frame() {
 				gui::group(XOR(L"Post-processing"), []() {
 					gui::checkbox(XOR(L"Disable panoramic blur"), FNV_CT("misc.other.disable_panorama_blur"));
 					gui::checkbox(XOR(L"Disable post processing"), FNV_CT("misc.other.post_processing"));
-					gui::checkbox(XOR(L"Remove flash"), FNV_CT("misc.other.remove_flash"));
-				});
+					});
 
 				gui::group(XOR(L"Effects"), []() {
+					gui::slider(XOR(L"Flash alpha"), FNV_CT("misc.other.flash_alpha"), 0.f, 255.f);
 					gui::slider(XOR(L"Aspect ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
 				});
 			});

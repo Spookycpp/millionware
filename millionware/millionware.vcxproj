@@ -115,6 +115,7 @@
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\emit_sound.cpp" />
     <ClCompile Include="hooks\frame_stage_notify.cpp" />
+    <ClCompile Include="hooks\get_screen_aspect_ratio.cpp" />
     <ClCompile Include="hooks\hk_is_playing_demo.cpp" />
     <ClCompile Include="hooks\level_init_post_entity.cpp" />
     <ClCompile Include="hooks\level_shutdown_pre_entity.cpp" />

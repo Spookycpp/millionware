@@ -10,12 +10,11 @@ namespace features::misc {
 
 	void auto_accept();
 	void rank_reveal();
-	void aspect_ratio();
 	void clantag();
 	void name_spam();
 	void panoramic_blur();
 	void post_processing();
-	void remove_flash();
+	void flash_alpha();
 	void remove_smoke();
 
 }

@@ -68,6 +68,9 @@ void hooks::initialize() {
 	emit_sound.function = get_vfunc_address(interfaces::engine_sound, 5);
 	emit_sound.detour = reinterpret_cast<uintptr_t>(&emit_sound_hook);
 
+	get_screen_aspect_ratio.function = get_vfunc_address(interfaces::engine_client, 101);
+	get_screen_aspect_ratio.detour = reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook);
+
 	ADD_HOOK(create_move);
 	ADD_HOOK(hk_is_playing_demo);
 	ADD_HOOK(override_config);
@@ -78,6 +81,7 @@ void hooks::initialize() {
 	ADD_HOOK(lock_cursor);
 	ADD_HOOK(screen_size_changed);
 	ADD_HOOK(emit_sound);
+	ADD_HOOK(get_screen_aspect_ratio);
 
 	if (MH_EnableHook(nullptr) != MH_OK)
 		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("enable all hooks"));
@@ -97,6 +101,7 @@ void hooks::shutdown() {
 	REMOVE_HOOK(lock_cursor);
 	REMOVE_HOOK(screen_size_changed);
 	REMOVE_HOOK(emit_sound);
+	REMOVE_HOOK(get_screen_aspect_ratio);
 
 	// lets hope no hooks are running :D
 	if (MH_Uninitialize() != MH_OK)
