@@ -7,23 +7,20 @@
 #include "matrix.hpp"
 #include "vector.hpp"
 
-enum e_life_state
-{
+enum e_life_state {
 	LIFE_STATE_ALIVE,
 	LIFE_STATE_KILL_CAM,
 	LIFE_STATE_DEAD,
 };
 
-enum e_team_num
-{
+enum e_team_num {
 	TEAM_NUM_NONE,
 	TEAM_NUM_SPECTATOR,
 	TEAM_NUM_TERRORISTS,
 	TEAM_NUM_COUNTER_TERRORISTS,
 };
 
-enum e_entity_flag
-{
+enum e_entity_flag {
 	ENTITY_FLAG_ONGROUND = 1 << 0,
 	ENTITY_FLAG_DUCKING = 1 << 1,
 	ENTITY_FLAG_WATERJUMP = 1 << 2,
@@ -57,8 +54,7 @@ enum e_entity_flag
 	ENTITY_FLAG_UNBLOCKABLE_BY_PLAYER = 1 << 30,
 };
 
-enum e_move_type
-{
+enum e_move_type {
 	MOVE_TYPE_NONE,
 	MOVE_TYPE_ISOMETRIC,
 	MOVE_TYPE_WALK,
@@ -98,16 +94,21 @@ class c_entity {
 	uintptr_t unknown_;
 
 public:
-	c_client_renderable* renderable;
-	c_client_networkable* networkable;
+	c_client_renderable* renderable() {
+		return reinterpret_cast<c_client_renderable*>(reinterpret_cast<uintptr_t>(this) + 0x4);
+	}
+
+	c_client_networkable* networkable() {
+		return reinterpret_cast<c_client_networkable*>(reinterpret_cast<uintptr_t>(this) + 0x8);
+	}
 
 	NETVAR_DEFINITION(bool, is_spotted, FNV_CT("DT_BaseEntity"), FNV_CT("m_bSpotted"));
 	NETVAR_DEFINITION(int, flags, FNV_CT("DT_BasePlayer"), FNV_CT("m_fFlags"));
 	NETVAR_DEFINITION(int, team_num, FNV_CT("DT_BaseEntity"), FNV_CT("m_iTeamNum"));
 	NETVAR_DEFINITION(vector3_t, origin, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecOrigin"));
 	NETVAR_DEFINITION(vector3_t, view_offset, FNV_CT("DT_CSPlayer"), FNV_CT("m_vecViewOffset[0]"));
-	NETVAR_DEFINITION(matrix3x4_t, entity_to_world_matrix, -48, FNV_CT("DT_BaseEntity"), FNV_CT("m_CollisionGroup"));
 	NETVAR_DEFINITION(base_handle_t, owner_handle, FNV_CT("DT_BaseEntity"), FNV_CT("m_hOwnerEntity"));
+	NETVAR_DEFINITION_OFFSET(matrix3x4_t, entity_to_world_matrix, -48, FNV_CT("DT_BaseEntity"), FNV_CT("m_CollisionGroup"));
 
 	VIRTUAL_METHOD(c_collideable*, get_collideable, 3, ());
 	VIRTUAL_METHOD(bool, is_player, 157, ());

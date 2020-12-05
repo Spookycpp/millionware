@@ -1,5 +1,3 @@
-#include <mutex>
-
 #include "../core/cheat.hpp"
 #include "../core/hooks.hpp"
 #include "../core/interfaces.hpp"

@@ -14,8 +14,8 @@ namespace features::visuals::esp {
 
 	std::optional<screen_bounding_box_t> get_entity_box(int index);
 
-	void handle_player_esp(c_player* player);
-	void handle_weapon_esp(c_weapon* weapon);
+	void handle_player_esp(const screen_bounding_box_t& box, c_player* player);
+	void handle_weapon_esp(const screen_bounding_box_t& box, c_weapon* weapon);
 
 	void paint();
 

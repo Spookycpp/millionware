@@ -49,7 +49,7 @@ struct material_var_t {
 struct material_t {
 	VIRTUAL_METHOD(const char*, get_name, 0, ());
 	VIRTUAL_METHOD(const char*, get_group_name, 1, ());
-	VIRTUAL_METHOD(material_var_t*, find_var, 11, (std::string_view name, bool& found, bool complain = true), name.data(), found, complain); // 11
+	VIRTUAL_METHOD(material_var_t*, find_var, 11, (std::string_view name, bool& found, bool complain = true), name.data(), &found, complain); // 11
 	VIRTUAL_METHOD(void, increment_reference_count, 12, ());
 	VIRTUAL_METHOD(void, decrement_reference_count, 13, ());
 	VIRTUAL_METHOD(void, set_alpha, 27, (float alpha));

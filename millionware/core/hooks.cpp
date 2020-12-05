@@ -41,8 +41,8 @@ void hooks::initialize() {
 	create_move.function = get_vfunc_address(interfaces::client_mode, 24);
 	create_move.detour = reinterpret_cast<uintptr_t>(&create_move_hook);
 
-	hk_is_playing_demo.function = get_vfunc_address(interfaces::engine_client, 82);
-	hk_is_playing_demo.detour = reinterpret_cast<uintptr_t>(&playing_demo_hook);
+	is_playing_demo.function = get_vfunc_address(interfaces::engine_client, 82);
+	is_playing_demo.detour = reinterpret_cast<uintptr_t>(&is_playing_demo_hook);
 
 	override_config.function = get_vfunc_address(interfaces::material_system, 21);
 	override_config.detour = reinterpret_cast<uintptr_t>(&override_config_hook);
@@ -72,7 +72,7 @@ void hooks::initialize() {
 	get_screen_aspect_ratio.detour = reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook);
 
 	ADD_HOOK(create_move);
-	ADD_HOOK(hk_is_playing_demo);
+	ADD_HOOK(is_playing_demo);
 	ADD_HOOK(override_config);
 	ADD_HOOK(level_init_post_entity);
 	ADD_HOOK(level_shutdown_pre_entity);
@@ -92,7 +92,7 @@ void hooks::shutdown() {
 		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("disable all hooks"));
 
 	REMOVE_HOOK(create_move);
-	REMOVE_HOOK(hk_is_playing_demo);
+	REMOVE_HOOK(is_playing_demo);
 	REMOVE_HOOK(override_config);
 	REMOVE_HOOK(level_init_post_entity);
 	REMOVE_HOOK(level_shutdown_pre_entity);
@@ -110,6 +110,7 @@ void hooks::shutdown() {
 	// revert what hooks might've possibly messed up
 	interfaces::input_system->enable_input(true);
 	interfaces::convar_system->find(XOR("r_aspectratio"))->set_value(0.f);
+	
 	interfaces::convar_system->find(XOR("@panorama_disable_blur"))->set_value(false);
 	interfaces::convar_system->find(XOR("mat_postprocess_enable"))->set_value(true);
 }

@@ -1,7 +1,6 @@
 #include "../core/cheat.hpp"
 #include "../core/hooks.hpp"
 #include "../core/interfaces.hpp"
-
 #include "../features/misc/misc.hpp"
 
 bool __fastcall hooks::create_move_hook(uintptr_t ecx, uintptr_t edx, float frame_time, user_cmd_t* user_cmd) {

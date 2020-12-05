@@ -70,7 +70,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -87,7 +87,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>Full</Optimization>
@@ -116,7 +116,7 @@
     <ClCompile Include="hooks\emit_sound.cpp" />
     <ClCompile Include="hooks\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\get_screen_aspect_ratio.cpp" />
-    <ClCompile Include="hooks\hk_is_playing_demo.cpp" />
+    <ClCompile Include="hooks\is_playing_demo.cpp" />
     <ClCompile Include="hooks\level_init_post_entity.cpp" />
     <ClCompile Include="hooks\level_shutdown_pre_entity.cpp" />
     <ClCompile Include="hooks\lock_cursor.cpp" />

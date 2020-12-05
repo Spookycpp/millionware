@@ -78,19 +78,19 @@ void features::misc::name_spam() {
 	name->set_value(XOR("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"));
 }
 
-void features::misc::panoramic_blur() {
+void features::misc::remove_panorama_blur() {
 	static const auto panorama_disable_blur = interfaces::convar_system->find(XOR("@panorama_disable_blur"));
 
-	panorama_disable_blur->set_value(config::get<bool>(FNV_CT("misc.other.disable_panorama_blur")));
+	panorama_disable_blur->set_value(config::get<bool>(FNV_CT("misc.other.remove_panorama_blur")));
 }
 
-void features::misc::post_processing() {
+void features::misc::remove_post_processing() {
 	static const auto mat_postprocess_enable = interfaces::convar_system->find(XOR("mat_postprocess_enable"));
 
-	mat_postprocess_enable->set_value(!config::get<bool>(FNV_CT("misc.other.post_processing")));
+	mat_postprocess_enable->set_value(!config::get<bool>(FNV_CT("misc.other.remove_post_processing")));
 }
 
-void features::misc::remove_flash() {
+void features::misc::flash_alpha() {
 	if (cheat::local_player == nullptr)
 		return;
 

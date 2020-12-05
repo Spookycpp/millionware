@@ -37,7 +37,7 @@ namespace netvars {
 	void initialize();
 
 	template <typename... Args>
-	int get_offset(const uint32_t hash, Args... args) {
+	int get_offset(uint32_t hash, Args... args) {
 		const auto& node = detail::get_nodes().at(hash);
 
 		return detail::get_offset_recursive(node->nodes, node->offset, args...);

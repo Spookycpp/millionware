@@ -16,7 +16,7 @@ struct hook_storage_t {
 namespace hooks {
 
 	inline hook_storage_t create_move;
-	inline hook_storage_t hk_is_playing_demo;
+	inline hook_storage_t is_playing_demo;
 	inline hook_storage_t override_config;
 	inline hook_storage_t level_init_post_entity;
 	inline hook_storage_t level_shutdown_pre_entity;
@@ -28,7 +28,7 @@ namespace hooks {
 	inline hook_storage_t get_screen_aspect_ratio;
 
 	extern bool __fastcall create_move_hook(uintptr_t, uintptr_t, float, user_cmd_t*);
-	extern bool __fastcall playing_demo_hook(uintptr_t*, uintptr_t*);
+	extern bool __fastcall is_playing_demo_hook(uintptr_t, uintptr_t);
 	extern bool __fastcall override_config_hook(uintptr_t, uintptr_t, material_system_config_t*, bool);
 	extern void __fastcall level_init_post_entity_hook(uintptr_t, uintptr_t);
 	extern void __fastcall level_shutdown_pre_entity_hook(uintptr_t, uintptr_t);
@@ -38,6 +38,7 @@ namespace hooks {
 	extern void __fastcall screen_size_changed_hook(uintptr_t, uintptr_t, int, int);
 	extern void __fastcall emit_sound_hook(uintptr_t, uintptr_t, uintptr_t, int, int, const char*, int, const char*, float, float, int, int, int, const vector3_t*, const vector3_t*, vector3_t*, bool, float, int, uintptr_t);
 	extern float __fastcall get_screen_aspect_ratio_hook(uintptr_t, uintptr_t, int, int);
+    
 	void initialize();
 	void shutdown();
 

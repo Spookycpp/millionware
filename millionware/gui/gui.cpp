@@ -1,5 +1,3 @@
-#define NOMINMAX
-
 #include <algorithm>
 #include <fmt/format.h>
 

@@ -12,9 +12,9 @@ namespace features::misc {
 	void rank_reveal();
 	void clantag();
 	void name_spam();
-	void panoramic_blur();
-	void post_processing();
-	void remove_flash();
+	void remove_panorama_blur();
+	void remove_post_processing();
+	void flash_alpha();
 	void remove_smoke();
 
 }

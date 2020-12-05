@@ -33,7 +33,7 @@ constexpr T call_vfunc(uintptr_t class_base, Args... args) {
     return reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
   }
 
-#define NETVAR_OFFSET_DEFINITION(type, name, additional_offset, ...)                                  \
+#define NETVAR_DEFINITION_OFFSET(type, name, additional_offset, ...)                                  \
   inline type& name() {                                                                               \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                                      \
     if (offset == 0)                                                                                  \
@@ -41,7 +41,7 @@ constexpr T call_vfunc(uintptr_t class_base, Args... args) {
     return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset + additional_offset);  \
   }
 
-#define NETVAR_PTR_OFFSET_DEFINITION(type, name, additional_offset, ...)                            \
+#define NETVAR_PTR_DEFINITION_OFFSET(type, name, additional_offset, ...)                            \
   inline type* name() {                                                                             \
     static const auto offset = netvars::get_offset(__VA_ARGS__);                                    \
     if (offset == 0)                                                                                \
