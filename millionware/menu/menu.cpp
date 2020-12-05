@@ -14,32 +14,41 @@ void menu::frame() {
 						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.aimbot.enable")));
 						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.aimbot.slider1")), 0, 100);
 						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.aimbot.slider2")), 0.0f, 45.0f);
+						gui::dropdown(XOR(L"Dropdown 1"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown1")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
+						gui::dropdown(XOR(L"Dropdown 2"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown2")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
 					});
 					gui::group(XOR(L"Triggerbot"), [weapon_hash]() {
 						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.trigger.enable")));
 						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.trigger.slider1")), 0, 100);
 						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.trigger.slider2")), 0.0f, 45.0f);
+						gui::dropdown(XOR(L"Dropdown 1"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown1")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
+						gui::dropdown(XOR(L"Dropdown 2"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown2")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
 					});
 					gui::group(XOR(L"Target selection"), [weapon_hash]() {
 						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.target.enable")));
 						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.target.slider1")), 0, 100);
 						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.target.slider2")), 0.0f, 45.0f);
+						gui::dropdown(XOR(L"Dropdown 1"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown1")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
+						gui::dropdown(XOR(L"Dropdown 2"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown2")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
 					});
 					gui::group(XOR(L"Backtracking"), [weapon_hash]() {
 						gui::checkbox(XOR(L"Enable"), FNV(weapon_hash, FNV_CT(".legit.backtrack.enable")));
 						gui::slider(XOR(L"Slider 1"), FNV(weapon_hash, FNV_CT(".legit.backtrack.slider1")), 0, 100);
 						gui::slider(XOR(L"Slider 2"), FNV(weapon_hash, FNV_CT(".legit.backtrack.slider2")), 0.0f, 45.0f);
+						gui::dropdown(XOR(L"Dropdown 1"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown1")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
+						gui::dropdown(XOR(L"Dropdown 2"), FNV(weapon_hash, FNV_CT(".legit.aimbot.dropdown2")), { XOR(L"Item 1"), XOR(L"Item 2"), XOR(L"Item 3"), XOR(L"Item 4") });
 					});
 				};
 			};
 
-			gui::category(XOR(L"Pistols"), make_weapon_category(FNV_CT("pistols")));
-			gui::category(XOR(L"Shotguns"), make_weapon_category(FNV_CT("shotguns")));
-			gui::category(XOR(L"SMG"), make_weapon_category(FNV_CT("smg")));
-			gui::category(XOR(L"Rifles"), make_weapon_category(FNV_CT("rifles")));
-			gui::category(XOR(L"AWP"), make_weapon_category(FNV_CT("awp")));
-			gui::category(XOR(L"Scout"), make_weapon_category(FNV_CT("scout")));
-			gui::category(XOR(L"Auto snipers"), make_weapon_category(FNV_CT("auto")));
+			gui::category(e_texture::WEAPON_USP_SILENCER_24, 57, 24, make_weapon_category(FNV_CT("pistols")));
+			gui::category(e_texture::WEAPON_DEAGLE_24, 39, 24, make_weapon_category(FNV_CT("heavy_pistols")));
+			gui::category(e_texture::WEAPON_P90_24, 49, 24, make_weapon_category(FNV_CT("smg")));
+			gui::category(e_texture::WEAPON_MAG7_24, 47, 24, make_weapon_category(FNV_CT("shotguns")));
+			gui::category(e_texture::WEAPON_AK47_24, 67, 24, make_weapon_category(FNV_CT("rifles")));
+			gui::category(e_texture::WEAPON_SSG08_24, 75, 24, make_weapon_category(FNV_CT("scout")));
+			gui::category(e_texture::WEAPON_SCAR20_24, 68, 24, make_weapon_category(FNV_CT("auto_snipers")));
+			gui::category(e_texture::WEAPON_AWP_24, 82, 24, make_weapon_category(FNV_CT("heavy_pistols")));
 		});
 		gui::tab(e_texture::VISUALS_22, []() {
 			gui::category(XOR(L"Enemies"), []() {

@@ -64,7 +64,7 @@ std::optional<screen_bounding_box_t> features::visuals::esp::get_entity_box(int 
 			bottom = std::max(bottom, screen_points[i].y);
 		}
 
-		entity_bounding_box_lookup[index] = {point_t(left, top), point_t(right, bottom)};
+		entity_bounding_box_lookup[index] = { point_t(left, top), point_t(right, bottom) };
 	}
 
 	return entity_bounding_box_lookup[index];

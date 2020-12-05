@@ -148,6 +148,7 @@
     <ClInclude Include="menu\menu.hpp" />
     <ClInclude Include="core\netvars.hpp" />
     <ClInclude Include="core\patterns.hpp" />
+    <ClInclude Include="resources\svgs.hpp" />
     <ClInclude Include="resources\textures.hpp" />
     <ClInclude Include="sdk\base_handle.hpp" />
     <ClInclude Include="sdk\client_class.hpp" />

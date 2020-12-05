@@ -1,5 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 
+
 #include <array>
 #include <stack>
 #include <stb_image.h>
@@ -84,6 +85,8 @@ void render::initialize() {
 	get_texture(e_texture::MISC_22) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::CHANGERS_22) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::PROFILE_22) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::CHEVRON_UP_20) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::CHEVRON_DOWN_20) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::CHECKMARK_12) = interfaces::vgui_surface->create_texture(true);
 
 	interfaces::vgui_surface->update_texture(get_texture(e_texture::WHITE), white_pixel, 1, 1);
@@ -95,6 +98,8 @@ void render::initialize() {
 	update_texture_from_png(e_texture::MISC_22, resources::textures::MISC_22, sizeof resources::textures::MISC_22, 22, 22);
 	update_texture_from_png(e_texture::CHANGERS_22, resources::textures::CHANGERS_22, sizeof resources::textures::CHANGERS_22, 22, 22);
 	update_texture_from_png(e_texture::PROFILE_22, resources::textures::PROFILE_22, sizeof resources::textures::PROFILE_22, 22, 22);
+	update_texture_from_png(e_texture::CHEVRON_UP_20, resources::textures::CHEVRON_UP_20, sizeof resources::textures::CHEVRON_UP_20, 20, 20);
+	update_texture_from_png(e_texture::CHEVRON_DOWN_20, resources::textures::CHEVRON_DOWN_20, sizeof resources::textures::CHEVRON_DOWN_20, 20, 20);
 	update_texture_from_png(e_texture::CHECKMARK_12, resources::textures::CHECKMARK_12, sizeof resources::textures::CHECKMARK_12, 12, 12);
 
 	refresh_fonts();

@@ -23,6 +23,8 @@ enum class e_texture {
 	MISC_22,
 	CHANGERS_22,
 	PROFILE_22,
+	CHEVRON_UP_20,
+	CHEVRON_DOWN_20,
 	CHECKMARK_12,
 
 	MAX,
