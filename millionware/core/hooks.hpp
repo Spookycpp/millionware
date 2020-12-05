@@ -4,6 +4,7 @@
 
 #include "../sdk/user_cmd.hpp"
 #include "../sdk/material_system_config.hpp"
+#include "../sdk/client_dll.hpp"
 
 struct hook_storage_t {
 	uintptr_t function = 0;
@@ -16,6 +17,8 @@ struct hook_storage_t {
 namespace hooks {
 
 	inline hook_storage_t create_move;
+	inline hook_storage_t override_view;
+	inline hook_storage_t override_mouse_input;
 	inline hook_storage_t is_playing_demo;
 	inline hook_storage_t override_config;
 	inline hook_storage_t level_init_post_entity;
@@ -28,6 +31,8 @@ namespace hooks {
 	inline hook_storage_t get_screen_aspect_ratio;
 
 	extern bool __fastcall create_move_hook(uintptr_t, uintptr_t, float, user_cmd_t*);
+	extern void __fastcall override_view_hook(uintptr_t, uintptr_t, view_setup_t*);
+	extern void __fastcall override_mouse_input_hook(uintptr_t, uintptr_t, float* x, float* y);
 	extern bool __fastcall is_playing_demo_hook(uintptr_t, uintptr_t);
 	extern bool __fastcall override_config_hook(uintptr_t, uintptr_t, material_system_config_t*, bool);
 	extern void __fastcall level_init_post_entity_hook(uintptr_t, uintptr_t);

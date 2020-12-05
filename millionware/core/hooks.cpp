@@ -41,6 +41,12 @@ void hooks::initialize() {
 	create_move.function = get_vfunc_address(interfaces::client_mode, 24);
 	create_move.detour = reinterpret_cast<uintptr_t>(&create_move_hook);
 
+	override_view.function = get_vfunc_address(interfaces::client_mode, 18);
+	override_view.detour = reinterpret_cast<uintptr_t>(&override_view_hook);
+	
+	override_mouse_input.function = get_vfunc_address(interfaces::client_mode, 23);
+	override_mouse_input.detour = reinterpret_cast<uintptr_t>(&override_mouse_input_hook);
+
 	is_playing_demo.function = get_vfunc_address(interfaces::engine_client, 82);
 	is_playing_demo.detour = reinterpret_cast<uintptr_t>(&is_playing_demo_hook);
 
@@ -72,6 +78,8 @@ void hooks::initialize() {
 	get_screen_aspect_ratio.detour = reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook);
 
 	ADD_HOOK(create_move);
+	ADD_HOOK(override_view);
+	ADD_HOOK(override_mouse_input);
 	ADD_HOOK(is_playing_demo);
 	ADD_HOOK(override_config);
 	ADD_HOOK(level_init_post_entity);
@@ -92,6 +100,8 @@ void hooks::shutdown() {
 		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("disable all hooks"));
 
 	REMOVE_HOOK(create_move);
+	REMOVE_HOOK(override_view);
+	REMOVE_HOOK(override_mouse_input);
 	REMOVE_HOOK(is_playing_demo);
 	REMOVE_HOOK(override_config);
 	REMOVE_HOOK(level_init_post_entity);

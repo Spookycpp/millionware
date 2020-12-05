@@ -19,5 +19,5 @@ namespace cheat {
 	// global stuff
 	inline point_t screen_size;
 	inline c_player* local_player;
-
+	inline float player_fov;
 }

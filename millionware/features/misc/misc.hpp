@@ -15,6 +15,7 @@ namespace features::misc {
 	void remove_panorama_blur();
 	void remove_post_processing();
 	void flash_alpha();
+	void override_fov(view_setup_t* view_setup);
 	void remove_smoke();
 
 }
