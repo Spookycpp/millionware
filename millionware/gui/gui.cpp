@@ -17,6 +17,7 @@ constexpr auto WINDOW_TABS_HEIGHT = 28;
 
 constexpr auto TOGGLE_SIZE = 12;
 constexpr auto SLIDER_SIZE = 5;
+constexpr auto DROPDOWN_SIZE = 18;
 
 static std::shared_ptr<window_context_t> ctx = nullptr;
 
@@ -45,6 +46,8 @@ void gui::initialize() {
 		ctx->group_box_flip = false;
 		ctx->group_box_left_offset = 0;
 		ctx->group_box_right_offset = 0;
+
+		ctx->dropdown_ctx = nullptr;
 	}
 }
 
@@ -68,8 +71,8 @@ void gui::window(std::wstring_view title, const std::function<void()>& callback)
 	// calculate widest category
 	auto categories_width = 0;
 
-	for (const auto& category_title : ctx->categories) {
-		const auto category_size = render::measure_text(e_font::UI_REGULAR, category_title);
+	for (const auto& category : ctx->categories) {
+		const auto category_size = std::holds_alternative<std::wstring>(category) ? render::measure_text(e_font::UI_REGULAR, std::get<std::wstring>(category)) : std::get<category_icon_t>(category).size;
 
 		categories_width += category_size.x + WINDOW_CONTENT_PADDING * 3;
 	}
@@ -175,8 +178,9 @@ void gui::window(std::wstring_view title, const std::function<void()>& callback)
 	for (auto i = 0u; i < ctx->categories.size(); i++) {
 		auto& category_index = ctx->current_category(ctx->current_tab);
 
-		const auto category_hash = FNV(ctx->categories[i].data());
-		const auto category_size = render::measure_text(e_font::UI_REGULAR, ctx->categories[i]);
+		const auto& category = ctx->categories[i];
+		const auto category_hash = std::holds_alternative<std::wstring>(category) ? FNV(std::get<std::wstring>(category).data()) : FNV(FNV_CT("category"), utils::FNV_BASIS + i);
+		const auto category_size = std::holds_alternative<std::wstring>(category) ? render::measure_text(e_font::UI_REGULAR, std::get<std::wstring>(category)) : std::get<category_icon_t>(category).size;
 		const auto category_width = category_size.x + WINDOW_CONTENT_PADDING * 3;
 		const auto category_position = point_t(ctx->position.x + WINDOW_SIDEBAR_SIZE + WINDOW_CONTENT_PADDING + category_draw_offset, ctx->position.y + WINDOW_CONTENT_PADDING);
 		const auto category_box_size = point_t(category_width, WINDOW_TABS_HEIGHT);
@@ -206,7 +210,17 @@ void gui::window(std::wstring_view title, const std::function<void()>& callback)
 		const auto line_color = 46 + static_cast<int>(14.0f * line_animation);
 
 		render::line(category_position.x, category_position.y + category_box_size.y, category_position.x + category_box_size.x, category_position.y + category_box_size.y, color_t(line_color));
-		render::text(category_position.x + category_box_size.x / 2 - category_size.x / 2, ctx->position.y + (WINDOW_TABS_HEIGHT + WINDOW_CONTENT_PADDING) / 2 - category_size.y / 2, e_font::UI_REGULAR, color_t(category_color), ctx->categories[i]);
+
+		if (std::holds_alternative<std::wstring>(category)) {
+			render::text(category_position.x + category_box_size.x / 2 - category_size.x / 2, ctx->position.y + (WINDOW_TABS_HEIGHT + WINDOW_CONTENT_PADDING) / 2 - category_size.y / 2,
+				e_font::UI_REGULAR, color_t(category_color), std::get<std::wstring>(category));
+		}
+		else {
+			const auto category_icon = std::get<category_icon_t>(category);
+
+			render::texture(category_position.x + category_box_size.x / 2 - category_size.x / 2, ctx->position.y + (WINDOW_TABS_HEIGHT + WINDOW_CONTENT_PADDING) / 2 - category_size.y / 2,
+				category_icon.size.x, category_icon.size.y, category_icon.icon, color_t(category_color));
+		}
 
 		category_draw_offset += category_width;
 	}
@@ -221,6 +235,13 @@ void gui::tab(e_texture icon, const std::function<void()>& callback) {
 
 void gui::category(std::wstring_view title, const std::function<void()>& callback) {
 	ctx->categories.push_back(title.data());
+
+	if (ctx->current_category(ctx->current_tab) == ctx->categories.size() - 1)
+		callback();
+}
+
+void gui::category(e_texture icon, int width, int height, const std::function<void()>& callback) {
+	ctx->categories.push_back(category_icon_t{ icon, point_t(width, height) });
 
 	if (ctx->current_category(ctx->current_tab) == ctx->categories.size() - 1)
 		callback();
@@ -265,7 +286,7 @@ void gui::group(std::wstring_view title, const std::function<void()>& callback) 
 	ctx->group_box_flip = !ctx->group_box_flip;
 }
 
-void gui::checkbox(std::wstring_view title, uint32_t config_item) {
+bool gui::checkbox(std::wstring_view title, uint32_t config_item) {
 	const auto cursor_pos = ctx->cursor_pos;
 
 	if (!ctx->is_calculating_layout) {
@@ -287,7 +308,7 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 			ctx->blocking_hash = 0;
 		}
 
-		auto target_hover_animation = 0.3f;
+		auto target_hover_animation = 0.0f;
 		auto target_toggle_animation = 0.0f;
 
 		if (config_value) {
@@ -303,15 +324,14 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 		const auto toggle_animation = handle_animation(ctx->element_animation(this_hash), target_toggle_animation, 0.06f);
 
 		const auto& accent_color = config::get<color_t>(FNV_CT("ui.accent"));
-		const auto hover_color = color_t(12 + static_cast<int>(24.0f * hover_animation));
+		const auto hover_color = color_t(30 + static_cast<int>(10.0f * hover_animation));
 		const auto toggle_color = accent_color.adjust_alpha(static_cast<int>(255.0f * toggle_animation));
 
-		render::fill_rect_rounded(cursor_pos - 1, TOGGLE_SIZE + 2, 3, CORNER_ALL, color_t(38));
+		render::fill_rect_rounded(cursor_pos - 1, TOGGLE_SIZE + 2, 3, CORNER_ALL, color_t(50));
 		render::fill_rect_rounded(cursor_pos, TOGGLE_SIZE, 3, CORNER_ALL, hover_color);
 		render::fill_rect_rounded(cursor_pos, TOGGLE_SIZE, 3, CORNER_ALL, toggle_color);
 
-		if (config_value)
-			render::texture(cursor_pos + TOGGLE_SIZE / 2 - 6, 12, e_texture::CHECKMARK_12, color_t(255, toggle_color.a));
+		render::texture(cursor_pos + TOGGLE_SIZE / 2 - 6, 12, e_texture::CHECKMARK_12, color_t(255, toggle_color.a));
 
 		render::text(title_position, e_font::UI_REGULAR, color_t(180), title);
 	}
@@ -321,10 +341,12 @@ void gui::checkbox(std::wstring_view title, uint32_t config_item) {
 	ctx->inline_cursor_pos = ctx->cursor_pos;
 
 	ctx->inline_cursor_pos.x += ctx->working_area.x;
+
+	return config::get<bool>(config_item);
 }
 
 template <typename T = float>
-void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T max_value, std::wstring_view format_string) {
+T slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T max_value, std::wstring_view format_string) {
 	const auto this_hash = FNV(title.data(), ctx->parent_hash);
 	const auto title_size = render::measure_text(e_font::UI_REGULAR, title);
 	const auto group_box_width = ctx->working_area.x;
@@ -359,8 +381,8 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 		const auto hover_animation = handle_animation(ctx->element_hover_animation(this_hash), target_hover_animation, 0.06f);
 		const auto hover_color = color_t(200, static_cast<int>(50.0f * hover_animation));
 
-		render::fill_rect_rounded(slider_position - 1, slider_size + 2, 3, CORNER_ALL, color_t(38));
-		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, color_t(20));
+		render::fill_rect_rounded(slider_position - 1, slider_size + 2, 3, CORNER_ALL, color_t(50));
+		render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, color_t(30));
 
 		render::clipped(slider_position, point_t(slider_fill_width, slider_size.y), [&]() {
 			render::fill_rect_rounded(slider_position, slider_size, 3, CORNER_ALL, config::get<color_t>(FNV_CT("ui.accent")).adjust_alpha(255));
@@ -376,28 +398,140 @@ void slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T m
 	ctx->inline_cursor_pos = ctx->cursor_pos;
 
 	ctx->inline_cursor_pos.x += ctx->working_area.x;
+
+	return config::get<T>(config_item)
 }
 
-void gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value) {
-	slider_impl<int>(title, config_item, min_value, max_value, XOR(L"{}"));
+int gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value) {
+	return slider_impl<int>(title, config_item, min_value, max_value, XOR(L"{}"));
 }
 
-void gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, std::wstring_view format_string) {
-	slider_impl<int>(title, config_item, min_value, max_value, format_string);
+int gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, std::wstring_view format_string) {
+	return slider_impl<int>(title, config_item, min_value, max_value, format_string);
 }
 
-void gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, const std::function<std::wstring_view(int)>& format_string_fn) {
-	slider_impl<int>(title, config_item, min_value, max_value, format_string_fn(config::get<int>(config_item)));
+int gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, const std::function<std::wstring_view(int)>& format_string_fn) {
+	return slider_impl<int>(title, config_item, min_value, max_value, format_string_fn(config::get<int>(config_item)));
 }
 
-void gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value) {
-	slider_impl<float>(title, config_item, min_value, max_value, XOR(L"{:.1f}"));
+float gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value) {
+	return slider_impl<float>(title, config_item, min_value, max_value, XOR(L"{:.1f}"));
 }
 
-void gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, std::wstring_view format_string) {
-	slider_impl<float>(title, config_item, min_value, max_value, format_string);
+float gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, std::wstring_view format_string) {
+	return slider_impl<float>(title, config_item, min_value, max_value, format_string);
 }
 
-void gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, const std::function<std::wstring_view(float)>& format_string_fn) {
-	slider_impl<float>(title, config_item, min_value, max_value, format_string_fn(config::get<float>(config_item)));
+float gui::slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, const std::function<std::wstring_view(float)>& format_string_fn) {
+	return slider_impl<float>(title, config_item, min_value, max_value, format_string_fn(config::get<float>(config_item)));
+}
+
+int dropdown_impl(std::wstring_view title, uint32_t config_item, const std::vector<std::wstring_view>& items, bool multi_select) {
+	const auto this_hash = FNV(title.data(), ctx->parent_hash);
+	const auto title_size = render::measure_text(e_font::UI_REGULAR, title);
+	const auto group_box_width = ctx->working_area.x;
+	const auto dropdown_position = point_t(ctx->cursor_pos.x, ctx->cursor_pos.y + title_size.y + 4);
+	const auto dropdown_size = point_t(group_box_width, DROPDOWN_SIZE);
+
+	if (!ctx->is_calculating_layout) {
+		std::wstring selected_text;
+
+		if (multi_select) {
+			// @todo: multi select display text
+
+			selected_text = XOR(L"None");
+		}
+		else {
+			selected_text = items[config::get<int>(config_item)];
+		}
+
+		const auto selected_text_size = render::measure_text(e_font::UI_REGULAR, selected_text);
+		const auto hovered_mouse = input::is_in_bounds(dropdown_position, dropdown_position + dropdown_size);
+		const auto hovered = !ctx->is_being_dragged && !ctx->is_being_resized && (ctx->blocking_hash == 0 || ctx->blocking_hash == this_hash) && hovered_mouse;
+
+		const auto target_hover_animation = ((ctx->blocking_hash == 0 && !input::is_key_down(VK_LBUTTON) && hovered) || ctx->blocking_hash == this_hash) ? 1.0f : 0.0f;
+		const auto hover_animation = handle_animation(ctx->element_hover_animation(this_hash), target_hover_animation, 0.06f);
+		const auto hover_color = color_t(30 + static_cast<int>(10.0f * hover_animation));
+
+		if (hovered && input::is_key_pressed(VK_LBUTTON)) {
+			ctx->blocking_hash = this_hash;
+		}
+		else if (ctx->blocking_hash == this_hash && input::is_key_released(VK_LBUTTON)) {
+			if (hovered_mouse) {
+				ctx->dropdown_ctx = std::make_shared<dropdown_context_t>();
+
+				ctx->dropdown_ctx->first_frame = true;
+				ctx->dropdown_ctx->is_multi_select = multi_select;
+				ctx->dropdown_ctx->position = point_t(dropdown_position.x, dropdown_position.y + DROPDOWN_SIZE + WINDOW_CONTENT_PADDING / 2);
+				ctx->dropdown_ctx->size = dropdown_size;
+				ctx->dropdown_ctx->config_item = config_item;
+				ctx->dropdown_ctx->blocking_item = 0;
+
+				std::transform(items.begin(), items.end(), std::back_inserter(ctx->dropdown_ctx->elements), [](const auto& str) {
+					return std::wstring(str);
+				});
+			}
+			else {
+				ctx->blocking_hash = 0;
+			}
+		}
+
+		/*
+		if (hovered)
+		{
+			g_input.set_cursor(e_cursor::POINTER);
+
+			if (g_input.is_key_pressed(VK_LBUTTON))
+			{
+				if (active_dropdown_ != nullptr)
+				{
+					active_dropdown_ = nullptr;
+					blocking_hash_ = 0;
+				}
+				else
+				{
+					active_dropdown_ = std::make_shared<gui_dropdown_t>();
+
+					active_dropdown_->first_frame = true;
+					active_dropdown_->is_multi_select = false;
+					active_dropdown_->position = sdk::point_t(dropdown_position.x, dropdown_position.y + dropdown_height + 4);
+					active_dropdown_->size = dropdown_size;
+					active_dropdown_->config_item = &config_item;
+					active_dropdown_->blocking_item = -1;
+
+					std::transform(items.begin(), items.end(), back_inserter(active_dropdown_->elements), [](const auto& str)
+					{
+						return std::wstring(str);
+					});
+
+					blocking_hash_ = this_hash;
+				}
+			}
+		}
+		*/
+
+		render::fill_rect_rounded(dropdown_position - 1, dropdown_size + 2, 3, CORNER_ALL, color_t(50));
+		render::fill_rect_rounded(dropdown_position, dropdown_size, 3, CORNER_ALL, hover_color);
+
+		render::text(ctx->cursor_pos, e_font::UI_REGULAR, color_t(180), title);
+		render::text(dropdown_position.x + 5, dropdown_position.y + DROPDOWN_SIZE / 2 - selected_text_size.y / 2, e_font::UI_REGULAR, color_t(180), selected_text);
+
+		render::texture(dropdown_position.x + dropdown_size.x - 19, dropdown_position.y + DROPDOWN_SIZE / 2 - 10, 20, 20, ctx->blocking_hash == this_hash ? e_texture::CHEVRON_UP_20 : e_texture::CHEVRON_DOWN_20, color_t(180));
+	}
+
+	ctx->cursor_pos.y = dropdown_position.y + DROPDOWN_SIZE + WINDOW_CONTENT_PADDING;
+
+	ctx->inline_cursor_pos = ctx->cursor_pos;
+
+	ctx->inline_cursor_pos.x += ctx->working_area.x;
+
+	return config::get<int>(config_item);
+}
+
+int gui::dropdown(std::wstring_view title, uint32_t config_item, const std::vector<std::wstring_view>& items) {
+	return dropdown_impl(title, config_item, items, false);
+}
+
+int gui::multi_dropdown(std::wstring_view title, uint32_t config_item, const std::vector<std::wstring_view>& items) {
+	return dropdown_impl(title, config_item, items, true);
 }

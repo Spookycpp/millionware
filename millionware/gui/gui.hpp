@@ -4,6 +4,7 @@
 #include <stack>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
 
 #include "../sdk/vector.hpp"
@@ -16,6 +17,30 @@
     return name##_map[index];                                     \
   }
 
+enum e_category_type {
+	CATEGORY_ICON,
+	CATEGORY_TEXT,
+};
+
+struct category_icon_t {
+	e_texture icon;
+	point_t size;
+};
+
+using category_entry_t = std::variant<std::wstring, category_icon_t>;
+
+struct dropdown_context_t {
+	bool first_frame;
+	bool is_multi_select;
+
+	point_t position;
+	point_t size;
+	std::vector<std::wstring> elements;
+
+	uint32_t config_item;
+	uint32_t blocking_item;
+};
+
 struct window_context_t {
 	// basic window info
 	bool is_open;
@@ -26,7 +51,7 @@ struct window_context_t {
 
 	// tabs and categories info
 	std::vector<e_texture> tabs;
-	std::vector<std::wstring> categories;
+	std::vector<category_entry_t> categories;
 
 	int current_tab;
 
@@ -61,6 +86,9 @@ struct window_context_t {
 	int group_box_left_offset;
 	int group_box_right_offset;
 
+	// additional stuff for dropdowns and other stuff
+	std::shared_ptr<dropdown_context_t> dropdown_ctx;
+
 	// helper methods
 	HELPER_METHOD(int, int, current_category, 0);
 	HELPER_METHOD(int, float, tab_animation, 0.0f);
@@ -79,14 +107,17 @@ namespace gui {
 	void window(std::wstring_view title, const std::function<void()>& callback);
 	void tab(e_texture icon, const std::function<void()>& callback);
 	void category(std::wstring_view title, const std::function<void()>& callback);
+	void category(e_texture icon, int width, int height, const std::function<void()>& callback);
 	void group(std::wstring_view title, const std::function<void()>& callback);
 
-	void checkbox(std::wstring_view title, uint32_t config_item);
-	void slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value);
-	void slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, std::wstring_view format_string);
-	void slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, const std::function<std::wstring_view(int)>& format_string_fn);
-	void slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value);
-	void slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, std::wstring_view format_string);
-	void slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, const std::function<std::wstring_view(float)>& format_string_fn);
+	bool checkbox(std::wstring_view title, uint32_t config_item);
+	int slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value);
+	int slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, std::wstring_view format_string);
+	int slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value, const std::function<std::wstring_view(int)>& format_string_fn);
+	float slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value);
+	float slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, std::wstring_view format_string);
+	float slider(std::wstring_view title, uint32_t config_item, float min_value, float max_value, const std::function<std::wstring_view(float)>& format_string_fn);
+	int dropdown(std::wstring_view title, uint32_t config_item, const std::vector<std::wstring_view>& items);
+	int multi_dropdown(std::wstring_view title, uint32_t config_item, const std::vector<std::wstring_view>& items);
 
 }
