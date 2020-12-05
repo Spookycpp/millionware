@@ -14,7 +14,7 @@ namespace features::misc {
 	void name_spam();
 	void panoramic_blur();
 	void post_processing();
-	void flash_alpha();
+	void remove_flash();
 	void remove_smoke();
 
 }

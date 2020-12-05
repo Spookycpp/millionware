@@ -90,7 +90,7 @@ void features::misc::post_processing() {
 	mat_postprocess_enable->set_value(!config::get<bool>(FNV_CT("misc.other.post_processing")));
 }
 
-void features::misc::flash_alpha() {
+void features::misc::remove_flash() {
 	if (cheat::local_player == nullptr)
 		return;
 
