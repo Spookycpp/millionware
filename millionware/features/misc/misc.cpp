@@ -34,10 +34,6 @@ void features::misc::auto_accept() {
 	const auto set_local_player_ready_fn = reinterpret_cast<bool(__stdcall*)(const char*)>(patterns::set_local_player_ready);
 
 	set_local_player_ready_fn(XOR(""));
-	set_local_player_ready_fn(XOR("duxe"));
-	set_local_player_ready_fn(XOR("is"));
-	set_local_player_ready_fn(XOR("a"));
-	set_local_player_ready_fn(XOR("paster"));
 }
 
 void features::misc::rank_reveal() {
@@ -104,4 +100,65 @@ void features::misc::override_fov(view_setup_t* view_setup) {
 	if (!cheat::local_player->is_scoped()) {
 		view_setup->fov = config::get<float>(FNV_CT("misc.other.override_fov"));
 	}
+}
+
+void features::misc::force_crosshair() {
+	static const auto weapon_debug_spread_show = interfaces::convar_system->find(XOR("weapon_debug_spread_show"));
+
+	// @todo: fix for spectators
+	const auto should_force = config::get<bool>(FNV_CT("misc.other.force_crosshair")) &&
+		cheat::local_player->life_state() == LIFE_STATE_ALIVE && !cheat::local_player->is_scoped();
+
+	weapon_debug_spread_show->set_value(should_force ? 3 : 0);
+}
+
+void features::misc::unlock_hidden_convars() {
+	if (!config::get<bool>(FNV_CT("misc.other.unlock_hidden_convars")))
+		return;
+
+	auto it = *reinterpret_cast<c_convar**>((uint32_t)interfaces::convar_system + 0x34);
+	for (c_convar* cvar = it->next; cvar != nullptr; cvar = cvar->next) {
+		cvar->flags &= ~CONVAR_FLAG_HIDDEN;
+		cvar->flags &= ~CONVAR_FLAG_DEVELOPMENTONLY;
+	}
+}
+
+void features::misc::third_person() {
+	if (!config::get<bool>(FNV_CT("misc.other.third_person")))
+		return;
+
+	if (!interfaces::engine_client->is_in_game())
+		return;
+
+	bool alive = cheat::local_player && cheat::local_player->life_state() == LIFE_STATE_ALIVE;
+
+	if (alive /* once we add a hotkey system ill finish this */) {
+		if (!interfaces::input->camera_in_third_person) {
+			interfaces::input->camera_in_third_person = true;
+			interfaces::input->camera_offset.z = 150.f;
+		}
+	}
+
+	else if (interfaces::input->camera_in_third_person) {
+		interfaces::input->camera_in_third_person = false;
+		interfaces::input->camera_offset.z = 0.f;
+	}
+}
+
+void features::misc::auto_pistol(user_cmd_t* user_cmd) {
+	if (!config::get<bool>(FNV_CT("misc.other.auto_pistol")))
+		return;
+
+	const auto weapon = cheat::local_player->active_weapon_handle().get()->as_weapon();
+	if (!weapon)
+		return;
+
+	const auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->item_definition_index());
+	if (weapon_info->type != WEAPON_TYPE_PISTOL)
+		return;
+
+	const auto next_planned_attack = weapon->next_primary_attack() + config::get<float>(FNV_CT("misc.other.auto_pistol_delay"));
+
+	if (user_cmd->buttons & BUTTON_IN_ATTACK && next_planned_attack >= interfaces::global_vars->current_time)
+		user_cmd->buttons &= ~BUTTON_IN_ATTACK;
 }
