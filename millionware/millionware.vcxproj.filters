@@ -260,5 +260,14 @@
     <ClInclude Include="sdk\material_system_config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sdk\weapon_info.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\weapon_system.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\input.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

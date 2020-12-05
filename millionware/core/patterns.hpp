@@ -9,6 +9,8 @@ namespace patterns {
 	inline uintptr_t player_has_bomb = 0;
 	inline uintptr_t set_local_player_ready = 0;
 	inline uintptr_t set_clantag = 0;
+	inline uintptr_t weapon_system = 0;
+	inline uintptr_t input = 0;
 
 	void initialize();
 

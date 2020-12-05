@@ -161,6 +161,7 @@
     <ClInclude Include="sdk\entity.hpp" />
     <ClInclude Include="sdk\entity_list.hpp" />
     <ClInclude Include="sdk\global_vars.hpp" />
+    <ClInclude Include="sdk\input.hpp" />
     <ClInclude Include="sdk\macros.hpp" />
     <ClInclude Include="sdk\material.hpp" />
     <ClInclude Include="sdk\material_handle.hpp" />
@@ -180,6 +181,8 @@
     <ClInclude Include="sdk\vgui.hpp" />
     <ClInclude Include="sdk\debug_overlay.hpp" />
     <ClInclude Include="sdk\input_system.hpp" />
+    <ClInclude Include="sdk\weapon_info.hpp" />
+    <ClInclude Include="sdk\weapon_system.hpp" />
     <ClInclude Include="utils\xorstr.hpp" />
     <ClInclude Include="utils\error.hpp" />
     <ClInclude Include="utils\hash.hpp" />
