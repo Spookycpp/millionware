@@ -26,6 +26,8 @@ __declspec(dllexport) pattern_entry_t g_patterns[] = {
 	{&patterns::player_has_bomb, "client.dll", "56 8B F1 85 F6 74 31", 0, 0, 0},
 	{&patterns::set_local_player_ready, "client.dll", "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12", 0, 0, 0},
 	{&patterns::set_clantag, "engine.dll", "53 56 57 8B DA 8B F9 FF 15", 0, 0, 0},
+	{&patterns::weapon_system, "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", 0, 0, 0},
+	{&patterns::input, "client.dll", "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10", 0, 0, 0},
 };
 
 inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {

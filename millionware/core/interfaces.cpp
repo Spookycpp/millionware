@@ -82,4 +82,6 @@ void interfaces::initialize() {
 
 	client_mode = **reinterpret_cast<c_client_mode***>(reinterpret_cast<uintptr_t**>(client)[0][10] + 5);
 	global_vars = **reinterpret_cast<c_global_vars_base***>(reinterpret_cast<uintptr_t**>(client)[0][11] + 10);
+	weapon_system = *reinterpret_cast<c_weapon_system**>(patterns::weapon_system + 2);
+	input = *reinterpret_cast<c_input**>(patterns::input + 1);
 }

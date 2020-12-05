@@ -10,10 +10,12 @@
 #include "../sdk/engine_sound.hpp"
 #include "../sdk/entity_list.hpp"
 #include "../sdk/global_vars.hpp"
+#include "../sdk/input.hpp"
 #include "../sdk/input_system.hpp"
 #include "../sdk/material_system.hpp"
 #include "../sdk/model_render.hpp"
 #include "../sdk/vgui.hpp"
+#include "../sdk/weapon_system.hpp"
 
 namespace interfaces {
 
@@ -26,10 +28,12 @@ namespace interfaces {
 	inline c_engine_vgui* engine_vgui = nullptr;
 	inline c_entity_list* entity_list = nullptr;
 	inline c_global_vars_base* global_vars = nullptr;
+	inline c_input* input = nullptr;
 	inline c_input_system* input_system = nullptr;
 	inline c_material_system* material_system = nullptr;
 	inline c_model_render* model_render = nullptr;
 	inline c_vgui_surface* vgui_surface = nullptr;
+	inline c_weapon_system* weapon_system = nullptr;
 	inline uintptr_t game_movement = 0;
 	inline uintptr_t event_manager = 0;
 
