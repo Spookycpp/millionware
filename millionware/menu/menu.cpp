@@ -58,7 +58,7 @@ void menu::frame() {
 				gui::group(XOR(L"General"), []() {});
 				gui::group(XOR(L"Models"), []() {});
 			});
-			gui::category(XOR(L"Emviroment"), []() {
+			gui::category(XOR(L"Environment"), []() {
 				gui::group(XOR(L"World"), []() {
 					gui::checkbox(XOR(L"Nightmode"), FNV_CT("misc.other.world.night_mode"));
 					gui::checkbox(XOR(L"Fullbright"), FNV_CT("misc.other.world.full_bright"));
@@ -73,6 +73,7 @@ void menu::frame() {
 				gui::group(XOR(L"Effects"), []() {
 					gui::slider(XOR(L"Flash alpha"), FNV_CT("misc.other.flash_alpha"), 0.f, 255.f);
 					gui::slider(XOR(L"Aspect ratio"), FNV_CT("misc.other.aspect_ratio"), 0.f, 5.f);
+					gui::slider(XOR(L"Override FOV"), FNV_CT("misc.other.override_fov"), 50.f, 150.f);
 				});
 			});
 		});

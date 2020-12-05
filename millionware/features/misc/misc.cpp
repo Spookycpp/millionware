@@ -93,6 +93,15 @@ void features::misc::remove_post_processing() {
 void features::misc::flash_alpha() {
 	if (cheat::local_player == nullptr)
 		return;
-
+	
 	cheat::local_player->flash_alpha() = config::get<float>(FNV_CT("misc.other.flash_alpha"));
+}
+
+void features::misc::override_fov(view_setup_t* view_setup) {
+	if (cheat::local_player == nullptr)
+		return;
+
+	if (!cheat::local_player->is_scoped()) {
+		view_setup->fov = config::get<float>(FNV_CT("misc.other.override_fov"));
+	}
 }

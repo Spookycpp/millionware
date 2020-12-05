@@ -102,6 +102,12 @@
     <ClCompile Include="hooks\get_screen_aspect_ratio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hooks\override_mouse_input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks\override_view.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">
