@@ -6,21 +6,16 @@
 #include <intrin.h>
 
 bool __fastcall hooks::is_playing_demo_hook(uintptr_t ecx, uintptr_t edx) {
-	const auto _ = std::lock_guard(hooks::is_playing_demo.call_mutex);
+    const auto _ = std::lock_guard(hooks::is_playing_demo.call_mutex);
 
-	if (!ecx)
-		return reinterpret_cast<decltype(&is_playing_demo_hook)>(hooks::is_playing_demo.original)(ecx, edx);
+    if (!config::get<bool>(FNV_CT("misc.other.reveal_money")))
+        return reinterpret_cast<decltype(&is_playing_demo_hook)>(hooks::is_playing_demo.original)(ecx, edx);
 
-	if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
-		return reinterpret_cast<decltype(&is_playing_demo_hook)>(hooks::is_playing_demo.original)(ecx, edx);
+    const auto return_address = reinterpret_cast<uintptr_t>(_ReturnAddress());
+    const auto stack_frame = reinterpret_cast<uintptr_t>(_AddressOfReturnAddress()) - sizeof uintptr_t;
 
-	if (config::get<bool>(FNV_CT("misc.other.reveal_money"))) {
-		// @todo: pls sig these addresses or smth this is just insane
-		if (*static_cast<uintptr_t*>(_ReturnAddress()) == 0x0975C084 && **(static_cast<uintptr_t**>(_AddressOfReturnAddress()) + 4) == 0x0C75C084)
-			return true;
-	}
+    if (return_address == patterns::demo_or_hltv && *reinterpret_cast<uintptr_t*>(stack_frame + 8) == patterns::money_reveal)
+        return true;
 
-	reinterpret_cast<decltype(&is_playing_demo_hook)>(hooks::is_playing_demo.original)(ecx, edx);
-
-	return false;
+    return reinterpret_cast<decltype(&is_playing_demo_hook)>(hooks::is_playing_demo.original)(ecx, edx);
 }

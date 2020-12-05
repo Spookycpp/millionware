@@ -13,6 +13,7 @@ void __fastcall hooks::frame_stage_notify_hook(uintptr_t ecx, uintptr_t edx, int
 		features::misc::clantag();
 		features::misc::name_spam();
 		features::misc::flash_alpha();
+		features::misc::force_crosshair();
 	}
 
 	reinterpret_cast<decltype(&frame_stage_notify_hook)>(hooks::frame_stage_notify.original)(ecx, edx, frame_stage);
