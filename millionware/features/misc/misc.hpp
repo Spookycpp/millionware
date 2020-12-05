@@ -18,7 +18,7 @@ namespace features::misc {
 	void remove_post_processing();
 	void flash_alpha();
 	void override_fov(view_setup_t* view_setup);
-	void remove_smoke();
+	//void remove_smoke();
 	void force_crosshair();
 
 	void unlock_hidden_convars();

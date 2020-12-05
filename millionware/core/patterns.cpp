@@ -28,6 +28,8 @@ __declspec(dllexport) pattern_entry_t g_patterns[] = {
 	{&patterns::set_clantag, "engine.dll", "53 56 57 8B DA 8B F9 FF 15", 0, 0, 0},
 	{&patterns::weapon_system, "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", 0, 0, 0},
 	{&patterns::input, "client.dll", "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10", 0, 0, 0},
+	{&patterns::demo_or_hltv, "client.dll", "84 C0 75 09 38 05", 0, 0, 0},
+	{&patterns::money_reveal, "client.dll", "84 C0 75 0C 5B", 0, 0, 0},
 };
 
 inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
