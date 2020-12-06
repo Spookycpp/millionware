@@ -5,6 +5,7 @@
 #include "../sdk/user_cmd.hpp"
 #include "../sdk/material_system_config.hpp"
 #include "../sdk/client_dll.hpp"
+#include "../sdk/model_info.hpp"
 
 struct hook_storage_t {
 	uintptr_t function = 0;
@@ -29,6 +30,7 @@ namespace hooks {
 	inline hook_storage_t screen_size_changed;
 	inline hook_storage_t emit_sound;
 	inline hook_storage_t get_screen_aspect_ratio;
+	inline hook_storage_t draw_model_execute;
 
 	extern bool __fastcall create_move_hook(uintptr_t, uintptr_t, float, user_cmd_t*);
 	extern void __fastcall override_view_hook(uintptr_t, uintptr_t, view_setup_t*);
@@ -43,6 +45,7 @@ namespace hooks {
 	extern void __fastcall screen_size_changed_hook(uintptr_t, uintptr_t, int, int);
 	extern void __fastcall emit_sound_hook(uintptr_t, uintptr_t, uintptr_t, int, int, const char*, int, const char*, float, float, int, int, int, const vector3_t*, const vector3_t*, vector3_t*, bool, float, int, uintptr_t);
 	extern float __fastcall get_screen_aspect_ratio_hook(uintptr_t, uintptr_t, int, int);
+	extern void __fastcall draw_model_execute_hook(uintptr_t, uintptr_t, void*, void*, c_model_render_info*, matrix3x4_t*);
     
 	void initialize();
 	void shutdown();

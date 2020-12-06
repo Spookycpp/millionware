@@ -108,6 +108,9 @@
     <ClCompile Include="hooks\override_view.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hooks\draw_model_execute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">
@@ -267,6 +270,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sdk\input.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\model_info.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
