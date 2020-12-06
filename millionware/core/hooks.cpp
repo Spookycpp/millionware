@@ -77,6 +77,9 @@ void hooks::initialize() {
 	get_screen_aspect_ratio.function = get_vfunc_address(interfaces::engine_client, 101);
 	get_screen_aspect_ratio.detour = reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook);
 
+	draw_model_execute.function = get_vfunc_address(interfaces::model_render, 21);
+	draw_model_execute.detour = reinterpret_cast<uintptr_t>(&draw_model_execute_hook);
+
 	ADD_HOOK(create_move);
 	ADD_HOOK(override_view);
 	ADD_HOOK(override_mouse_input);
@@ -90,6 +93,7 @@ void hooks::initialize() {
 	ADD_HOOK(screen_size_changed);
 	ADD_HOOK(emit_sound);
 	ADD_HOOK(get_screen_aspect_ratio);
+	ADD_HOOK(draw_model_execute);
 
 	if (MH_EnableHook(nullptr) != MH_OK)
 		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("enable all hooks"));
@@ -112,6 +116,7 @@ void hooks::shutdown() {
 	REMOVE_HOOK(screen_size_changed);
 	REMOVE_HOOK(emit_sound);
 	REMOVE_HOOK(get_screen_aspect_ratio);
+	REMOVE_HOOK(draw_model_execute);
 
 	// lets hope no hooks are running :D
 	if (MH_Uninitialize() != MH_OK)

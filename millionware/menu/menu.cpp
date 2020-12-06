@@ -94,7 +94,8 @@ void menu::frame() {
 					gui::checkbox(XOR(L"Clan tag"), FNV_CT("misc.other.clantag"));
 					gui::checkbox(XOR(L"Name spam"), FNV_CT("misc.other.name_spam"));
 					gui::checkbox(XOR(L"Reveal money"), FNV_CT("misc.other.reveal_money"));
-					gui::slider(XOR(L"Auto pistol"), FNV_CT("misc.other.auto_pistol_delay"), 0.f, 100.f);
+					gui::checkbox(XOR(L"Auto pistol"), FNV_CT("misc.other.auto_pistol"));
+					gui::slider(XOR(L"Delay"), FNV_CT("misc.other.auto_pistol_delay"), 0.f, 100.f);
 				});
 			});
 		});

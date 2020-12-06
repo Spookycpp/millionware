@@ -154,7 +154,7 @@ void features::misc::auto_pistol(user_cmd_t* user_cmd) {
 		return;
 
 	const auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->item_definition_index());
-	if (weapon_info->type != WEAPON_TYPE_PISTOL)
+	if (weapon_info->full_auto)
 		return;
 
 	const auto next_planned_attack = weapon->next_primary_attack() + config::get<float>(FNV_CT("misc.other.auto_pistol_delay"));
