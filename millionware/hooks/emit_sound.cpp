@@ -13,9 +13,8 @@ void __fastcall hooks::emit_sound_hook(uintptr_t ecx, uintptr_t edx, uintptr_t f
 	if (FNV(sample_name) == FNV_CT("UIPanorama.popup_accept_match_beep")) {
 		features::misc::auto_accept();
 
-		if (strstr(sample_name, XOR("competitive_accept_beep"))) {
+		if (strstr(sample_name, XOR("competitive_accept_beep")))
 			volume = 0.0f;
-		}
 	}
 
 	reinterpret_cast<decltype(&emit_sound_hook)>(hooks::emit_sound.original)(

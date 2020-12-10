@@ -399,7 +399,7 @@ T slider_impl(std::wstring_view title, uint32_t config_item, T min_value, T max_
 
 	ctx->inline_cursor_pos.x += ctx->working_area.x;
 
-	return config::get<T>(config_item)
+	return config::get<T>(config_item);
 }
 
 int gui::slider(std::wstring_view title, uint32_t config_item, int min_value, int max_value) {
