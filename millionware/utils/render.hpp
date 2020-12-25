@@ -7,8 +7,9 @@
 #include "../sdk/vector.hpp"
 
 enum class e_font {
-	UI_REGULAR,
-	UI_GROUP,
+	UI_11,
+	UI_13,
+	UI_14,
 
 	MAX,
 };
@@ -16,13 +17,10 @@ enum class e_font {
 enum class e_texture {
 	WHITE,
 
-	MW_LOGO_32,
-	QUESTION_MARK_22,
-	LEGIT_22,
-	VISUALS_22,
-	MISC_22,
-	CHANGERS_22,
-	PROFILE_22,
+	MW_LOGO_40,
+	MW_DOLLAR_40,
+	AVATAR_32,
+
 	CHEVRON_UP_20,
 	CHEVRON_DOWN_20,
 	CHECKMARK_12,
@@ -52,7 +50,6 @@ namespace render {
 	void refresh_fonts();
 
 	void reset_clip();
-	void pop_clip();
 
 	void push_clip(int x1, int y1, int x2, int y2);
 	void push_clip(const point_t& position, const point_t& size);

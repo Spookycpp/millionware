@@ -4,15 +4,16 @@
 #include <array>
 #include <stack>
 #include <stb_image.h>
+#include <windows.h>
 
 #include "../core/cheat.hpp"
 #include "../core/interfaces.hpp"
+#include "../resources/fonts.hpp"
 #include "../resources/textures.hpp"
 #include "math.hpp"
 #include "render.hpp"
 #include "xorstr.hpp"
 
-static std::stack<std::pair<point_t, point_t>> clip_rect_stack;
 static std::array<vgui_font_t, static_cast<int>(e_font::MAX)> fonts;
 static std::array<vgui_texture_t, static_cast<int>(e_texture::MAX)> textures;
 
@@ -40,17 +41,20 @@ inline void update_texture_from_png(e_texture texture, const uint8_t* data, int 
 std::vector<vertex_t> generate_rounded_rect_vertices(int x, int y, int width, int height, int radius, int corners) {
 	std::vector<vertex_t> vertices;
 
-	const auto radius_f = static_cast<float>(radius);
+	const auto rounded_corner_density = 12;
+	const auto rounded_corner_advance_angle = 90.0 / static_cast<double>(rounded_corner_density);
+
+	const auto radius_d = static_cast<double>(radius);
 	const auto round_top_left = (corners & CORNER_TOP_LEFT) != 0;
 	const auto round_top_right = (corners & CORNER_TOP_RIGHT) != 0;
 	const auto round_bottom_left = (corners & CORNER_BOTTOM_LEFT) != 0;
 	const auto round_bottom_right = (corners & CORNER_BOTTOM_RIGHT) != 0;
 
 	vertices.reserve(
-		(round_top_left ? 6 : 1) +
-		(round_top_right ? 6 : 1) +
-		(round_bottom_left ? 6 : 1) +
-		(round_bottom_right ? 6 : 1)
+		(round_top_left ? rounded_corner_density : 1) +
+		(round_top_right ? rounded_corner_density : 1) +
+		(round_bottom_left ? rounded_corner_density : 1) +
+		(round_bottom_right ? rounded_corner_density : 1)
 	);
 
 	for (auto i = 0; i < 4; i++) {
@@ -63,10 +67,12 @@ std::vector<vertex_t> generate_rounded_rect_vertices(int x, int y, int width, in
 			const auto vert_x = static_cast<float>(x + (i < 2 ? width - radius : radius));
 			const auto vert_y = static_cast<float>(y + (i % 3 ? height - radius : radius));
 
-			for (auto j = 0; j < 6; j++) {
-				const auto angle = math::deg_to_rad(90.0f * i + 15.0f * j);
+			for (auto j = 0; j < rounded_corner_density; j++) {
+				const auto angle = math::deg_to_rad(90.0 * i + rounded_corner_advance_angle * j);
+				const auto vertex_x = vert_x + radius_d * std::sin(angle);
+				const auto vertex_y = vert_y - radius_d * std::cos(angle);
 
-				vertices.emplace_back(vertex_t(vector2_t(vert_x + radius_f * std::sin(angle), vert_y - radius_f * std::cos(angle)), 0.0f));
+				vertices.emplace_back(vertex_t(vector2_t(static_cast<float>(vertex_x), static_cast<float>(vertex_y)), 0.0f));
 			}
 		}
 	}
@@ -78,26 +84,18 @@ void render::initialize() {
 	constexpr uint8_t white_pixel[] = { 255, 255, 255, 255 };
 
 	get_texture(e_texture::WHITE) = interfaces::vgui_surface->create_texture(true);
-	get_texture(e_texture::MW_LOGO_32) = interfaces::vgui_surface->create_texture(true);
-	get_texture(e_texture::QUESTION_MARK_22) = interfaces::vgui_surface->create_texture(true);
-	get_texture(e_texture::LEGIT_22) = interfaces::vgui_surface->create_texture(true);
-	get_texture(e_texture::VISUALS_22) = interfaces::vgui_surface->create_texture(true);
-	get_texture(e_texture::MISC_22) = interfaces::vgui_surface->create_texture(true);
-	get_texture(e_texture::CHANGERS_22) = interfaces::vgui_surface->create_texture(true);
-	get_texture(e_texture::PROFILE_22) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::MW_LOGO_40) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::MW_DOLLAR_40) = interfaces::vgui_surface->create_texture(true);
+	get_texture(e_texture::AVATAR_32) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::CHEVRON_UP_20) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::CHEVRON_DOWN_20) = interfaces::vgui_surface->create_texture(true);
 	get_texture(e_texture::CHECKMARK_12) = interfaces::vgui_surface->create_texture(true);
 
 	interfaces::vgui_surface->update_texture(get_texture(e_texture::WHITE), white_pixel, 1, 1);
 
-	update_texture_from_png(e_texture::MW_LOGO_32, resources::textures::MW_LOGO_32, sizeof resources::textures::MW_LOGO_32, 32, 32);
-	update_texture_from_png(e_texture::QUESTION_MARK_22, resources::textures::QUESTION_MARK_22, sizeof resources::textures::QUESTION_MARK_22, 22, 22);
-	update_texture_from_png(e_texture::LEGIT_22, resources::textures::LEGIT_22, sizeof resources::textures::LEGIT_22, 22, 22);
-	update_texture_from_png(e_texture::VISUALS_22, resources::textures::VISUALS_22, sizeof resources::textures::VISUALS_22, 22, 22);
-	update_texture_from_png(e_texture::MISC_22, resources::textures::MISC_22, sizeof resources::textures::MISC_22, 22, 22);
-	update_texture_from_png(e_texture::CHANGERS_22, resources::textures::CHANGERS_22, sizeof resources::textures::CHANGERS_22, 22, 22);
-	update_texture_from_png(e_texture::PROFILE_22, resources::textures::PROFILE_22, sizeof resources::textures::PROFILE_22, 22, 22);
+	update_texture_from_png(e_texture::MW_LOGO_40, resources::textures::MW_LOGO_40, sizeof resources::textures::MW_LOGO_40, 40, 40);
+	update_texture_from_png(e_texture::MW_DOLLAR_40, resources::textures::MW_DOLLAR_40, sizeof resources::textures::MW_DOLLAR_40, 40, 40);
+	update_texture_from_png(e_texture::AVATAR_32, resources::textures::AVATAR_32, sizeof resources::textures::AVATAR_32, 32, 32);
 	update_texture_from_png(e_texture::CHEVRON_UP_20, resources::textures::CHEVRON_UP_20, sizeof resources::textures::CHEVRON_UP_20, 20, 20);
 	update_texture_from_png(e_texture::CHEVRON_DOWN_20, resources::textures::CHEVRON_DOWN_20, sizeof resources::textures::CHEVRON_DOWN_20, 20, 20);
 	update_texture_from_png(e_texture::CHECKMARK_12, resources::textures::CHECKMARK_12, sizeof resources::textures::CHECKMARK_12, 12, 12);
@@ -106,11 +104,19 @@ void render::initialize() {
 }
 
 void render::refresh_fonts() {
-	get_font(e_font::UI_REGULAR) = interfaces::vgui_surface->create_font();
-	get_font(e_font::UI_GROUP) = interfaces::vgui_surface->create_font();
+	unsigned long num_fonts = 0;
 
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_REGULAR), XOR("Segoe UI"), 16, 500, 0, 0, FONT_FLAG_ANTIALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_GROUP), XOR("Segoe UI"), 14, 700, 0, 0, FONT_FLAG_ANTIALIAS);
+	AddFontMemResourceEx(
+		const_cast<LPVOID>(reinterpret_cast<LPCVOID>(resources::fonts::OPEN_SANS_REGULAR)),
+		sizeof resources::fonts::OPEN_SANS_REGULAR, nullptr, &num_fonts);
+
+	get_font(e_font::UI_11) = interfaces::vgui_surface->create_font();
+	get_font(e_font::UI_13) = interfaces::vgui_surface->create_font();
+	get_font(e_font::UI_14) = interfaces::vgui_surface->create_font();
+
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_11), XOR("Open Sans"), 16, 400, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_13), XOR("Open Sans"), 18, 400, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_14), XOR("Open Sans"), 19, 400, 0, 0, FONT_FLAG_ANTIALIAS);
 
 	interfaces::engine_client->get_screen_size(cheat::screen_size.x, cheat::screen_size.y);
 
@@ -118,35 +124,11 @@ void render::refresh_fonts() {
 }
 
 void render::reset_clip() {
-	while (!clip_rect_stack.empty()) {
-		clip_rect_stack.pop();
-	}
-
 	interfaces::vgui_surface->clipping_enabled = true;
 	interfaces::vgui_surface->set_clip_rect(0, 0, cheat::screen_size.x, cheat::screen_size.y);
-	interfaces::vgui_surface->clipping_enabled = false;
-}
-
-void render::pop_clip() {
-	if (!clip_rect_stack.empty())
-		clip_rect_stack.pop();
-
-	if (!clip_rect_stack.empty()) {
-		const auto& [min, max] = clip_rect_stack.top();
-
-		interfaces::vgui_surface->clipping_enabled = true;
-		interfaces::vgui_surface->set_clip_rect(min.x, min.y, max.x, max.y);
-	}
-	else {
-		interfaces::vgui_surface->clipping_enabled = true;
-		interfaces::vgui_surface->set_clip_rect(0, 0, cheat::screen_size.x, cheat::screen_size.y);
-		interfaces::vgui_surface->clipping_enabled = false;
-	}
 }
 
 void render::push_clip(int x1, int y1, int x2, int y2) {
-	clip_rect_stack.push(std::make_pair(point_t(x1, y1), point_t(x2, y2)));
-
 	interfaces::vgui_surface->clipping_enabled = true;
 	interfaces::vgui_surface->set_clip_rect(x1, y1, x2, y2);
 }
@@ -160,7 +142,7 @@ void render::clipped(int x1, int y1, int x2, int y2, const std::function<void()>
 
 	callback();
 
-	pop_clip();
+	reset_clip();
 }
 
 void render::clipped(const point_t& position, const point_t& size, const std::function<void()>& callback) {
@@ -168,7 +150,7 @@ void render::clipped(const point_t& position, const point_t& size, const std::fu
 
 	callback();
 
-	pop_clip();
+	reset_clip();
 }
 
 void render::line(int x1, int y1, int x2, int y2, const color_t& color) {

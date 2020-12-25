@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 
+#include "core/cheat.hpp"
 #include "core/config.hpp"
 #include "core/hooks.hpp"
 #include "core/interfaces.hpp"
@@ -15,6 +16,7 @@
 unsigned long __stdcall initial_thread(LPVOID dll_instance) {
   using namespace std::chrono_literals;
 
+  cheat::initialize();
   patterns::initialize();
   interfaces::initialize();
   config::initialize();

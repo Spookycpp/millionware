@@ -107,10 +107,6 @@
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
-    <ClCompile Include="features\aimbot\aimbot.cpp" />
-    <ClCompile Include="features\misc\misc.cpp" />
-    <ClCompile Include="features\visuals\chams.cpp" />
-    <ClCompile Include="features\visuals\esp.cpp" />
     <ClCompile Include="gui\gui.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
@@ -141,14 +137,11 @@
     <ClInclude Include="core\config.hpp" />
     <ClInclude Include="core\hooks.hpp" />
     <ClInclude Include="core\interfaces.hpp" />
-    <ClInclude Include="features\aimbot\aimbot.hpp" />
-    <ClInclude Include="features\misc\misc.hpp" />
-    <ClInclude Include="features\visuals\chams.hpp" />
-    <ClInclude Include="features\visuals\esp.hpp" />
     <ClInclude Include="gui\gui.hpp" />
     <ClInclude Include="menu\menu.hpp" />
     <ClInclude Include="core\netvars.hpp" />
     <ClInclude Include="core\patterns.hpp" />
+    <ClInclude Include="resources\fonts.hpp" />
     <ClInclude Include="resources\svgs.hpp" />
     <ClInclude Include="resources\textures.hpp" />
     <ClInclude Include="sdk\base_handle.hpp" />

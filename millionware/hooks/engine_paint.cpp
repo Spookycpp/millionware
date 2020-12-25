@@ -1,7 +1,6 @@
 #include "../core/cheat.hpp"
 #include "../core/hooks.hpp"
 #include "../core/interfaces.hpp"
-#include "../features/visuals/esp.hpp"
 #include "../menu/menu.hpp"
 #include "../utils/input.hpp"
 #include "../utils/render.hpp"
@@ -17,8 +16,6 @@ void __fastcall hooks::engine_paint_hook(uintptr_t ecx, uintptr_t edx, int mode)
 		interfaces::vgui_surface->start_drawing();
 
 		input::update();
-
-		features::visuals::esp::paint();
 
 		menu::frame();
 
