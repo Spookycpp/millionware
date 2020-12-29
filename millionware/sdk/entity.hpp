@@ -139,6 +139,10 @@ public:
 	NETVAR_DEFINITION(base_handle_t, observer_target, FNV_CT("DT_BasePlayer"), FNV_CT("m_hObserverTarget"));
 	NETVAR_DEFINITION(base_handle_t, active_weapon_handle, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_hActiveWeapon"));
 
+	c_weapon* get_active_weapon() {
+		return interfaces::entity_list->get< c_weapon >(active_weapon_handle());
+	}
+
 	bool has_bomb() const;
 };
 

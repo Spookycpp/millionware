@@ -99,6 +99,24 @@
     <ClCompile Include="hooks\draw_model_execute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="features\movement\movement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\miscellaneous\miscellaneous.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\assistance\lag compensation\lag_comp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\assistance\legitbot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\assistance\hitchance\hitchance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">
@@ -255,6 +273,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resources\fonts.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\movement\movement.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\miscellaneous\miscellaneous.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\assistance\triggerbot\triggerbot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\assistance\lag compensation\lag_comp.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\assistance\legitbot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\assistance\hitchance\hitchance.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

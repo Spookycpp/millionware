@@ -107,6 +107,12 @@
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
+    <ClCompile Include="features\assistance\hitchance\hitchance.cpp" />
+    <ClCompile Include="features\assistance\lag compensation\lag_comp.cpp" />
+    <ClCompile Include="features\assistance\legitbot.cpp" />
+    <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
+    <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
+    <ClCompile Include="features\movement\movement.cpp" />
     <ClCompile Include="gui\gui.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
@@ -137,6 +143,12 @@
     <ClInclude Include="core\config.hpp" />
     <ClInclude Include="core\hooks.hpp" />
     <ClInclude Include="core\interfaces.hpp" />
+    <ClInclude Include="features\assistance\hitchance\hitchance.hpp" />
+    <ClInclude Include="features\assistance\lag compensation\lag_comp.hpp" />
+    <ClInclude Include="features\assistance\legitbot.hpp" />
+    <ClInclude Include="features\assistance\triggerbot\triggerbot.hpp" />
+    <ClInclude Include="features\miscellaneous\miscellaneous.hpp" />
+    <ClInclude Include="features\movement\movement.hpp" />
     <ClInclude Include="gui\gui.hpp" />
     <ClInclude Include="menu\menu.hpp" />
     <ClInclude Include="core\netvars.hpp" />

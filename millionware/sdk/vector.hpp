@@ -196,6 +196,10 @@ struct vector2_t {
 struct vector3_t {
 	float x, y, z;
 
+	constexpr bool empty() const {
+		return x == 0.0f && y == 0.0f && z == 0.0f;
+	}
+
 	constexpr vector3_t(float x, float y, float z)
 		: x(x), y(y), z(z) {}
 
