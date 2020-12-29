@@ -65,7 +65,7 @@ MAP_HELPER(int, float, tab_glow_animation, 0.0f);
 MAP_HELPER(int, float, sub_tab_animation, 0.0f);
 MAP_HELPER(int, int, sub_tab_index, 0);
 
-MAP_HELPER(uint32_t, bool, group_collapsed, true);
+MAP_HELPER(uint32_t, bool, group_collapsed, false);
 MAP_HELPER(uint32_t, float, group_toggle_animation, 0.0f);
 MAP_HELPER(uint32_t, int, group_height, 0);
 MAP_HELPER(uint32_t, float, group_height_animation, 0.0f);
