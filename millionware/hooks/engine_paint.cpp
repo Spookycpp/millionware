@@ -1,9 +1,13 @@
 #include "../core/cheat.hpp"
 #include "../core/hooks.hpp"
 #include "../core/interfaces.hpp"
+
 #include "../menu/menu.hpp"
+
 #include "../utils/input/input.hpp"
 #include "../utils/render/render.hpp"
+
+#include "../features/visuals/visuals.hpp"
 
 static std::once_flag initialize_renderer;
 
@@ -17,6 +21,7 @@ void __fastcall hooks::engine_paint_hook(uintptr_t ecx, uintptr_t edx, int mode)
 
 		menu::frame();
 
+		features::visuals::render();
 		interfaces::vgui_surface->finish_drawing();
 	}
 

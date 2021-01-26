@@ -71,13 +71,41 @@ void menu::frame() {
 		}
 
 		if (gui::tab(STR_ENC(L"Visuals"))) {
-			if (gui::begin_sub_tab(STR_ENC(L"Local"))) {
-			}
-
 			if (gui::begin_sub_tab(STR_ENC(L"Enemy"))) {
+				if (gui::begin_group(STR_ENC(L"ESP"))) {
+					gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("visuals.enemy.enabled")));
+					gui::checkbox(STR_ENC(L"Bounding box"), config::get<bool>(FNV_CT("visuals.enemy.bounding_box")));
+					gui::checkbox(STR_ENC(L"Name"), config::get<bool>(FNV_CT("visuals.enemy.name")));
+					gui::checkbox(STR_ENC(L"Health"), config::get<bool>(FNV_CT("visuals.enemy.health")));
+					gui::checkbox(STR_ENC(L"Armor"), config::get<bool>(FNV_CT("visuals.enemy.armor")));
+					gui::checkbox(STR_ENC(L"Weapon text"), config::get<bool>(FNV_CT("visuals.enemy.weapon_text")));
+					gui::checkbox(STR_ENC(L"Weapon icon"), config::get<bool>(FNV_CT("visuals.enemy.weapon_icon")));
+					gui::checkbox(STR_ENC(L"Ammo"), config::get<bool>(FNV_CT("visuals.enemy.ammo")));
+					gui::checkbox(STR_ENC(L"Skeleton"), config::get<bool>(FNV_CT("visuals.enemy.skeleton")));
+					gui::checkbox(STR_ENC(L"Head dot"), config::get<bool>(FNV_CT("visuals.enemy.head_dot")));
+					gui::checkbox(STR_ENC(L"Line of sight"), config::get<bool>(FNV_CT("visuals.enemy.line_of_sight")));
+					gui::end_group();
+				}
+
+				if (gui::begin_group(STR_ENC(L"Chams"))) {
+					gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("visuals.enemy.chams")));
+					gui::end_group();
+
+				}
 			}
 
 			if (gui::begin_sub_tab(STR_ENC(L"Friendly"))) {
+				if (gui::begin_group(STR_ENC(L"ESP"))) {
+					gui::checkbox(STR_ENC(L"test"), config::get<bool>(FNV_CT("test")));
+					gui::end_group();
+				}
+			}
+
+			if (gui::begin_sub_tab(STR_ENC(L"Local"))) {
+				if (gui::begin_group(STR_ENC(L"ESP"))) {
+					gui::checkbox(STR_ENC(L"test2"), config::get<bool>(FNV_CT("test2")));
+					gui::end_group();
+				}
 			}
 		}
 

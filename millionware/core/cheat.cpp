@@ -15,7 +15,7 @@ __declspec(dllexport) cheat_info_t g_cheat_info;
 void cheat::initialize() {
 #ifdef _DEBUG
 
-	const auto username = STR_ENC("navewindow");
+	const auto username = STR_ENC("ur mom");
 
 	g_cheat_info.inject_time = 0;
 	g_cheat_info.sub_expire = std::numeric_limits<uint64_t>::max();
