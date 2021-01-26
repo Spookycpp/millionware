@@ -183,10 +183,63 @@ void features::visuals::draw_esp_box(const bounding_box_t& box, const int32_t bo
     }
 }
 
+void features::visuals::draw_esp_name(const bounding_box_t& box, c_entity* entity, color_t color) {
+
+    const auto box_size = box.max - box.min;
+
+    if (entity->is_weapon())
+    {
+        const auto weapon = reinterpret_cast<c_weapon*>(entity);
+        const auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->item_definition_index());
+        const auto name_size = render::measure_text(e_font::UI_11, weapon_info->weapon_name);
+
+        render::text(box.min.x + box_size.x / 2 - name_size.x / 2, box.min.y - name_size.y,
+            e_font::UI_11, color, weapon_info->weapon_name);
+    }
+    else
+    {
+        player_info_t player_info;
+
+        if (!interfaces::engine_client->get_player_info(entity->networkable()->index(), player_info))
+            return;
+
+        const auto name_size = render::measure_text(e_font::UI_11, player_info.name);
+
+        render::text(box.min.x + box_size.x / 2 - name_size.x / 2, box.min.y - name_size.y,
+            e_font::UI_11, color, player_info.name);
+    }
+}
+
 void features::visuals::draw_player_esp(c_player* local_player, c_player* player)
 {
 
-    draw_esp_box(config::get<bool>(FNV_CT("visuals.enemy.bounding_box")), 0, config::get<color_t>(255, 255, 255, 255);
+    const auto entity_box_opt = calculate_box(player);
+    const auto is_friendly = player->team_num() == local_player->team_num();
+    const auto is_local = player == local_player;
+
+    if (entity_box_opt.has_value()) {
+        const auto& entity_box = entity_box_opt.value();
+
+        if (config::get<bool>(FNV_CT("visuals.local.bounding_box")) && is_local) {
+            draw_esp_box(entity_box, 0, { 255, 255, 255, 255 });
+        }
+        else if (config::get<bool>(FNV_CT("visuals.enemy.bounding_box")) && !is_friendly) {
+            draw_esp_box(entity_box, 0, { 255, 0, 0, 255 });
+        }
+        else if (config::get<bool>(FNV_CT("visuals.team.bounding_box")) && is_friendly) {
+            draw_esp_box(entity_box, 0, { 0, 255, 0, 255 });
+        }
+
+        if (config::get<bool>(FNV_CT("visuals.local.name")) && is_local) {
+            draw_esp_name(entity_box, player, { 255, 255, 255, 255 });
+        }        
+        else if (config::get<bool>(FNV_CT("visuals.enemy.name")) && !is_friendly) {
+            draw_esp_name(entity_box, player, { 255, 255, 255, 255 });
+        }        
+        else if (config::get<bool>(FNV_CT("visuals.team.name")) && is_friendly) {
+            draw_esp_name(entity_box, player, { 255, 255, 255, 255 });
+        }
+    }
 }
 
 void features::visuals::render() {
@@ -196,9 +249,9 @@ void features::visuals::render() {
     if (cheat::local_player == nullptr)
         return;
 
-    const auto self_enabled = config::get<bool>(FNV_CT("players.self.esp.enabled"));
-    const auto friendlies_enabled = config::get<bool>(FNV_CT("players.friendlies.esp.enabled"));
-    const auto enemies_enabled = config::get<bool>(FNV_CT("players.enemies.esp.enabled"));
+    const auto self_enabled = config::get<bool>(FNV_CT("visuals.self.enabled"));
+    const auto friendlies_enabled = config::get<bool>(FNV_CT("visuals.friendly.enabled"));
+    const auto enemies_enabled = config::get<bool>(FNV_CT("visuals.enemy.enabled"));
 
     if (!self_enabled && !friendlies_enabled && !enemies_enabled)
         return;

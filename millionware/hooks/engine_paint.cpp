@@ -19,9 +19,9 @@ void __fastcall hooks::engine_paint_hook(uintptr_t ecx, uintptr_t edx, int mode)
 
 		input::update();
 
-		menu::frame();
-
 		features::visuals::render();
+
+		menu::frame();
 		interfaces::vgui_surface->finish_drawing();
 	}
 
