@@ -7,10 +7,10 @@
 #include "../core/config.hpp"
 #include "../core/interfaces.hpp"
 #include "../sdk/vector.hpp"
-#include "../utils/input.hpp"
-#include "../utils/math.hpp"
-#include "../utils/render.hpp"
-#include "../utils/xorstr.hpp"
+#include "../utils/input/input.hpp"
+#include "../utils/math/math.hpp"
+#include "../utils/render/render.hpp"
+#include "../utils/xorstr/xorstr.hpp"
 #include "gui.hpp"
 
 constexpr auto TABS_BAR_HEIGHT = 50;
@@ -509,7 +509,7 @@ template <typename T>
 T slider_impl(std::wstring_view title, T& value, T min_value, T max_value, std::wstring_view display_string);
 
 int gui::slider(std::wstring_view title, int& value, int min_value, int max_value) {
-	return slider_impl<int>(title, value, min_value, max_value, XOR(L"{}"));
+	return slider_impl<int>(title, value, min_value, max_value, STR_ENC(L"{}"));
 }
 
 int gui::slider(std::wstring_view title, int& value, int min_value, int max_value, std::wstring_view display_string) {
@@ -521,7 +521,7 @@ int gui::slider(std::wstring_view title, int& value, int min_value, int max_valu
 }
 
 float gui::slider(std::wstring_view title, float& value, float min_value, float max_value) {
-	return slider_impl<float>(title, value, min_value, max_value, XOR(L"{:.1f}"));
+	return slider_impl<float>(title, value, min_value, max_value, STR_ENC(L"{:.1f}"));
 }
 
 float gui::slider(std::wstring_view title, float& value, float min_value, float max_value, std::wstring_view display_string) {

@@ -53,7 +53,7 @@ int main() {
 		GetWindowThreadProcessId(FindWindowW(L"Valve001", nullptr), &process_id);
 
 		return process_id;
-	});
+		});
 
 	if (process_pid == 0ul)
 		return error_and_exit(2, L"millionware", L"game is not running");

@@ -1,5 +1,5 @@
-#include "../utils/hash.hpp"
-#include "../utils/xorstr.hpp"
+#include "../utils/hash/hash.hpp"
+#include "../utils/xorstr/xorstr.hpp"
 #include "interfaces.hpp"
 #include "netvars.hpp"
 

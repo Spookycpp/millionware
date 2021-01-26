@@ -62,4 +62,8 @@ public:
 	VIRTUAL_METHOD(void, set_value, 14, (std::string_view value), value.data());
 	VIRTUAL_METHOD(void, set_value, 15, (float value), value);
 	VIRTUAL_METHOD(void, set_value, 16, (int value), value);
+
+	int& get_flags() {
+		return flags;
+	}
 };

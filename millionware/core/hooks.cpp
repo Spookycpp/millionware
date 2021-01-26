@@ -2,26 +2,14 @@
 #include <stdio.h>
 #include <Windows.h>
 
-#include "../utils/error.hpp"
-#include "../utils/hash.hpp"
-#include "../utils/xorstr.hpp"
+#include "../utils/hash/hash.hpp"
+#include "../utils/hook/hook.hpp"
+#include "../utils/xorstr/xorstr.hpp"
 
 #include "cheat.hpp"
 #include "hooks.hpp"
 #include "interfaces.hpp"
 #include "patterns.hpp"
-
-#define ADD_HOOK(storage)                                                                                 \
-  if (MH_CreateHook(reinterpret_cast<LPVOID>(storage.function), reinterpret_cast<LPVOID>(storage.detour), \
-                    reinterpret_cast<LPVOID*>(&storage.original)) != MH_OK)                               \
-  {                                                                                                       \
-    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("set up " #storage));                               \
-  }
-
-#define REMOVE_HOOK(storage)                                                      \
-  if (MH_RemoveHook(reinterpret_cast<LPVOID>(storage.function)) != MH_OK)         \
-    utils::error_and_exit(e_error_code::HOOKS, FNV_CT("remove " #storage));       \
-  const auto _##storage##_lock = std::lock_guard(storage.call_mutex);
 
 template <typename T>
 inline uintptr_t get_vfunc_address(T* base_interface, size_t index) {
@@ -33,99 +21,59 @@ void hooks::initialize() {
 	if (interfaces::engine_client->is_in_game())
 		cheat::local_player = interfaces::entity_list->get_by_index(interfaces::engine_client->get_local_player())->as_player();
 
-	// initialize hooking engine
-	if (MH_Initialize() != MH_OK)
-		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("minhook initialize"));
-
 	// add hooks
-	create_move.function = get_vfunc_address(interfaces::client_mode, 24);
-	create_move.detour = reinterpret_cast<uintptr_t>(&create_move_hook);
+	create_move = c_hook(get_vfunc_address(interfaces::client_mode, 24), reinterpret_cast<uintptr_t>(&create_move_hook));
+	override_view = c_hook(get_vfunc_address(interfaces::client_mode, 18), reinterpret_cast<uintptr_t>(&override_view_hook));
+	override_mouse_input = c_hook(get_vfunc_address(interfaces::client_mode, 23), reinterpret_cast<uintptr_t>(&override_mouse_input_hook));
+	is_playing_demo = c_hook(get_vfunc_address(interfaces::engine_client, 82), reinterpret_cast<uintptr_t>(&is_playing_demo_hook));
+	override_config = c_hook(get_vfunc_address(interfaces::material_system, 21), reinterpret_cast<uintptr_t>(&override_config_hook));
+	level_init_post_entity = c_hook(get_vfunc_address(interfaces::client, 6), reinterpret_cast<uintptr_t>(&level_init_post_entity_hook));
+	level_shutdown_pre_entity = c_hook(get_vfunc_address(interfaces::client, 7), reinterpret_cast<uintptr_t>(&level_shutdown_pre_entity_hook));
+	frame_stage_notify = c_hook(get_vfunc_address(interfaces::client, 37), reinterpret_cast<uintptr_t>(&frame_stage_notify_hook));
+	engine_paint = c_hook(get_vfunc_address(interfaces::engine_vgui, 14), reinterpret_cast<uintptr_t>(&engine_paint_hook));
+	lock_cursor = c_hook(get_vfunc_address(interfaces::vgui_surface, 67), reinterpret_cast<uintptr_t>(&lock_cursor_hook));
+	screen_size_changed = c_hook(get_vfunc_address(interfaces::vgui_surface, 116), reinterpret_cast<uintptr_t>(&screen_size_changed_hook));
+	emit_sound = c_hook(get_vfunc_address(interfaces::engine_sound, 5), reinterpret_cast<uintptr_t>(&emit_sound_hook));
+	get_screen_aspect_ratio = c_hook(get_vfunc_address(interfaces::engine_client, 101), reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook));
+	draw_model_execute = c_hook(get_vfunc_address(interfaces::model_render, 21), reinterpret_cast<uintptr_t>(&draw_model_execute_hook));
 
-	override_view.function = get_vfunc_address(interfaces::client_mode, 18);
-	override_view.detour = reinterpret_cast<uintptr_t>(&override_view_hook);
-	
-	override_mouse_input.function = get_vfunc_address(interfaces::client_mode, 23);
-	override_mouse_input.detour = reinterpret_cast<uintptr_t>(&override_mouse_input_hook);
-
-	is_playing_demo.function = get_vfunc_address(interfaces::engine_client, 82);
-	is_playing_demo.detour = reinterpret_cast<uintptr_t>(&is_playing_demo_hook);
-
-	override_config.function = get_vfunc_address(interfaces::material_system, 21);
-	override_config.detour = reinterpret_cast<uintptr_t>(&override_config_hook);
-
-	level_init_post_entity.function = get_vfunc_address(interfaces::client, 6);
-	level_init_post_entity.detour = reinterpret_cast<uintptr_t>(&level_init_post_entity_hook);
-
-	level_shutdown_pre_entity.function = get_vfunc_address(interfaces::client, 7);
-	level_shutdown_pre_entity.detour = reinterpret_cast<uintptr_t>(&level_shutdown_pre_entity_hook);
-
-	frame_stage_notify.function = get_vfunc_address(interfaces::client, 37);
-	frame_stage_notify.detour = reinterpret_cast<uintptr_t>(&frame_stage_notify_hook);
-
-	engine_paint.function = get_vfunc_address(interfaces::engine_vgui, 14);
-	engine_paint.detour = reinterpret_cast<uintptr_t>(&engine_paint_hook);
-
-	lock_cursor.function = get_vfunc_address(interfaces::vgui_surface, 67);
-	lock_cursor.detour = reinterpret_cast<uintptr_t>(&lock_cursor_hook);
-
-	screen_size_changed.function = get_vfunc_address(interfaces::vgui_surface, 116);
-	screen_size_changed.detour = reinterpret_cast<uintptr_t>(&screen_size_changed_hook);
-
-	emit_sound.function = get_vfunc_address(interfaces::engine_sound, 5);
-	emit_sound.detour = reinterpret_cast<uintptr_t>(&emit_sound_hook);
-
-	get_screen_aspect_ratio.function = get_vfunc_address(interfaces::engine_client, 101);
-	get_screen_aspect_ratio.detour = reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook);
-
-	draw_model_execute.function = get_vfunc_address(interfaces::model_render, 21);
-	draw_model_execute.detour = reinterpret_cast<uintptr_t>(&draw_model_execute_hook);
-
-	ADD_HOOK(create_move);
-	ADD_HOOK(override_view);
-	ADD_HOOK(override_mouse_input);
-	ADD_HOOK(is_playing_demo);
-	ADD_HOOK(override_config);
-	ADD_HOOK(level_init_post_entity);
-	ADD_HOOK(level_shutdown_pre_entity);
-	ADD_HOOK(frame_stage_notify);
-	ADD_HOOK(engine_paint);
-	ADD_HOOK(lock_cursor);
-	ADD_HOOK(screen_size_changed);
-	ADD_HOOK(emit_sound);
-	ADD_HOOK(get_screen_aspect_ratio);
-	ADD_HOOK(draw_model_execute);
-
-	if (MH_EnableHook(nullptr) != MH_OK)
-		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("enable all hooks"));
+	// enable hooks
+	create_move.enable();
+	override_view.enable();
+	override_mouse_input.enable();
+	is_playing_demo.enable();
+	override_config.enable();
+	level_init_post_entity.enable();
+	level_shutdown_pre_entity.enable();
+	frame_stage_notify.enable();
+	engine_paint.enable();
+	lock_cursor.enable();
+	screen_size_changed.enable();
+	emit_sound.enable();
+	get_screen_aspect_ratio.enable();
+	draw_model_execute.enable();
 }
 
 void hooks::shutdown() {
-	if (MH_DisableHook(nullptr) != MH_OK)
-		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("disable all hooks"));
-
-	REMOVE_HOOK(create_move);
-	REMOVE_HOOK(override_view);
-	REMOVE_HOOK(override_mouse_input);
-	REMOVE_HOOK(is_playing_demo);
-	REMOVE_HOOK(override_config);
-	REMOVE_HOOK(level_init_post_entity);
-	REMOVE_HOOK(level_shutdown_pre_entity);
-	REMOVE_HOOK(frame_stage_notify);
-	REMOVE_HOOK(engine_paint);
-	REMOVE_HOOK(lock_cursor);
-	REMOVE_HOOK(screen_size_changed);
-	REMOVE_HOOK(emit_sound);
-	REMOVE_HOOK(get_screen_aspect_ratio);
-	REMOVE_HOOK(draw_model_execute);
-
-	// lets hope no hooks are running :D
-	if (MH_Uninitialize() != MH_OK)
-		utils::error_and_exit(e_error_code::HOOKS, FNV_CT("minhook uninitialize"));
+	// disable hooks
+	create_move.disable();
+	override_view.disable();
+	override_mouse_input.disable();
+	is_playing_demo.disable();
+	override_config.disable();
+	level_init_post_entity.disable();
+	level_shutdown_pre_entity.disable();
+	frame_stage_notify.disable();
+	engine_paint.disable();
+	lock_cursor.disable();
+	screen_size_changed.disable();
+	emit_sound.disable();
+	get_screen_aspect_ratio.disable();
+	draw_model_execute.disable();
 
 	// revert what hooks might've possibly messed up
 	interfaces::input_system->enable_input(true);
-	interfaces::convar_system->find(XOR("r_aspectratio"))->set_value(0.f);
-	
-	interfaces::convar_system->find(XOR("@panorama_disable_blur"))->set_value(false);
-	interfaces::convar_system->find(XOR("mat_postprocess_enable"))->set_value(true);
+	interfaces::convar_system->find(STR_ENC("r_aspectratio"))->set_value(0.0f);
+	interfaces::convar_system->find(STR_ENC("@panorama_disable_blur"))->set_value(false);
+	interfaces::convar_system->find(STR_ENC("mat_postprocess_enable"))->set_value(true);
 }

@@ -1,11 +1,8 @@
 #include "../core/hooks.hpp"
 #include "../core/interfaces.hpp"
-#include "../utils/render.hpp"
 #include "../core/config.hpp"
 #include "../core/cheat.hpp"
 
 float __fastcall hooks::get_screen_aspect_ratio_hook(uintptr_t ecx, uintptr_t edx, int width, int height) {
-	const auto _ = std::lock_guard(hooks::get_screen_aspect_ratio.call_mutex);
-
-	return reinterpret_cast<decltype(&get_screen_aspect_ratio_hook)>(hooks::get_screen_aspect_ratio.original)(ecx, edx, width, height);
+	return hooks::get_screen_aspect_ratio.get_original<decltype(&get_screen_aspect_ratio_hook)>()(ecx, edx, width, height);
 }

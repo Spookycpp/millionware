@@ -27,19 +27,10 @@
     <ClCompile Include="core\hooks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils\render.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\netvars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sdk\sdk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\error.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hooks\engine_paint.cpp">
@@ -55,9 +46,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hooks\lock_cursor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\cheat.cpp">
@@ -117,21 +105,36 @@
     <ClCompile Include="features\assistance\hitchance\hitchance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="features\movement\prediction\engine_prediction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\render\render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\input\input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\error\error.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\hook\hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\math\math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\visuals\visuals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\interfaces.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\hash.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\patterns.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\hooks.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\render.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sdk\client_dll.hpp">
@@ -179,16 +182,10 @@
     <ClInclude Include="sdk\color.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\error.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sdk\vgui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sdk\vertex.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\math.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sdk\engine_vgui.hpp">
@@ -206,9 +203,6 @@
     <ClInclude Include="sdk\input_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\input.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sdk\global_vars.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -222,9 +216,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\config.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\xorstr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sdk\engine_sound.hpp">
@@ -291,6 +282,36 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="features\assistance\hitchance\hitchance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\movement\prediction\engine_prediction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\client_prediction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\xorstr\xorstr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\render\render.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\math\math.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\input\input.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\hash\hash.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\error\error.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\hook\hook.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\visuals\visuals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,8 +5,8 @@
 #include "../../core/interfaces.hpp"
 #include "../../core/patterns.hpp"
 
-#include "../../utils/xorstr.hpp"
-#include "../../utils/hash.hpp"
+#include "../../utils/xorstr/xorstr.hpp"
+#include "../../utils/hash/hash.hpp"
 
 void features::miscellaneous::auto_accept() {
 	if (!config::get<bool>(FNV_CT("misc.other.auto_accept")))
@@ -14,7 +14,32 @@ void features::miscellaneous::auto_accept() {
 
 	const auto set_local_player_ready_fn = reinterpret_cast<bool(__stdcall*)(const char*)>(patterns::set_local_player_ready);
 
-	set_local_player_ready_fn(XOR(""));
+	set_local_player_ready_fn(STR_ENC(""));
+}
+
+void features::miscellaneous::auto_pistol(user_cmd_t* user_cmd) {
+	if (!config::get<bool>(FNV_CT("misc.other.auto_pistol")))
+		return;
+
+	if (!cheat::local_player || cheat::local_player->life_state() != LIFE_STATE_ALIVE)
+		return;
+
+	const auto weapon = (c_weapon*)cheat::local_player->active_weapon_handle().get();
+	const auto info = weapon ? interfaces::weapon_system->get_weapon_info(weapon->item_definition_index()) : nullptr;
+
+	if (!info || info->type != WEAPON_TYPE_PISTOL)
+		return;
+
+	if (user_cmd->buttons & BUTTON_IN_ATTACK2 && weapon->item_definition_index() == WEAPON_REVOLVER) {
+		if (weapon->next_secondary_attack() > interfaces::global_vars->current_time)
+			user_cmd->buttons &= ~BUTTON_IN_ATTACK2;
+	}
+	else if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->item_definition_index() != WEAPON_REVOLVER) {
+		if (weapon->next_primary_attack() > interfaces::global_vars->current_time)
+			user_cmd->buttons &= ~BUTTON_IN_ATTACK;
+	}
+
+	interfaces::engine_client->execute_cmd("echo nigger");
 }
 
 void features::miscellaneous::rank_reveal() {
@@ -23,4 +48,77 @@ void features::miscellaneous::rank_reveal() {
 
 	// https://github.com/SteamDatabase/Protobufs/blob/master/csgo/cstrike15_usermessages.proto#L54
 	interfaces::client->dispatch_user_msg(50, 0, 0, nullptr);
+}
+
+void features::miscellaneous::override_fov(view_setup_t* view_setup) {
+
+	if (cheat::local_player && !cheat::local_player->is_scoped() && cheat::local_player->life_state() == LIFE_STATE_ALIVE)
+		view_setup->fov = config::get<float>(FNV_CT("misc.other.override_fov"));
+}
+
+void features::miscellaneous::panorama_blur() {
+	const static auto panorama_blur = interfaces::convar_system->find(STR_ENC("@panorama_disable_blur"));
+
+	panorama_blur->set_value(config::get<bool>(FNV_CT("visuals.other.general.panorama_blur")));
+}
+
+void features::miscellaneous::post_processing() {
+	const static auto post_processing = interfaces::convar_system->find(STR_ENC("mat_postprocess_enable"));
+	const static auto blur_overlay = interfaces::material_system->find_material(STR_ENC("dev/scope_bluroverlay"));
+	const static auto lens_dirt = interfaces::material_system->find_material(STR_ENC("models/weapons/shared/scope/scope_lens_dirt"));
+
+	const auto should_do_post_processing = config::get<bool>(FNV_CT("visuals.other.general.post_processing"));
+
+	post_processing->set_value(!should_do_post_processing);
+	blur_overlay->set_flag(MATERIAL_FLAG_NO_DRAW, !should_do_post_processing);
+	lens_dirt->set_flag(MATERIAL_FLAG_NO_DRAW, !should_do_post_processing);
+}
+
+void features::miscellaneous::force_crosshair() {
+	const static auto weapon_debug_spread_show = interfaces::convar_system->find(STR_ENC("weapon_debug_spread_show"));
+
+	const auto should_draw_crosshair = cheat::local_player && cheat::local_player->life_state() == LIFE_STATE_ALIVE && !cheat::local_player->is_scoped();
+
+	weapon_debug_spread_show->set_value(should_draw_crosshair ? 3 : 0);
+}
+
+void features::miscellaneous::ragdoll_push() {
+
+	static bool once = true;
+	static auto phys_pushscale = interfaces::convar_system->find(STR_ENC("phys_pushscale"));
+
+	if (!config::get<bool>(FNV_CT("misc.other.ragdoll_push")))
+	{
+		if (!once) {
+			phys_pushscale->set_value(1);
+		}
+
+		once = true;
+		return;
+	}
+
+	once = false;
+
+	phys_pushscale->get_flags() |= 0;
+	phys_pushscale->set_value(3000);
+}
+
+void features::miscellaneous::ragdoll_float() {
+	static bool once = true;
+	static auto cl_ragdoll_gravity = interfaces::convar_system->find(STR_ENC("cl_ragdoll_gravity"));
+
+	if (!config::get<bool>(FNV_CT("misc.other.ragdoll_float")))
+	{
+		if (!once) {
+			cl_ragdoll_gravity->set_value(600);
+		}
+
+		once = true;
+		return;
+	}
+
+	once = false;
+
+	cl_ragdoll_gravity->get_flags() |= 0;
+	cl_ragdoll_gravity->set_value(-100);
 }

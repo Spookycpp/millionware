@@ -1,16 +1,15 @@
 #include <cstdio>
 #include <cstring>
+#include <fmt/format.h>
 #include <string>
-#include <Windows.h>
+#include <windows.h>
 
-#include "../utils/error.hpp"
-#include "../utils/hash.hpp"
-#include "../utils/xorstr.hpp"
+#include "../utils/error/error.hpp"
+#include "../utils/hash/hash.hpp"
+#include "../utils/xorstr/xorstr.hpp"
 #include "patterns.hpp"
 
 struct pattern_entry_t {
-	uintptr_t* out_pattern;
-
 	char module_name[32];
 	char pattern[128];
 
@@ -21,15 +20,16 @@ struct pattern_entry_t {
 };
 
 __declspec(dllexport) pattern_entry_t g_patterns[] = {
-	{&patterns::engine_vgui_start_drawing, "vguimatsurface.dll", "55 8B EC 83 E4 C0 83 EC 38", 0, 0, 0},
-	{&patterns::engine_vgui_finish_drawing, "vguimatsurface.dll", "8B 0D ? ? ? ? 56 C6 05", 0, 0, 0},
-	{&patterns::player_has_bomb, "client.dll", "56 8B F1 85 F6 74 31", 0, 0, 0},
-	{&patterns::set_local_player_ready, "client.dll", "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12", 0, 0, 0},
-	{&patterns::set_clantag, "engine.dll", "53 56 57 8B DA 8B F9 FF 15", 0, 0, 0},
-	{&patterns::weapon_system, "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", 0, 0, 0},
-	{&patterns::input, "client.dll", "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10", 0, 0, 0},
-	{&patterns::demo_or_hltv, "client.dll", "84 C0 75 09 38 05", 0, 0, 0},
-	{&patterns::money_reveal, "client.dll", "84 C0 75 0C 5B", 0, 0, 0},
+	{ "vguimatsurface.dll", "55 8B EC 83 E4 C0 83 EC 38" },
+	{ "vguimatsurface.dll", "8B 0D ? ? ? ? 56 C6 05" },
+	{ "client.dll", "56 8B F1 85 F6 74 31" },
+	{ "client.dll", "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12" },
+	{ "engine.dll", "53 56 57 8B DA 8B F9 FF 15" },
+	{ "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0" },
+	{ "client.dll", "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" },
+	{ "client.dll", "84 C0 75 09 38 05" },
+	{ "client.dll", "84 C0 75 0C 5B" },
+	{ "client.dll", "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" },
 };
 
 inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
@@ -43,7 +43,7 @@ inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
 		return entry.address;
 	}
 
-	utils::error_and_exit(e_error_code::PATTERNS, module_hash, pattern_hash);
+	utils::report_error(fmt::format(STR_ENC("Couldn't find a pattern: %08X %08X"), module_hash, pattern_hash));
 
 	return 0;
 }
@@ -97,7 +97,14 @@ void patterns::initialize() {
 	}
 #endif
 
-	for (const auto& entry : g_patterns) {
-		*entry.out_pattern = get_pattern(entry.module_hash, entry.pattern_hash);
-	}
+	engine_vgui_start_drawing = get_pattern(FNV_CT("vguimatsurface.dll"), FNV_CT("55 8B EC 83 E4 C0 83 EC 38"));
+	engine_vgui_finish_drawing = get_pattern(FNV_CT("vguimatsurface.dll"), FNV_CT("8B 0D ? ? ? ? 56 C6 05"));
+	player_has_bomb = get_pattern(FNV_CT("client.dll"), FNV_CT("56 8B F1 85 F6 74 31"));
+	set_local_player_ready = get_pattern(FNV_CT("client.dll"), FNV_CT("55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
+	set_clantag = get_pattern(FNV_CT("engine.dll"), FNV_CT("53 56 57 8B DA 8B F9 FF 15"));
+	weapon_system = get_pattern(FNV_CT("client.dll"), FNV_CT("8B 35 ? ? ? ? FF 10 0F B7 C0"));
+	input = get_pattern(FNV_CT("client.dll"), FNV_CT("B9 ? ? ? ? F3 0F 11 04 24 FF 50 10"));
+	demo_or_hltv = get_pattern(FNV_CT("client.dll"), FNV_CT("84 C0 75 09 38 05"));
+	money_reveal = get_pattern(FNV_CT("client.dll"), FNV_CT("84 C0 75 0C 5B"));
+	move_helper = get_pattern(FNV_CT("client.dll"), FNV_CT("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01"));
 }

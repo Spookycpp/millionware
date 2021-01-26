@@ -1,20 +1,17 @@
 #include <array>
 #include <cstdio>
+#include <fmt/format.h>
 #include <stdexcept>
-#include <Windows.h>
-#include <winternl.h>
+#include <windows.h>
 
-#include "../utils/error.hpp"
-#include "../utils/hash.hpp"
-#include "../utils/xorstr.hpp"
+#include "../utils/error/error.hpp"
+#include "../utils/hash/hash.hpp"
+#include "../utils/xorstr/xorstr.hpp"
 #include "interfaces.hpp"
 
-struct interface_entry_t
-{
-	uintptr_t* out_interface;
-
+struct interface_entry_t {
 	char module_name[32];
-	char interface_name[32];
+	char interface_name[48];
 
 	uint32_t module_hash;
 	uint32_t interface_hash;
@@ -23,19 +20,20 @@ struct interface_entry_t
 };
 
 __declspec(dllexport) interface_entry_t g_interfaces[] = {
-	{reinterpret_cast<uintptr_t*>(&interfaces::client), "client.dll", "VClient018", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::convar_system), "vstdlib.dll", "VEngineCvar007", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::debug_overlay), "engine.dll", "VDebugOverlay004", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::engine_client), "engine.dll", "VEngineClient014", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::engine_sound), "engine.dll", "IEngineSoundClient003", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::engine_vgui), "engine.dll", "VEngineVGui001", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::entity_list), "client.dll", "VClientEntityList003", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::input_system), "inputsystem.dll", "InputSystemVersion001", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::material_system), "materialsystem.dll", "VMaterialSystem080", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::model_render), "engine.dll", "VEngineModel016", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::vgui_surface), "vguimatsurface.dll", "VGUI_Surface031", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::game_movement), "client.dll", "GameMovement001", 0, 0, 0},
-	{reinterpret_cast<uintptr_t*>(&interfaces::event_manager), "engine.dll", "GAMEEVENTSMANAGER002", 0, 0, 0},
+	{ "client.dll", "VClient018" },
+	{ "vstdlib.dll", "VEngineCvar007" },
+	{ "engine.dll", "VDebugOverlay004" },
+	{ "engine.dll", "VEngineClient014" },
+	{ "engine.dll", "IEngineSoundClient003" },
+	{ "engine.dll", "VEngineVGui001" },
+	{ "client.dll", "VClientEntityList003" },
+	{ "inputsystem.dll", "InputSystemVersion001" },
+	{ "materialsystem.dll", "VMaterialSystem080" },
+	{ "engine.dll", "VEngineModel016" },
+	{ "vguimatsurface.dll", "VGUI_Surface031" },
+	{ "client.dll", "GameMovement001" },
+	{ "engine.dll", "GAMEEVENTSMANAGER002" },
+	{ "client.dll", "VClientPrediction001" },
 };
 
 inline uintptr_t get_interface(uint32_t module_hash, uint32_t interface_hash) {
@@ -49,7 +47,7 @@ inline uintptr_t get_interface(uint32_t module_hash, uint32_t interface_hash) {
 		return entry.address;
 	}
 
-	utils::error_and_exit(e_error_code::INTERFACES, module_hash, interface_hash);
+	utils::report_error(fmt::format(STR_ENC("Couldn't find an interface: %08X %08X"), module_hash, interface_hash));
 
 	return 0;
 }
@@ -62,7 +60,7 @@ void interfaces::initialize() {
 		const auto module_handle = GetModuleHandleA(entry.module_name);
 
 		if (module_handle != nullptr) {
-			const auto create_iface = reinterpret_cast<create_interface_t>(GetProcAddress(module_handle, XOR("CreateInterface")));
+			const auto create_iface = reinterpret_cast<create_interface_t>(GetProcAddress(module_handle, STR_ENC("CreateInterface")));
 
 			if (create_iface != nullptr)
 				entry.address = create_iface(entry.interface_name, 0);
@@ -76,9 +74,20 @@ void interfaces::initialize() {
 	}
 #endif
 
-	for (const auto& entry : g_interfaces) {
-		*entry.out_interface = get_interface(entry.module_hash, entry.interface_hash);
-	}
+	client = (decltype(client))get_interface(FNV_CT("client.dll"), FNV_CT("VClient018"));
+	convar_system = (decltype(convar_system))get_interface(FNV_CT("vstdlib.dll"), FNV_CT("VEngineCvar007"));
+	debug_overlay = (decltype(debug_overlay))get_interface(FNV_CT("engine.dll"), FNV_CT("VDebugOverlay004"));
+	engine_client = (decltype(engine_client))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineClient014"));
+	engine_sound = (decltype(engine_sound))get_interface(FNV_CT("engine.dll"), FNV_CT("IEngineSoundClient003"));
+	engine_vgui = (decltype(engine_vgui))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineVGui001"));
+	entity_list = (decltype(entity_list))get_interface(FNV_CT("client.dll"), FNV_CT("VClientEntityList003"));
+	input_system = (decltype(input_system))get_interface(FNV_CT("inputsystem.dll"), FNV_CT("InputSystemVersion001"));
+	material_system = (decltype(material_system))get_interface(FNV_CT("materialsystem.dll"), FNV_CT("VMaterialSystem080"));
+	model_render = (decltype(model_render))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineModel016"));
+	vgui_surface = (decltype(vgui_surface))get_interface(FNV_CT("vguimatsurface.dll"), FNV_CT("VGUI_Surface031"));
+	game_movement = (decltype(game_movement))get_interface(FNV_CT("client.dll"), FNV_CT("GameMovement001"));
+	event_manager = (decltype(event_manager))get_interface(FNV_CT("engine.dll"), FNV_CT("GAMEEVENTSMANAGER002"));
+	prediction = (decltype(prediction))get_interface(FNV_CT("client.dll"), FNV_CT("VClientPrediction001"));
 
 	client_mode = **reinterpret_cast<c_client_mode***>(reinterpret_cast<uintptr_t**>(client)[0][10] + 5);
 	global_vars = **reinterpret_cast<c_global_vars_base***>(reinterpret_cast<uintptr_t**>(client)[0][11] + 10);

@@ -6,13 +6,13 @@
 #include <stb_image.h>
 #include <windows.h>
 
-#include "../core/cheat.hpp"
-#include "../core/interfaces.hpp"
-#include "../resources/fonts.hpp"
-#include "../resources/textures.hpp"
-#include "math.hpp"
+#include "../../core/cheat.hpp"
+#include "../../core/interfaces.hpp"
+#include "../../resources/fonts.hpp"
+#include "../../resources/textures.hpp"
+#include "../math/math.hpp"
 #include "render.hpp"
-#include "xorstr.hpp"
+#include "../xorstr/xorstr.hpp"
 
 static std::array<vgui_font_t, static_cast<int>(e_font::MAX)> fonts;
 static std::array<vgui_texture_t, static_cast<int>(e_texture::MAX)> textures;
@@ -114,9 +114,9 @@ void render::refresh_fonts() {
 	get_font(e_font::UI_13) = interfaces::vgui_surface->create_font();
 	get_font(e_font::UI_14) = interfaces::vgui_surface->create_font();
 
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_11), XOR("Open Sans"), 16, 400, 0, 0, FONT_FLAG_ANTIALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_13), XOR("Open Sans"), 18, 400, 0, 0, FONT_FLAG_ANTIALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_14), XOR("Open Sans"), 19, 400, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_11), STR_ENC("Open Sans"), 16, 400, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_13), STR_ENC("Open Sans"), 18, 400, 0, 0, FONT_FLAG_ANTIALIAS);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_14), STR_ENC("Open Sans"), 19, 400, 0, 0, FONT_FLAG_ANTIALIAS);
 
 	interfaces::engine_client->get_screen_size(cheat::screen_size.x, cheat::screen_size.y);
 

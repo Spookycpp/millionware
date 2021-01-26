@@ -4,6 +4,9 @@
 #include "material_handle.hpp"
 
 c_entity* base_handle_t::get() const {
+	if (*this == INVALID_HANDLE)
+		return nullptr;
+
 	return interfaces::entity_list->get_by_handle(*this);
 }
 

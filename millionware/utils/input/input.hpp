@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../sdk/vector.hpp"
+#include "../../sdk/vector.hpp"
+#include "../../sdk/vector.hpp"
 
 namespace input {
 

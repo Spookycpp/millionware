@@ -113,6 +113,8 @@
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
     <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
     <ClCompile Include="features\movement\movement.cpp" />
+    <ClCompile Include="features\movement\prediction\engine_prediction.cpp" />
+    <ClCompile Include="features\visuals\visuals.cpp" />
     <ClCompile Include="gui\gui.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
@@ -133,10 +135,11 @@
     <ClCompile Include="hooks\engine_paint.cpp" />
     <ClCompile Include="hooks\screen_size_changed.cpp" />
     <ClCompile Include="sdk\sdk.cpp" />
-    <ClCompile Include="utils\error.cpp" />
-    <ClCompile Include="utils\input.cpp" />
-    <ClCompile Include="utils\math.cpp" />
-    <ClCompile Include="utils\render.cpp" />
+    <ClCompile Include="utils\error\error.cpp" />
+    <ClCompile Include="utils\hook\hook.cpp" />
+    <ClCompile Include="utils\input\input.cpp" />
+    <ClCompile Include="utils\math\math.cpp" />
+    <ClCompile Include="utils\render\render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\cheat.hpp" />
@@ -149,6 +152,8 @@
     <ClInclude Include="features\assistance\triggerbot\triggerbot.hpp" />
     <ClInclude Include="features\miscellaneous\miscellaneous.hpp" />
     <ClInclude Include="features\movement\movement.hpp" />
+    <ClInclude Include="features\movement\prediction\engine_prediction.hpp" />
+    <ClInclude Include="features\visuals\visuals.hpp" />
     <ClInclude Include="gui\gui.hpp" />
     <ClInclude Include="menu\menu.hpp" />
     <ClInclude Include="core\netvars.hpp" />
@@ -159,6 +164,7 @@
     <ClInclude Include="sdk\base_handle.hpp" />
     <ClInclude Include="sdk\client_class.hpp" />
     <ClInclude Include="sdk\client_dll.hpp" />
+    <ClInclude Include="sdk\client_prediction.hpp" />
     <ClInclude Include="sdk\color.hpp" />
     <ClInclude Include="sdk\convar.hpp" />
     <ClInclude Include="sdk\convar_system.hpp" />
@@ -191,12 +197,13 @@
     <ClInclude Include="sdk\input_system.hpp" />
     <ClInclude Include="sdk\weapon_info.hpp" />
     <ClInclude Include="sdk\weapon_system.hpp" />
-    <ClInclude Include="utils\xorstr.hpp" />
-    <ClInclude Include="utils\error.hpp" />
-    <ClInclude Include="utils\hash.hpp" />
-    <ClInclude Include="utils\input.hpp" />
-    <ClInclude Include="utils\math.hpp" />
-    <ClInclude Include="utils\render.hpp" />
+    <ClInclude Include="utils\hook\hook.hpp" />
+    <ClInclude Include="utils\xorstr\xorstr.hpp" />
+    <ClInclude Include="utils\error\error.hpp" />
+    <ClInclude Include="utils\hash\hash.hpp" />
+    <ClInclude Include="utils\input\input.hpp" />
+    <ClInclude Include="utils\math\math.hpp" />
+    <ClInclude Include="utils\render\render.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

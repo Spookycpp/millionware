@@ -2,6 +2,6 @@
 #include "../../sdk/user_cmd.hpp"
 
 namespace features::movement {
-	void bunny_hop(user_cmd_t* user_cmd);
-	void infinite_duck(user_cmd_t* user_cmd);
+	void pre_prediction(user_cmd_t* user_cmd);
+	void post_prediction(user_cmd_t* user_cmd, int pre_flags, int post_flags);
 }

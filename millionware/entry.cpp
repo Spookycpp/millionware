@@ -11,7 +11,7 @@
 #include "core/patterns.hpp"
 #include "gui/gui.hpp"
 #include "menu/menu.hpp"
-#include "utils/render.hpp"
+#include "utils/render/render.hpp"
 
 unsigned long __stdcall initial_thread(LPVOID dll_instance) {
   using namespace std::chrono_literals;

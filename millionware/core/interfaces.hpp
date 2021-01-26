@@ -16,6 +16,7 @@
 #include "../sdk/model_render.hpp"
 #include "../sdk/vgui.hpp"
 #include "../sdk/weapon_system.hpp"
+#include "../sdk/client_prediction.hpp"
 
 namespace interfaces {
 
@@ -34,7 +35,8 @@ namespace interfaces {
 	inline c_model_render* model_render = nullptr;
 	inline c_vgui_surface* vgui_surface = nullptr;
 	inline c_weapon_system* weapon_system = nullptr;
-	inline uintptr_t game_movement = 0;
+	inline c_prediction* prediction;
+	inline c_game_movement* game_movement = nullptr;
 	inline uintptr_t event_manager = 0;
 
 	void initialize();
