@@ -14,6 +14,11 @@ namespace features::miscellaneous {
 	void panorama_blur();
 	void post_processing();
 	void force_crosshair();
+	void flash_alpha();
+	void viewmodel_offset();
+	void recoil_crosshair();
+
+
 	void ragdoll_push();
 	void ragdoll_float();
 }

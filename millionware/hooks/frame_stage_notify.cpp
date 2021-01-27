@@ -9,6 +9,8 @@ void __fastcall hooks::frame_stage_notify_hook(uintptr_t ecx, uintptr_t edx, int
 		features::miscellaneous::panorama_blur();
 		features::miscellaneous::post_processing();
 		features::miscellaneous::force_crosshair();
+		features::miscellaneous::flash_alpha();
+
 		features::miscellaneous::ragdoll_float();
 		features::miscellaneous::ragdoll_push();
 	}

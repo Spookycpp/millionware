@@ -39,7 +39,6 @@ void features::miscellaneous::auto_pistol(user_cmd_t* user_cmd) {
 			user_cmd->buttons &= ~BUTTON_IN_ATTACK;
 	}
 
-	interfaces::engine_client->execute_cmd("echo nigger");
 }
 
 void features::miscellaneous::rank_reveal() {
@@ -77,9 +76,28 @@ void features::miscellaneous::post_processing() {
 void features::miscellaneous::force_crosshair() {
 	const static auto weapon_debug_spread_show = interfaces::convar_system->find(STR_ENC("weapon_debug_spread_show"));
 
-	const auto should_draw_crosshair = cheat::local_player && cheat::local_player->life_state() == LIFE_STATE_ALIVE && !cheat::local_player->is_scoped();
+	const auto should_draw_crosshair = config::get<bool>(FNV_CT("visuals.other.general.force_crosshair")) &&
+		cheat::local_player && cheat::local_player->life_state() == LIFE_STATE_ALIVE && !cheat::local_player->is_scoped();
 
 	weapon_debug_spread_show->set_value(should_draw_crosshair ? 3 : 0);
+}
+
+void features::miscellaneous::flash_alpha() {
+	if (cheat::local_player == nullptr)
+		return;
+
+	cheat::local_player->flash_alpha() = config::get<float>(FNV_CT("visuals.other.general.flash_alpha"));
+}
+
+void features::miscellaneous::viewmodel_offset() {
+	// @note: need convar stuff back, @czapek why u remove it?
+}
+
+void features::miscellaneous::recoil_crosshair() {
+	if (!config::get<bool>(FNV_CT("visuals.other.general.recoil_crosshair")))
+		return;
+
+	// @note: need convar stuff back, @czapek why u remove it?
 }
 
 void features::miscellaneous::ragdoll_push() {

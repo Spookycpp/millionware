@@ -129,6 +129,16 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Ragdoll float"), config::get<bool>(FNV_CT("misc.other.ragdoll_float")));
 					gui::end_group();
 				}
+
+				if (gui::begin_group(STR_ENC(L"Other"))) {
+					gui::checkbox(STR_ENC(L"Remove post processing"), config::get<bool>(FNV_CT("visuals.other.general.post_processing")));
+					gui::checkbox(STR_ENC(L"Remove panorama blur"), config::get<bool>(FNV_CT("visuals.other.general.panorama_blur")));
+					gui::checkbox(STR_ENC(L"Force crosshair"), config::get<bool>(FNV_CT("visuals.other.general.force_crosshair")));
+					gui::slider(STR_ENC(L"Flash alpha"), config::get<float>(FNV_CT("visuals.other.general.flash_alpha")), 0.0f, 255.0f, STR_ENC(L"{:.0f}"));
+					gui::slider(STR_ENC(L"Aspect ratio"), config::get<float>(FNV_CT("visuals.other.general.aspect_ratio")), 0.f, 5.f);
+
+					gui::end_group();
+				}
 			}
 		}
 
