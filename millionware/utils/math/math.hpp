@@ -7,6 +7,7 @@ namespace math {
 
 	constexpr auto PI_F = 3.14159265358979323846f;
 	constexpr auto PI_D = 3.141592653589793238462643383279502884;
+	constexpr float RAD_PI{ 57.295779513082f };
 
 	constexpr auto PI_180_F = PI_F / 180.0f;
 	constexpr auto PI_180_D = PI_D / 180.0;
@@ -15,14 +16,27 @@ namespace math {
 	constexpr auto _180_PI_D = 180.0f / PI_D;
 
 	vector3_t calculate_angle(const vector3_t& source, const vector3_t& target);
-	vector3_t vector_angles(const vector3_t& vector);
+	vector3_t vector_angles(const vector3_t& start, const vector3_t& end);
 	vector3_t transform_vector(const vector3_t& in, const matrix3x4_t& matrix);
+	bool normalize_angles(vector3_t& angles);
+	void sin_cos(float radian, float* sin, float* cos);
+	void angle_to_vector(const vector3_t& angles, vector3_t& forward);
 
 	float deg_to_rad(float degrees);
 	double deg_to_rad(double degrees);
 
 	float rad_to_deg(float degrees);
 	double rad_to_deg(double degrees);
+
+	__forceinline float get_fov(const vector3_t& view_angs, const vector3_t& aim_angles)
+	{
+		vector3_t ang, aim;
+
+		angle_to_vector(view_angs, aim);
+		angle_to_vector(aim_angles, ang);
+
+		return rad_to_deg(std::acos(aim.dot(ang) / aim.length_sqr()));
+	}
 
 	template <typename T>
 	constexpr T map_range(T value, T input_min, T input_max, T output_min, T output_max) {

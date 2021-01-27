@@ -202,6 +202,10 @@ public:
 	NETVAR_DEFINITION(vector3_t, origin, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecOrigin"));
 	NETVAR_DEFINITION(vector3_t, view_offset, FNV_CT("DT_CSPlayer"), FNV_CT("m_vecViewOffset[0]"));
 	NETVAR_DEFINITION(base_handle_t, owner_handle, FNV_CT("DT_BaseEntity"), FNV_CT("m_hOwnerEntity"));
+	NETVAR_DEFINITION(vector3_t, get_mins, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecMins"));
+	NETVAR_DEFINITION(vector3_t, get_maxs, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecMaxs"));
+	NETVAR_DEFINITION(float, get_simulation_time, FNV_CT("DT_BaseEntity"), FNV_CT("m_flSimulationTime"));
+
 	NETVAR_DEFINITION_OFFSET(matrix3x4_t, entity_to_world_matrix, -48, FNV_CT("DT_BaseEntity"), FNV_CT("m_CollisionGroup"));
 
 	VIRTUAL_METHOD(c_collideable*, get_collideable, 3, ());
@@ -236,6 +240,17 @@ public:
 	NETVAR_DEFINITION_OFFSET(int, move_type, 1, FNV_CT("DT_BaseEntity"), FNV_CT("m_nRenderMode"));
 
 	bool has_bomb() const;
+
+	bool is_valid(const bool check_alive = true)
+	{
+		if (!this || this->networkable()->is_dormant() || !this->is_player()) {
+			return false;
+		}
+
+		bool alive = cheat::local_player->life_state() == LIFE_STATE_ALIVE;
+
+		return check_alive ? alive : !alive;
+	}
 };
 
 class c_economy_item : public c_entity {

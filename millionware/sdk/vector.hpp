@@ -314,4 +314,13 @@ struct vector3_t {
 	constexpr float dot_product(const vector3_t& rhs) const {
 		return x * rhs.x + y * rhs.y + z * rhs.z;
 	}
+
+	__forceinline float dot(const vector3_t& vec) const
+	{
+		return x * vec.x + y * vec.y + z * vec.z;
+	}
+
+	__forceinline float length_sqr() const {
+		return x * x + y * y + z * z;
+	}
 };
