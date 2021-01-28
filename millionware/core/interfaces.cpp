@@ -74,23 +74,23 @@ void interfaces::initialize() {
 	}
 #endif
 
-	client = (decltype(client))get_interface(FNV_CT("client.dll"), FNV_CT("VClient018"));
-	convar_system = (decltype(convar_system))get_interface(FNV_CT("vstdlib.dll"), FNV_CT("VEngineCvar007"));
-	debug_overlay = (decltype(debug_overlay))get_interface(FNV_CT("engine.dll"), FNV_CT("VDebugOverlay004"));
-	engine_client = (decltype(engine_client))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineClient014"));
-	engine_sound = (decltype(engine_sound))get_interface(FNV_CT("engine.dll"), FNV_CT("IEngineSoundClient003"));
-	engine_vgui = (decltype(engine_vgui))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineVGui001"));
-	entity_list = (decltype(entity_list))get_interface(FNV_CT("client.dll"), FNV_CT("VClientEntityList003"));
-	input_system = (decltype(input_system))get_interface(FNV_CT("inputsystem.dll"), FNV_CT("InputSystemVersion001"));
+	client			= (decltype(client))get_interface(FNV_CT("client.dll"), FNV_CT("VClient018"));
+	convar_system	= (decltype(convar_system))get_interface(FNV_CT("vstdlib.dll"), FNV_CT("VEngineCvar007"));
+	debug_overlay	= (decltype(debug_overlay))get_interface(FNV_CT("engine.dll"), FNV_CT("VDebugOverlay004"));
+	engine_client	= (decltype(engine_client))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineClient014"));
+	engine_sound	= (decltype(engine_sound))get_interface(FNV_CT("engine.dll"), FNV_CT("IEngineSoundClient003"));
+	engine_vgui		= (decltype(engine_vgui))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineVGui001"));
+	entity_list		= (decltype(entity_list))get_interface(FNV_CT("client.dll"), FNV_CT("VClientEntityList003"));
+	input_system	= (decltype(input_system))get_interface(FNV_CT("inputsystem.dll"), FNV_CT("InputSystemVersion001"));
 	material_system = (decltype(material_system))get_interface(FNV_CT("materialsystem.dll"), FNV_CT("VMaterialSystem080"));
-	model_render = (decltype(model_render))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineModel016"));
-	vgui_surface = (decltype(vgui_surface))get_interface(FNV_CT("vguimatsurface.dll"), FNV_CT("VGUI_Surface031"));
-	game_movement = (decltype(game_movement))get_interface(FNV_CT("client.dll"), FNV_CT("GameMovement001"));
-	event_manager = (decltype(event_manager))get_interface(FNV_CT("engine.dll"), FNV_CT("GAMEEVENTSMANAGER002"));
-	prediction = (decltype(prediction))get_interface(FNV_CT("client.dll"), FNV_CT("VClientPrediction001"));
+	model_render	= (decltype(model_render))get_interface(FNV_CT("engine.dll"), FNV_CT("VEngineModel016"));
+	vgui_surface	= (decltype(vgui_surface))get_interface(FNV_CT("vguimatsurface.dll"), FNV_CT("VGUI_Surface031"));
+	game_movement	= (decltype(game_movement))get_interface(FNV_CT("client.dll"), FNV_CT("GameMovement001"));
+	event_manager	= (decltype(event_manager))get_interface(FNV_CT("engine.dll"), FNV_CT("GAMEEVENTSMANAGER002"));
+	prediction		= (decltype(prediction))get_interface(FNV_CT("client.dll"), FNV_CT("VClientPrediction001"));
 
-	client_mode = **reinterpret_cast<c_client_mode***>(reinterpret_cast<uintptr_t**>(client)[0][10] + 5);
-	global_vars = **reinterpret_cast<c_global_vars_base***>(reinterpret_cast<uintptr_t**>(client)[0][11] + 10);
-	weapon_system = *reinterpret_cast<c_weapon_system**>(patterns::weapon_system + 2);
-	input = *reinterpret_cast<c_input**>(patterns::input + 1);
+	client_mode		= **reinterpret_cast<c_client_mode***>(reinterpret_cast<uintptr_t**>(client)[0][10] + 5);
+	global_vars		= **reinterpret_cast<c_global_vars_base***>(patterns::global_vars + 1);
+	weapon_system	= *reinterpret_cast<c_weapon_system**>(patterns::weapon_system + 2);
+	input			= *reinterpret_cast<c_input**>(patterns::input + 1);
 }

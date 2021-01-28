@@ -64,7 +64,7 @@ namespace features::aimbot::lag_comp
 	bool can_backtrack_entity(int ent_idx);
 	vector3_t get_backtracked_position(int ent_idx);
 
-	void store_records();
+	//void store_records();
 
-	std::deque< lag_record_t >& get_record(int ent_idx);
+	//std::deque< lag_record_t >& get_record(int ent_idx);
 }

@@ -14,6 +14,7 @@ namespace patterns {
 	inline uintptr_t demo_or_hltv = 0;
 	inline uintptr_t money_reveal = 0;
 	inline uintptr_t move_helper = 0;
+	inline uintptr_t global_vars = 0;
 
 	void initialize();
 

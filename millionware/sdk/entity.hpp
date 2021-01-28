@@ -247,7 +247,7 @@ public:
 			return false;
 		}
 
-		bool alive = cheat::local_player->life_state() == LIFE_STATE_ALIVE;
+		bool alive = this->life_state() == LIFE_STATE_ALIVE;
 
 		return check_alive ? alive : !alive;
 	}
