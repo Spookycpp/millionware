@@ -89,7 +89,6 @@ void interfaces::initialize() {
 	event_manager	= (decltype(event_manager))get_interface(FNV_CT("engine.dll"), FNV_CT("GAMEEVENTSMANAGER002"));
 	prediction		= (decltype(prediction))get_interface(FNV_CT("client.dll"), FNV_CT("VClientPrediction001"));
 
-	//client_mode		= **reinterpret_cast<c_client_mode***>(reinterpret_cast<uintptr_t**>(client)[0][10] + 5);
 	client_mode		= **reinterpret_cast<c_client_mode***>(patterns::client_mode + 5);
 	global_vars		= **reinterpret_cast<c_global_vars_base***>(patterns::global_vars + 1);
 	weapon_system	= *reinterpret_cast<c_weapon_system**>(patterns::weapon_system + 2);
