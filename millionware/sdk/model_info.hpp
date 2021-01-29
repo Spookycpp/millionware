@@ -2,12 +2,12 @@
 #include "matrix.hpp"
 #include "vector.hpp"
 
-class c_model {
+struct c_model {
 	void* handle;
 	char name[255];
 };
 
-class c_model_render_info {
+struct c_model_render_info {
 	vector3_t origin;
 	vector3_t angles;
 	char pad[0x4];
