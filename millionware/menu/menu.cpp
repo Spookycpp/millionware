@@ -88,7 +88,10 @@ void menu::frame() {
 				}
 
 				if (gui::begin_group(STR_ENC(L"Chams"))) {
-					gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("visuals.enemy.chams")));
+					gui::attach_color_picker(STR_ENC(L"Visible color"), config::get<color_t>(FNV_CT("visuals.enemy.chams.color")), true);
+					gui::checkbox(STR_ENC(L"Player"), config::get<bool>(FNV_CT("visuals.enemy.chams")));
+					gui::attach_color_picker(STR_ENC(L"Hidden color"), config::get<color_t>(FNV_CT("visuals.enemy.chams_hidden.color")), true);
+					gui::checkbox(STR_ENC(L"Player (hidden)"), config::get<bool>(FNV_CT("visuals.enemy.chams_hidden")));
 					gui::end_group();
 
 				}

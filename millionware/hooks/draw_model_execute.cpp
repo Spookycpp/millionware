@@ -10,8 +10,8 @@ void __fastcall hooks::draw_model_execute_hook(uintptr_t ecx, uintptr_t edx, voi
 	static material_t* flat = nullptr;
 
 	const char* model_name = info->model->name;
-	c_entity* entity = interfaces::entity_list->get_by_index(info->entity_index);
-
+	c_player* entity = (c_player*)interfaces::entity_list->get_by_index(info->entity_index);
+	
 	// sanity
 	if (interfaces::engine_client->is_in_game() && cheat::local_player) {
 
@@ -26,11 +26,24 @@ void __fastcall hooks::draw_model_execute_hook(uintptr_t ecx, uintptr_t edx, voi
 			flat->increment_reference_count();
 		}
 
-		if (entity && strstr(model_name, STR_ENC("models/player"))) {
+		const auto& visible_color = config::get<color_t>(FNV_CT("visuals.enemy.chams.color"));
+		const auto& hidden_color = config::get<color_t>(FNV_CT("visuals.enemy.chams_hidden.color"));
 
-			textured->set_color(255, 255, 255);
-			textured->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
-			interfaces::model_render->force_material_override(textured);
+		if (entity && entity->is_enemy() && strstr(model_name, STR_ENC("models/player"))) {
+
+			if (config::get<bool>(FNV_CT("visuals.enemy.chams_hidden"))) {
+				textured->set_color(hidden_color);
+				textured->set_flag(MATERIAL_FLAG_IGNORE_Z, true);
+				interfaces::model_render->force_material_override(textured);
+
+				hooks::draw_model_execute.get_original<decltype(&draw_model_execute_hook)>()(ecx, edx, ctx, state, info, matrix);
+			}
+
+			if (config::get<bool>(FNV_CT("visuals.enemy.chams"))) {
+				textured->set_color(visible_color);
+				textured->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
+				interfaces::model_render->force_material_override(textured);
+			}
 		}
 	}
 

@@ -31,6 +31,7 @@ __declspec(dllexport) pattern_entry_t g_patterns[] = {
 	{ "client.dll", "84 C0 75 0C 5B" },
 	{ "client.dll", "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" },
 	{ "client.dll", "A1 ? ? ? ? 5E 8B 40 10" },
+	{ "client.dll", "55 8B EC 8B 0D ? ? ? ? 8B 01 5D FF 60 ? CC 55 8B EC 83 E4 C0" },
 };
 
 inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
@@ -109,4 +110,5 @@ void patterns::initialize() {
 	money_reveal = get_pattern(FNV_CT("client.dll"), FNV_CT("84 C0 75 0C 5B"));
 	move_helper = get_pattern(FNV_CT("client.dll"), FNV_CT("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01"));
 	global_vars = get_pattern(FNV_CT("client.dll"), FNV_CT("A1 ? ? ? ? 5E 8B 40 10"));
+	client_mode = get_pattern(FNV_CT("client.dll"), FNV_CT("55 8B EC 8B 0D ? ? ? ? 8B 01 5D FF 60 ? CC 55 8B EC 83 E4 C0"));
 }

@@ -241,6 +241,8 @@ public:
 
 	bool has_bomb() const;
 
+	bool is_enemy() const;
+
 	bool is_valid(const bool check_alive = true)
 	{
 		if (!this || this->networkable()->is_dormant() || !this->is_player()) {

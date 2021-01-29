@@ -54,7 +54,7 @@ struct material_t {
 	VIRTUAL_METHOD(void, decrement_reference_count, 13, ());
 	VIRTUAL_METHOD(void, set_alpha, 27, (float alpha));
 	VIRTUAL_METHOD(void, set_color, 28, (float r, float g, float b), r, g, b);
-	VIRTUAL_METHOD(void, set_color, 28, (color_t color), static_cast<float>(color.r * 255.0f), static_cast<float>(color.g * 255.0f), static_cast<float>(color.b * 255.0f));
+	VIRTUAL_METHOD(void, set_color, 28, (color_t color), static_cast<float>(color.r / 255.0f), static_cast<float>(color.g / 255.0f), static_cast<float>(color.b / 255.0f));
 	VIRTUAL_METHOD(void, set_flag, 29, (int flag, bool state), flag, state);
 	VIRTUAL_METHOD(void, refresh, 37, ());
 };
