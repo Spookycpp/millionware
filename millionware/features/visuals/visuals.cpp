@@ -191,10 +191,10 @@ void features::visuals::draw_esp_name(const bounding_box_t& box, c_entity* entit
     {
         const auto weapon = reinterpret_cast<c_weapon*>(entity);
         const auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->item_definition_index());
-        const auto name_size = render::measure_text(e_font::UI_11, weapon_info->weapon_name);
+        const auto name_size = render::measure_text(e_font::TAHOMA11, weapon_info->weapon_name);
 
         render::text(box.min.x + box_size.x / 2 - name_size.x / 2, box.min.y - name_size.y,
-            e_font::UI_11, color, weapon_info->weapon_name);
+            e_font::TAHOMA11, color, weapon_info->weapon_name);
     }
     else
     {
@@ -203,11 +203,34 @@ void features::visuals::draw_esp_name(const bounding_box_t& box, c_entity* entit
         if (!interfaces::engine_client->get_player_info(entity->networkable()->index(), player_info))
             return;
 
-        const auto name_size = render::measure_text(e_font::UI_11, player_info.name);
+        const auto name_size = render::measure_text(e_font::TAHOMA11, player_info.name);
 
         render::text(box.min.x + box_size.x / 2 - name_size.x / 2, box.min.y - name_size.y,
-            e_font::UI_11, color, player_info.name);
+            e_font::TAHOMA11, color, player_info.name);
     }
+}
+
+void features::visuals::draw_esp_health(const bounding_box_t& box, c_player* player, bool draw_text, color_t color, color_t text_color) {
+    const auto health_pt = std::clamp(static_cast<float>(player->health()) / 100.0f, 0.0f, 1.0f);
+    const auto outline_alpha = static_cast<int32_t>(150.0f * (static_cast<float>(color.a) / 255.0f));
+
+    const auto box_size = box.max - box.min;
+    const auto bar_position = point_t(box.min.x - health_bar_margin - health_bar_size, box.min.y);
+    const auto bar_size = point_t(::health_bar_size, box_size.y + 1);
+    const auto bar_fill_size = static_cast<int32_t>(static_cast<float>(bar_size.y) * health_pt);
+
+    render::fill_rect(bar_position - 1, health_bar_size + 2, color_t(0, outline_alpha));
+    render::fill_rect(bar_position.x, bar_position.y + (bar_size.y - bar_fill_size), bar_size.x, bar_fill_size, color);
+
+    if (!draw_text || player->health() >= 100)
+        return;
+
+    const auto health_string = fmt::format("{}", player->health());
+    const auto health_string_size = render::measure_text(e_font::ESP_SMALL_TEXT, health_string);
+
+    render::text(bar_position.x + bar_size.x / 2 - health_string_size.x / 2,
+        bar_position.y + (bar_size.y - bar_fill_size) - health_string_size.y / 2,
+        e_font::ESP_SMALL_TEXT, text_color, health_string);
 }
 
 void features::visuals::draw_player_esp(c_player* local_player, c_player* player)
@@ -239,6 +262,14 @@ void features::visuals::draw_player_esp(c_player* local_player, c_player* player
         else if (config::get<bool>(FNV_CT("visuals.team.name")) && is_friendly) {
             draw_esp_name(entity_box, player, { 255, 255, 255, 255 });
         }
+
+        if (config::get<bool>(FNV_CT("visuals.enemy.health")) && !is_friendly) {
+            draw_esp_health(entity_box, player,
+                config::get<bool>(FNV_CT("visuals.enemy.health_health")),
+                config::get<color_t>(FNV_CT("visuals.enemy.health_color")),
+                config::get<color_t>(FNV_CT("visuals.enemy.health_text_color")));
+        }
+
     }
 }
 
