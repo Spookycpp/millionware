@@ -1,6 +1,9 @@
 #include "../core/cheat.hpp"
 #include "../core/interfaces.hpp"
 #include "../core/patterns.hpp"
+
+#include "../utils/util.hpp"
+
 #include "base_handle.hpp"
 #include "material_handle.hpp"
 
@@ -61,6 +64,11 @@ bool c_player::has_bomb() const {
 	return reinterpret_cast<has_bomb_fn>(patterns::player_has_bomb)(reinterpret_cast<uintptr_t>(this));
 }
 
+bool c_player::is_alive()
+{
+	return this->life_state() == LIFE_STATE_ALIVE;
+}
+
 bool c_player::is_enemy() const
 {
 	if (!this)
@@ -77,4 +85,106 @@ bool c_player::is_enemy() const
 		return this != cheat::local_player;
 
 	return player->team_num() != cheat::local_player->team_num();
+}
+
+bool c_player::is_valid(const bool check_alive)
+{
+	if (!this || this->networkable()->is_dormant() || !this->is_player()) {
+		return false;
+	}
+
+	return check_alive ? this->is_alive() : !this->is_alive();
+}
+
+vector3_t c_player::get_hitbox_pos(const int idx)
+{
+	if (idx == -1) {
+		return {};
+	}
+
+	std::array< matrix3x4_t, 128 > matrices = {};
+	if (!this->renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time)) {
+		return {};
+	}
+
+	auto model = this->renderable()->get_model();
+
+	if (!model) {
+		return {};
+	}
+
+	studio_hdr_t* studio_hdr = this->renderable()->get_studio_model(model);
+
+	if (!studio_hdr) {
+		return {};
+	}
+
+	mstudiobbox_t* bbox = (mstudiobbox_t*)studio_hdr->hitbox(idx, 0);
+
+	if (!bbox) {
+		return {};
+	}
+
+	const matrix3x4_t& matrix = matrices[bbox->bone_index];
+	const float modifier = bbox->radius != -1.0f ? bbox->radius : 0.0f;
+
+	vector3_t min, max;
+	math::vector_transform(bbox->bb_min - modifier, matrix, min);
+	math::vector_transform(bbox->bb_max + modifier, matrix, max);
+
+	return (min + max) * 0.5f;
+}
+
+float c_player::get_flash_time()
+{
+	static auto m_flFlashBangTime = *reinterpret_cast<uint32_t*>(patterns::flashbang_time + 4);
+
+	if (!m_flFlashBangTime)
+		return 0.f;
+
+	return *reinterpret_cast<float*>(uintptr_t(this) + m_flFlashBangTime);
+}
+
+bool c_player::is_flashed()
+{
+	return get_flash_time() > interfaces::global_vars->current_time;
+}
+
+bool c_player::can_shoot()
+{
+	const auto wpn = (c_weapon*)active_weapon_handle().get();
+
+	if (!wpn) {
+		return false;
+	}
+
+	return can_shoot(wpn);
+}
+
+bool c_player::can_shoot(c_weapon* wpn)
+{
+	const float server_time = float(this->tick_base()) * interfaces::global_vars->interval_per_tick;
+
+	if (wpn->next_attack() > server_time) {
+		return false;
+	}
+
+	if ((wpn->item_definition_index() == WEAPON_FAMAS || wpn->item_definition_index() == WEAPON_GLOCK) && wpn->is_burst_mode() && wpn->burst_shots_remaining() > 0) {
+		return false;
+	}
+
+	if (wpn->next_primary_attack() > server_time) {
+		return false;
+	}
+
+	if (wpn->item_definition_index() == WEAPON_REVOLVER && wpn->ready_time() > server_time) {
+		return false;
+	}
+
+	return true;
+}
+
+vector3_t c_player::extrapolate_position(const vector3_t& pos)
+{
+	return pos + this->velocity() * TICK_INTERVAL();
 }

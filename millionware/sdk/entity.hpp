@@ -1,13 +1,21 @@
 #pragma once
 
-#include "../core/interfaces.hpp"
+#include <array>
+
+#include "../utils/math/math.hpp"
+
 #include "../utils/hash/hash.hpp"
-#include "../sdk/weapon_system.hpp"
+
+#include "weapon_system.hpp"
 #include "base_handle.hpp"
 #include "client_class.hpp"
 #include "macros.hpp"
 #include "matrix.hpp"
 #include "vector.hpp"
+#include "studiobbox.hpp"
+#include "studio.hpp"
+#include "model_info.hpp"
+#include "util_vector.hpp"
 
 enum e_life_state {
 	LIFE_STATE_ALIVE,
@@ -163,6 +171,59 @@ enum e_item_definition_index {
 	GLOVE_HYDRA = 5035
 };
 
+enum player_hitboxes : int {
+	HEAD = 0,
+	NECK,
+	PELVIS,
+	STOMACH,
+	THORAX,
+	L_CHEST,
+	U_CHEST,
+	R_THIGH,
+	L_THIGH,
+	R_CALF,
+	L_CALF,
+	R_FOOT,
+	L_FOOT,
+	R_HAND,
+	L_HAND,
+	R_UPPERARM,
+	R_FOREARM,
+	L_UPPERARM,
+	L_FOREARM,
+	MAX_HITBOX,
+};
+
+enum hit_groups {
+	HIT_GROUP_INVALID = -1,
+	HIT_GROUP_GENERIC,
+	HIT_GROUP_HEAD,
+	HIT_GROUP_CHEST,
+	HIT_GROUP_STOMACH,
+	HIT_GROUP_LEFTARM,
+	HIT_GROUP_RIGHTARM,
+	HIT_GROUP_LEFTLEG,
+	HIT_GROUP_RIGHTLEG,
+	HIT_GROUP_GEAR = 10
+};
+
+enum bone_mask_t {
+	BONE_USED_MASK = 0x0007FF00,
+	BONE_USED_BY_ANYTHING = 0x0007FF00,
+	BONE_USED_BY_HITBOX = 0x00000100,	// bone (or child) is used by a hit box
+	BONE_USED_BY_ATTACHMENT = 0x00000200,	// bone (or child) is used by an attachment point
+	BONE_USED_BY_VERTEX_MASK = 0x0003FC00,
+	BONE_USED_BY_VERTEX_LOD0 = 0x00000400,	// bone (or child) is used by the toplevel model via skinned vertex
+	BONE_USED_BY_VERTEX_LOD1 = 0x00000800,
+	BONE_USED_BY_VERTEX_LOD2 = 0x00001000,
+	BONE_USED_BY_VERTEX_LOD3 = 0x00002000,
+	BONE_USED_BY_VERTEX_LOD4 = 0x00004000,
+	BONE_USED_BY_VERTEX_LOD5 = 0x00008000,
+	BONE_USED_BY_VERTEX_LOD6 = 0x00010000,
+	BONE_USED_BY_VERTEX_LOD7 = 0x00020000,
+	BONE_USED_BY_BONE_MERGE = 0x00040000	// bone is available for bone merge to occur against it
+};
+
 class c_collideable {
 public:
 	VIRTUAL_METHOD(vector3_t&, get_mins, 1, ());
@@ -181,7 +242,9 @@ public:
 	VIRTUAL_METHOD(vector3_t&, get_render_origin, 1, ());
 	VIRTUAL_METHOD(vector3_t&, get_render_angles, 2, ());
 	VIRTUAL_METHOD(bool, should_draw, 3, ());
+	VIRTUAL_METHOD(c_model*, get_model, 8, ());
 	VIRTUAL_METHOD(bool, setup_bones, 13, (matrix3x4_t* bone_to_world_out, const int max_bones, const int bone_mask, const float current_time), bone_to_world_out, max_bones, bone_mask, current_time);
+	VIRTUAL_METHOD(studio_hdr_t*, get_studio_model, 32, (c_model* model), model);
 };
 
 class c_entity {
@@ -236,23 +299,39 @@ public:
 	NETVAR_DEFINITION(vector3_t, velocity, FNV_CT("DT_BasePlayer"), FNV_CT("m_vecVelocity[0]"));
 	NETVAR_DEFINITION(base_handle_t, observer_target, FNV_CT("DT_BasePlayer"), FNV_CT("m_hObserverTarget"));
 	NETVAR_DEFINITION(base_handle_t, active_weapon_handle, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_hActiveWeapon"));
+	NETVAR_DEFINITION(int, hitbox_set, FNV_CT("DT_BaseAnimating"), FNV_CT("m_nHitboxSet"));
+
+	CUtlVector<matrix3x4_t>& get_cached_bone_data() {
+		return *(CUtlVector<matrix3x4_t>*) ((uintptr_t)this + 0x290C + sizeof(void*));
+	}
 
 	NETVAR_DEFINITION_OFFSET(int, move_type, 1, FNV_CT("DT_BaseEntity"), FNV_CT("m_nRenderMode"));
 
+	VIRTUAL_METHOD(float, get_spread, 452, ());
+	VIRTUAL_METHOD(float, get_inaccuracy, 482, ());
+
 	bool has_bomb() const;
+
+	bool is_alive();
 
 	bool is_enemy() const;
 
-	bool is_valid(const bool check_alive = true)
-	{
-		if (!this || this->networkable()->is_dormant() || !this->is_player()) {
-			return false;
-		}
+	bool is_valid(const bool check_alive = true);
 
-		bool alive = this->life_state() == LIFE_STATE_ALIVE;
+	vector3_t get_hitbox_pos(const int idx);
 
-		return check_alive ? alive : !alive;
-	}
+	float get_flash_time();
+
+	bool is_flashed();
+
+	bool can_shoot();
+
+	bool can_shoot(c_weapon* wpn);
+
+	vector3_t extrapolate_position(const vector3_t& pos);
+
+	NETVAR_DEFINITION_OFFSET(int, get_old_simulation_time, 4, FNV_CT("DT_BaseEntity"), FNV_CT("m_flSimulationTime"));
+
 };
 
 class c_economy_item : public c_entity {
@@ -277,6 +356,7 @@ public:
 	NETVAR_DEFINITION(bool, is_burst_mode, FNV_CT("DT_WeaponCSBaseGun"), FNV_CT("m_bBurstMode"));
 	NETVAR_DEFINITION(int, burst_shots_remaining, FNV_CT("DT_WeaponCSBaseGun"), FNV_CT("m_iBurstShotsRemaining"));
 	NETVAR_DEFINITION(float, ready_time, FNV_CT("DT_WeaponCSBase"), FNV_CT("m_flPostponeFireReadyTime"));
+	NETVAR_DEFINITION(float, next_attack, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_flNextAttack"));
 
 	int get_weapon_type()
 	{

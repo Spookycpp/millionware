@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 #include <cmath>
 
@@ -320,7 +321,43 @@ struct vector3_t {
 		return x * vec.x + y * vec.y + z * vec.z;
 	}
 
+	__forceinline float dot(const float* fl) const
+	{
+		const vector3_t& a = *this;
+		return a.x * fl[0] + a.y * fl[1] + a.z * fl[2];
+	}
+
 	__forceinline float length_sqr() const {
 		return x * x + y * y + z * z;
 	}
+
+	__forceinline float dist(const vector3_t& vec) const
+	{
+		vector3_t delta;
+
+		delta.x = x - vec.x;
+		delta.y = y - vec.y;
+		delta.z = z - vec.z;
+
+		return delta.length();
+	}
+
+	__forceinline vector3_t clamp()
+	{
+		for (size_t axis = 0; axis < 2; axis++)
+		{
+			auto& cur_axis = *(float*)((uintptr_t)this + axis);
+
+			if (!std::isfinite(cur_axis)) {
+				cur_axis = 0.0f;
+			}
+		}
+
+		x = std::clamp(x, -89.0f, 89.0f);
+		y = std::clamp(std::remainder(y, 360.0f), -180.0f, 180.0f);
+		z = 0.0f;
+
+		return *this;
+	}
+
 };

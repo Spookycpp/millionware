@@ -102,9 +102,6 @@
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="features\assistance\hitchance\hitchance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="features\movement\prediction\engine_prediction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -124,6 +121,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="features\visuals\visuals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\lag compensation\lag_compensation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\hitchance\hitchance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -281,9 +287,6 @@
     <ClInclude Include="features\assistance\legitbot.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="features\assistance\hitchance\hitchance.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="features\movement\prediction\engine_prediction.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -312,6 +315,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="features\visuals\visuals.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\studio.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\lag compensation\lag_compensation.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\util.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\studiobbox.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\hitchance\hitchance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\util_vector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\engine_trace.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
