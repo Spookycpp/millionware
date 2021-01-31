@@ -11,8 +11,12 @@ namespace features::lag_compensation
 
 	std::array< float, 65 > last_sim_time = {};
 
-	void on_frame_stage_notify()
+	void on_frame_stage_notify(const int frame_stage)
 	{
+		if (frame_stage != FRAME_STAGE_RENDER_END) {
+			return;
+		}
+
 		store_visuals();
 	}
 
