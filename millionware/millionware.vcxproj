@@ -107,10 +107,11 @@
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
-    <ClCompile Include="features\assistance\hitchance\hitchance.cpp" />
     <ClCompile Include="features\assistance\lag compensation\lag_comp.cpp" />
     <ClCompile Include="features\assistance\legitbot.cpp" />
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
+    <ClCompile Include="features\hitchance\hitchance.cpp" />
+    <ClCompile Include="features\lag compensation\lag_compensation.cpp" />
     <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
     <ClCompile Include="features\movement\movement.cpp" />
     <ClCompile Include="features\movement\prediction\engine_prediction.cpp" />
@@ -140,16 +141,18 @@
     <ClCompile Include="utils\input\input.cpp" />
     <ClCompile Include="utils\math\math.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
+    <ClCompile Include="utils\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\cheat.hpp" />
     <ClInclude Include="core\config.hpp" />
     <ClInclude Include="core\hooks.hpp" />
     <ClInclude Include="core\interfaces.hpp" />
-    <ClInclude Include="features\assistance\hitchance\hitchance.hpp" />
     <ClInclude Include="features\assistance\lag compensation\lag_comp.hpp" />
     <ClInclude Include="features\assistance\legitbot.hpp" />
     <ClInclude Include="features\assistance\triggerbot\triggerbot.hpp" />
+    <ClInclude Include="features\hitchance\hitchance.hpp" />
+    <ClInclude Include="features\lag compensation\lag_compensation.hpp" />
     <ClInclude Include="features\miscellaneous\miscellaneous.hpp" />
     <ClInclude Include="features\movement\movement.hpp" />
     <ClInclude Include="features\movement\prediction\engine_prediction.hpp" />
@@ -170,6 +173,7 @@
     <ClInclude Include="sdk\convar_system.hpp" />
     <ClInclude Include="sdk\engine_client.hpp" />
     <ClInclude Include="sdk\engine_sound.hpp" />
+    <ClInclude Include="sdk\engine_trace.hpp" />
     <ClInclude Include="sdk\engine_vgui.hpp" />
     <ClInclude Include="sdk\entity.hpp" />
     <ClInclude Include="sdk\entity_list.hpp" />
@@ -186,8 +190,11 @@
     <ClInclude Include="sdk\network_channel.hpp" />
     <ClInclude Include="sdk\player_info.hpp" />
     <ClInclude Include="sdk\recv_props.hpp" />
+    <ClInclude Include="sdk\studio.hpp" />
+    <ClInclude Include="sdk\studiobbox.hpp" />
     <ClInclude Include="sdk\typedefs.hpp" />
     <ClInclude Include="sdk\user_cmd.hpp" />
+    <ClInclude Include="sdk\util_vector.hpp" />
     <ClInclude Include="sdk\valve_memory.hpp" />
     <ClInclude Include="sdk\valve_vector.hpp" />
     <ClInclude Include="sdk\vector.hpp" />
@@ -198,6 +205,7 @@
     <ClInclude Include="sdk\weapon_info.hpp" />
     <ClInclude Include="sdk\weapon_system.hpp" />
     <ClInclude Include="utils\hook\hook.hpp" />
+    <ClInclude Include="utils\util.hpp" />
     <ClInclude Include="utils\xorstr\xorstr.hpp" />
     <ClInclude Include="utils\error\error.hpp" />
     <ClInclude Include="utils\hash\hash.hpp" />

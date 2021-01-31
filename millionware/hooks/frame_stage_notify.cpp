@@ -1,7 +1,10 @@
 #include "../core/hooks.hpp"
 #include "../core/interfaces.hpp"
 
+#include "../features/lag compensation/lag_compensation.hpp"
 #include "../features/miscellaneous/miscellaneous.hpp"
+
+#include "../utils/util.hpp"
 
 void __fastcall hooks::frame_stage_notify_hook(uintptr_t ecx, uintptr_t edx, int frame_stage) {
 
@@ -10,7 +13,7 @@ void __fastcall hooks::frame_stage_notify_hook(uintptr_t ecx, uintptr_t edx, int
 		features::miscellaneous::post_processing();
 		features::miscellaneous::force_crosshair();
 		features::miscellaneous::flash_alpha();
-
+	
 		features::miscellaneous::ragdoll_float();
 		features::miscellaneous::ragdoll_push();
 	}

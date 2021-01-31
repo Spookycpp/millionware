@@ -3,6 +3,8 @@
 #include "../../../core/interfaces.hpp"
 #include "../../../core/cheat.hpp"
 
+#include "../../../utils/util.hpp"
+
 #include "../../../sdk/user_cmd.hpp"
 #include "../../../sdk/vector.hpp"
 #include "../../../sdk/matrix.hpp"
@@ -10,33 +12,6 @@
 #include <deque>
 #include <array>
 #include <algorithm>
-
-#define FLOW_OUTGOING	0
-#define FLOW_INCOMING	1
-#define MAX_FLOWS		2		// in & out
-
-float TICK_INTERVAL() {
-	return interfaces::global_vars->interval_per_tick;
-}
-
-int TIME_TO_TICKS(const float dt) {
-	return static_cast<int>(0.5f + dt / TICK_INTERVAL());
-}
-
-float TICKS_TO_TIME(const int tick) {
-	return tick * TICK_INTERVAL();
-}
-
-float get_total_latency()
-{
-	c_net_channel_info* nci = interfaces::engine_client->get_net_channel_info();
-
-	if (!nci) {
-		return 0.0f;
-	}
-
-	return nci->get_latency(FLOW_OUTGOING) + nci->get_latency(FLOW_INCOMING);
-}
 
 namespace features::aimbot::lag_comp
 {
@@ -49,8 +24,8 @@ namespace features::aimbot::lag_comp
 		vector3_t mins = vector3_t();
 		vector3_t maxs = vector3_t();
 
-		[[nodiscard]] bool is_valid() const {
-			const float correct = std::clamp(get_total_latency(), 0.0f, 0.2f); // todo: account for non valveds
+		bool is_valid() const {
+			const float correct = std::clamp(util::get_total_latency(), 0.0f, 0.2f); // todo: account for non valveds
 			const float delta	= correct - (float(cheat::local_player->tick_base()) * interfaces::global_vars->interval_per_tick - TICKS_TO_TIME(tick_count));
 
 			return std::abs(delta) < 0.2f;
@@ -64,7 +39,7 @@ namespace features::aimbot::lag_comp
 	bool can_backtrack_entity(int ent_idx);
 	vector3_t get_backtracked_position(int ent_idx);
 
-	//void store_records();
+	void store_records();
 
-	//std::deque< lag_record_t >& get_record(int ent_idx);
+	std::deque< lag_record_t >& get_record(int ent_idx);
 }

@@ -32,6 +32,8 @@ __declspec(dllexport) pattern_entry_t g_patterns[] = {
 	{ "client.dll", "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" },
 	{ "client.dll", "A1 ? ? ? ? 5E 8B 40 10" },
 	{ "client.dll", "55 8B EC 8B 0D ? ? ? ? 8B 01 5D FF 60 ? CC 55 8B EC 83 E4 C0" },
+	{ "client.dll", "55 8B EC 83 EC 08 8B 15 ? ? ? ? 0F 57 C0" },
+	{ "client.dll", "F3 0F 10 86 ? ? ? ? 0F 2F 40 10 76 30" },
 };
 
 inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
@@ -111,4 +113,6 @@ void patterns::initialize() {
 	move_helper = get_pattern(FNV_CT("client.dll"), FNV_CT("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01"));
 	global_vars = get_pattern(FNV_CT("client.dll"), FNV_CT("A1 ? ? ? ? 5E 8B 40 10"));
 	client_mode = get_pattern(FNV_CT("client.dll"), FNV_CT("55 8B EC 8B 0D ? ? ? ? 8B 01 5D FF 60 ? CC 55 8B EC 83 E4 C0"));
+	line_goes_through_smoke = get_pattern(FNV_CT("client.dll"), FNV_CT("55 8B EC 83 EC 08 8B 15 ? ? ? ? 0F 57 C0"));
+	flashbang_time = get_pattern(FNV_CT("client.dll"), FNV_CT("F3 0F 10 86 ? ? ? ? 0F 2F 40 10 76 30"));
 }

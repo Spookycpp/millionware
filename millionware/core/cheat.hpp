@@ -23,4 +23,5 @@ namespace cheat {
 	inline bool b_predicting;
 	inline bool landed = false;
 	inline float player_fov;
+
 }

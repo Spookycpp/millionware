@@ -11,7 +11,7 @@ namespace features::aimbot::triggerbot {
 	bool trace_to_target(c_weapon* wpn, const vector3_t& start_pos, const vector3_t& end_pos);
 	bool trace_to_backtracked_target(user_cmd_t* cmd, c_weapon* wpn, const vector3_t& start_pos, const vector3_t& end_pos);
 
-	bool is_valid_target(IClientEntity* target);
+	bool is_valid_target(c_entity* target);
 
 	bool should_activate();
 }

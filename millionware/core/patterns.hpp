@@ -16,6 +16,8 @@ namespace patterns {
 	inline uintptr_t move_helper = 0;
 	inline uintptr_t global_vars = 0;
 	inline uintptr_t client_mode = 0;
+	inline uintptr_t line_goes_through_smoke = 0;
+	inline uintptr_t flashbang_time = 0;
 
 	void initialize();
 

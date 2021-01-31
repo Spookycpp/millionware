@@ -34,6 +34,7 @@ __declspec(dllexport) interface_entry_t g_interfaces[] = {
 	{ "client.dll", "GameMovement001" },
 	{ "engine.dll", "GAMEEVENTSMANAGER002" },
 	{ "client.dll", "VClientPrediction001" },
+	{ "engine.dll", "EngineTraceClient004" },
 };
 
 inline uintptr_t get_interface(uint32_t module_hash, uint32_t interface_hash) {
@@ -88,6 +89,7 @@ void interfaces::initialize() {
 	game_movement	= (decltype(game_movement))get_interface(FNV_CT("client.dll"), FNV_CT("GameMovement001"));
 	event_manager	= (decltype(event_manager))get_interface(FNV_CT("engine.dll"), FNV_CT("GAMEEVENTSMANAGER002"));
 	prediction		= (decltype(prediction))get_interface(FNV_CT("client.dll"), FNV_CT("VClientPrediction001"));
+	engine_trace	= (decltype(engine_trace))get_interface(FNV_CT("engine.dll"), FNV_CT("EngineTraceClient004"));
 
 	client_mode		= **reinterpret_cast<c_client_mode***>(patterns::client_mode + 5);
 	global_vars		= **reinterpret_cast<c_global_vars_base***>(patterns::global_vars + 1);
