@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../core/interfaces.hpp"
+#include "../../../core/interfaces.hpp"
 #include "../../../sdk/user_cmd.hpp"
 
 #include <functional>

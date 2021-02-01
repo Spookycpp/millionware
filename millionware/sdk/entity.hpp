@@ -244,7 +244,6 @@ public:
 	VIRTUAL_METHOD(bool, should_draw, 3, ());
 	VIRTUAL_METHOD(c_model*, get_model, 8, ());
 	VIRTUAL_METHOD(bool, setup_bones, 13, (matrix3x4_t* bone_to_world_out, const int max_bones, const int bone_mask, const float current_time), bone_to_world_out, max_bones, bone_mask, current_time);
-	VIRTUAL_METHOD(studio_hdr_t*, get_studio_model, 32, (c_model* model), model);
 };
 
 class c_entity {
@@ -294,8 +293,8 @@ public:
 	NETVAR_DEFINITION(int, life_state, FNV_CT("DT_BasePlayer"), FNV_CT("m_lifeState"));
 	NETVAR_DEFINITION(int, tick_base, FNV_CT("DT_BasePlayer"), FNV_CT("m_nTickBase"));
 	NETVAR_DEFINITION(vector3_t, eye_angles, FNV_CT("DT_CSPlayer"), FNV_CT("m_angEyeAngles[0]"));
-	NETVAR_DEFINITION(vector3_t, punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("localdata"), FNV_CT("m_local"), FNV_CT("m_viewPunchAngle"));
-	NETVAR_DEFINITION(vector3_t, aim_punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("localdata"), FNV_CT("m_local"), FNV_CT("m_viewPunchAngle"));
+	NETVAR_DEFINITION(vector3_t, punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("m_Local"), FNV_CT("m_viewPunchAngle"));
+	NETVAR_DEFINITION(vector3_t, aim_punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("m_Local"), FNV_CT("m_aimPunchAngle"));
 	NETVAR_DEFINITION(vector3_t, velocity, FNV_CT("DT_BasePlayer"), FNV_CT("m_vecVelocity[0]"));
 	NETVAR_DEFINITION(base_handle_t, observer_target, FNV_CT("DT_BasePlayer"), FNV_CT("m_hObserverTarget"));
 	NETVAR_DEFINITION(base_handle_t, active_weapon_handle, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_hActiveWeapon"));

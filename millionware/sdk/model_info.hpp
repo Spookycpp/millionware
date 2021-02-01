@@ -1,6 +1,7 @@
 #pragma once
 #include "matrix.hpp"
 #include "vector.hpp"
+#include "macros.hpp"
 
 struct c_model {
 	void* handle;
@@ -22,4 +23,13 @@ struct c_model_render_info {
 	int body;
 	int hitboxset;
 	unsigned short instance;
+};
+
+struct studio_hdr_t;
+class c_model_info {
+public:
+	VIRTUAL_METHOD( c_model*, get_model, 1, ( int index ), index );
+	VIRTUAL_METHOD( int, get_model_index, 2, ( const char* filename ), filename );
+	VIRTUAL_METHOD( const char*, get_model_name, 2, ( const c_model* model ), model );
+	VIRTUAL_METHOD( studio_hdr_t*, get_studio_model, 32, ( const c_model* model ), model );
 };

@@ -94,7 +94,7 @@ namespace features::hit_chance {
 			return {};
 		}
 
-		const auto hdr = target->renderable()->get_studio_model(model);
+		const auto hdr = interfaces::model_info->get_studio_model(model);
 
 		if (!hdr) {
 			return {};

@@ -42,6 +42,7 @@ namespace interfaces {
 	inline c_prediction* prediction			  = nullptr;
 	inline c_game_movement* game_movement	  = nullptr;
 	inline i_engine_trace* engine_trace		  = nullptr;
+	inline c_model_info* model_info			  = nullptr;
 
 	inline uintptr_t event_manager			  = 0;
 

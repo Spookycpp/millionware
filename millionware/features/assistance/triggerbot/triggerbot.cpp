@@ -164,12 +164,11 @@ namespace features::aimbot::triggerbot
 				}
 
 				const auto model = ent->renderable()->get_model();
-
 				if (!model) {
 					continue;
 				}
 
-				const auto hdr = ent->renderable()->get_studio_model(model);
+				const auto hdr = interfaces::model_info->get_studio_model(model);
 
 				if (!hdr) {
 					continue;

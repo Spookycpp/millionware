@@ -163,7 +163,7 @@ namespace features::aimbot
 
 		const auto target = get_target(config::get<int>(FNV_CT("legitbot.hitbox_method")), config::get<float>(FNV_CT("legitbot.flick_bot.fov")));
 		const auto target_idx = std::get< 0 >(target);
-
+		
 		if (target_idx != -1)
 		{
 			if (cmd->buttons & BUTTON_IN_ATTACK &&
