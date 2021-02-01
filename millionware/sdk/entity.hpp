@@ -329,6 +329,8 @@ public:
 
 	vector3_t extrapolate_position(const vector3_t& pos);
 
+	bool is_visible(c_player* local, const vector3_t& src, const vector3_t& dst);
+	
 	NETVAR_DEFINITION_OFFSET(int, get_old_simulation_time, 4, FNV_CT("DT_BaseEntity"), FNV_CT("m_flSimulationTime"));
 
 };

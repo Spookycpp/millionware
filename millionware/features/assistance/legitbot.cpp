@@ -12,10 +12,7 @@
 
 namespace features::aimbot
 {
-
 	vector3_t local_angs = vector3_t();
-
-	using target_t = std::tuple< int, vector3_t, int >;
 
 	float delta_time = 0.0f;
 	float cur_time = 0.0f;
@@ -163,7 +160,7 @@ namespace features::aimbot
 
 		const auto target = get_target(config::get<int>(FNV_CT("legitbot.hitbox_method")), config::get<float>(FNV_CT("legitbot.flick_bot.fov")));
 		const auto target_idx = std::get< 0 >(target);
-		
+
 		if (target_idx != -1)
 		{
 			if (cmd->buttons & BUTTON_IN_ATTACK &&
@@ -215,8 +212,7 @@ namespace features::aimbot
 
 			if (shots_fired > 2)
 			{
-				vector3_t view_angs;
-				interfaces::engine_client->get_view_angles(view_angs);
+				vector3_t view_angs; interfaces::engine_client->get_view_angles(view_angs);
 
 				if (!math::normalize_angles(view_angs))
 				{
@@ -238,7 +234,7 @@ namespace features::aimbot
 			old_aim_punch = aim_punch;
 		}
 		else {
-			old_aim_punch = { 0.0f, 0.0f, 0.0f };
+			old_aim_punch = { 0.f, 0.f, 0.f };
 		}
 	}
 
@@ -304,7 +300,7 @@ namespace features::aimbot
 		}
 	}
 
-	void flick_to_target(const target_t& data, user_cmd_t* cmd, c_weapon* wpn, bool silent)
+	void flick_to_target(const target_t& data, user_cmd_t* cmd, c_weapon* wpn, const bool silent)
 	{
 		const auto ent = (c_player*)interfaces::entity_list->get_by_index(std::get<0>(data));
 
@@ -342,7 +338,7 @@ namespace features::aimbot
 		}
 	}
 
-	target_t get_target(int method, float fov)
+	target_t get_target(const int method, const float fov)
 	{
 		target_t best_target{ -1, vector3_t(), -1 };
 		float    best_fov = fov;
@@ -382,12 +378,12 @@ namespace features::aimbot
 				}
 			}
 
-			//if (!config::get<bool>(FNV_CT("legitbot->check_visible")))
-			//{
-			//	if (!ent->is_visible(cheat::local_player, cheat::local_player->eye_angles(), aim_pos)) {
-			//		continue;
-			//	}
-			//}
+			if (!config::get<bool>(FNV_CT("legitbot->check_visible"))) {
+				if (!ent->is_visible(cheat::local_player, cheat::local_player->eye_angles(), aim_pos)) {
+					continue;
+				}
+			}
+
 
 			if (!config::get<bool>(FNV_CT("legitbot.check_smoked"))) {
 				if (util::line_goes_through_smoke(cheat::local_player->eye_angles(), aim_pos)) {
@@ -419,7 +415,7 @@ namespace features::aimbot
 		return best_target;
 	}
 
-	int get_bone(c_player* target, int method, float fov)
+	int get_bone(c_player* target, const int method, const float fov)
 	{
 		int   best_hitbox = -1;
 		float best_fov = fov;
@@ -443,7 +439,7 @@ namespace features::aimbot
 			};
 
 			const vector3_t local_pos = cheat::local_player->eye_angles();
-			const vector3_t cur_angs  = local_angs + cheat::local_player->aim_punch_angle() * 2.0f;
+			const vector3_t cur_angs = local_angs + cheat::local_player->aim_punch_angle() * 2.0f;
 
 			for (auto& idx : hitboxes)
 			{
@@ -537,7 +533,7 @@ namespace features::aimbot
 		return true;
 	}
 
-	bool is_valid_target(c_player* target) 
+	bool is_valid_target(c_player* target)
 	{
 		if (!target || target == cheat::local_player) {
 			return false;
@@ -587,7 +583,7 @@ namespace features::aimbot
 			const float time_delta = interfaces::global_vars->current_time - it.time;
 			const float delta_diff = delta_time / (time_delta * 2.0f);
 
-			vector3_t   delta = (last_angs - it.view_angles).clamp();
+			vector3_t	    delta = (last_angs - it.view_angles).clamp();
 			const float	delta_length = delta.length() * delta_diff;
 
 			avg_delta += delta_length;
@@ -599,7 +595,7 @@ namespace features::aimbot
 
 	vector2_t angles_to_pixels(const vector3_t& angles)
 	{
-		static auto m_yaw	= interfaces::convar_system->find(STR_ENC("m_yaw"));
+		static auto m_yaw = interfaces::convar_system->find(STR_ENC("m_yaw"));
 		static auto m_pitch = interfaces::convar_system->find(STR_ENC("m_pitch"));
 
 		const float x = angles.x / m_pitch->get_float();
@@ -610,7 +606,7 @@ namespace features::aimbot
 
 	vector3_t pixels_to_angles(const vector2_t& pixels)
 	{
-		static auto m_yaw   = interfaces::convar_system->find(STR_ENC("m_yaw"));
+		static auto m_yaw = interfaces::convar_system->find(STR_ENC("m_yaw"));
 		static auto m_pitch = interfaces::convar_system->find(STR_ENC("m_pitch"));
 
 		const float x = pixels.x * m_pitch->get_float();
@@ -618,5 +614,4 @@ namespace features::aimbot
 
 		return vector3_t(-y, x, 0.0f).clamp();
 	}
-
 }

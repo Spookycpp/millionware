@@ -189,3 +189,17 @@ vector3_t c_player::extrapolate_position(const vector3_t& pos)
 {
 	return pos + this->velocity() * TICK_INTERVAL();
 }
+
+bool c_player::is_visible(c_player* local, const vector3_t& src, const vector3_t& dst)
+{
+	c_trace_filter filter;
+
+	if (local) {
+		filter.skip = local;
+	}
+
+	trace_t tr;
+	interfaces::engine_trace->trace_ray({ src, dst }, MASK_SHOT, &filter, &tr);
+
+	return (tr.hit_ent == this || tr.fraction > 0.99f);
+}
