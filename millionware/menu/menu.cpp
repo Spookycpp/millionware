@@ -37,10 +37,12 @@ void menu::frame() {
 						gui::slider(STR_ENC(L"Strength"), config::get<float>(FNV_CT("legitbot.assist.strength")), 0.f, 100.f, STR_ENC(L"{:.0f}%"));
 					}
 
-					if (gui::checkbox(STR_ENC(L"Flick bot"), config::get<bool>(FNV_CT("legitbot.flick_bot.enabled")))) {
+					
+					//if (gui::checkbox(STR_ENC(L"Flick bot"), config::get<bool>(FNV_CT("legitbot.flick_bot.enabled")))) {
+					// Since there are no dropdowns, config.cpp, 0 = disabled, 1 = flick (non silent), 2 = flick (silent)
 						gui::slider(STR_ENC(L"Field of view "), config::get<float>(FNV_CT("legitbot.flick_bot.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
-						gui::slider(STR_ENC(L"Strength "), config::get<float>(FNV_CT("legitbot.flick_bot.hit_chance")), 0.f, 100.f, STR_ENC(L"{:.0f}%"));
-					}
+						gui::slider(STR_ENC(L"Hitchance"), config::get<float>(FNV_CT("legitbot.flick_bot.hit_chance")), 0.f, 100.f, STR_ENC(L"{:.0f}%"));
+					//}
 
 					gui::end_group();
 				}

@@ -352,7 +352,7 @@ public:
 	NETVAR_DEFINITION(int, ammo2, FNV_CT("DT_BaseCombatWeapon"), FNV_CT("m_iClip2"));
 	NETVAR_DEFINITION(int, reserve_ammo_count, FNV_CT("DT_BaseCombatWeapon"), FNV_CT("m_iPrimaryReserveAmmoCount"));
 	NETVAR_DEFINITION(float, recoil_index, FNV_CT("DT_WeaponCSBase"), FNV_CT("m_flRecoilIndex"));
-	NETVAR_DEFINITION(bool, is_burst_mode, FNV_CT("DT_WeaponCSBaseGun"), FNV_CT("m_bBurstMode"));
+	NETVAR_DEFINITION(bool, is_burst_mode, FNV_CT("DT_WeaponCSBase"), FNV_CT("m_bBurstMode"));
 	NETVAR_DEFINITION(int, burst_shots_remaining, FNV_CT("DT_WeaponCSBaseGun"), FNV_CT("m_iBurstShotsRemaining"));
 	NETVAR_DEFINITION(float, ready_time, FNV_CT("DT_WeaponCSBase"), FNV_CT("m_flPostponeFireReadyTime"));
 	NETVAR_DEFINITION(float, next_attack, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_flNextAttack"));

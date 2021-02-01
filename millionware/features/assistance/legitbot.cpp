@@ -77,7 +77,7 @@ namespace features::aimbot
 			}
 		}
 
-		const auto target = get_target(config::get<int>(FNV_CT("legitbot.hitbox_method")), config::get<float>(FNV_CT("legitbot->fov")));
+		const auto target = get_target(config::get<int>(FNV_CT("legitbot.hitbox_method")), config::get<float>(FNV_CT("legitbot.fov")));
 		const auto target_idx = std::get< 0 >(target);
 
 		if (target_idx != -1)
@@ -153,7 +153,7 @@ namespace features::aimbot
 	{
 		flicked = false;
 
-		if (!config::get<bool>(FNV_CT("legitbot.flick_bot.enabled"))) {
+		if (!config::get<int>(FNV_CT("legitbot.flick_bot.enabled"))) {
 			return;
 		}
 

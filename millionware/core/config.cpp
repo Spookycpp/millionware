@@ -12,6 +12,7 @@ void config::initialize() {
 	get<color_t>(FNV_CT("visuals.enemy.chams_hidden.color")) = color_t(222, 7, 208);
 
 	get<int>(FNV_CT("legitbot.hitbox_method")) = 1;
+	get<int>(FNV_CT("legitbot.flick_bot.enabled")) = 1;
 
 	get<float>(FNV_CT("misc.other.override_fov")) = 90.f;
 }

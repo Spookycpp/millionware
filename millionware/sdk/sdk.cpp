@@ -103,17 +103,18 @@ vector3_t c_player::get_hitbox_pos(const int idx)
 	}
 
 	std::array< matrix3x4_t, 128 > matrices = {};
+
 	if (!this->renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time)) {
 		return {};
 	}
 
-	auto model = this->renderable()->get_model();
+	const auto model = this->renderable()->get_model();
 
 	if (!model) {
 		return {};
 	}
 
-	studio_hdr_t* studio_hdr = interfaces::model_info->get_studio_model(model);
+	const auto studio_hdr = interfaces::model_info->get_studio_model(model);
 
 	if (!studio_hdr) {
 		return {};
