@@ -62,6 +62,10 @@ void features::miscellaneous::panorama_blur() {
 }
 
 void features::miscellaneous::post_processing() {
+
+	if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+		return;
+
 	const static auto post_processing = interfaces::convar_system->find(STR_ENC("mat_postprocess_enable"));
 	const static auto blur_overlay = interfaces::material_system->find_material(STR_ENC("dev/scope_bluroverlay"));
 	const static auto lens_dirt = interfaces::material_system->find_material(STR_ENC("models/weapons/shared/scope/scope_lens_dirt"));

@@ -21,7 +21,7 @@ namespace features::lag_compensation
 		float valid_time = 0.0f;
 	};
 
-	void on_frame_stage_notify();
+	void on_frame_stage_notify(const int frame_stage);
 
 	void store_visuals();
 	bool get_render_record(int idx, matrix3x4_t* out);

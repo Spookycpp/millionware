@@ -389,7 +389,7 @@ namespace features::aimbot
 			//	}
 			//}
 
-			if (!config::get<bool>(FNV_CT("legitbot->check_smoked"))) {
+			if (!config::get<bool>(FNV_CT("legitbot.check_smoked"))) {
 				if (util::line_goes_through_smoke(cheat::local_player->eye_angles(), aim_pos)) {
 					continue;
 				}
