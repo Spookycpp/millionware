@@ -60,7 +60,7 @@ namespace features::aimbot::triggerbot
 
 		const vector3_t fwd = math::angle_to_vector(view_angs + cheat::local_player->aim_punch_angle() * 2.0f) * wpn_info->range;
 
-		const vector3_t src = cheat::local_player->eye_angles();
+		const vector3_t src = cheat::local_player->get_eye_origin();
 		const vector3_t dst = src + fwd;
 
 		if (!config::get<bool>(FNV_CT("legitbot.triggerbot.check_smoked")))

@@ -172,7 +172,7 @@ namespace features::hit_chance {
 			return false;
 		}
 
-		const vector3_t eye_pos = cheat::local_player->eye_angles();
+		const vector3_t eye_pos = cheat::local_player->get_eye_origin();
 
 		const int hits_needed = percentage * 256 / 100;
 		int       hits = 0;

@@ -38,7 +38,7 @@ namespace features::aimbot::lag_comp
 		lag_record_t* best_record = nullptr;
 		float         best_fov = config::get<float>(FNV_CT("legitbot.backtrack.fov"));
 
-		const vector3_t local_pos = cheat::local_player->eye_angles();
+		const vector3_t local_pos = cheat::local_player->get_eye_origin();
 		vector3_t local_angs; interfaces::engine_client->get_view_angles(local_angs);
 
 		const int cur_tick_count = interfaces::global_vars->tick_count;
