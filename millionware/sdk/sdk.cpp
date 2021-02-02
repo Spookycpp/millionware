@@ -96,6 +96,11 @@ bool c_player::is_valid(const bool check_alive)
 	return check_alive ? this->is_alive() : !this->is_alive();
 }
 
+vector3_t c_player::get_eye_origin()
+{
+	return this->origin() + this->view_offset();
+}
+
 vector3_t c_player::get_hitbox_pos(const int idx)
 {
 	if (idx == -1) {

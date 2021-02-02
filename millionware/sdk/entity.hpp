@@ -262,7 +262,6 @@ public:
 	NETVAR_DEFINITION(int, flags, FNV_CT("DT_BasePlayer"), FNV_CT("m_fFlags"));
 	NETVAR_DEFINITION(int, team_num, FNV_CT("DT_BaseEntity"), FNV_CT("m_iTeamNum"));
 	NETVAR_DEFINITION(vector3_t, origin, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecOrigin"));
-	NETVAR_DEFINITION(vector3_t, view_offset, FNV_CT("DT_CSPlayer"), FNV_CT("m_vecViewOffset[0]"));
 	NETVAR_DEFINITION(base_handle_t, owner_handle, FNV_CT("DT_BaseEntity"), FNV_CT("m_hOwnerEntity"));
 	NETVAR_DEFINITION(vector3_t, get_mins, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecMins"));
 	NETVAR_DEFINITION(vector3_t, get_maxs, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecMaxs"));
@@ -296,6 +295,7 @@ public:
 	NETVAR_DEFINITION(vector3_t, punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("m_Local"), FNV_CT("m_viewPunchAngle"));
 	NETVAR_DEFINITION(vector3_t, aim_punch_angle, FNV_CT("DT_BasePlayer"), FNV_CT("m_Local"), FNV_CT("m_aimPunchAngle"));
 	NETVAR_DEFINITION(vector3_t, velocity, FNV_CT("DT_BasePlayer"), FNV_CT("m_vecVelocity[0]"));
+	NETVAR_DEFINITION(vector3_t, view_offset, FNV_CT("DT_BasePlayer"), FNV_CT("m_vecViewOffset[0]"));
 	NETVAR_DEFINITION(base_handle_t, observer_target, FNV_CT("DT_BasePlayer"), FNV_CT("m_hObserverTarget"));
 	NETVAR_DEFINITION(base_handle_t, active_weapon_handle, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_hActiveWeapon"));
 	NETVAR_DEFINITION(int, hitbox_set, FNV_CT("DT_BaseAnimating"), FNV_CT("m_nHitboxSet"));
@@ -317,6 +317,8 @@ public:
 
 	bool is_valid(const bool check_alive = true);
 
+	vector3_t get_eye_origin();
+
 	vector3_t get_hitbox_pos(const int idx);
 
 	float get_flash_time();
@@ -330,9 +332,8 @@ public:
 	vector3_t extrapolate_position(const vector3_t& pos);
 
 	bool is_visible(c_player* local, const vector3_t& src, const vector3_t& dst);
-	
-	NETVAR_DEFINITION_OFFSET(int, get_old_simulation_time, 4, FNV_CT("DT_BaseEntity"), FNV_CT("m_flSimulationTime"));
 
+	NETVAR_DEFINITION_OFFSET(int, get_old_simulation_time, 4, FNV_CT("DT_BaseEntity"), FNV_CT("m_flSimulationTime"));
 };
 
 class c_economy_item : public c_entity {

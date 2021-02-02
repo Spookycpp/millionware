@@ -107,7 +107,7 @@ namespace features::aimbot
 			return;
 		}
 
-		const vector3_t local_pos = cheat::local_player->eye_angles();
+		const vector3_t local_pos = cheat::local_player->get_eye_origin();
 		const vector3_t enemy_pos = target->get_hitbox_pos(hitbox);
 
 		const vector3_t cur_angs = local_angs + cheat::local_player->aim_punch_angle() * 2.0f;
@@ -253,7 +253,7 @@ namespace features::aimbot
 		}
 
 		vector3_t aim_angs = math::vector_angles(
-			cheat::local_player->eye_angles(),
+			cheat::local_player->get_eye_origin(),
 			ent->extrapolate_position(std::get< 1 >(data))
 		);
 
@@ -309,7 +309,7 @@ namespace features::aimbot
 		}
 
 		vector3_t aim_angs = math::vector_angles(
-			cheat::local_player->eye_angles(),
+			cheat::local_player->get_eye_origin(),
 			ent->extrapolate_position(std::get< 1 >(data))
 		);
 
@@ -343,7 +343,7 @@ namespace features::aimbot
 		target_t best_target{ -1, vector3_t(), -1 };
 		float    best_fov = fov;
 
-		const vector3_t local_pos = cheat::local_player->eye_angles();
+		const vector3_t local_pos = cheat::local_player->get_eye_origin();
 		const vector3_t cur_angs = local_angs + cheat::local_player->aim_punch_angle() * 2.0f;
 
 		for (int i = 1; i < 65; ++i)
@@ -367,26 +367,24 @@ namespace features::aimbot
 			}
 			else {
 				aim_pos = lag_comp::get_backtracked_position(i);
-			}
-
-			if (aim_pos.empty())
-			{
-				aim_pos = ent->get_hitbox_pos(hitbox);
 
 				if (aim_pos.empty()) {
-					continue;
+					aim_pos = ent->get_hitbox_pos(hitbox);
 				}
+			}
+
+			if (aim_pos.empty()) {
+				continue;
 			}
 
 			if (!config::get<bool>(FNV_CT("legitbot->check_visible"))) {
-				if (!ent->is_visible(cheat::local_player, cheat::local_player->eye_angles(), aim_pos)) {
+				if (!ent->is_visible(cheat::local_player, cheat::local_player->get_eye_origin(), aim_pos)) {
 					continue;
 				}
 			}
 
-
 			if (!config::get<bool>(FNV_CT("legitbot.check_smoked"))) {
-				if (util::line_goes_through_smoke(cheat::local_player->eye_angles(), aim_pos)) {
+				if (util::line_goes_through_smoke(cheat::local_player->get_eye_origin(), aim_pos)) {
 					continue;
 				}
 			}
@@ -438,7 +436,7 @@ namespace features::aimbot
 				HEAD, NECK, PELVIS, L_CHEST, U_CHEST
 			};
 
-			const vector3_t local_pos = cheat::local_player->eye_angles();
+			const vector3_t local_pos = cheat::local_player->get_eye_origin();
 			const vector3_t cur_angs = local_angs + cheat::local_player->aim_punch_angle() * 2.0f;
 
 			for (auto& idx : hitboxes)
