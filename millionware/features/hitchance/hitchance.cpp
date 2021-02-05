@@ -4,23 +4,26 @@
 
 namespace features::hit_chance {
 
-	std::array<hit_chance_data_t, 256> hit_chance_records = {};
+	std::array< hit_chance_data_t, 256 > hit_chance_records = {};
 
 	struct hitbox_data_t
 	{
-		hitbox_data_t(const vector3_t& min, const vector3_t& max, const float radis) {
-			this->min = max;
+		hitbox_data_t(const vector3_t &min, const vector3_t &max, const float radius)
+		{
+			this->min = min;
 			this->max = max;
 			this->radius = radius;
 		}
 
 		vector3_t min;
 		vector3_t max;
-		float radius;
+		float  radius;
 	};
 
-	void initialize() {
-		for (size_t i = 0; i < 256; ++i) {
+	void initialize()
+	{
+		for (size_t i = 0; i < 256; ++i)
+		{
 			util::set_random_seed(i);
 
 			const float rand_a = util::get_random_float(0.0f, 1.0f);
@@ -28,7 +31,7 @@ namespace features::hit_chance {
 			const float rand_b = util::get_random_float(0.0f, 1.0f);
 			const float rand_pi_b = util::get_random_float(0.0f, math::pi_2);
 
-			hit_chance_records[i] = {
+			hit_chance_records[ i ] = {
 				std::make_pair(rand_a, rand_b),
 				std::make_pair(std::cos(rand_pi_a), std::sin(rand_pi_b)),
 				std::make_pair(std::cos(rand_pi_b), std::sin(rand_pi_a))
@@ -47,27 +50,21 @@ namespace features::hit_chance {
 			return vector3_t();
 		}
 
-		float rand_a = data->random.first;
-		float rand_b = data->random.second;
+		auto [rand_a, rand_b] = data->random;
 
 		if (wpn->item_definition_index() == WEAPON_NEGEV)
 		{
 			auto wpn_info = wpn ? interfaces::weapon_system->get_weapon_info(wpn->item_definition_index()) : nullptr;;
 
-			if (wpn_info)
+			if (wpn_info && wpn_info->recoil_seed < 3)
 			{
-				const int recoil_seed = *reinterpret_cast<int*>(uintptr_t(wpn_info) + 0x184); // not sure if correct
-
-				if (recoil_seed < 3)
-				{
-					rand_a = 1.0f - std::pow(rand_a, static_cast<float>(3 - recoil_seed + 1));
-					rand_b = 1.0f - std::pow(rand_b, static_cast<float>(3 - recoil_seed + 1));
-				}
+				rand_a = 1.0f - std::pow(rand_a, static_cast<float>(3 - wpn_info->recoil_seed + 1));
+				rand_b = 1.0f - std::pow(rand_b, static_cast<float>(3 - wpn_info->recoil_seed + 1));
 			}
 		}
 
-		const float rand_inaccuracy = rand_a * cheat::local_player->get_inaccuracy();
-		const float rand_spread		= rand_b * cheat::local_player->get_spread();
+		const float rand_inaccuracy = rand_a * wpn->get_inaccuracy();
+		const float rand_spread		= rand_b * wpn->get_spread();
 
 		const float spread_x = data->inaccuracy.first * rand_inaccuracy + data->spread.first * rand_spread;
 		const float spread_y = data->inaccuracy.second * rand_inaccuracy + data->spread.second * rand_spread;
@@ -76,12 +73,6 @@ namespace features::hit_chance {
 		math::angle_to_vectors(angles, &forward, &right, &up);
 
 		return forward + right * spread_x + up * spread_y;
-	}
-
-	float calculate_minimum_accuracy()
-	{
-		// calculate spread inaccuracy
-		return 0.0f;
 	}
 
 	std::vector< hitbox_data_t > get_hitbox_data(c_player* target, int hitbox)
@@ -128,7 +119,7 @@ namespace features::hit_chance {
 					radius = min.dist(max);
 				}
 
-				hitbox_data.emplace_back(min, max, radius);
+				hitbox_data.emplace_back(hitbox_data_t { min, max, radius });
 			}
 		}
 		else
@@ -148,7 +139,7 @@ namespace features::hit_chance {
 				radius = min.dist(max);
 			}
 
-			hitbox_data.emplace_back(min, max, radius);
+			hitbox_data.emplace_back(hitbox_data_t { min, max, radius });
 		}
 
 		return hitbox_data;
@@ -174,7 +165,7 @@ namespace features::hit_chance {
 
 		const vector3_t eye_pos = cheat::local_player->get_eye_origin();
 
-		const int hits_needed = percentage * 256 / 100;
+		const int hits_needed = (percentage * 256) / 100;
 		int       hits = 0;
 
 		for (int i = 0; i < 256; ++i)

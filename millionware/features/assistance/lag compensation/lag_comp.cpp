@@ -56,7 +56,7 @@ namespace features::aimbot::lag_comp
 				max_latency = 0.4f + net_channel->get_latency(FLOW_OUTGOING);
 			}
 			else {
-				max_latency = static_cast<float>(config::get<int>(FNV_CT("legitbot.backtrack"))) * 0.001f + net_channel->get_latency(FLOW_OUTGOING);
+				max_latency = static_cast<float>(config::get<int>(FNV_CT("legitbot.backtrack.time"))) * 0.001f + net_channel->get_latency(FLOW_OUTGOING);
 			}
 
 			if (std::abs(cur_tick_count - it.tick_count) > TIME_TO_TICKS(max_latency))
@@ -139,19 +139,21 @@ namespace features::aimbot::lag_comp
 	
 			if (ent && ent != cheat::local_player && ent->is_valid())
 			{
-				const int		idx = ent->networkable()->index();
-				const vector3_t pos = ent->get_hitbox_pos(HEAD);
-				const vector3_t aimbot_pos = ent->get_hitbox_pos(get_bone(ent, config::get<int>(FNV_CT("legitbot.hitbox_method")), config::get<float>(FNV_CT("legitbot.backtrack.fov"))));
+				const auto idx = ent->networkable()->index();
+				const auto pos = ent->get_hitbox_pos(HEAD);
+				const auto aimbot_pos = ent->get_hitbox_pos(get_bone(ent, config::get<int>(FNV_CT("legitbot.hitbox_method")), config::get<float>(FNV_CT("legitbot.backtrack.fov"))));
 	
 				lag_record_t record = {};
 	
 				if (ent->renderable()->setup_bones(record.matrices.data(), record.matrices.size(), 0x100, 0.0f))
 				{
+					const auto collidable = ent->get_collideable();
+
 					record.position = pos;
 					record.aimbot_position = aimbot_pos;
 					record.tick_count = TIME_TO_TICKS(ent->get_simulation_time());
-					record.mins = ent->get_mins();
-					record.maxs = ent->get_maxs();
+					record.mins = collidable->get_mins();
+					record.maxs = collidable->get_maxs();
 	
 					records[idx].push_front(record);
 				}

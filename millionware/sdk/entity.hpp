@@ -263,8 +263,6 @@ public:
 	NETVAR_DEFINITION(int, team_num, FNV_CT("DT_BaseEntity"), FNV_CT("m_iTeamNum"));
 	NETVAR_DEFINITION(vector3_t, origin, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecOrigin"));
 	NETVAR_DEFINITION(base_handle_t, owner_handle, FNV_CT("DT_BaseEntity"), FNV_CT("m_hOwnerEntity"));
-	NETVAR_DEFINITION(vector3_t, get_mins, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecMins"));
-	NETVAR_DEFINITION(vector3_t, get_maxs, FNV_CT("DT_BaseEntity"), FNV_CT("m_vecMaxs"));
 	NETVAR_DEFINITION(float, get_simulation_time, FNV_CT("DT_BaseEntity"), FNV_CT("m_flSimulationTime"));
 
 	NETVAR_DEFINITION_OFFSET(matrix3x4_t, entity_to_world_matrix, -48, FNV_CT("DT_BaseEntity"), FNV_CT("m_CollisionGroup"));
@@ -272,7 +270,6 @@ public:
 	VIRTUAL_METHOD(c_collideable*, get_collideable, 3, ());
 	VIRTUAL_METHOD(bool, is_player, 157, ());
 	VIRTUAL_METHOD(bool, is_weapon, 165, ());
-
 	class c_player* as_player();
 	class c_weapon* as_weapon();
 };
@@ -305,9 +302,6 @@ public:
 	}
 
 	NETVAR_DEFINITION_OFFSET(int, move_type, 1, FNV_CT("DT_BaseEntity"), FNV_CT("m_nRenderMode"));
-
-	VIRTUAL_METHOD(float, get_spread, 452, ());
-	VIRTUAL_METHOD(float, get_inaccuracy, 482, ());
 
 	bool has_bomb() const;
 
@@ -359,6 +353,9 @@ public:
 	NETVAR_DEFINITION(int, burst_shots_remaining, FNV_CT("DT_WeaponCSBaseGun"), FNV_CT("m_iBurstShotsRemaining"));
 	NETVAR_DEFINITION(float, ready_time, FNV_CT("DT_WeaponCSBase"), FNV_CT("m_flPostponeFireReadyTime"));
 	NETVAR_DEFINITION(float, next_attack, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_flNextAttack"));
+
+	VIRTUAL_METHOD(float, get_spread, 452, ());
+	VIRTUAL_METHOD(float, get_inaccuracy, 482, ());
 
 	int get_weapon_type()
 	{

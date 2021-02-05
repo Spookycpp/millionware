@@ -9,6 +9,7 @@
 #include "core/interfaces.hpp"
 #include "core/netvars.hpp"
 #include "core/patterns.hpp"
+#include "features/hitchance/hitchance.hpp"
 #include "gui/gui.hpp"
 #include "menu/menu.hpp"
 #include "utils/render/render.hpp"
@@ -22,6 +23,10 @@ unsigned long __stdcall initial_thread(LPVOID dll_instance) {
   config::initialize();
   netvars::initialize();
   gui::initialize();
+
+  // lol
+  features::hit_chance::initialize();
+
   hooks::initialize();
 
 #ifdef _DEBUG
@@ -29,6 +34,8 @@ unsigned long __stdcall initial_thread(LPVOID dll_instance) {
     std::this_thread::sleep_for(50ms);
 
   hooks::shutdown();
+
+  std::this_thread::sleep_for(300ms);
 
   FreeLibraryAndExitThread(static_cast<HMODULE>(dll_instance), 0);
 #endif
