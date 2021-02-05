@@ -1,5 +1,6 @@
 #include "../sdk/color.hpp"
 #include "../utils/hash/hash.hpp"
+#include "../utils/input/input.hpp"
 #include "config.hpp"
 
 void config::initialize() {
