@@ -27,7 +27,7 @@ void features::movement::pre_prediction(user_cmd_t* user_cmd) {
 
 void features::movement::post_prediction(user_cmd_t* user_cmd, int pre_flags, int post_flags) {
 
-	if (config::get<bool>(FNV_CT("misc.movement.jump_bug")) && input::is_key_down(VK_XBUTTON2)) {
+	if (config::get<bool>(FNV_CT("misc.movement.jump_bug")) && input::is_hotkey_active(FNV_CT("misc.movement.jump_bug.hotkey"))) {
 		cheat::b_predicting = true;
 
 		if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND) {
@@ -39,12 +39,12 @@ void features::movement::post_prediction(user_cmd_t* user_cmd, int pre_flags, in
 		}
 	}
 
-	if (config::get<bool>(FNV_CT("misc.movement.edge_bug")) && input::is_key_down('C')) {
+	if (config::get<bool>(FNV_CT("misc.movement.edge_bug")) && input::is_hotkey_active(FNV_CT("misc.movement.edge_bug.hotkey"))) {
 		if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND)
 			user_cmd->buttons |= BUTTON_IN_DUCK;
 	}
 
-	if (config::get<bool>(FNV_CT("misc.movement.edge_jump")) && input::is_key_down('E')) {
+	if (config::get<bool>(FNV_CT("misc.movement.edge_jump")) && input::is_hotkey_active(FNV_CT("misc.movement.edge_jump.hotkey"))) {
 		if (pre_flags & ENTITY_FLAG_ONGROUND && !(post_flags & ENTITY_FLAG_ONGROUND))
 			user_cmd->buttons |= BUTTON_IN_JUMP;
 	}

@@ -42,7 +42,7 @@ std::vector<vertex_t> generate_rounded_rect_vertices(int x, int y, int width, in
 	std::vector<vertex_t> vertices;
 
 	const auto rounded_corner_density = 12;
-	const auto rounded_corner_advance_angle = 90.0 / static_cast<double>(rounded_corner_density);
+	const auto rounded_corner_advance_angle = 90.0f / static_cast<float>(rounded_corner_density);
 
 	const auto radius_d = static_cast<double>(radius);
 	const auto round_top_left = (corners & CORNER_TOP_LEFT) != 0;
@@ -68,7 +68,7 @@ std::vector<vertex_t> generate_rounded_rect_vertices(int x, int y, int width, in
 			const auto vert_y = static_cast<float>(y + (i % 3 ? height - radius : radius));
 
 			for (auto j = 0; j < rounded_corner_density; j++) {
-				const auto angle = math::deg_to_rad(90.0 * i + rounded_corner_advance_angle * j);
+				const auto angle = math::deg_to_rad(90.0f * i + rounded_corner_advance_angle * j);
 				const auto vertex_x = vert_x + radius_d * std::sin(angle);
 				const auto vertex_y = vert_y - radius_d * std::cos(angle);
 

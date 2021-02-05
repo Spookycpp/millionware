@@ -17,6 +17,7 @@ void config::initialize() {
 	get<int>(FNV_CT("legitbot.flick_bot.enabled")) = 1;
 
 	get<float>(FNV_CT("misc.other.override_fov")) = 90.f;
+	get<float>(FNV_CT("visuals.other.general.flash_alpha")) = 255.f;
 }
 
 void config::save_to(std::string_view name) {
