@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <Windows.h>
 
+#include "../core/config.hpp"
+
+#include "../utils/util.hpp"
 #include "../utils/hash/hash.hpp"
 #include "../utils/hook/hook.hpp"
 #include "../utils/xorstr/xorstr.hpp"
@@ -76,4 +79,6 @@ void hooks::shutdown() {
 	interfaces::convar_system->find(STR_ENC("r_aspectratio"))->set_value(0.0f);
 	interfaces::convar_system->find(STR_ENC("@panorama_disable_blur"))->set_value(false);
 	interfaces::convar_system->find(STR_ENC("mat_postprocess_enable"))->set_value(true);
+	
+	config::uninitialize();
 }

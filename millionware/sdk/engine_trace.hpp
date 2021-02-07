@@ -1,7 +1,5 @@
 #pragma once
 
-#include "entity.hpp"
-
 enum class trace_type_t {
 	TRACE_EVERYTHING = 0,
 	TRACE_WORLD_ONLY,
@@ -21,7 +19,7 @@ public:
 	char* ignore = nullptr;
 
 	bool should_hit_entity(c_entity* pEntityHandle, int /*contentsMask*/) override {
-		const auto ent_cc = pEntityHandle->networkable()->get_client_class();
+		client_class_t* ent_cc = ((c_entity*)pEntityHandle)->networkable()->get_client_class();
 		if (ent_cc && ignore && strcmp(ignore, "") != 0) {
 			if (ent_cc->network_name == ignore)
 				return false;
@@ -96,7 +94,7 @@ public:
 	}
 
 	bool should_hit_entity(c_entity* pEntityHandle, int /*contentsMask*/) override {
-		return pEntityHandle != pEnt && pEntityHandle->networkable()->get_client_class()->class_id == ccsplayer;
+		return pEntityHandle != pEnt && ((c_entity*)pEntityHandle)->networkable()->get_client_class()->class_id == ccsplayer;
 	}
 
 	trace_type_t get_trace_type() const override {
@@ -164,10 +162,10 @@ public:
 struct ray_t {
 private:
 public:
-	vector3_t m_start;
-	vector3_t m_delta;
-	vector3_t m_start_offset;
-	vector3_t m_extents;
+	vector3_aligned m_start;
+	vector3_aligned m_delta;
+	vector3_aligned m_start_offset;
+	vector3_aligned m_extents;
 	const matrix3x4_t* m_world_axis_transform;
 	bool m_is_ray;
 	bool m_is_swept;
@@ -200,12 +198,12 @@ public:
 
 		m_is_swept = m_delta.length_sqr() != 0;
 
-		m_extents = { 0.f, 0.f, 0.f };
+		m_extents.init(0.f, 0.f, 0.f);
 
 		m_world_axis_transform = nullptr;
 		m_is_ray = true;
 
-		m_start_offset = { 0.0f, 0.0f, 0.0f };
+		m_start_offset.init(0.f, 0.f, 0.f);
 		m_start = start;
 	}
 

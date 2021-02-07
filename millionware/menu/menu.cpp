@@ -4,6 +4,7 @@
 #include "../utils/hash/hash.hpp"
 #include "../utils/xorstr/xorstr.hpp"
 #include "menu.hpp"
+#include "../utils/util.hpp"
 
 void menu::frame() {
 	if (gui::begin_window()) {
@@ -21,7 +22,7 @@ void menu::frame() {
 				if (gui::begin_group(STR_ENC(L"Backtrack"))) {
 
 					if (gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("legitbot.backtrack.enabled")))) {
-						gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.backtrack.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
+						gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.backtrack.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}Â°"));
 						gui::slider(STR_ENC(L"Max time"), config::get<int>(FNV_CT("legitbot.backtrack.time")), 10, 200, STR_ENC(L"{}ms"));
 					}
 
@@ -33,16 +34,16 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("legitbot.enabled")));
 
 					if (gui::checkbox(STR_ENC(L"Aim assist"), config::get<bool>(FNV_CT("legitbot.assist.enabled")))) {
-						gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.assist.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
+						gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.assist.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}Â°"));
 						gui::slider(STR_ENC(L"Strength"), config::get<float>(FNV_CT("legitbot.assist.strength")), 0.f, 100.f, STR_ENC(L"{:.0f}%"));
 					}
 
 					
-					//if (gui::checkbox(STR_ENC(L"Flick bot"), config::get<bool>(FNV_CT("legitbot.flick_bot.enabled")))) {
+					if (gui::checkbox(STR_ENC(L"Flick bot"), config::get<bool>(FNV_CT("legitbot.flick_bot.enabled")))) {
 					// Since there are no dropdowns, config.cpp, 0 = disabled, 1 = flick (non silent), 2 = flick (silent)
-						gui::slider(STR_ENC(L"Field of view "), config::get<float>(FNV_CT("legitbot.flick_bot.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
+						gui::slider(STR_ENC(L"Field of view "), config::get<float>(FNV_CT("legitbot.flick_bot.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}Â°"));
 						gui::slider(STR_ENC(L"Hitchance"), config::get<int>(FNV_CT("legitbot.flick_bot.hit_chance")), 0, 100, STR_ENC(L"{}%"));
-					//}
+					}
 
 					gui::end_group();
 				}
@@ -53,7 +54,7 @@ void menu::frame() {
 						gui::checkbox(STR_ENC(L"Smoke check"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_smoked")));
 						gui::checkbox(STR_ENC(L"Flash check"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_flashed")));
 						gui::slider(STR_ENC(L"Hit chance"), config::get<int>(FNV_CT("legitbot.triggerbot.hit_chance")), 0, 100, STR_ENC(L"{}%"));
-						gui::slider(STR_ENC(L"Delay"), config::get<int>(FNV_CT("legitbot.triggerbot.delay")), 0, 200, STR_ENC(L"{}ms"));
+						gui::slider(STR_ENC(L"Delay"), config::get<int>(FNV_CT("legitbot.triggerbot.delay")), 0, 1000, STR_ENC(L"{}ms"));
 
 					}
 					gui::end_group();
@@ -83,14 +84,19 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Player"), config::get<bool>(FNV_CT("visuals.enemy.chams")));
 					gui::attach_color_picker(STR_ENC(L"Hidden color"), config::get<color_t>(FNV_CT("visuals.enemy.chams_hidden.color")), true);
 					gui::checkbox(STR_ENC(L"Player (hidden)"), config::get<bool>(FNV_CT("visuals.enemy.chams_hidden")));
+					gui::checkbox(STR_ENC(L"History"), config::get<bool>(FNV_CT("visuals.enemy.chams.records")));
 					gui::end_group();
 
 				}
 			}
 
-			if (gui::begin_sub_tab(STR_ENC(L"Friendly"))) {
-				if (gui::begin_group(STR_ENC(L"ESP"))) {
-					gui::checkbox(STR_ENC(L"test"), config::get<bool>(FNV_CT("test")));
+			if (gui::begin_sub_tab(STR_ENC(L"World"))) {
+				if (gui::begin_group(STR_ENC(L"General"))) {
+					if (gui::checkbox(STR_ENC(L"Nightmode"), config::get<bool>(FNV_CT("visuals.world.nightmode")))) {
+						if (gui::slider(STR_ENC(L"Darkness"), config::get<float>(FNV_CT("visuals.world.nightmode_intensity")), 0.f, 1.f, STR_ENC(L"{:.2f}%"))) {
+							util::set_night_mode();
+						}
+					}
 					gui::end_group();
 				}
 			}
@@ -115,8 +121,9 @@ void menu::frame() {
 				}
 
 				if (gui::begin_group(STR_ENC(L"Miscellaneous"))) {
-					gui::slider(STR_ENC(L"Field of view override"), config::get<float>(FNV_CT("misc.other.override_fov")), 45.0f, 120.0f, STR_ENC(L"{:.0f}°"));
+					gui::slider(STR_ENC(L"Field of view override"), config::get<float>(FNV_CT("misc.other.override_fov")), 45.0f, 120.0f, STR_ENC(L"{:.0f}ï¿½"));
 					gui::checkbox(STR_ENC(L"Auto accept"), config::get<bool>(FNV_CT("misc.other.auto_accept")));
+					gui::checkbox(STR_ENC(L"Extended backtrack"), config::get<bool>(FNV_CT("misc.other.fake_ping")));
 					gui::checkbox(STR_ENC(L"Auto pistol"), config::get<bool>(FNV_CT("misc.other.auto_pistol")));
 					gui::checkbox(STR_ENC(L"Rank reveal"), config::get<bool>(FNV_CT("misc.other.rank_reveal")));
 					gui::checkbox(STR_ENC(L"Ragdoll push"), config::get<bool>(FNV_CT("misc.other.ragdoll_push")));

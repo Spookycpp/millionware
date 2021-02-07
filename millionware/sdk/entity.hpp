@@ -341,6 +341,15 @@ public:
 	NETVAR_DEFINITION(int, entity_quality, FNV_CT("DT_BaseAttributableItem"), FNV_CT("m_AttributeManager"), FNV_CT("m_Item"), FNV_CT("m_iEntityQuality"));
 };
 
+class c_env_tonemap_controller : public c_entity
+{
+public:
+	NETVAR_DEFINITION(bool, use_exposure_min, FNV_CT("DT_EnvTonemapController"), FNV_CT("m_bUseCustomAutoExposureMin"));
+	NETVAR_DEFINITION(bool, use_exposure_max, FNV_CT("DT_EnvTonemapController"), FNV_CT("m_bUseCustomAutoExposureMax"));
+	NETVAR_DEFINITION(float, get_exposure_min, FNV_CT("DT_EnvTonemapController"), FNV_CT("m_flCustomAutoExposureMin"));
+	NETVAR_DEFINITION(float, get_exposure_max, FNV_CT("DT_EnvTonemapController"), FNV_CT("m_flCustomAutoExposureMax"));
+};
+
 class c_weapon : public c_economy_item {
 public:
 	NETVAR_DEFINITION(float, next_primary_attack, FNV_CT("DT_BaseCombatWeapon"), FNV_CT("m_flNextPrimaryAttack"));

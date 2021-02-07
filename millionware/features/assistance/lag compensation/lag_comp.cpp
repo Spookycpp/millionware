@@ -52,7 +52,7 @@ namespace features::aimbot::lag_comp
 
 			float max_latency;
 
-			if (config::get<bool>(FNV_CT("settings.misc.fake_ping.enabled"))) {
+			if (config::get<bool>(FNV_CT("misc.other.fake_ping"))) {
 				max_latency = 0.4f + net_channel->get_latency(FLOW_OUTGOING);
 			}
 			else {

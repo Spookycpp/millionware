@@ -1,4 +1,5 @@
 #include "util.hpp"
+#include "../core/config.hpp"
 
 float TICK_INTERVAL() {
 	return interfaces::global_vars->interval_per_tick;
@@ -80,6 +81,28 @@ void util::set_random_seed(const int seed) {
 		return;
 
 	random_seed_fn(seed);
+}
+
+void util::set_night_mode() {
+	for (int i = 1; i <= interfaces::entity_list->get_highest_entity_index(); ++i)
+	{
+		auto controller = (c_env_tonemap_controller*)interfaces::entity_list->get_by_index(i);
+
+		if (!controller) {
+			continue;
+		}
+
+		client_class_t* cc = controller->networkable()->get_client_class();
+
+		if (!cc || cc->class_id != cenvtonemapcontroller) {
+			continue;
+		}
+
+		controller->use_exposure_min() = true;
+		controller->use_exposure_max() = true;
+		controller->get_exposure_min() = config::get<float>(FNV_CT("visuals.world.nightmode_intensity"));
+		controller->get_exposure_max() = config::get<float>(FNV_CT("visuals.world.nightmode_intensity"));
+	}
 }
 
 std::optional<vector3_t> util::get_intersection(const vector3_t& start, const vector3_t& end, const vector3_t& mins, const vector3_t& maxs, float radius)

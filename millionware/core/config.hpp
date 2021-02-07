@@ -21,6 +21,8 @@ namespace config {
 	void save_to(std::string_view name);
 	void load_from(std::string_view name);
 
+	void uninitialize();
+
 	template <typename T>
 	constexpr T& get(uint32_t item) {
 		static_assert(sizeof(T) <= sizeof detail::config_item_t::data, "type is too big");

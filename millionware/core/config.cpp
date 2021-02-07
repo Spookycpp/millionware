@@ -14,10 +14,17 @@ void config::initialize() {
 
 	get<int>(FNV_CT("legitbot.hitbox_method")) = 0;
 	get<int>(FNV_CT("legitbot.hitbox")) = 0;
-	get<int>(FNV_CT("legitbot.flick_bot.enabled")) = 1;
 
 	get<float>(FNV_CT("misc.other.override_fov")) = 90.f;
 	get<float>(FNV_CT("visuals.other.general.flash_alpha")) = 255.f;
+	get<float>(FNV_CT("visuals.world.nightmode_intensity")) = 0.075f;
+
+
+	input::get_hotkey(FNV_CT("legitbot.hotkey")).type = HOTKEY_PRESSED;
+	input::get_hotkey(FNV_CT("legitbot.hotkey")).key = VK_XBUTTON2;
+
+	input::get_hotkey(FNV_CT("triggerbot.hotkey")).type = HOTKEY_PRESSED;
+	input::get_hotkey(FNV_CT("triggerbot.hotkey")).key = VK_XBUTTON1;
 }
 
 void config::save_to(std::string_view name) {
@@ -26,4 +33,8 @@ void config::save_to(std::string_view name) {
 
 void config::load_from(std::string_view name) {
 	// @todo: implement
+}
+
+void config::uninitialize() {
+	get<float>(FNV_CT("visuals.world.nightmode_intensity")) = 1.f;
 }

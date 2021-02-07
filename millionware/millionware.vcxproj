@@ -172,6 +172,7 @@
     <ClInclude Include="sdk\convar.hpp" />
     <ClInclude Include="sdk\convar_system.hpp" />
     <ClInclude Include="sdk\engine_client.hpp" />
+    <ClInclude Include="sdk\engine_render_view.hpp" />
     <ClInclude Include="sdk\engine_sound.hpp" />
     <ClInclude Include="sdk\engine_trace.hpp" />
     <ClInclude Include="sdk\engine_vgui.hpp" />

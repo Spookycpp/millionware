@@ -360,4 +360,41 @@ struct vector3_t {
 		return *this;
 	}
 
+	__forceinline void init(float _x, float _y, float _z)
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+	}
+
+};
+
+class __declspec(align(16)) vector3_aligned : public vector3_t
+{
+public:
+	inline vector3_aligned() {}
+
+	inline vector3_aligned(float X, float Y, float Z)
+	{
+		init(X, Y, Z);
+	}
+public:
+	explicit vector3_aligned(const vector3_t& v)
+	{
+		init(v.x, v.y, v.z);
+	}
+
+	vector3_aligned& operator=(const vector3_t& v)
+	{
+		init(v.x, v.y, v.z);
+		return *this;
+	}
+
+	vector3_aligned& operator=(const vector3_aligned& v)
+	{
+		init(v.x, v.y, v.z);
+		return *this;
+	}
+
+	float w;
 };

@@ -91,7 +91,7 @@ namespace features::lag_compensation
 			const float correct = std::clamp(util::get_total_latency(), 0.0f, 0.2f);
 			const float delta = correct - (interfaces::global_vars->current_time - time);
 
-			if (config::get<bool>(FNV_CT("settings.misc.fake_ping.enabled"))) {
+			if (config::get<bool>(FNV_CT("misc.other.fake_ping"))) {
 				return std::abs(delta) < 0.150f;
 			}
 

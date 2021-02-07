@@ -259,43 +259,9 @@ namespace features::aimbot::triggerbot
 			return false;
 		}
 
-		if (config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_hold")) > 0 && config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_toggle")) > 0)
+		if (!input::is_hotkey_active(FNV_CT("triggerbot.hotkey")))
 		{
-			static bool toggle = false;
-
-			if (GetAsyncKeyState(config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_toggle"))) & 0x1) {
-				toggle = !toggle;
-				// Beep( toggle ? 750 : 500, 300 );
-			}
-
-			if (!input::is_key_down(config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_hold"))))
-			{
-				if (!toggle) {
-					return false;
-				}
-			}
-		}
-		else
-		{
-			if (config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_hold")) > 0)
-			{
-				if (!input::is_key_down(config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_hold")))) {
-					return false;
-				}
-			}
-			else if (config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_toggle")) > 0)
-			{
-				static bool toggle = false;
-
-				if (GetAsyncKeyState(config::get<int>(FNV_CT("legitbot.triggerbot.hotkey_toggle"))) & 0x1) {
-					toggle = !toggle;
-					// Beep( toggle ? 750 : 500, 300 );
-				}
-
-				if (!toggle) {
-					return false;
-				}
-			}
+			return false;
 		}
 
 		if (config::get<int>(FNV_CT("legitbot.triggerbot.check_flashed")))
