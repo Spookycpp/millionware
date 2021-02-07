@@ -17,7 +17,7 @@ void features::movement::pre_prediction(user_cmd_t* user_cmd) {
 
 	if (config::get<bool>(FNV_CT("misc.movement.bunny_hop")))
 	{
-		if (cheat::local_player->move_type() == MOVE_TYPE_LADDER || input::is_key_down(VK_XBUTTON2))
+		if (cheat::local_player->move_type() == MOVE_TYPE_LADDER || input::is_hotkey_active(FNV_CT("misc.movement.jump_bug.hotkey")))
 			return;
 
 		if (!(cheat::local_player->flags() & ENTITY_FLAG_ONGROUND))

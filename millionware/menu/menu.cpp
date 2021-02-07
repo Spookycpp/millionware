@@ -1,4 +1,4 @@
-#include "../core/config.hpp"
+﻿#include "../core/config.hpp"
 #include "../core/interfaces.hpp"
 #include "../gui/gui.hpp"
 #include "../utils/hash/hash.hpp"
@@ -19,9 +19,32 @@ void menu::frame() {
 					gui::end_group();
 				}
 
-				if (gui::begin_group(STR_ENC(L"Backtrack"))) {
+				if (gui::begin_group(STR_ENC(L"Prerequisites"))) {
+					gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
+					gui::slider(STR_ENC(L"Start bullets"), config::get<int>(FNV_CT("legitbot.start_bullets")), 0, 10, STR_ENC(L"{}"));
+					// dropdown for "legitbot.hitbox_method", if == 1 then use "legitbot.hitbox" and list the hitboxes, all setup just needs impl
+					// && == 2 is nearest.
 
-					if (gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("legitbot.backtrack.enabled")))) {
+					gui::end_group();
+
+				}
+
+				if (gui::begin_group(STR_ENC(L"General"))) {
+					gui::checkbox(STR_ENC(L"Enable"), config::get<bool>(FNV_CT("legitbot.enabled")));
+
+					// @Note: first option = normal then silent
+					//gui::combo(STR_ENC(L"Flickbot"), config::get<int>(FNV_CT("legitbot.flick_bot.enabled")));
+					//if (config::get<int>(FNV_CT("legitbot.flick_bot.enabled")))) {
+					//	gui::slider(STR_ENC(L"Field of view "), config::get<float>(FNV_CT("legitbot.flick_bot.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
+					//	gui::slider(STR_ENC(L"Hitchance"), config::get<int>(FNV_CT("legitbot.flick_bot.hit_chance")), 0, 100, STR_ENC(L"{}%"));
+					//}
+
+					if (gui::checkbox(STR_ENC(L"Aim assist"), config::get<bool>(FNV_CT("legitbot.assist.enabled")))) {
+						gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.assist.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
+						gui::slider(STR_ENC(L"Strength"), config::get<float>(FNV_CT("legitbot.assist.strength")), 0.f, 1.f, STR_ENC(L"{:.2f}%"));
+					}
+
+					if (gui::checkbox(STR_ENC(L"Backtracking"), config::get<bool>(FNV_CT("legitbot.backtrack.enabled")))) {
 						gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.backtrack.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
 						gui::slider(STR_ENC(L"Max time"), config::get<int>(FNV_CT("legitbot.backtrack.time")), 10, 200, STR_ENC(L"{}ms"));
 					}
@@ -29,34 +52,44 @@ void menu::frame() {
 					gui::end_group();
 				}
 
-				if (gui::begin_group(STR_ENC(L"General"))) {
-					// Hotkey here, make functionality for "on hotkey, off hotkey, toggle & always on".
-					gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("legitbot.enabled")));
-
-					if (gui::checkbox(STR_ENC(L"Aim assist"), config::get<bool>(FNV_CT("legitbot.assist.enabled")))) {
-						gui::slider(STR_ENC(L"Field of view"), config::get<float>(FNV_CT("legitbot.assist.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
-						gui::slider(STR_ENC(L"Strength"), config::get<float>(FNV_CT("legitbot.assist.strength")), 0.f, 100.f, STR_ENC(L"{:.0f}%"));
-					}
-
-					
-					if (gui::checkbox(STR_ENC(L"Flick bot"), config::get<bool>(FNV_CT("legitbot.flick_bot.enabled")))) {
-					// Since there are no dropdowns, config.cpp, 0 = disabled, 1 = flick (non silent), 2 = flick (silent)
-						gui::slider(STR_ENC(L"Field of view "), config::get<float>(FNV_CT("legitbot.flick_bot.fov")), 0.f, 180.0f, STR_ENC(L"{:.0f}°"));
-						gui::slider(STR_ENC(L"Hitchance"), config::get<int>(FNV_CT("legitbot.flick_bot.hit_chance")), 0, 100, STR_ENC(L"{}%"));
-					}
+				if (gui::begin_group(STR_ENC(L"Filter"))) {
+					gui::checkbox(STR_ENC(L"Target invisible"), config::get<bool>(FNV_CT("legitbot.check_visible")));
+					gui::checkbox(STR_ENC(L"Target teammates"), config::get<bool>(FNV_CT("legitbot.check_team")));
+					gui::checkbox(STR_ENC(L"Target smoked"), config::get<bool>(FNV_CT("legitbot.check_smoked")));
+					gui::checkbox(STR_ENC(L"Flash check"), config::get<bool>(FNV_CT("legitbot.check_flashed")));
 
 					gui::end_group();
 				}
-				
-				if (gui::begin_group(STR_ENC(L"Triggerbot"))) {
-					if (gui::checkbox(STR_ENC(L"Triggerbot"), config::get<bool>(FNV_CT("legitbot.triggerbot.enabled")))) {
-						gui::checkbox(STR_ENC(L"Friendly fire"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_team")));
-						gui::checkbox(STR_ENC(L"Smoke check"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_smoked")));
-						gui::checkbox(STR_ENC(L"Flash check"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_flashed")));
-						gui::slider(STR_ENC(L"Hit chance"), config::get<int>(FNV_CT("legitbot.triggerbot.hit_chance")), 0, 100, STR_ENC(L"{}%"));
-						gui::slider(STR_ENC(L"Delay"), config::get<int>(FNV_CT("legitbot.triggerbot.delay")), 0, 1000, STR_ENC(L"{}ms"));
 
+				if (gui::begin_group(STR_ENC(L"Aim options"))) {
+					gui::slider(STR_ENC(L"Speed"), config::get<float>(FNV_CT("legitbot.speed")), 1.f, 100.0f, STR_ENC(L"{:.0f}%"));
+					gui::slider(STR_ENC(L"Speed exponent"), config::get<float>(FNV_CT("legitbot.speed_exponent")), 0.f, 2.5f, STR_ENC(L"{:.1f}%"));
+					gui::slider(STR_ENC(L"RCS X"), config::get<float>(FNV_CT("legitbot.rcs_x")), 0.f, 100.0f, STR_ENC(L"{:.0f}%"));
+					gui::slider(STR_ENC(L"RCS Y"), config::get<float>(FNV_CT("legitbot.rcs_y")), 0.f, 100.0f, STR_ENC(L"{:.0f}%"));
+
+					if (gui::checkbox(STR_ENC(L"Adaptive"), config::get<bool>(FNV_CT("legitbot.smoothing.enabled")))) {
+						gui::slider(STR_ENC(L"Samples"), config::get<int>(FNV_CT("legitbot.smoothing.samples")), 0, 30, STR_ENC(L"{}%"));
+						gui::slider(STR_ENC(L"Factor"), config::get<float>(FNV_CT("legitbot.smoothing.factor")), 0.f, 2.0f, STR_ENC(L"{:.1f}%"));
 					}
+					gui::end_group();
+				}
+
+				if (gui::begin_group(STR_ENC(L"Standalone RCS"))) {
+					gui::checkbox(STR_ENC(L"Enable"), config::get<bool>(FNV_CT("legitbot.rcs.enabled")));
+					gui::slider(STR_ENC(L"X"), config::get<float>(FNV_CT("legitbot.rcs_x")), 0.f, 100.0f, STR_ENC(L"{:.0f}%"));
+					gui::slider(STR_ENC(L"Y"), config::get<float>(FNV_CT("legitbot.rcs_y")), 0.f, 100.0f, STR_ENC(L"{:.0f}%"));
+
+					gui::end_group();
+				}
+
+				if (gui::begin_group(STR_ENC(L"Triggerbot"))) {
+					gui::checkbox(STR_ENC(L"Enabled"), config::get<bool>(FNV_CT("legitbot.triggerbot.enabled")));
+					gui::checkbox(STR_ENC(L"Friendly fire"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_team")));
+					gui::checkbox(STR_ENC(L"Smoke check"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_smoked")));
+					gui::checkbox(STR_ENC(L"Flash check"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_flashed")));
+					gui::slider(STR_ENC(L"Hit chance"), config::get<int>(FNV_CT("legitbot.triggerbot.hit_chance")), 0, 100, STR_ENC(L"{}%"));
+					gui::slider(STR_ENC(L"Delay"), config::get<int>(FNV_CT("legitbot.triggerbot.delay")), 0, 1000, STR_ENC(L"{}ms"));
+
 					gui::end_group();
 				}
 			}
@@ -121,7 +154,8 @@ void menu::frame() {
 				}
 
 				if (gui::begin_group(STR_ENC(L"Miscellaneous"))) {
-					gui::slider(STR_ENC(L"Field of view override"), config::get<float>(FNV_CT("misc.other.override_fov")), 45.0f, 120.0f, STR_ENC(L"{:.0f}�"));
+					gui::slider(STR_ENC(L"Field of view override"), config::get<float>(FNV_CT("misc.other.override_fov")), 45.0f, 120.0f, STR_ENC(L"{:.0f}°"));
+					gui::checkbox(STR_ENC(L"Clantag"), config::get<bool>(FNV_CT("misc.other.clan_tag")));
 					gui::checkbox(STR_ENC(L"Auto accept"), config::get<bool>(FNV_CT("misc.other.auto_accept")));
 					gui::checkbox(STR_ENC(L"Extended backtrack"), config::get<bool>(FNV_CT("misc.other.fake_ping")));
 					gui::checkbox(STR_ENC(L"Auto pistol"), config::get<bool>(FNV_CT("misc.other.auto_pistol")));
@@ -136,7 +170,7 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Remove panorama blur"), config::get<bool>(FNV_CT("visuals.other.general.panorama_blur")));
 					gui::checkbox(STR_ENC(L"Force crosshair"), config::get<bool>(FNV_CT("visuals.other.general.force_crosshair")));
 					gui::slider(STR_ENC(L"Flash alpha"), config::get<float>(FNV_CT("visuals.other.general.flash_alpha")), 0.0f, 255.0f, STR_ENC(L"{:.0f}"));
-					gui::slider(STR_ENC(L"Aspect ratio"), config::get<float>(FNV_CT("visuals.other.general.aspect_ratio")), 0.f, 5.f);
+					gui::slider(STR_ENC(L"Aspect ratio"), config::get<float>(FNV_CT("visuals.other.general.aspect_ratio")), 0.f, 5.f, STR_ENC(L"{:.0f}"));
 
 					gui::end_group();
 				}

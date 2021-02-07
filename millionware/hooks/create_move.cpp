@@ -36,6 +36,7 @@ bool __fastcall hooks::create_move_hook(uintptr_t ecx, uintptr_t edx, float fram
 		}
 	}
 
+	features::miscellaneous::clan_tag();
 	features::miscellaneous::rank_reveal();
 	features::miscellaneous::auto_pistol(user_cmd);
 

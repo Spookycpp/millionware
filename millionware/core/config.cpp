@@ -25,6 +25,7 @@ void config::initialize() {
 
 	input::get_hotkey(FNV_CT("triggerbot.hotkey")).type = HOTKEY_PRESSED;
 	input::get_hotkey(FNV_CT("triggerbot.hotkey")).key = VK_XBUTTON1;
+
 }
 
 void config::save_to(std::string_view name) {

@@ -377,7 +377,7 @@ namespace features::aimbot
 				continue;
 			}
 
-			if (!config::get<bool>(FNV_CT("legitbot->check_visible"))) {
+			if (!config::get<bool>(FNV_CT("legitbot.check_visible"))) {
 				if (!ent->is_visible(cheat::local_player, cheat::local_player->get_eye_origin(), aim_pos)) {
 					continue;
 				}

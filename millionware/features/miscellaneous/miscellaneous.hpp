@@ -6,6 +6,7 @@
 #include "../../sdk/client_dll.hpp"
 
 namespace features::miscellaneous {
+	void clan_tag();
 	void auto_accept();
 	void auto_pistol(user_cmd_t* user_cmd);
 	void rank_reveal();

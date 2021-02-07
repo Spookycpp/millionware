@@ -8,6 +8,40 @@
 #include "../../utils/xorstr/xorstr.hpp"
 #include "../../utils/hash/hash.hpp"
 
+void features::miscellaneous::clan_tag() {
+
+	auto set_clantag = [&](std::string tag) {
+		static auto fn = reinterpret_cast<int(__fastcall*)(const char*, const char*)>(patterns::set_clantag);
+
+		fn(tag.c_str(), STR_ENC("millionware"));
+	};
+
+	int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+
+	static int last_time;
+	static bool clear_tag;
+
+	if (!config::get<bool>(FNV_CT("misc.other.clan_tag"))) {
+		if (clear_tag)
+			if (interfaces::global_vars->tick_count % 99 == 2) {
+				set_clantag(STR_ENC(""));
+				clear_tag = false;
+			}
+	}
+	else if (interfaces::global_vars->tick_count % 48 == 2) {
+		static std::string m_clantag = STR_ENC("millionware ");
+		std::rotate(m_clantag.begin(), m_clantag.begin() + 1, m_clantag.end());
+		std::string final_ctg = STR_ENC("$ ");
+		final_ctg.append(m_clantag);
+
+		set_clantag(final_ctg);
+	}
+
+
+	if (!config::get<bool>(FNV_CT("misc.other.clan_tag")))
+		clear_tag = true;
+}
+
 void features::miscellaneous::auto_accept() {
 	if (!config::get<bool>(FNV_CT("misc.other.auto_accept")))
 		return;
