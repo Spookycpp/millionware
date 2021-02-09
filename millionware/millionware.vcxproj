@@ -110,6 +110,7 @@
     <ClCompile Include="features\assistance\lag compensation\lag_comp.cpp" />
     <ClCompile Include="features\assistance\legitbot.cpp" />
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
+    <ClCompile Include="features\fake ping\fake_ping.cpp" />
     <ClCompile Include="features\hitchance\hitchance.cpp" />
     <ClCompile Include="features\lag compensation\lag_compensation.cpp" />
     <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
@@ -122,6 +123,7 @@
     <ClCompile Include="hooks\emit_sound.cpp" />
     <ClCompile Include="hooks\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\get_screen_aspect_ratio.cpp" />
+    <ClCompile Include="hooks\is_connected.cpp" />
     <ClCompile Include="hooks\is_playing_demo.cpp" />
     <ClCompile Include="hooks\level_init_post_entity.cpp" />
     <ClCompile Include="hooks\level_shutdown_pre_entity.cpp" />
@@ -129,6 +131,7 @@
     <ClCompile Include="hooks\override_config.cpp" />
     <ClCompile Include="hooks\override_mouse_input.cpp" />
     <ClCompile Include="hooks\override_view.cpp" />
+    <ClCompile Include="hooks\send_datagram.cpp" />
     <ClCompile Include="menu\menu.cpp" />
     <ClCompile Include="core\netvars.cpp" />
     <ClCompile Include="core\patterns.cpp" />
@@ -151,6 +154,7 @@
     <ClInclude Include="features\assistance\lag compensation\lag_comp.hpp" />
     <ClInclude Include="features\assistance\legitbot.hpp" />
     <ClInclude Include="features\assistance\triggerbot\triggerbot.hpp" />
+    <ClInclude Include="features\fake ping\fake_ping.hpp" />
     <ClInclude Include="features\hitchance\hitchance.hpp" />
     <ClInclude Include="features\lag compensation\lag_compensation.hpp" />
     <ClInclude Include="features\miscellaneous\miscellaneous.hpp" />

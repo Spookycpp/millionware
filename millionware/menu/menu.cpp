@@ -1,4 +1,4 @@
-﻿#include "../core/config.hpp"
+#include "../core/config.hpp"
 #include "../core/interfaces.hpp"
 #include "../gui/gui.hpp"
 #include "../utils/hash/hash.hpp"
@@ -160,6 +160,7 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Extended backtrack"), config::get<bool>(FNV_CT("misc.other.fake_ping")));
 					gui::checkbox(STR_ENC(L"Auto pistol"), config::get<bool>(FNV_CT("misc.other.auto_pistol")));
 					gui::checkbox(STR_ENC(L"Rank reveal"), config::get<bool>(FNV_CT("misc.other.rank_reveal")));
+					gui::checkbox(STR_ENC(L"Unlock inventory"), config::get<bool>(FNV_CT("misc.other.unlock_inventory")));
 					gui::checkbox(STR_ENC(L"Ragdoll push"), config::get<bool>(FNV_CT("misc.other.ragdoll_push")));
 					gui::checkbox(STR_ENC(L"Ragdoll float"), config::get<bool>(FNV_CT("misc.other.ragdoll_float")));
 					gui::end_group();

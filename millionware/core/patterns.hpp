@@ -19,6 +19,9 @@ namespace patterns {
 	inline uintptr_t line_goes_through_smoke = 0;
 	inline uintptr_t flashbang_time = 0;
 	inline uintptr_t clan_tag = 0;
+	inline uintptr_t send_datagram = 0;
+	inline uintptr_t client_state = 0;
+	inline uintptr_t inventory_unlocker = 0;
 
 	void initialize();
 

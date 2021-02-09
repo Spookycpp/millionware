@@ -39,6 +39,8 @@ void hooks::initialize() {
 	emit_sound = c_hook(get_vfunc_address(interfaces::engine_sound, 5), reinterpret_cast<uintptr_t>(&emit_sound_hook));
 	get_screen_aspect_ratio = c_hook(get_vfunc_address(interfaces::engine_client, 101), reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook));
 	draw_model_execute = c_hook(get_vfunc_address(interfaces::model_render, 21), reinterpret_cast<uintptr_t>(&draw_model_execute_hook));
+	send_datagram = c_hook(patterns::send_datagram, 46), reinterpret_cast<uintptr_t>(&send_datagram_hook);
+	is_connected = c_hook(get_vfunc_address(interfaces::engine_client, 27), reinterpret_cast<uintptr_t>(&is_connected_hook));
 
 	// enable hooks
 	create_move.enable();
@@ -55,6 +57,8 @@ void hooks::initialize() {
 	emit_sound.enable();
 	get_screen_aspect_ratio.enable();
 	draw_model_execute.enable();
+	send_datagram.enable();
+	is_connected.enable();
 }
 
 void hooks::shutdown() {
@@ -73,6 +77,8 @@ void hooks::shutdown() {
 	emit_sound.disable();
 	get_screen_aspect_ratio.disable();
 	draw_model_execute.disable();
+	send_datagram.disable();
+	is_connected.disable();
 
 	// revert what hooks might've possibly messed up
 	interfaces::input_system->enable_input(true);
