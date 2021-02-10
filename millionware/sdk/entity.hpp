@@ -301,6 +301,10 @@ public:
 		return *(CUtlVector<matrix3x4_t>*) ((uintptr_t)this + 0x290C + sizeof(void*));
 	}
 
+	int entity_index() {
+		return *reinterpret_cast<int*>(uintptr_t(this) + 0x64);
+	}
+
 	NETVAR_DEFINITION_OFFSET(int, move_type, 1, FNV_CT("DT_BaseEntity"), FNV_CT("m_nRenderMode"));
 
 	bool has_bomb() const;
