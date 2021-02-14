@@ -208,3 +208,28 @@ bool c_player::is_visible(c_player* local, const vector3_t& src, const vector3_t
 
 	return (tr.hit_ent == this || tr.fraction > 0.99f);
 }
+
+int c_player::sequence_activity( int seq ) {
+	const auto model = this->renderable( )->get_model( );
+	if( !model ) {
+		return -1;
+	}
+
+	const auto hdr = interfaces::model_info->get_studio_model( model );
+	if( !hdr ) {
+		return -1;
+	}
+
+	return reinterpret_cast< int( __fastcall* )( void*, studio_hdr_t*, int ) >( patterns::get_sequence_activity )( this, hdr, seq );
+}
+
+bool c_player::reloading( ) {
+	const auto& reload_layer = anim_overlay( ).Element( 1 );
+	if( reload_layer.m_owner ) {
+		const int activity = sequence_activity( reload_layer.m_sequence );
+
+		return activity == 967 && reload_layer.m_weight != 0.f;
+	}
+
+	return false;
+}

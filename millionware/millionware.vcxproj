@@ -184,6 +184,7 @@
     <ClInclude Include="sdk\entity_list.hpp" />
     <ClInclude Include="sdk\global_vars.hpp" />
     <ClInclude Include="sdk\input.hpp" />
+    <ClInclude Include="sdk\localize.hpp" />
     <ClInclude Include="sdk\macros.hpp" />
     <ClInclude Include="sdk\material.hpp" />
     <ClInclude Include="sdk\material_handle.hpp" />

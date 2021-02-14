@@ -353,5 +353,8 @@
     <ClInclude Include="features\fake ping\fake_ping.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sdk\localize.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

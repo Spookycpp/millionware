@@ -11,7 +11,7 @@ enum class e_font {
 	UI_13,
 	UI_14,
 
-	TAHOMA11,
+	VERDANA12,
 	ESP_SMALL_TEXT,
 
 	MAX,

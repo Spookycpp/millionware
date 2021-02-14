@@ -224,6 +224,24 @@ enum bone_mask_t {
 	BONE_USED_BY_BONE_MERGE = 0x00040000	// bone is available for bone merge to occur against it
 };
 
+class c_animation_layer {
+public:
+	bool m_client_blend;				
+	float m_layer_fade_time;					 
+	void* m_studio_hdr;					
+	int m_dispatch_sequence_primary;   
+	int m_dispatch_sequence_secondary; 
+	int m_order;
+	int m_sequence;     
+	float m_prev_cycle;
+	float m_weight;
+	float m_weight_delta_rate;
+	float m_playback_rate;
+	float m_cycle;          
+	void* m_owner;           
+	char m_pad[ 4 ]; 
+};
+
 class c_collideable {
 public:
 	VIRTUAL_METHOD(vector3_t&, get_mins, 1, ());
@@ -270,6 +288,7 @@ public:
 	VIRTUAL_METHOD(c_collideable*, get_collideable, 3, ());
 	VIRTUAL_METHOD(bool, is_player, 157, ());
 	VIRTUAL_METHOD(bool, is_weapon, 165, ());
+	VIRTUAL_METHOD(vector3_t&, abs_origin, 10, ());
 	class c_player* as_player();
 	class c_weapon* as_weapon();
 };
@@ -296,6 +315,7 @@ public:
 	NETVAR_DEFINITION(base_handle_t, observer_target, FNV_CT("DT_BasePlayer"), FNV_CT("m_hObserverTarget"));
 	NETVAR_DEFINITION(base_handle_t, active_weapon_handle, FNV_CT("DT_BaseCombatCharacter"), FNV_CT("m_hActiveWeapon"));
 	NETVAR_DEFINITION(int, hitbox_set, FNV_CT("DT_BaseAnimating"), FNV_CT("m_nHitboxSet"));
+	NETVAR_DEFINITION_OFFSET( CUtlVector<c_animation_layer>, anim_overlay, 0x3c, FNV_CT( "DT_BaseAnimating" ), FNV_CT( "m_hLightingOrigin" ) );
 
 	CUtlVector<matrix3x4_t>& get_cached_bone_data() {
 		return *(CUtlVector<matrix3x4_t>*) ((uintptr_t)this + 0x290C + sizeof(void*));
@@ -330,6 +350,10 @@ public:
 	vector3_t extrapolate_position(const vector3_t& pos);
 
 	bool is_visible(c_player* local, const vector3_t& src, const vector3_t& dst);
+
+	int sequence_activity( int seq );
+
+	bool reloading( );
 
 	NETVAR_DEFINITION_OFFSET(int, get_old_simulation_time, 4, FNV_CT("DT_BaseEntity"), FNV_CT("m_flSimulationTime"));
 };

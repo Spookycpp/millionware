@@ -22,6 +22,7 @@
 #include "../sdk/studiobbox.hpp"
 #include "../sdk/engine_trace.hpp"
 #include "../sdk/engine_render_view.hpp"
+#include "../sdk/localize.hpp"
 
 namespace interfaces {
 
@@ -46,6 +47,7 @@ namespace interfaces {
 	inline c_model_info* model_info			   = nullptr;
 	inline c_engine_render_view* engine_render = nullptr;
 	inline c_client_state* client_state		   = nullptr;
+	inline c_localize* localize                = nullptr;
 
 	inline uintptr_t event_manager			  = 0;
 

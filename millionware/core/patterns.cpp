@@ -38,6 +38,7 @@ __declspec(dllexport) pattern_entry_t g_patterns[] = {
 	{ "engine.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? 56 57 8B F9 89 7C 24 18" },
 	{ "engine.dll", "A1 ? ? ? ? 33 D2 6A 00 6A 00 33 C9 89 B0" },
 	{ "client.dll", "84 C0 75 04 B0 01 5F" },
+	{ "client.dll", "55 8B EC 53 8B 5D 08 56 8B F1 83" },
 };
 
 inline uintptr_t get_pattern(uint32_t module_hash, uint32_t pattern_hash) {
@@ -123,4 +124,5 @@ void patterns::initialize() {
 	send_datagram = get_pattern(FNV_CT("engine.dll"), FNV_CT("55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? 56 57 8B F9 89 7C 24 18"));
 	client_state = get_pattern(FNV_CT("engine.dll"), FNV_CT("A1 ? ? ? ? 33 D2 6A 00 6A 00 33 C9 89 B0"));
 	inventory_unlocker = get_pattern(FNV_CT("client.dll"), FNV_CT("84 C0 75 04 B0 01 5F"));
+	get_sequence_activity = get_pattern(FNV_CT("client.dll"), FNV_CT("55 8B EC 53 8B 5D 08 56 8B F1 83"));
 }

@@ -113,14 +113,14 @@ void render::refresh_fonts() {
 	get_font(e_font::UI_11) = interfaces::vgui_surface->create_font();
 	get_font(e_font::UI_13) = interfaces::vgui_surface->create_font();
 	get_font(e_font::UI_14) = interfaces::vgui_surface->create_font();
-	get_font(e_font::TAHOMA11) = interfaces::vgui_surface->create_font();
+	get_font(e_font::VERDANA12) = interfaces::vgui_surface->create_font();
 	get_font(e_font::ESP_SMALL_TEXT) = interfaces::vgui_surface->create_font();
 
 	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_11), STR_ENC("Open Sans"), 16, 400, 0, 0, FONT_FLAG_ANTIALIAS);
 	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_13), STR_ENC("Open Sans"), 18, 400, 0, 0, FONT_FLAG_ANTIALIAS);
 	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::UI_14), STR_ENC("Open Sans"), 19, 400, 0, 0, FONT_FLAG_ANTIALIAS);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::TAHOMA11), STR_ENC("Segoe UI"), 13, 700, 0, 0, FONT_FLAG_ANTIALIAS | FONT_FLAG_DROP_SHADOW);
-	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::ESP_SMALL_TEXT), STR_ENC("Verdana"), 10, 400, 0, 0, FONT_FLAG_ANTIALIAS | FONT_FLAG_DROP_SHADOW);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::VERDANA12), STR_ENC("Verdana"), 12, 500, 0, 0, FONT_FLAG_ANTIALIAS | FONT_FLAG_DROP_SHADOW);
+	interfaces::vgui_surface->set_font_glyph_set(get_font(e_font::ESP_SMALL_TEXT), STR_ENC("Small Fonts"), 9, 400, 0, 0, FONT_FLAG_OUTLINE);
 
 	interfaces::engine_client->get_screen_size(cheat::screen_size.x, cheat::screen_size.y);
 

@@ -22,6 +22,7 @@ namespace patterns {
 	inline uintptr_t send_datagram = 0;
 	inline uintptr_t client_state = 0;
 	inline uintptr_t inventory_unlocker = 0;
+	inline uintptr_t get_sequence_activity = 0;
 
 	void initialize();
 
