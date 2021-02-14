@@ -154,7 +154,7 @@ void features::visuals::draw_ammo( const box_t& box, c_player* player ) {
 		render::fill_rect( box.x - 1, box.y + box.h + m_bottom_offset.at( player->entity_index( ) ) + 1, box.w + 2, 4, color_t( 0, 0, 0, 180 ) );
 		render::fill_rect( box.x, box.y + box.h + m_bottom_offset.at( player->entity_index( ) ) + 2, box_width, 2, color_t( 0, 150, 255, 210 ) );
 
-		if( weapon->ammo1( ) > 0 && weapon->ammo1( ) < weapon_data->max_clip_ammo ) {
+		if( weapon->ammo1( ) > 0 && weapon->ammo1( ) < weapon_data->max_clip_ammo && !player->reloading( ) ) {
 			render::text( box.x + box_width - ( render::measure_text( e_font::ESP_SMALL_TEXT, fmt::format( STR_ENC( "{}" ), weapon->ammo1( ) ) ).x / 2 ),
 				( box.y + box.h + m_bottom_offset.at( player->entity_index( ) ) ) - 1, e_font::ESP_SMALL_TEXT, color_t( 255, 255, 255, 210 ),
 				fmt::format( STR_ENC( "{}" ), weapon->ammo1( ) ) );
