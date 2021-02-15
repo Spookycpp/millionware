@@ -38,6 +38,19 @@ float math::normalize_angle(const float angle)
 	return std::remainder(angle, 360.0f);
 }
 
+float math::normalized_angle(float angle)
+{
+	normalize_angle(angle);
+	return angle;
+}
+
+float math::normalize_yaw(float angle) {
+	if (!std::isfinite(angle))
+		angle = 0.f;
+
+	return std::remainderf(angle, 360.0f);
+}
+
 vector3_t math::to_angles(const vector3_t& vec)
 {
 	vector3_t angs;

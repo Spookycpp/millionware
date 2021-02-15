@@ -2,6 +2,7 @@
 
 #include "../../sdk/vector.hpp"
 #include "../../sdk/matrix.hpp"
+#include <emmintrin.h>
 
 namespace math
 {
@@ -55,6 +56,8 @@ namespace math
 	bool clamp_angles(vector3_t& angles);
 	bool normalize_angles(vector3_t& angles);
 	float normalize_angle(float angle);
+	float normalized_angle(float angle);
+	float normalize_yaw(float angle);
 	void angle_matrix(const vector3_t& angles, matrix3x4_t& matrix);
 	vector3_t to_angles(const vector3_t& vec);
 	void sin_cos(float radian, float* sin, float* cos);
