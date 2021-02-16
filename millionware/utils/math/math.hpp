@@ -56,6 +56,7 @@ namespace math
 	bool clamp_angles(vector3_t& angles);
 	bool normalize_angles(vector3_t& angles);
 	float normalize_angle(float angle);
+	float strafe_opti_normalize_angle(float angle, float max);
 	float normalized_angle(float angle);
 	float normalize_yaw(float angle);
 	void angle_matrix(const vector3_t& angles, matrix3x4_t& matrix);

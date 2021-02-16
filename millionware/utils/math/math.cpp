@@ -38,6 +38,14 @@ float math::normalize_angle(const float angle)
 	return std::remainder(angle, 360.0f);
 }
 
+float math::strafe_opti_normalize_angle(float angle, float max) {
+	while (angle > max)
+		angle -= max * 2;
+	while (angle < -max)
+		angle += max * 2;
+	return angle;
+}
+
 float math::normalized_angle(float angle)
 {
 	normalize_angle(angle);

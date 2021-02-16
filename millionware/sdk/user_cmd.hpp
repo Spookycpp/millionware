@@ -42,7 +42,9 @@ public:
 	int tick_count;
 	vector3_t view_angles;
 	vector3_t aim_direction;
-	vector3_t move_direction;
+	float forward_move;
+	float side_move;
+	float up_move;
 	int buttons;
 
 private:

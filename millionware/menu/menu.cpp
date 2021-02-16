@@ -151,6 +151,7 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Jump bug"), config::get<bool>(FNV_CT("misc.movement.jump_bug")));
 					gui::checkbox(STR_ENC(L"Edge bug"), config::get<bool>(FNV_CT("misc.movement.edge_bug")));
 					gui::checkbox(STR_ENC(L"Edge jump"), config::get<bool>(FNV_CT("misc.movement.edge_jump")));
+					gui::checkbox(STR_ENC(L"Strafe optimizer"), config::get<bool>(FNV_CT("misc.movement.strafe_optimizer")));
 					gui::end_group();
 				}
 

@@ -48,6 +48,9 @@ bool __fastcall hooks::create_move_hook(uintptr_t ecx, uintptr_t edx, float fram
 	engine_prediction::end_prediction(user_cmd);
 
 	const auto post_flags = cheat::local_player->flags();
+
+	features::movement::strafe_optimizer(user_cmd, pre_flags, post_flags);
+
 	features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
 	hooks::create_move.get_original<decltype(&create_move_hook)>()(ecx, edx, frame_time, user_cmd);
