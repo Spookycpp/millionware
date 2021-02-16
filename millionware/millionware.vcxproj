@@ -120,6 +120,7 @@
     <ClCompile Include="gui\gui.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
+    <ClCompile Include="hooks\draw_print_text.cpp" />
     <ClCompile Include="hooks\emit_sound.cpp" />
     <ClCompile Include="hooks\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\get_screen_aspect_ratio.cpp" />

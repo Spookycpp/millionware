@@ -27,6 +27,7 @@ namespace hooks {
 	inline c_hook draw_model_execute;
 	inline c_hook send_datagram;
 	inline c_hook is_connected;
+	inline c_hook draw_print_text;
 
 	extern bool __fastcall create_move_hook(uintptr_t, uintptr_t, float, user_cmd_t*);
 	extern void __fastcall override_view_hook(uintptr_t, uintptr_t, view_setup_t*);
@@ -44,6 +45,7 @@ namespace hooks {
 	extern void __fastcall draw_model_execute_hook(uintptr_t, uintptr_t, void*, void*, c_model_render_info*, matrix3x4_t*);
 	extern int __fastcall send_datagram_hook(c_net_channel*, uintptr_t*, void*);
 	extern bool __fastcall is_connected_hook(uintptr_t, uintptr_t);
+	extern bool __fastcall draw_print_text_hook(uintptr_t, uintptr_t, const wchar_t* text, int textlen, int drawtype);
 
 	void initialize();
 	void shutdown();
