@@ -127,11 +127,7 @@ void menu::frame() {
 
 			if (gui::begin_sub_tab(STR_ENC(L"World"))) {
 				if (gui::begin_group(STR_ENC(L"General"))) {
-					if (gui::checkbox(STR_ENC(L"Nightmode"), config::get<bool>(FNV_CT("visuals.world.nightmode")))) {
-						if (gui::slider(STR_ENC(L"Darkness"), config::get<float>(FNV_CT("visuals.world.nightmode_intensity")), 0.f, 1.f, STR_ENC(L"{:.2f}%"))) {
-							util::set_night_mode();
-						}
-					}
+					gui::checkbox(STR_ENC(L"Nightmode"), config::get<bool>(FNV_CT("visuals.world.nightmode")));
 					gui::end_group();
 				}
 			}

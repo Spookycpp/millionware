@@ -25,7 +25,6 @@ namespace util {
 	bool intersects_hitbox(const vector3_t eye_pos, const vector3_t end_pos, const vector3_t min, const vector3_t max, const float radius);
 
 	void set_random_seed(const int seed);
-	void set_night_mode();
 
 	std::optional< vector3_t > get_intersection(const vector3_t& start, const vector3_t& end, const vector3_t& mins, const vector3_t& maxs, float radius);
 
