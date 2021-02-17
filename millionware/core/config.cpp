@@ -21,12 +21,8 @@ void config::initialize() {
 	get<float>(FNV_CT("visuals.world.nightmode_intensity")) = 0.075f;
 
 
-	input::get_hotkey(FNV_CT("legitbot.hotkey")).type = HOTKEY_PRESSED;
-	input::get_hotkey(FNV_CT("legitbot.hotkey")).key = VK_XBUTTON2;
-
-	input::get_hotkey(FNV_CT("triggerbot.hotkey")).type = HOTKEY_PRESSED;
-	input::get_hotkey(FNV_CT("triggerbot.hotkey")).key = VK_XBUTTON1;
-
+	input::get_hotkey(FNV_CT("misc.movement.strafe_optimizer.key")).type = HOTKEY_PRESSED;
+	input::get_hotkey(FNV_CT("misc.movement.strafe_optimizer.key")).key = VK_XBUTTON2;
 }
 
 void config::save_to(std::string_view name) {

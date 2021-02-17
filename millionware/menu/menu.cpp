@@ -152,7 +152,11 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Jump bug"), config::get<bool>(FNV_CT("misc.movement.jump_bug")));
 					gui::checkbox(STR_ENC(L"Edge bug"), config::get<bool>(FNV_CT("misc.movement.edge_bug")));
 					gui::checkbox(STR_ENC(L"Edge jump"), config::get<bool>(FNV_CT("misc.movement.edge_jump")));
-					gui::checkbox(STR_ENC(L"Strafe optimizer"), config::get<bool>(FNV_CT("misc.movement.strafe_optimizer")));
+					if (gui::checkbox(STR_ENC(L"Strafe optimizer"), config::get<bool>(FNV_CT("misc.movement.strafe_optimizer")))) {
+						gui::slider(STR_ENC(L"Max gain"), config::get<float>(FNV_CT("misc.movement.strafe_optimizer.max_gain")), 0.0f, 100.f, STR_ENC(L"{:.0f}"));
+						gui::slider(STR_ENC(L"Pull amount"), config::get<float>(FNV_CT("misc.movement.strafe_optimizer.pull_amount")), 0.0f, 100.f, STR_ENC(L"{:.0f}"));
+						gui::slider(STR_ENC(L"Velocity cutoff"), config::get<int>(FNV_CT("misc.movement.strafe_optimizer.velocity_max")), 0, 1500, STR_ENC(L"{}"));
+					}
 					gui::end_group();
 				}
 

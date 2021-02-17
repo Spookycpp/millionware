@@ -54,7 +54,7 @@ void features::movement::post_prediction(user_cmd_t* user_cmd, int pre_flags, in
 void features::movement::strafe_optimizer(user_cmd_t* user_cmd, int pre_flags, int post_flags) {
 
 	// if menu element isn't enabled and the hotkey isn't being pressed, exit out.
-	if (!config::get<bool>(FNV_CT("misc.movement.strafe_optimizer")) && !input::is_hotkey_active(FNV_CT("misc.movement.strafe_optimizer.key")))
+	if (!config::get<bool>(FNV_CT("misc.movement.strafe_optimizer")) || !input::is_hotkey_active(FNV_CT("misc.movement.strafe_optimizer.key")))
 		return;
 
 	// save old yaw for next call.
@@ -85,12 +85,12 @@ void features::movement::strafe_optimizer(user_cmd_t* user_cmd, int pre_flags, i
 	// making the ideal strafe grab correct values.
 	auto ideal_strafe = std::copysignf(ideal, yaw_delta);
 
-	// only strafe in air.
+	// only strafe in air, and if speed is above 150
 	if (!(pre_flags & ENTITY_FLAG_ONGROUND) && !(post_flags & ENTITY_FLAG_ONGROUND) && fabsf(yaw_delta) > 0.f && speed > 150.f && absolute_yaw_delta > (fabsf(ideal) / 10.f)) {
 
 		// if the local players velocity breaches
 		// the set velocity limit, exit out.
-		if (speed >= config::get<float>(FNV_CT("misc.movement.strafe_optimizer.velocity_max")))
+		if (speed >= config::get<int>(FNV_CT("misc.movement.strafe_optimizer.velocity_max")))
 			return;
 
 		// cbf to comment more, rest is self explanatory.
