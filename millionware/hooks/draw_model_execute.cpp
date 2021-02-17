@@ -157,19 +157,21 @@ void __fastcall hooks::draw_model_execute_hook(uintptr_t ecx, uintptr_t edx, voi
 
 		if (entity && entity->is_enemy() && strstr(model_name, STR_ENC("models/player"))) {
 
+			auto player = (c_entity*)interfaces::entity_list->get_by_index(info->entity_index);
+
+			if (config::get<bool>(FNV_CT("visuals.enemy.chams.records"))) {
+				draw_last_backtrack_record((c_player*)player, textured, ecx, edx, ctx, state, info, matrix);
+				textured->set_color(255, 255, 255);
+				textured->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
+				//draw_all_backtrack_records((c_player*)player, textured, ecx, edx, ctx, state, info, matrix);
+			}
+
 			if (config::get<bool>(FNV_CT("visuals.enemy.chams_hidden"))) {
 				textured->set_color(hidden_color);
 				textured->set_flag(MATERIAL_FLAG_IGNORE_Z, true);
 				interfaces::model_render->force_material_override(textured);
 
 				hooks::draw_model_execute.get_original<decltype(&draw_model_execute_hook)>()(ecx, edx, ctx, state, info, matrix);
-			}
-
-			auto player = (c_entity*)interfaces::entity_list->get_by_index(info->entity_index);
-
-			if (config::get<bool>(FNV_CT("visuals.enemy.chams.records"))) {
-				draw_last_backtrack_record((c_player*)player, textured, ecx, edx, ctx, state, info, matrix);
-				draw_all_backtrack_records((c_player*)player, textured, ecx, edx, ctx, state, info, matrix);
 			}
 
 			if (config::get<bool>(FNV_CT("visuals.enemy.chams"))) {

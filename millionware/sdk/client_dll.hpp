@@ -58,23 +58,22 @@ struct view_setup_t {
 struct c_net_channel {
 	char padding0_[20];
 	bool processing_messages; //0x0014
-	bool should_delete; //0x0015
+	bool should_delete;		  //0x0015
 	char padding1_[2];
-	int out_sequence_num; //0x0018 last send outgoing sequence number
-	int in_sequence_num; //0x001C last received incoming sequnec number
-	int out_seq_ack; //0x0020 last received acknowledge outgoing sequnce number
-	int out_reliable_state; //0x0024 state of outgoing reliable data (0/1) flip flop used for loss detection
-	int in_reliable_state; //0x0028 state of incoming reliable data
-	int choked_packets; //0x002C number of choked packets
+	int out_sequence_num;	  //0x0018 last send outgoing sequence number
+	int in_sequence_num;	  //0x001C last received incoming sequnec number
+	int out_seq_ack;		  //0x0020 last received acknowledge outgoing sequnce number
+	int out_reliable_state;   //0x0024 state of outgoing reliable data (0/1) flip flop used for loss detection
+	int in_reliable_state;    //0x0028 state of incoming reliable data
+	int choked_packets;		  //0x002C number of choked packets
 	float clear_time;
 	float time_out;
 	char name[32];
 
 	char padding2_[1044];
 
-	//bool transmit(bool only_reliable) {
-	//	return util::get_method(this, 47).as< bool(__thiscall*)(decltype(this), bool) >()(this, only_reliable);
-	//}
+	VIRTUAL_METHOD(float, transmit, 47, (bool only_reliable), only_reliable);
+	
 };
 
 struct c_clock_drift_mgr {

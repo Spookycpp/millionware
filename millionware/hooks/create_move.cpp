@@ -9,6 +9,7 @@
 #include "../features/assistance/triggerbot/triggerbot.hpp"
 #include "../features/hitchance/hitchance.hpp"
 #include "../features/lag compensation/lag_compensation.hpp"
+#include "../features/fake ping/fake_ping.hpp"
 
 #include "../features/movement/movement.hpp"
 #include "../features/movement/prediction/engine_prediction.hpp"
@@ -39,6 +40,8 @@ bool __fastcall hooks::create_move_hook(uintptr_t ecx, uintptr_t edx, float fram
 	features::miscellaneous::clan_tag();
 	features::miscellaneous::rank_reveal();
 	features::miscellaneous::auto_pistol(user_cmd);
+
+	features::fake_ping::on_create_move();
 
 	features::movement::pre_prediction(user_cmd);
 

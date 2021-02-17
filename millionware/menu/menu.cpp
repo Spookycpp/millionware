@@ -89,7 +89,8 @@ void menu::frame() {
 					gui::checkbox(STR_ENC(L"Flash check"), config::get<bool>(FNV_CT("legitbot.triggerbot.check_flashed")));
 					gui::slider(STR_ENC(L"Hit chance"), config::get<int>(FNV_CT("legitbot.triggerbot.hit_chance")), 0, 100, STR_ENC(L"{}%"));
 					gui::slider(STR_ENC(L"Delay"), config::get<int>(FNV_CT("legitbot.triggerbot.delay")), 0, 1000, STR_ENC(L"{}ms"));
-
+					gui::checkbox(STR_ENC(L"Backtrack"), config::get<bool>(FNV_CT("legitbot.triggerbot.backtrack.enabled")));
+					gui::slider(STR_ENC(L"Max time"), config::get<int>(FNV_CT("legitbot.triggerbot.backtrack.time")), 10, 200, STR_ENC(L"{}ms"));
 					gui::end_group();
 				}
 			}

@@ -37,6 +37,7 @@ constexpr auto SLIDER_HANDLE_HEIGHT = 10;
 
 static bool is_open;
 static bool is_dragging;
+static bool is_resizing;
 static bool group_box_side_flip;
 
 static int current_tab;
@@ -171,6 +172,8 @@ bool gui::begin_window() {
 	const auto logo_area_hovered = blocking_hash == 0 && input::is_in_bounds(position.x, position.y, position.x + TABS_INITIAL_OFFSET, position.y + TABS_BAR_HEIGHT);
 	const auto past_tabs_area_hovered = blocking_hash == 0 && input::is_in_bounds(position.x + tabs_offset, position.y, username_position.x - CONTENT_PADDING * 2 - 32, position.y + TABS_BAR_HEIGHT);
 
+	const auto corner_hovered = blocking_hash == 0 && input::is_in_bounds(position.x + size.x - 10, position.x + size.y - 10, position.x + size.x, position.y + size.y);
+
 	if (!is_dragging && input::is_key_pressed(VK_LBUTTON) && (logo_area_hovered || past_tabs_area_hovered)) {
 		is_dragging = true;
 		interaction_window_pos = position;
@@ -184,6 +187,22 @@ bool gui::begin_window() {
 	}
 	else if (input::is_key_released(VK_LBUTTON) && is_dragging) {
 		is_dragging = false;
+		blocking_hash = 0;
+	}
+
+	if (!is_resizing && input::is_key_pressed(VK_LBUTTON) && corner_hovered) {
+		is_resizing = true;
+		interaction_window_pos = size;
+		interaction_mouse_pos = input::get_mouse_pos();
+		blocking_hash = FNV_CT("resizin' da window");
+	}
+	else if (input::is_key_down(VK_LBUTTON) && is_resizing) {
+		const auto mouse_delta = input::get_mouse_pos() - interaction_mouse_pos;
+
+		size = interaction_window_pos + mouse_delta;
+	}
+	else if (input::is_key_released(VK_LBUTTON) && is_resizing) {
+		is_resizing = false;
 		blocking_hash = 0;
 	}
 

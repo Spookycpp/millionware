@@ -35,7 +35,7 @@ unsigned long __stdcall initial_thread(LPVOID dll_instance) {
 
   hooks::shutdown();
 
-  std::this_thread::sleep_for(300ms);
+  std::this_thread::sleep_for(700ms);
 
   FreeLibraryAndExitThread(static_cast<HMODULE>(dll_instance), 0);
 #endif

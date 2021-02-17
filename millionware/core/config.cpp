@@ -11,6 +11,7 @@ void config::initialize() {
 
 	get<color_t>(FNV_CT("visuals.enemy.chams.color")) = color_t(255, 102, 0);
 	get<color_t>(FNV_CT("visuals.enemy.chams_hidden.color")) = color_t(222, 7, 208);
+	get<color_t>(FNV_CT("visuals.enemy.chams.records.color")) = color_t(46, 144, 144);
 
 	get<int>(FNV_CT("legitbot.hitbox_method")) = 0;
 	get<int>(FNV_CT("legitbot.hitbox")) = 0;

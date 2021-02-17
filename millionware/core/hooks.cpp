@@ -39,9 +39,9 @@ void hooks::initialize() {
 	emit_sound = c_hook(get_vfunc_address(interfaces::engine_sound, 5), reinterpret_cast<uintptr_t>(&emit_sound_hook));
 	get_screen_aspect_ratio = c_hook(get_vfunc_address(interfaces::engine_client, 101), reinterpret_cast<uintptr_t>(&get_screen_aspect_ratio_hook));
 	draw_model_execute = c_hook(get_vfunc_address(interfaces::model_render, 21), reinterpret_cast<uintptr_t>(&draw_model_execute_hook));
-	send_datagram = c_hook(patterns::send_datagram, 46), reinterpret_cast<uintptr_t>(&send_datagram_hook);
 	is_connected = c_hook(get_vfunc_address(interfaces::engine_client, 27), reinterpret_cast<uintptr_t>(&is_connected_hook));
 	draw_print_text = c_hook(get_vfunc_address(interfaces::vgui_surface, 28), reinterpret_cast<uintptr_t>(&draw_print_text_hook));
+	send_datagram = c_hook(patterns::send_datagram, reinterpret_cast<uintptr_t>(&send_datagram_hook));
 
 	// enable hooks
 	create_move.enable();
