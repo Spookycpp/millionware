@@ -100,8 +100,8 @@ void features::movement::strafe_optimizer(user_cmd_t* user_cmd, int pre_flags, i
 
 		yaw_delta = target_angle - old_yaw;
 
-		auto moused_x = floor(floor((yaw_delta / sensitivity->get_float()) / 0.022));
-		auto humanized_angle = moused_x * sensitivity->get_float() * 0.022;
+		auto moused_x = floor(floor((yaw_delta / sensitivity->get_float()) / 0.022f));
+		auto humanized_angle = moused_x * sensitivity->get_float() * 0.022f;
 
 		user_cmd->view_angles.y = humanized_angle + old_yaw;
 	}
