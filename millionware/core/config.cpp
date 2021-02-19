@@ -32,7 +32,3 @@ void config::save_to(std::string_view name) {
 void config::load_from(std::string_view name) {
 	// @todo: implement
 }
-
-void config::uninitialize() {
-	get<float>(FNV_CT("visuals.world.nightmode_intensity")) = 1.f;
-}

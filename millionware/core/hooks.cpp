@@ -89,5 +89,4 @@ void hooks::shutdown() {
 	interfaces::convar_system->find(STR_ENC("@panorama_disable_blur"))->set_value(false);
 	interfaces::convar_system->find(STR_ENC("mat_postprocess_enable"))->set_value(true);
 	
-	config::uninitialize();
 }
