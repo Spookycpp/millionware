@@ -1,87 +1,46 @@
-#include <chrono>
+#ifndef _DEBUG
+#error "you're in release mode dumbass"
+#endif
+
 #include <filesystem>
-#include <functional>
-#include <thread>
-#include <Windows.h>
+#include <windows.h>
 
-struct handle_wrapper {
-	HANDLE handle;
+#include "utils.h"
 
-	handle_wrapper(HANDLE handle)
-		: handle(handle) {}
+int main( )
+{
+	check_return( enable_privilege( "SeDebugPrivilege" ), "can't enable debug privilege" );
+	check_return( std::filesystem::exists( "sdk.dll" ), "can't find cheat dll" );
 
-	~handle_wrapper() {
-		CloseHandle(handle);
-	}
+	char file_path[ MAX_PATH ];
 
-	inline operator HANDLE() const {
-		return handle;
-	}
+	check_return( GetFullPathNameA( "sdk.dll", sizeof( file_path ), file_path, nullptr ), "can't get full path" );
 
-	inline bool operator ==(const HANDLE rhs) {
-		return handle == rhs;
-	}
-};
-
-template <typename T>
-inline auto wait_on_object(T function, std::chrono::steady_clock::duration poll_interval = std::chrono::milliseconds(250), std::chrono::steady_clock::duration timeout = std::chrono::minutes(2)) -> decltype(function()) {
-	const auto start_time = std::chrono::steady_clock::now();
-
-	while (std::chrono::steady_clock::now() - start_time < timeout) {
-		if (const auto result = function(); result)
-			return result;
-
-		std::this_thread::sleep_for(poll_interval);
-	}
-
-	return {};
-}
-
-inline int error_and_exit(int exit_code, std::wstring_view title, std::wstring_view message) {
-	MessageBoxW(nullptr, message.data(), title.data(), MB_OK | MB_ICONERROR);
-
-	return exit_code;
-}
-
-int main() {
-	if (!std::filesystem::exists(L"millionware.dll"))
-		return error_and_exit(1, L"millionware", L"can't find dll");
-
-	const auto process_pid = wait_on_object([]() {
+	const auto process_pid = wait_for_object( [] ( ) {
 		auto process_id = 0ul;
 
-		GetWindowThreadProcessId(FindWindowW(L"Valve001", nullptr), &process_id);
+		GetWindowThreadProcessId( FindWindowA( "Valve001", nullptr ), &process_id );
 
 		return process_id;
-		});
+	} );
 
-	if (process_pid == 0ul)
-		return error_and_exit(2, L"millionware", L"game is not running");
+	check_return( process_pid, "timed out" );
 
-	const handle_wrapper process_handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, process_pid);
+	const auto process_handle = unique_handle { OpenProcess( PROCESS_ALL_ACCESS, false, process_pid ), &CloseHandle };
 
-	if (process_handle == INVALID_HANDLE_VALUE)
-		return error_and_exit(3, L"millionware", L"can't open handle");
+	check_return( process_handle, "can't open handle" );
 
-	wchar_t file_path[MAX_PATH] = L"";
+	const auto allocated_buffer = VirtualAllocEx( process_handle.get( ), nullptr, strlen( file_path ) + 1, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE );
 
-	GetFullPathNameW(L"millionware.dll", MAX_PATH, file_path, nullptr);
+	check_return( allocated_buffer, "can't allocate buffer" );
+	check_return( WriteProcessMemory( process_handle.get( ), allocated_buffer, file_path, strlen( file_path ) + 1, nullptr ), "can't copy buffer" );
 
-	const auto allocated_buffer = reinterpret_cast<char*>(VirtualAllocEx(process_handle, nullptr, _countof(file_path) * 2, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
+	const auto thread_handle = unique_handle { CreateRemoteThread( process_handle.get( ), nullptr, 0, ( LPTHREAD_START_ROUTINE ) LoadLibraryA, allocated_buffer, 0, nullptr ), &CloseHandle };
 
-	if (allocated_buffer == nullptr)
-		return error_and_exit(4, L"millionware", L"can't allocate buffer");
+	check_return( thread_handle, "can't start thread" );
 
-	if (WriteProcessMemory(process_handle, allocated_buffer, file_path, _countof(file_path) * 2, nullptr) == 0)
-		return error_and_exit(5, L"millionware", L"can't copy buffer");
+	WaitForSingleObject( thread_handle.get( ), INFINITE );
+	VirtualFreeEx( process_handle.get( ), allocated_buffer, 0, MEM_RELEASE );
 
-	const handle_wrapper thread_handle = CreateRemoteThread(process_handle, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(LoadLibraryW), allocated_buffer, 0, nullptr);
-
-	if (thread_handle == INVALID_HANDLE_VALUE)
-		return error_and_exit(6, L"millionware", L"can't start thread");
-
-	WaitForSingleObject(thread_handle, INFINITE);
-	VirtualFreeEx(process_handle, allocated_buffer, 0, MEM_RELEASE);
-
-	return 0;
+	return EXIT_SUCCESS;
 }
