@@ -1,4 +1,4 @@
-#include "../../engine/render/render.h"
+#include "../../../engine/render/render.h"
 #include "text_input.h"
 
 struct stb_textedit_string_wrapper
@@ -79,7 +79,7 @@ static bool STB_TEXTEDIT_INSERTCHARS(STB_TEXTEDIT_STRING *obj, int pos, const ch
 #include <imgui.h>
 #include <stb_textedit.h>
 
-#include "../../engine/input/input.h"
+#include "../../../engine/input/input.h"
 #include "../gui.h"
 #include "text_input.h"
 

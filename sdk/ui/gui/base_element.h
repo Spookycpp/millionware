@@ -36,19 +36,6 @@ inline float handle_animation(float value, float target, float rate = 0.065f, fl
 	return std::clamp(value + delta * interval, 0.0f, 1.0f);
 }
 
-template <typename T>
-inline void visualize_items(const T &item)
-{
-	const auto [item_pos, item_size] = rect_to_xywh(item.get_rect());
-
-	render::draw_rect(item_pos, item_size, { 255, 255, 255 }, 2.0f);
-
-	for (auto child = item.begin(); child.is_valid(); child = child.next())
-	{
-		visualize_items(child);
-	}
-}
-
 class c_color_picker;
 class c_key_bind;
 

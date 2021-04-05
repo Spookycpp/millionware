@@ -1,9 +1,11 @@
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 
 #include <imgui.h>
 
-#include "../../engine/input/input.h"
-#include "../../engine/render/render.h"
+#include "../../../engine/input/input.h"
+#include "../../../engine/render/render.h"
 #include "../gui.h"
 #include "key_bind.h"
 

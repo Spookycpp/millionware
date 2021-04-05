@@ -5,6 +5,34 @@
 #include "../../source engine/color.h"
 #include "../../source engine/vector.h"
 
+enum e_font
+{
+	FONT_VERDANA_12,
+	FONT_CEREBRI_SANS_BOLD_13,
+	FONT_CEREBRI_SANS_MEDIUM_14,
+	FONT_CEREBRI_SANS_MEDIUM_18,
+	FONT_CEREBRI_SANS_BOLD_32,
+	FONT_WEAPONS_16,
+	FONT_WEAPONS_32,
+	FONT_FA_BRANDS_32,
+	FONT_FA_REGULAR_32,
+	FONT_FA_SOLID_32,
+
+	// marks the last font available and is to tell how many fonts there are
+	// if you add any new fonts please put it BEFORE this one or else u might cause heap corruption
+	FONT_MAX,
+};
+
+enum e_texture
+{
+	TEXTURE_MW_LOGO_BASE,
+	TEXTURE_MW_LOGO_DOLLAR,
+	TEXTURE_TRANSPARENCY,
+
+	// same here as with fonts
+	TEXTURE_MAX,
+};
+
 enum e_corner
 {
 	CORNER_NONE = 0,
@@ -30,6 +58,7 @@ namespace render
 
 	void begin();
 	void finish();
+	void set_layer(int index);
 
 	void push_clip(const point_t &position, const point_t &size, bool intersect = true);
 	void reset_clip();

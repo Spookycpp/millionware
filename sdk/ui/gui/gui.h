@@ -18,5 +18,7 @@ namespace gui
 	void set_blocking(std::shared_ptr<c_element> blocking);
 
 	void init();
-	void frame(bool visualize_layout = false);
+	void frame();
+
+	bool is_active();
 }

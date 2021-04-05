@@ -1,6 +1,8 @@
+#ifndef NOMINMAX
 #define NOMINMAX
-#include "../core/interfaces/interfaces.h"
+#endif
 
+#include "../core/interfaces/interfaces.h"
 #include "../engine/math/math.h"
 
 #include "entity.h"

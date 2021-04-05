@@ -1,5 +1,5 @@
-#include "../../engine/input/input.h"
-#include "../../engine/render/render.h"
+#include "../../../engine/input/input.h"
+#include "../../../engine/render/render.h"
 #include "../gui.h"
 #include "window.h"
 
@@ -26,7 +26,7 @@ std::shared_ptr<c_category> c_window::new_category(std::string_view name)
 	return category;
 }
 
-void c_window::render(bool visualize_layout)
+void c_window::render()
 {
 	// draw everything
 	if (!first_run_)
@@ -113,8 +113,8 @@ void c_window::render(bool visualize_layout)
 
 	logo_item_ = sidebar_
 		.new_item(LAY_HCENTER)
-		.size(196.0f, 88.0f)
-		.margins(0.0f, 12.0f, 0.0f, 12.0f);
+		.size(113.0f, 48.0f)
+		.margins(0.0f, 32.0f, 0.0f, 12.0f);
 
 	auto sidebar_inner = sidebar_
 		.new_item(LAY_HFILL, LAY_COLUMN | LAY_START)
@@ -129,29 +129,24 @@ void c_window::render(bool visualize_layout)
 	overlay_layout_.run();
 
 	// draw everything
-	if (visualize_layout)
+	const auto [root_pos, root_size] = rect_to_xywh(root_.get_rect());
+	const auto [sidebar_pos, sidebar_size] = rect_to_xywh(sidebar_.get_rect());
+	const auto [logo_pos, logo_size] = rect_to_xywh(logo_item_.get_rect());
+
+	render::fill_rect(root_pos, root_size, { 40, 40, 40 }, 4.0f);
+	render::fill_rect(sidebar_pos, sidebar_size, { 19, 19, 19 }, 4.0f, CORNER_LEFT);
+
+	render::draw_image(logo_pos, logo_size, { 255, 255, 255 }, TEXTURE_MW_LOGO_BASE);
+	render::draw_image(logo_pos, logo_size, gui::get_accent_color(), TEXTURE_MW_LOGO_DOLLAR);
+
+	render::push_clip(root_pos, root_size);
+
+	for (auto i = 0u; i < categories_.size(); i++)
 	{
-		visualize_items(root_);
+		categories_[i]->render(i < categories_.size() - 1);
 	}
-	else
-	{
-		const auto [root_pos, root_size] = rect_to_xywh(root_.get_rect());
-		const auto [sidebar_pos, sidebar_size] = rect_to_xywh(sidebar_.get_rect());
-		const auto [logo_pos, logo_size] = rect_to_xywh(logo_item_.get_rect());
 
-		render::fill_rect(root_pos, root_size, { 40, 40, 40 }, 4.0f);
-		render::fill_rect(sidebar_pos, sidebar_size, { 19, 19, 19 }, 4.0f, CORNER_LEFT);
-		render::fill_rect(logo_pos, logo_size, { 255, 255, 255 }, 4.0f);
+	render::pop_clip();
 
-		render::push_clip(root_pos, root_size);
-
-		for (auto i = 0u; i < categories_.size(); i++)
-		{
-			categories_[i]->render(i < categories_.size() - 1);
-		}
-
-		render::pop_clip();
-
-		render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 4.0f);
-	}
+	render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 4.0f);
 }

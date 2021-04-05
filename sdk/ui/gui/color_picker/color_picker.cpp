@@ -1,9 +1,11 @@
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 
 #include <imgui.h>
 
-#include "../../engine/input/input.h"
-#include "../../engine/render/render.h"
+#include "../../../engine/input/input.h"
+#include "../../../engine/render/render.h"
 #include "../gui.h"
 #include "color_picker.h"
 
@@ -49,14 +51,14 @@ void c_color_picker::layout(layout_item &overlay, layout_item &parent)
 
 		overlay_hue_bar_ = overlay_picker_row_
 			.new_item(LAY_VFILL)
-			.size(20.0f, 0.0f);
+			.size(16.0f, 0.0f);
 
 		if (show_alpha_bar_)
 		{
 			overlay_alpha_bar_ = overlay_container_
 				.new_item(LAY_HFILL)
 				.margins(6.0f, 0.0f, 6.0f, 6.0f)
-				.size(0.0f, 20.0f);
+				.size(0.0f, 16.0f);
 		}
 	}
 	else
@@ -197,8 +199,22 @@ void c_color_picker::render()
 		}
 	}
 
+
+	if (value_.get().a < 255)
+	{
+		render::push_clip(root_pos, root_size);
+
+		render::draw_image(root_pos, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
+		render::draw_image({ root_pos.x + 18.0f, root_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
+
+		render::pop_clip();
+	}
+
 	render::fill_rect(root_pos, root_size, value_.get(), 4.0f);
+
+	render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 3.0f);
 	render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 4.0f);
+	render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 5.0f);
 
 	if (!has_been_closed && overlay_container_.is_valid())
 	{
@@ -267,11 +283,25 @@ void c_color_picker::render()
 		{
 			const auto [alpha_bar_pos, alpha_bar_size] = rect_to_xywh(overlay_alpha_bar_.get_rect());
 
-			render::fill_rect(alpha_bar_pos, alpha_bar_size, { 255, 255, 255 }, 4.0f);
+			render::push_clip(alpha_bar_pos, alpha_bar_size);
+
+			for (auto i = 0;; i++)
+			{
+				const auto offset = i * 18.0f;
+
+				render::draw_image({ alpha_bar_pos.x + offset, alpha_bar_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY);
+
+				if (offset > alpha_bar_size.x)
+					break;
+			}
+
+			render::pop_clip();
+
 			render::gradient_h(alpha_bar_pos, alpha_bar_size, { 0, 0, 0, 0 }, value_.get().adjust_alpha(255));
 
-			render::draw_rect(alpha_bar_pos - 1.0f, alpha_bar_size + 2.0f, { 19, 19, 19 }, 2.0f);
+			render::draw_rect(alpha_bar_pos - 1.0f, alpha_bar_size + 2.0f, { 51, 51, 51 }, 3.0f);
 			render::draw_rect(alpha_bar_pos - 1.0f, alpha_bar_size + 2.0f, { 51, 51, 51 }, 4.0f);
+			render::draw_rect(alpha_bar_pos - 1.0f, alpha_bar_size + 2.0f, { 51, 51, 51 }, 5.0f);
 
 			const auto alpha_indicator_offset = (alpha_bar_size.x - 4.0f) * std::clamp(value_.get().a / 255.0f, 0.0f, 1.0f);
 			const auto alpha_indicator_pos = point_t(alpha_bar_pos.x + alpha_indicator_offset, alpha_bar_pos.y + 1.0f);

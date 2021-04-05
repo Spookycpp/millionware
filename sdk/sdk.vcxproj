@@ -267,6 +267,7 @@
     <ClInclude Include="resources\fa_solid_900_ttf.h" />
     <ClInclude Include="resources\font_awesome.h" />
     <ClInclude Include="resources\mw_logo_png.h" />
+    <ClInclude Include="resources\transparency_checkerboard_png.h" />
     <ClInclude Include="resources\trollface_png.h" />
     <ClInclude Include="source engine\client_class.h" />
     <ClInclude Include="source engine\client_dll.h" />

@@ -11,14 +11,13 @@ extern long ImGui_ImplWin32_WndProcHandler(HWND, unsigned, unsigned, long);
 static bool initialized = false;
 static long original_window_proc_callback;
 static HWND target_window_handle;
-static ImGuiIO *imgui_io;
 
 static long __stdcall window_proc_callback(HWND window_handle, unsigned message, unsigned wparam, long lparam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(window_handle, message, wparam, lparam))
 		return 1;
 
-	if (ui::is_active())
+	if (gui::is_active())
 	{
 		const auto should_discard = message == WM_MOUSEWHEEL || message == WM_MOUSEMOVE
 			|| message == WM_LBUTTONDOWN || message == WM_LBUTTONUP || message == WM_LBUTTONDBLCLK
@@ -41,7 +40,6 @@ void input::init(HWND window_handle)
 	initialized = true;
 	original_window_proc_callback = SetWindowLongA(window_handle, GWL_WNDPROC, (LONG) &window_proc_callback);
 	target_window_handle = window_handle;
-	imgui_io = &ImGui::GetIO();
 }
 
 void input::undo()
@@ -75,22 +73,28 @@ void input::set_can_change_cursor(bool state)
 
 float input::get_mouse_wheel()
 {
-	return imgui_io->MouseWheel;
+	return ImGui::GetIO().MouseWheel;
 }
 
 point_t input::get_mouse_pos()
 {
-	return { imgui_io->MousePos.x, imgui_io->MousePos.y };
+	const auto &io = ImGui::GetIO();
+
+	return { io.MousePos.x, io.MousePos.y };
 }
 
 point_t input::get_mouse_delta()
 {
-	return { imgui_io->MouseDelta.x, imgui_io->MouseDelta.y };
+	const auto &io = ImGui::GetIO();
+
+	return { io.MouseDelta.x, io.MouseDelta.y };
 }
 
 bool input::is_in_bounds(const point_t &min, const point_t &max)
 {
-	return imgui_io->MousePos.x >= min.x && imgui_io->MousePos.y >= min.y && imgui_io->MousePos.x <= max.x && imgui_io->MousePos.y <= max.y;
+	const auto &io = ImGui::GetIO();
+
+	return io.MousePos.x >= min.x && io.MousePos.y >= min.y && io.MousePos.x <= max.x && io.MousePos.y <= max.y;
 }
 
 bool input::is_mouse_clicked(int key, bool repeat)

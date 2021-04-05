@@ -1,5 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 
+#include <array>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui_impl_dx9.h>
@@ -18,13 +19,13 @@
 #include "../../resources/fa_solid_900_ttf.h"
 #include "../../resources/font_awesome.h"
 #include "../../resources/mw_logo_png.h"
-#include "../../resources/trollface_png.h"
+#include "../../resources/transparency_checkerboard_png.h"
 #include "../hash/hash.h"
 #include "../security/xorstr.h"
 #include "render.h"
 
-static std::unordered_map<uint32_t, ImFont *> fonts;
-static std::unordered_map<uint32_t, IDirect3DTexture9 *> textures;
+static std::array<ImFont *, FONT_MAX> fonts;
+static std::array<IDirect3DTexture9 *, TEXTURE_MAX> textures;
 
 static bool initialized = false;
 static HWND target_window_handle;
@@ -165,18 +166,20 @@ void render::init(HWND window, IDirect3DDevice9 *device)
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
 
-	fonts.insert({ CRC_CT("Verdana 12"), create_from_system(io, XORSTR("Verdana"), 13.0f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting) });
-	// fonts.insert( { CRC_CT( "CerebriSansMedium 18" ), create_from_ttf( io, cerebri_sans_medium_ttf, sizeof( cerebri_sans_medium_ttf ), 18.0f ) } );
-	// fonts.insert( { CRC_CT( "CerebriSansMedium 32" ), create_from_ttf( io, cerebri_sans_medium_ttf, sizeof( cerebri_sans_medium_ttf ), 32.0f ) } );
-	// fonts.insert( { CRC_CT( "Weapons 16" ), create_from_ttf( io,csgo_icons_ttf, sizeof( csgo_icons_ttf ), 16.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON } ) } );
-	// fonts.insert( { CRC_CT( "Weapons 32" ), create_from_ttf( io,csgo_icons_ttf, sizeof( csgo_icons_ttf ), 32.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON } ) } );
-	// fonts.insert( { CRC_CT( "FaRegular 32" ), create_from_ttf( io, fa_regular_400_ttf, sizeof( fa_regular_400_ttf ), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA } ) } );
-	// fonts.insert( { CRC_CT( "FaSolid 32" ), create_from_ttf( io, fa_solid_900_ttf, sizeof( fa_solid_900_ttf ), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA } ) } );
-	// fonts.insert( { CRC_CT( "FaBrands 32" ), create_from_ttf( io, fa_brands_400_ttf, sizeof( fa_brands_400_ttf ), 32.0f, 0, { ICON_MIN_FAB, ICON_MAX_FAB } ) } );
+	fonts[FONT_VERDANA_12] = create_from_system(io, XORSTR("Verdana"), 13.0f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+	fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
+	fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
+	fonts[FONT_CEREBRI_SANS_MEDIUM_18] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 18.0f);
+	fonts[FONT_CEREBRI_SANS_BOLD_32] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 32.0f, ImGuiFreeTypeBuilderFlags_Bold);
+	fonts[FONT_WEAPONS_16] = create_from_ttf(io,csgo_icons_ttf, sizeof(csgo_icons_ttf), 16.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON });
+	fonts[FONT_WEAPONS_32] = create_from_ttf(io,csgo_icons_ttf, sizeof(csgo_icons_ttf), 32.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON });
+	fonts[FONT_FA_BRANDS_32] = create_from_ttf(io, fa_brands_400_ttf, sizeof(fa_brands_400_ttf), 32.0f, 0, { ICON_MIN_FAB, ICON_MAX_FAB });
+	fonts[FONT_FA_REGULAR_32] = create_from_ttf(io, fa_regular_400_ttf, sizeof(fa_regular_400_ttf), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA });
+	fonts[FONT_FA_SOLID_32] = create_from_ttf(io, fa_solid_900_ttf, sizeof(fa_solid_900_ttf), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA });
 
-	textures.insert({ CRC_CT("LogoBase"), create_from_png(mw_logo_base_png, sizeof(mw_logo_base_png)) });
-	textures.insert({ CRC_CT("LogoDollar"), create_from_png(mw_logo_dollar_png, sizeof(mw_logo_dollar_png)) });
-	// textures.insert( { CRC_CT( "TrollFace" ), create_from_png( trollface_png, sizeof( trollface_png ) ) } );
+	textures[TEXTURE_MW_LOGO_BASE] = create_from_png(mw_logo_base_png, sizeof(mw_logo_base_png));
+	textures[TEXTURE_MW_LOGO_DOLLAR] = create_from_png(mw_logo_dollar_png, sizeof(mw_logo_dollar_png));
+	textures[TEXTURE_TRANSPARENCY] = create_from_png(transparency_checkerboard_png, sizeof(transparency_checkerboard_png));
 
 	ImGuiFreeType::BuildFontAtlas(io.Fonts);
 
@@ -233,17 +236,27 @@ void render::begin()
 
 	ImGui::NewFrame();
 
+	ImGui::GetOverlayDrawList()->ChannelsSplit(8);
+	ImGui::GetOverlayDrawList()->ChannelsSetCurrent(0);
+
 	draw_list = ImGui::GetOverlayDrawList();
 }
 
 void render::finish()
 {
+	ImGui::GetOverlayDrawList()->ChannelsMerge();
+
 	ImGui::EndFrame();
 	ImGui::Render();
 
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
 	state_block->Apply();
+}
+
+void render::set_layer(int index)
+{
+	ImGui::GetOverlayDrawList()->ChannelsSetCurrent(index);
 }
 
 void render::push_clip(const point_t &position, const point_t &size, bool intersect)
@@ -278,14 +291,14 @@ void render::fill_rect(const point_t &position, const point_t &size, const color
 
 void render::gradient_h(const point_t &position, const point_t &size, const color_t &color_start, const color_t &color_end)
 {
-	draw_list->AddRectFilledMultiColor({ position.x, position.y }, { position.x + size.x, position.y + size.y },
+	ImGui::GetOverlayDrawList()->AddRectFilledMultiColor({ position.x, position.y }, { position.x + size.x, position.y + size.y },
 		IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a),
-		IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a));
+		IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a), IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a));
 }
 
 void render::gradient_v(const point_t &position, const point_t &size, const color_t &color_start, const color_t &color_end)
 {
-	draw_list->AddRectFilledMultiColor({ position.x, position.y }, { position.x + size.x, position.y + size.y },
+	ImGui::GetOverlayDrawList()->AddRectFilledMultiColor({ position.x, position.y }, { position.x + size.x, position.y + size.y },
 		IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a), IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
 		IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a));
 }

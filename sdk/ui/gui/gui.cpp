@@ -1,12 +1,10 @@
-﻿#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
-
-#include <codecvt>
-
-#include "../../resources/csgo_icons.h"
+﻿#include "../../resources/csgo_icons.h"
 #include "../../resources/font_awesome.h"
+#include "../../engine/input/input.h"
 #include "../../engine/render/render.h"
 #include "gui.h"
 
+static bool is_menu_active = true;
 static bool new_blocking = false;
 
 static std::shared_ptr<c_window> main_window;
@@ -44,37 +42,17 @@ void gui::set_blocking(std::shared_ptr<c_element> blocking)
 	next_blocking_ptr = blocking;
 }
 
-template <typename T>
-std::string convert_to_utf8(const std::basic_string<T, std::char_traits<T>, std::allocator<T>> &source)
-{
-	std::wstring_convert<std::codecvt_utf8_utf16<T>, T> converter;
-
-	return converter.to_bytes(source);
-}
-
 static bool checkbox_value1 = true;
 static bool checkbox_value2 = false;
-
 static int select_value1 = 0;
-static int select_value2 = 0;
-
 static int multi_select_value1 = 0;
-static int multi_select_value2 = 0;
-
-static int slider_int_value1 = 4;
-static int slider_int_value2 = 25;
-
+static int slider_int_value1 = 25;
 static float slider_float_value1 = 25.0f;
-static float slider_float_value2 = 75.0f;
-
 static color_t color_picker_value1 = { 180, 30, 30 };
 static color_t color_picker_value2 = { 30, 180, 30 };
-
 static int key_bind_value1 = 0x2E;
 static int key_bind_value2 = 0x2D;
-
 static std::string text_input_value1;
-static std::string text_input_value2;
 
 void gui::init()
 {
@@ -82,7 +60,7 @@ void gui::init()
 
 	const auto prepare_tab = [] (const auto &tab)
 	{
-		for (auto i = 0; i < 16; i++)
+		for (auto i = 0; i < 2; i++)
 		{
 			const auto group = tab->new_group("Group");
 
@@ -92,51 +70,30 @@ void gui::init()
 
 			group->new_checkbox("Example checkbox", checkbox_value2)
 				->add_color_picker(color_picker_value1)
-				->add_color_picker(color_picker_value2, false)
 				->add_key_bind(key_bind_value2);
 
-			group->new_select("Example select", select_value1, { "Test oasfddddption 1", "Test option 2", "Test option 3", "Test option 4", "Testdfhgdfhgethdfgedrthedhwserfhwsertfyhwesryhwserherwsdf option 5" })
-				->add_key_bind(key_bind_value2)
-				->add_key_bind(key_bind_value2);
-
-			group->new_select("Example select", select_value2, { "Test option 1", "Test option 2", "Test option 3", "Test option 4", "Test option 5" })
+			group->new_select("Example select", select_value1, { "Test option 1", "Test option 2", "Test option 3", "Test option 4", "Test option 5" })
 				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
+				->add_key_bind(key_bind_value1);
 
 			group->new_select("Example multi select", multi_select_value1, { "Test oasfddddption 1", "Test option 2", "Test option 3", "Test option 4", "Testdfhgderherwsdf option 5" }, true)
 				->add_color_picker(color_picker_value1)
 				->add_key_bind(key_bind_value2);
 
-			group->new_select("Example multi select", multi_select_value2, { "Test option 1", "Test option 2", "Test option 3", "Test option 4", "Test option 5" }, true)
-				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
-
-			group->new_slider("Example int slider", slider_int_value1, 0, 16, "{}")
-				->add_key_bind(key_bind_value2)
-				->add_key_bind(key_bind_value2);
-
-			group->new_slider("Example int slider", slider_int_value2, 0, 50, "{}")
-				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
-
 			group->new_slider("Example float slider", slider_float_value1, -50.0f, 50.0f, "{:.1f}")
 				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
+				->add_key_bind(key_bind_value1);
 
-			group->new_slider("Example float slider", slider_float_value2, 0.0f, 100.0f, "{:.1f}")
+			group->new_slider("Example int slider", slider_int_value1, 0, 50, "{}")
+				->add_key_bind(key_bind_value2)
 				->add_key_bind(key_bind_value2);
 
 			group->new_button("Example button", [] () { printf("Nigger 1 \n"); });
 			group->new_button("Example button", [] () { printf("Nigger 2 \n"); }, ICON_FA_TAG, FONT_FA_SOLID_32)
-				->add_key_bind(key_bind_value2);
+				->add_key_bind(key_bind_value1);
 
 			group->new_text_input("Example text input", text_input_value1)
 				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
-
-			group->new_text_input("Example text input", text_input_value2, true)
-				->add_color_picker(color_picker_value1)
-				->add_color_picker(color_picker_value2)
 				->add_key_bind(key_bind_value2);
 		}
 	};
@@ -181,17 +138,23 @@ void gui::init()
 	}
 }
 
-void gui::frame(bool visualize_layout)
+void gui::frame()
 {
-	main_window->render(visualize_layout);
+	if (input::is_key_pressed(VK_INSERT))
+	{
+		is_menu_active ^= true;
+
+		new_blocking = false;
+		next_blocking_ptr = blocking_ptr = nullptr;
+	}
+
+	if (!is_menu_active)
+		return;
+
+	main_window->render();
 
 	if (blocking_ptr != nullptr)
-	{
-		if (visualize_layout)
-			visualize_items(blocking_ptr->get_item());
-		else
-			blocking_ptr->render();
-	}
+		blocking_ptr->render();
 
 	if (next_active_tab_ptr != nullptr)
 	{
@@ -204,4 +167,9 @@ void gui::frame(bool visualize_layout)
 		new_blocking = false;
 		blocking_ptr = next_blocking_ptr;
 	}
+}
+
+bool gui::is_active()
+{
+	return is_menu_active;
 }

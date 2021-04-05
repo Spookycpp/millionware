@@ -1,9 +1,11 @@
 // worst piece of code in this project!
 
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 
-#include "../../engine/input/input.h"
-#include "../../engine/render/render.h"
+#include "../../../engine/input/input.h"
+#include "../../../engine/render/render.h"
 #include "../gui.h"
 #include "category.h"
 

@@ -37,5 +37,5 @@ public:
 
 	std::shared_ptr<c_category> new_category(std::string_view name);
 
-	void render(bool visualize_layout = false);
+	void render();
 };

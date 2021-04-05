@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../source engine/entity.h"
-#include "../../source engine/input.h"
-#include "../../source engine/vector.h"
+#include "../../../source engine/entity.h"
+#include "../../../source engine/input.h"
+#include "../../../source engine/vector.h"
 
 namespace features::legitbot::triggerbot {
 	void on_create_move(c_user_cmd* cmd, c_weapon* wpn);
