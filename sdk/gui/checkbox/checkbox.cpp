@@ -1,7 +1,7 @@
-#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../../../resources/font_awesome.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../resources/font_awesome.h"
+#include "../../ui/ui.h"
 #include "checkbox.h"
 
 c_checkbox::c_checkbox(std::string_view title, bool &value) : value_(value)
@@ -45,8 +45,8 @@ void c_checkbox::render()
 	const auto [check_pos, _] = rect_to_xywh(check_item_.get_rect());
 
 	const auto shared_this = shared_from_this();
-	const auto active = gui::get_blocking() == shared_this;
-	const auto hovered = (gui::get_blocking() == nullptr || gui::get_blocking() == shared_this) &&
+	const auto active = ui::get_blocking() == shared_this;
+	const auto hovered = (ui::get_blocking() == nullptr || ui::get_blocking() == shared_this) &&
 		(input::is_in_bounds(box_pos, box_pos + box_size) || input::is_in_bounds(title_pos, title_pos + title_size));
 
 	hover_animation_ = handle_animation(hover_animation_, active || hovered ? 1.0f : 0.0f);
@@ -60,23 +60,23 @@ void c_checkbox::render()
 	if (active || hovered)
 		input::set_cursor(CURSOR_HAND);
 
-	if (gui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
+	if (ui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
 	{
-		gui::set_blocking(shared_this);
+		ui::set_blocking(shared_this);
 	}
 	else if (active && input::is_mouse_released(MOUSE_LEFT))
 	{
 		if (hovered)
 			value_.get() = !value_;
 
-		gui::set_blocking(nullptr);
+		ui::set_blocking(nullptr);
 	}
 
 	render::fill_rect(box_pos, box_size, color, 4.0f);
-	render::fill_rect(box_pos, box_size, gui::get_accent_color().adjust_alpha((int) (toggle_animation_ * 255.0f)), 4.0f);
+	render::fill_rect(box_pos, box_size, ui::get_accent_color().adjust_alpha((int) (toggle_animation_ * 255.0f)), 4.0f);
 	render::draw_rect(box_pos - 1.0f, box_size + 2.0f, { 51, 51, 51 }, 4.0f);
 
-	checkmark_animation_ = handle_animation(checkmark_animation_, gui::get_accent_color().luminance() >= 0.5f ? 0.0f : 1.0f);
+	checkmark_animation_ = handle_animation(checkmark_animation_, ui::get_accent_color().luminance() >= 0.5f ? 0.0f : 1.0f);
 
 	const auto checkmark_color = color_t((int) (checkmark_animation_ * 255.0f), (int) (toggle_animation_ * 255.0f));
 

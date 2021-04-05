@@ -5,9 +5,9 @@
 #include <optional>
 #include <utility>
 
-#include "../../source engine/vector.h"
-#include "../thirdparty/layout.h"
 #include "../../engine/render/render.h"
+#include "../../source engine/vector.h"
+#include "../layout.h"
 
 inline std::pair<point_t, point_t> rect_to_xywh(const lay_vec4 &rect)
 {

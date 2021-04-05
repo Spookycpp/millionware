@@ -1,6 +1,6 @@
-#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../ui/ui.h"
 #include "window.h"
 
 c_window::c_window(const point_t &pos, const point_t &size)
@@ -36,8 +36,8 @@ void c_window::render()
 		const auto [content_pos, content_size] = rect_to_xywh(content_.get_rect());
 		const auto [logo_pos, logo_size] = rect_to_xywh(logo_item_.get_rect());
 
-		const auto logo_hovered = gui::get_blocking() == nullptr && input::is_in_bounds(logo_pos, logo_pos + logo_size);
-		const auto resize_hovered = gui::get_blocking() == nullptr && input::is_in_bounds(root_pos + root_size - 6.0f, root_pos + root_size + 6.0f);
+		const auto logo_hovered = ui::get_blocking() == nullptr && input::is_in_bounds(logo_pos, logo_pos + logo_size);
+		const auto resize_hovered = ui::get_blocking() == nullptr && input::is_in_bounds(root_pos + root_size - 6.0f, root_pos + root_size + 6.0f);
 
 		if (!dragging_ && logo_hovered && input::is_mouse_clicked(MOUSE_LEFT))
 		{
@@ -137,7 +137,7 @@ void c_window::render()
 	render::fill_rect(sidebar_pos, sidebar_size, { 19, 19, 19 }, 4.0f, CORNER_LEFT);
 
 	render::draw_image(logo_pos, logo_size, { 255, 255, 255 }, TEXTURE_MW_LOGO_BASE);
-	render::draw_image(logo_pos, logo_size, gui::get_accent_color(), TEXTURE_MW_LOGO_DOLLAR);
+	render::draw_image(logo_pos, logo_size, ui::get_accent_color(), TEXTURE_MW_LOGO_DOLLAR);
 
 	render::push_clip(root_pos, root_size);
 

@@ -1,4 +1,4 @@
-#include "../../../engine/render/render.h"
+#include "../../engine/render/render.h"
 #include "text_input.h"
 
 struct stb_textedit_string_wrapper
@@ -79,8 +79,8 @@ static bool STB_TEXTEDIT_INSERTCHARS(STB_TEXTEDIT_STRING *obj, int pos, const ch
 #include <imgui.h>
 #include <stb_textedit.h>
 
-#include "../../../engine/input/input.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../ui/ui.h"
 #include "text_input.h"
 
 c_text_input::c_text_input(std::string_view title, std::string &value, bool password) : value_(value)
@@ -140,8 +140,8 @@ void c_text_input::render()
 	const auto [value_pos, value_size] = rect_to_xywh(value_item_.get_rect());
 
 	const auto shared_this = shared_from_this();
-	const auto active = gui::get_blocking() == shared_this;
-	const auto hovered = (gui::get_blocking() == nullptr || gui::get_blocking() == shared_this) && input::is_in_bounds(box_pos, box_pos + box_size);
+	const auto active = ui::get_blocking() == shared_this;
+	const auto hovered = (ui::get_blocking() == nullptr || ui::get_blocking() == shared_this) && input::is_in_bounds(box_pos, box_pos + box_size);
 
 	hover_animation_ = handle_animation(hover_animation_, active || hovered ? 1.0f : 0.0f);
 
@@ -153,9 +153,9 @@ void c_text_input::render()
 	if (hovered)
 		input::set_cursor(CURSOR_TEXT_INPUT);
 
-	if (gui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
+	if (ui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
 	{
-		gui::set_blocking(shared_this);
+		ui::set_blocking(shared_this);
 
 		memset(&text_edit_state_, 0, sizeof(STB_TexteditState));
 
@@ -180,7 +180,7 @@ void c_text_input::render()
 			}
 			else
 			{
-				gui::set_blocking(nullptr);
+				ui::set_blocking(nullptr);
 			}
 		}
 

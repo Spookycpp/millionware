@@ -1,13 +1,12 @@
 #pragma once
 
-#include "category/category.h"
-#include "tab/tab.h"
-#include "window/window.h"
-#include "base_element.h"
+#include "../gui/category/category.h"
+#include "../gui/tab/tab.h"
+#include "../gui/window/window.h"
+#include "../gui/base_element.h"
+#include "../source engine/color.h"
 
-#include "../../source engine/color.h"
-
-namespace gui
+namespace ui
 {
 	color_t &get_accent_color();
 

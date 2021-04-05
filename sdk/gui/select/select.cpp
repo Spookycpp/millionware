@@ -1,7 +1,7 @@
-﻿#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../../../resources/font_awesome.h"
-#include "../gui.h"
+﻿#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../resources/font_awesome.h"
+#include "../../ui/ui.h"
 #include "select.h"
 
 c_select::c_select(std::string_view title, int &value, const std::initializer_list<std::string> &options, bool is_multi_select) : value_(value)
@@ -107,7 +107,7 @@ void c_select::layout(layout_item &overlay, layout_item &parent)
 		.margins(8.0f, 0.0f, 8.0f, 0.0f)
 		.size(arrow_size.x, arrow_size.y);
 
-	if (gui::get_blocking() == shared_from_this())
+	if (ui::get_blocking() == shared_from_this())
 	{
 		overlay_container_ = overlay.new_item(LAY_HFILL, LAY_COLUMN | LAY_START);
 
@@ -155,9 +155,9 @@ void c_select::render()
 	const auto [arrow_pos, arrow_size] = rect_to_xywh(arrow_item_.get_rect());
 
 	const auto shared_this = shared_from_this();
-	const auto active = gui::get_blocking() == shared_this;
+	const auto active = ui::get_blocking() == shared_this;
 
-	auto hovered = (gui::get_blocking() == nullptr || gui::get_blocking() == shared_this) && input::is_in_bounds(box_pos, box_pos + box_size);
+	auto hovered = (ui::get_blocking() == nullptr || ui::get_blocking() == shared_this) && input::is_in_bounds(box_pos, box_pos + box_size);
 
 	if (is_multi_select_)
 	{
@@ -166,7 +166,7 @@ void c_select::render()
 			const auto &item = option_items_[i];
 
 			const auto [item_box_pos, item_box_size] = rect_to_xywh(item.box.get_rect());
-			const auto item_hovered = gui::get_blocking() == nullptr && input::is_in_bounds(item_box_pos, item_box_pos + item_box_size);
+			const auto item_hovered = ui::get_blocking() == nullptr && input::is_in_bounds(item_box_pos, item_box_pos + item_box_size);
 
 			if (item_hovered)
 			{
@@ -190,9 +190,9 @@ void c_select::render()
 	auto has_been_closed = false;
 	auto new_value = value_.get();
 
-	if (gui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
+	if (ui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
 	{
-		gui::set_blocking(shared_this);
+		ui::set_blocking(shared_this);
 	}
 	else if (active)
 	{
@@ -227,7 +227,7 @@ void c_select::render()
 						new_value = i;
 						has_been_closed = true;
 
-						gui::set_blocking(nullptr);
+						ui::set_blocking(nullptr);
 					}
 
 					input_handled = true;
@@ -239,7 +239,7 @@ void c_select::render()
 
 		if (input::is_mouse_clicked(MOUSE_LEFT) && !input_handled)
 		{
-			gui::set_blocking(nullptr);
+			ui::set_blocking(nullptr);
 
 			has_been_closed = true;
 		}
@@ -271,7 +271,7 @@ void c_select::render()
 			const auto [item_text_pos, _1] = rect_to_xywh(item.title.get_rect());
 			const auto [item_remove_pos, _2] = rect_to_xywh(item.remove.get_rect());
 
-			const auto hovered = gui::get_blocking() == nullptr && input::is_in_bounds(item_box_pos, item_box_pos + item_box_size);
+			const auto hovered = ui::get_blocking() == nullptr && input::is_in_bounds(item_box_pos, item_box_pos + item_box_size);
 
 			if (hovered)
 			{
@@ -290,7 +290,7 @@ void c_select::render()
 				std::clamp((int) (118.0f + (82.0f * option_item_animation_[i])), 0, 255));
 
 			render::fill_rect(item_box_pos, item_box_size, { 40, 40, 40 }, 3.0f);
-			render::draw_rect(item_box_pos - 1.0f, item_box_size + 2.0f, gui::get_accent_color().adjust_alpha(outline_alpha), 3.0f);
+			render::draw_rect(item_box_pos - 1.0f, item_box_size + 2.0f, ui::get_accent_color().adjust_alpha(outline_alpha), 3.0f);
 
 			render::draw_text(item_text_pos, { 255, 255, 255 }, item.name.data(), FONT_CEREBRI_SANS_MEDIUM_14);
 			render::draw_text(item_remove_pos, remove_color, ICON_FA_TIMES, FONT_FA_SOLID_32, 0.0f, 7.0f);
@@ -337,7 +337,7 @@ void c_select::render()
 					std::clamp((int) (230.0f + (25.0f * option_hover_animation_[i])), 0, 255),
 					std::clamp((int) (230.0f + (25.0f * option_hover_animation_[i])), 0, 255));
 
-				const auto option_color = is_multi_select_ || value_.get() != i ? hover_color : gui::get_accent_color();
+				const auto option_color = is_multi_select_ || value_.get() != i ? hover_color : ui::get_accent_color();
 
 				render::draw_text(option_text_pos, option_color, options_[i].data(), FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
 

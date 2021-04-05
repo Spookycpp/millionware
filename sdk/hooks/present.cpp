@@ -3,7 +3,7 @@
 #include "../engine/render/render.h"
 #include "../engine/security/xorstr.h"
 #include "../features/visuals/esp.h"
-#include "../ui/gui/gui.h"
+#include "../ui/ui.h"
 
 static int active_tab = 0;
 
@@ -13,7 +13,7 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 
 	features::visuals::esp::frame();
 
-	gui::frame();
+	ui::frame();
 
 	render::finish();
 

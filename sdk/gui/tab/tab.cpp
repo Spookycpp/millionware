@@ -1,6 +1,6 @@
-#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../ui/ui.h"
 #include "tab.h"
 
 c_tab::c_tab(int icon_font, std::string_view icon, std::string_view name)
@@ -46,7 +46,7 @@ void c_tab::layout(int index, layout_item &overlay, layout_item &sidebar, layout
 		.size(name_size.x, name_size.y)
 		.margins(8.0f, 0.0f, 0.0f, 0.0f);
 
-	if (gui::get_active_tab() == shared_from_this())
+	if (ui::get_active_tab() == shared_from_this())
 	{
 		auto flip = false;
 
@@ -72,13 +72,13 @@ void c_tab::render()
 	const auto [inner_pos, inner_size] = rect_to_xywh(tab_inner_item_.get_rect());
 
 	const auto shared_this = shared_from_this();
-	const auto hovered = gui::get_blocking() == nullptr && input::is_in_bounds({ tab_pos.x - 16.0f, tab_pos.y }, { tab_pos.x + tab_size.x + 16.0f, tab_pos.y + tab_size.y });
-	const auto active = gui::get_active_tab() == shared_this;
+	const auto hovered = ui::get_blocking() == nullptr && input::is_in_bounds({ tab_pos.x - 16.0f, tab_pos.y }, { tab_pos.x + tab_size.x + 16.0f, tab_pos.y + tab_size.y });
+	const auto active = ui::get_active_tab() == shared_this;
 
-	text_animation_ = handle_animation(text_animation_, gui::get_blocking() == nullptr && (active || hovered) ? 1.0f : 0.0f);
+	text_animation_ = handle_animation(text_animation_, ui::get_blocking() == nullptr && (active || hovered) ? 1.0f : 0.0f);
 	stripe_animation_ = handle_animation(stripe_animation_, active ? 1.0f : 0.0f);
 
-	render::fill_rect({ inner_pos.x - 16.0f, inner_pos.y - 3.0f }, { 2.0f, inner_size.y + 6.0f }, gui::get_accent_color().adjust_alpha((int) (stripe_animation_ * 255.0f)));
+	render::fill_rect({ inner_pos.x - 16.0f, inner_pos.y - 3.0f }, { 2.0f, inner_size.y + 6.0f }, ui::get_accent_color().adjust_alpha((int) (stripe_animation_ * 255.0f)));
 
 	if (active)
 	{
@@ -104,6 +104,6 @@ void c_tab::render()
 		input::set_cursor(CURSOR_HAND);
 
 		if (input::is_mouse_clicked(MOUSE_LEFT))
-			gui::set_active_tab(shared_this);
+			ui::set_active_tab(shared_this);
 	}
 }

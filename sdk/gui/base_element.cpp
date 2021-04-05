@@ -1,8 +1,8 @@
-#include "../../engine/render/render.h"
+#include "../engine/render/render.h"
+#include "../ui/ui.h"
 #include "color_picker/color_picker.h"
 #include "key_bind/key_bind.h"
 #include "base_element.h"
-#include "gui.h"
 
 void c_element::layout(layout_item &overlay, layout_item &parent)
 {
@@ -15,7 +15,7 @@ void c_element::render()
 {
 	for (const auto child : inline_children_)
 	{
-		if (gui::get_blocking() != nullptr && gui::get_blocking() == child)
+		if (ui::get_blocking() != nullptr && ui::get_blocking() == child)
 			continue;
 
 		child->render();

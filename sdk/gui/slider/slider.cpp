@@ -1,9 +1,9 @@
 #include <fmt/format.h>
 
-#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../../../resources/font_awesome.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../resources/font_awesome.h"
+#include "../../ui/ui.h"
 #include "slider.h"
 
 constexpr static auto var_track_bar_height = 8.0f;
@@ -77,8 +77,8 @@ template <typename T> void c_slider<T>::render()
 	const auto [value_pos, _2] = rect_to_xywh(value_item_.get_rect());
 
 	const auto shared_this = shared_from_this();
-	const auto active = gui::get_blocking() == shared_this;
-	const auto hovered = (gui::get_blocking() == nullptr || gui::get_blocking() == shared_this) &&
+	const auto active = ui::get_blocking() == shared_this;
+	const auto hovered = (ui::get_blocking() == nullptr || ui::get_blocking() == shared_this) &&
 		(input::is_in_bounds(track_bar_pos, track_bar_pos + track_bar_size) || input::is_in_bounds(track_head_pos, track_head_pos + track_head_size));
 
 	hover_animation_ = handle_animation(hover_animation_, active || hovered ? 1.0f : 0.0f);
@@ -86,9 +86,9 @@ template <typename T> void c_slider<T>::render()
 	if (active || hovered)
 		input::set_cursor(CURSOR_HAND);
 
-	if (gui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
+	if (ui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
 	{
-		gui::set_blocking(shared_this);
+		ui::set_blocking(shared_this);
 	}
 	else if (active)
 	{
@@ -100,7 +100,7 @@ template <typename T> void c_slider<T>::render()
 		}
 		else if (input::is_mouse_released(MOUSE_LEFT))
 		{
-			gui::set_blocking(nullptr);
+			ui::set_blocking(nullptr);
 		}
 	}
 
@@ -117,13 +117,13 @@ template <typename T> void c_slider<T>::render()
 		const auto track_head_middle_x = track_head_pos.x + var_track_head_size * 0.5f;
 
 		if (value_.get() >= 0)
-			render::fill_rect({ middle_pos, track_bar_pos.y }, { track_head_middle_x - middle_pos, track_bar_size.y }, gui::get_accent_color());
+			render::fill_rect({ middle_pos, track_bar_pos.y }, { track_head_middle_x - middle_pos, track_bar_size.y }, ui::get_accent_color());
 		else
-			render::fill_rect({ track_head_middle_x, track_bar_pos.y }, { middle_pos - track_head_middle_x, track_bar_size.y }, gui::get_accent_color());
+			render::fill_rect({ track_head_middle_x, track_bar_pos.y }, { middle_pos - track_head_middle_x, track_bar_size.y }, ui::get_accent_color());
 	}
 	else if ((value_min_ < 0 && value_max_ <= 0) || (value_min_ >= 0 && value_max_ > 0))
 	{
-		render::fill_rect(track_bar_pos, { track_head_pos.x - track_bar_pos.x + var_track_head_size * 0.5f, track_bar_size.y }, gui::get_accent_color(), 4.0f, CORNER_LEFT);
+		render::fill_rect(track_bar_pos, { track_head_pos.x - track_bar_pos.x + var_track_head_size * 0.5f, track_bar_size.y }, ui::get_accent_color(), 4.0f, CORNER_LEFT);
 	}
 
 	render::draw_rect(track_bar_pos - 1.0f, track_bar_size + 2.0f, { 51, 51, 51 }, 4.0f);

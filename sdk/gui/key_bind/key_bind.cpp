@@ -4,9 +4,9 @@
 
 #include <imgui.h>
 
-#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../ui/ui.h"
 #include "key_bind.h"
 
 static std::string get_key_display_name(int key)
@@ -93,8 +93,8 @@ void c_key_bind::render()
 	const auto [value_pos, _] = rect_to_xywh(value_item_.get_rect());
 
 	const auto shared_this = shared_from_this();
-	const auto active = gui::get_blocking() == shared_this;
-	const auto hovered = (gui::get_blocking() == nullptr || gui::get_blocking() == shared_this) && input::is_in_bounds(root_pos, root_pos + root_size);
+	const auto active = ui::get_blocking() == shared_this;
+	const auto hovered = (ui::get_blocking() == nullptr || ui::get_blocking() == shared_this) && input::is_in_bounds(root_pos, root_pos + root_size);
 	const auto key_name = get_key_display_name(value_.get());
 
 	hover_animation_ = handle_animation(hover_animation_, active || hovered ? 1.0f : 0.0f);
@@ -108,9 +108,9 @@ void c_key_bind::render()
 	if (hovered)
 		input::set_cursor(CURSOR_HAND);
 
-	if (gui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
+	if (ui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
 	{
-		gui::set_blocking(shared_this);
+		ui::set_blocking(shared_this);
 	}
 	else if (active)
 	{
@@ -118,12 +118,12 @@ void c_key_bind::render()
 		{
 			value_.get() = new_value;
 
-			gui::set_blocking(nullptr);
+			ui::set_blocking(nullptr);
 		};
 
 		if (input::is_key_pressed(VK_ESCAPE) || (input::is_in_bounds(root_pos, root_pos + root_size) && input::is_mouse_clicked(MOUSE_LEFT)))
 		{
-			gui::set_blocking(nullptr);
+			ui::set_blocking(nullptr);
 		}
 		else
 		{
@@ -157,7 +157,7 @@ void c_key_bind::render()
 	render::fill_rect(root_pos, root_size, color, 4.0f);
 	render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 4.0f);
 
-	const auto value_color = blend_color({ 255, 255, 255 }, gui::get_accent_color(), active_animation_);
+	const auto value_color = blend_color({ 255, 255, 255 }, ui::get_accent_color(), active_animation_);
 
 	render::draw_text(value_pos, value_color, key_name.data(), FONT_CEREBRI_SANS_MEDIUM_14);
 

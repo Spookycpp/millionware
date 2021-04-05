@@ -4,9 +4,9 @@
 
 #include <imgui.h>
 
-#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../ui/ui.h"
 #include "color_picker.h"
 
 static color_t hues_colors[7] =
@@ -36,7 +36,7 @@ void c_color_picker::layout(layout_item &overlay, layout_item &parent)
 		.margins(4.0f, 0.0f, 0.0f, 0.0f)
 		.size(26.0f, 18.0f);
 
-	if (gui::get_blocking() == shared_from_this())
+	if (ui::get_blocking() == shared_from_this())
 	{
 		overlay_container_ = overlay.new_item(LAY_HFILL, LAY_COLUMN | LAY_START);
 
@@ -74,17 +74,17 @@ void c_color_picker::render()
 	const auto [root_pos, root_size] = rect_to_xywh(root_.get_rect());
 
 	const auto shared_this = shared_from_this();
-	const auto active = gui::get_blocking() == shared_this;
-	const auto hovered = (gui::get_blocking() == nullptr || gui::get_blocking() == shared_this) && input::is_in_bounds(root_pos, root_pos + root_size);
+	const auto active = ui::get_blocking() == shared_this;
+	const auto hovered = (ui::get_blocking() == nullptr || ui::get_blocking() == shared_this) && input::is_in_bounds(root_pos, root_pos + root_size);
 
 	if (hovered)
 		input::set_cursor(CURSOR_HAND);
 
 	auto has_been_closed = false;
 
-	if (gui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
+	if (ui::get_blocking() == nullptr && input::is_mouse_clicked(MOUSE_LEFT) && hovered)
 	{
-		gui::set_blocking(shared_this);
+		ui::set_blocking(shared_this);
 	}
 	else if (active)
 	{
@@ -193,7 +193,7 @@ void c_color_picker::render()
 
 		if (input::is_mouse_clicked(MOUSE_LEFT) && !overlay_hovered)
 		{
-			gui::set_blocking(nullptr);
+			ui::set_blocking(nullptr);
 
 			has_been_closed = true;
 		}

@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "../layout/layout.h"
-#include "../../source engine/color.h"
-#include "../../engine/render/render.h"
+#include "../engine/render/render.h"
+#include "../source engine/color.h"
+#include "../thirdparty/layout/layout.h"
 
 template <typename T>
 inline T scale_value(T value, T in_min, T in_max, T out_min, T out_max)

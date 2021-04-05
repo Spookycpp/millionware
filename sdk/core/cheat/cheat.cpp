@@ -4,7 +4,7 @@
 #include "../../engine/logging/logging.h"
 #include "../../engine/render/render.h"
 #include "../../engine/security/xorstr.h"
-#include "../../ui/gui/gui.h"
+#include "../../ui/ui.h"
 #include "../hooks/hooks.h"
 #include "../interfaces/interfaces.h"
 #include "../netvars/netvars.h"
@@ -32,7 +32,7 @@ bool cheat::init()
 
 	input::init(creation_params.hFocusWindow);
 
-	gui::init();
+	ui::init();
 
 	if (!hooks::init())
 		return false;

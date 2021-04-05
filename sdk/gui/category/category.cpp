@@ -4,9 +4,9 @@
 #define NOMINMAX
 #endif
 
-#include "../../../engine/input/input.h"
-#include "../../../engine/render/render.h"
-#include "../gui.h"
+#include "../../engine/input/input.h"
+#include "../../engine/render/render.h"
+#include "../../ui/ui.h"
 #include "category.h"
 
 c_category::c_category(std::string_view title)
@@ -53,9 +53,9 @@ void c_category::layout(const layout_item &root, layout_item &overlay, layout_it
 
 	for (auto i = 0u; i < tabs_.size(); i++)
 	{
-		if (gui::get_active_tab() == tabs_[i])
+		if (ui::get_active_tab() == tabs_[i])
 		{
-			if (gui::get_blocking() == nullptr && std::fabs(input::get_mouse_wheel()) > 0.0f)
+			if (ui::get_blocking() == nullptr && std::fabs(input::get_mouse_wheel()) > 0.0f)
 				scroll_offsets_[i] += input::get_mouse_wheel() * 60.0f;
 
 			content_.set_margins(16.0f, 16.0f + (scroll_offsets_[i] = std::clamp(scroll_offsets_[i], -max_scroll_offsets_[i], 0.0f)), 16.0f, 16.0f);
@@ -63,7 +63,7 @@ void c_category::layout(const layout_item &root, layout_item &overlay, layout_it
 
 		tabs_[i]->layout(i, overlay, sidebar, content);
 
-		if (!has_scroll_bar_ && gui::get_active_tab() == tabs_[i] && max_scroll_offsets_[i] > 0.0f)
+		if (!has_scroll_bar_ && ui::get_active_tab() == tabs_[i] && max_scroll_offsets_[i] > 0.0f)
 		{
 			const auto root_height = root_.get_size()[1] - 32.0f;
 			const auto scroll_progress = std::fabs(std::clamp(scroll_offsets_[i] / max_scroll_offsets_[i], -1.0f, 0.0f));
@@ -112,20 +112,20 @@ void c_category::render(bool show_divider)
 
 		tabs_[i]->render();
 
-		if (gui::get_active_tab() == tabs_[i] && has_scroll_bar_)
+		if (ui::get_active_tab() == tabs_[i] && has_scroll_bar_)
 		{
 			const auto [scroll_root_pos, scroll_root_size] = rect_to_xywh(scroll_root_.get_rect());
 			const auto [scroll_bar_pos, scroll_bar_size] = rect_to_xywh(scroll_bar_.get_rect());
 
 			render::fill_rect(scroll_root_pos, scroll_root_size, { 19, 19, 19 }, 4.0f);
-			render::fill_rect(scroll_bar_pos, scroll_bar_size, gui::get_accent_color(), 4.0f);
+			render::fill_rect(scroll_bar_pos, scroll_bar_size, ui::get_accent_color(), 4.0f);
 
 			const auto scroll_progress = std::fabs(std::clamp(scroll_offsets_[i] / max_scroll_offsets_[i], -1.0f, 0.0f));
 			const auto click_pos_norm = (input::get_mouse_pos().y - scroll_root_pos.y) / scroll_root_size.y;
 			const auto grab_pos_norm = scroll_progress * (scroll_root_size.y - scroll_bar_size.y) / scroll_root_size.y;
 			const auto grab_height_norm = scroll_bar_size.y / scroll_root_size.y;
 
-			if (!dragging_ && gui::get_blocking() == nullptr && input::is_in_bounds(scroll_bar_pos, scroll_bar_pos + scroll_bar_size))
+			if (!dragging_ && ui::get_blocking() == nullptr && input::is_in_bounds(scroll_bar_pos, scroll_bar_pos + scroll_bar_size))
 			{
 				input::set_cursor(CURSOR_HAND);
 
@@ -135,7 +135,7 @@ void c_category::render(bool show_divider)
 					drag_scroll_delta_ = click_pos_norm - grab_pos_norm - grab_height_norm * 0.5f;
 				}
 			}
-			else if (!dragging_ && gui::get_blocking() == nullptr && input::is_in_bounds(scroll_root_pos, scroll_root_pos + scroll_root_size))
+			else if (!dragging_ && ui::get_blocking() == nullptr && input::is_in_bounds(scroll_root_pos, scroll_root_pos + scroll_root_size))
 			{
 				input::set_cursor(CURSOR_HAND);
 

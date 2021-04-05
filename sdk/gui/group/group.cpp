@@ -1,5 +1,5 @@
-#include "../../../engine/render/render.h"
-#include "../gui.h"
+#include "../../engine/render/render.h"
+#include "../../ui/ui.h"
 #include "group.h"
 
 c_group::c_group(std::string_view title)
@@ -109,7 +109,7 @@ void c_group::render()
 	const auto [title_pos, _] = rect_to_xywh(title_item_.get_rect());
 
 	render::draw_rect(header_pos - 1.0f, { header_size.x + 2.0f, header_size.y + content_size.y + 2.0f }, { 51, 51, 51 }, 4.0f);
-	render::draw_rect({ header_pos.x + 2.0f, header_pos.y - 1 }, { header_size.x - 4.0f, 2.0f }, gui::get_accent_color().adjust_alpha(200));
+	render::draw_rect({ header_pos.x + 2.0f, header_pos.y - 1 }, { header_size.x - 4.0f, 2.0f }, ui::get_accent_color().adjust_alpha(200));
 
 	render::fill_rect(header_pos, header_size, { 19, 19, 19 }, 4.0f, CORNER_TOP);
 	render::fill_rect(content_pos, content_size, { 25, 25, 25 }, 4.0f, CORNER_BOTTOM);
@@ -121,7 +121,7 @@ void c_group::render()
 
 	for (const auto child : children_)
 	{
-		if (gui::get_blocking() != nullptr && gui::get_blocking() == child)
+		if (ui::get_blocking() != nullptr && ui::get_blocking() == child)
 			continue;
 
 		child->render();

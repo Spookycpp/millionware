@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include <windows.h>
 
-#include "../../ui/gui/gui.h"
+#include "../../ui/ui.h"
 #include "../render/render.h"
 #include "input.h"
 
@@ -17,7 +17,7 @@ static long __stdcall window_proc_callback(HWND window_handle, unsigned message,
 	if (ImGui_ImplWin32_WndProcHandler(window_handle, message, wparam, lparam))
 		return 1;
 
-	if (gui::is_active())
+	if (ui::is_active())
 	{
 		const auto should_discard = message == WM_MOUSEWHEEL || message == WM_MOUSEMOVE
 			|| message == WM_LBUTTONDOWN || message == WM_LBUTTONUP || message == WM_LBUTTONDBLCLK

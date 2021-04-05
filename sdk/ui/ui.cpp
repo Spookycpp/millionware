@@ -1,8 +1,8 @@
-﻿#include "../../resources/csgo_icons.h"
-#include "../../resources/font_awesome.h"
-#include "../../engine/input/input.h"
-#include "../../engine/render/render.h"
-#include "gui.h"
+﻿#include "../resources/csgo_icons.h"
+#include "../resources/font_awesome.h"
+#include "../engine/input/input.h"
+#include "../engine/render/render.h"
+#include "ui.h"
 
 static bool is_menu_active = true;
 static bool new_blocking = false;
@@ -16,27 +16,27 @@ static std::shared_ptr<c_element> next_blocking_ptr;
 
 static color_t accent_color = { 222, 102, 122 };
 
-color_t &gui::get_accent_color()
+color_t &ui::get_accent_color()
 {
 	return accent_color;
 }
 
-std::shared_ptr<c_tab> gui::get_active_tab()
+std::shared_ptr<c_tab> ui::get_active_tab()
 {
 	return active_tab_ptr;
 }
 
-std::shared_ptr<c_element> gui::get_blocking()
+std::shared_ptr<c_element> ui::get_blocking()
 {
 	return blocking_ptr;
 }
 
-void gui::set_active_tab(std::shared_ptr<c_tab> active_tab)
+void ui::set_active_tab(std::shared_ptr<c_tab> active_tab)
 {
 	next_active_tab_ptr = active_tab;
 }
 
-void gui::set_blocking(std::shared_ptr<c_element> blocking)
+void ui::set_blocking(std::shared_ptr<c_element> blocking)
 {
 	new_blocking = true;
 	next_blocking_ptr = blocking;
@@ -54,7 +54,7 @@ static int key_bind_value1 = 0x2E;
 static int key_bind_value2 = 0x2D;
 static std::string text_input_value1;
 
-void gui::init()
+void ui::init()
 {
 	main_window = std::make_shared<c_window>(point_t(64.0f, 64.0f), point_t(1000.0f, 704.0f));
 
@@ -65,7 +65,7 @@ void gui::init()
 			const auto group = tab->new_group("Group");
 
 			group->new_checkbox("Example checkbox", checkbox_value1)
-				->add_color_picker(gui::get_accent_color(), false)
+				->add_color_picker(ui::get_accent_color(), false)
 				->add_key_bind(key_bind_value1);
 
 			group->new_checkbox("Example checkbox", checkbox_value2)
@@ -138,7 +138,7 @@ void gui::init()
 	}
 }
 
-void gui::frame()
+void ui::frame()
 {
 	if (input::is_key_pressed(VK_INSERT))
 	{
@@ -147,6 +147,8 @@ void gui::frame()
 		new_blocking = false;
 		next_blocking_ptr = blocking_ptr = nullptr;
 	}
+
+	input::set_can_change_cursor(is_menu_active);
 
 	if (!is_menu_active)
 		return;
@@ -169,7 +171,7 @@ void gui::frame()
 	}
 }
 
-bool gui::is_active()
+bool ui::is_active()
 {
 	return is_menu_active;
 }
