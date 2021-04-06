@@ -305,7 +305,6 @@ public:
 	DECLARE_NETVAR(int, reserve_ammo_count, "DT_BaseCombatWeapon", "m_iPrimaryReserveAmmoCount");
 	DECLARE_NETVAR(int, burst_shots_remaining, "DT_WeaponCSBaseGun", "m_iBurstShotsRemaining");
 
-
 	DECLARE_VFUNC(452, get_spread(), float(__thiscall *)(void *))();
 	DECLARE_VFUNC(482, get_inaccuracy(), float(__thiscall *)(void *))();
 
@@ -388,23 +387,18 @@ public:
 			|| weapon_index == WEAPON_SSG08;
 	}
 
-	bool is_pistol() { return this->get_weapon_type() == WEAPON_TYPE_PISTOL; }
-
-	bool is_taser() { return this->get_weapon_type() == WEAPON_TYPE_TASER; }
-
-	bool is_shotgun() { return this->get_weapon_type() == WEAPON_TYPE_SHOTGUN; }
-
-	bool is_smg() { return this->get_weapon_type() == WEAPON_TYPE_SMG; }
-
-	bool is_rifle() { return this->get_weapon_type() == WEAPON_TYPE_RIFLE; }
-
-	bool is_mg() { return this->get_weapon_type() == WEAPON_TYPE_MG; }
-
-	bool is_sniper() { return this->get_weapon_type() == WEAPON_TYPE_SNIPER; }
-
-	bool is_grenade() { return this->get_weapon_type() == WEAPON_TYPE_GRENADE; }
-
-	bool is_knife() { return this->get_weapon_type() == WEAPON_TYPE_KNIFE; }
+	inline bool is_pistol() { return get_weapon_type() == WEAPON_TYPE_PISTOL; }
+	inline bool is_heavy_pistol() { return get_item_definition_index() == WEAPON_DEAGLE || get_item_definition_index() == WEAPON_REVOLVER; }
+	inline bool is_awp() { return get_item_definition_index() == WEAPON_AWP; }
+	inline bool is_scout() { return get_weapon_type() == WEAPON_SSG08; }
+	inline bool is_auto() { return get_item_definition_index() == WEAPON_SCAR20 || get_item_definition_index() == WEAPON_G3SG1; }
+	inline bool is_taser() { return this->get_weapon_type() == WEAPON_TYPE_TASER; }
+	inline bool is_shotgun() { return this->get_weapon_type() == WEAPON_TYPE_SHOTGUN; }
+	inline bool is_smg() { return this->get_weapon_type() == WEAPON_TYPE_SMG; }
+	inline bool is_rifle() { return this->get_weapon_type() == WEAPON_TYPE_RIFLE; }
+	inline bool is_mg() { return this->get_weapon_type() == WEAPON_TYPE_MG; }
+	inline bool is_grenade() { return this->get_weapon_type() == WEAPON_TYPE_GRENADE; }
+	inline bool is_knife() { return this->get_weapon_type() == WEAPON_TYPE_KNIFE; }
 
 	bool is_valid(const bool check_clip = true) {
 		switch (this->get_weapon_type()) {

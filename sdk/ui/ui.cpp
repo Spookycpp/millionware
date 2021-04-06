@@ -4,6 +4,7 @@
 #include "../engine/input/input.h"
 #include "../engine/render/render.h"
 #include "ui.h"
+#include "../engine/security/xorstr.h"
 
 static bool is_menu_active = true;
 static bool new_blocking = false;
@@ -60,87 +61,118 @@ void ui::init()
 {
 	main_window = std::make_shared<c_window>(point_t(64.0f, 64.0f), point_t(1000.0f, 704.0f));
 
-	const auto prepare_tab = [] (const auto &tab)
+	/*group->new_checkbox("Example checkbox", checkbox_value1)
+		->add_color_picker(ui::get_accent_color(), false)
+		->add_key_bind(key_bind_value1);
+
+	group->new_checkbox("Example checkbox", checkbox_value2)
+		->add_color_picker(color_picker_value1)
+		->add_key_bind(key_bind_value2);
+
+	group->new_select("Example select", select_value1, { "Test option 1", "Test option 2", "Test option 3", "Test option 4", "Test option 5" })
+		->add_color_picker(color_picker_value1)
+		->add_key_bind(key_bind_value1);
+
+	group->new_select("Example multi select", multi_select_value1, { "Test oasfddddption 1", "Test option 2", "Test option 3", "Test option 4", "Testdfhgderherwsdf option 5" }, true)
+		->add_color_picker(color_picker_value1)
+		->add_key_bind(key_bind_value2);
+
+	group->new_slider("Example float slider", slider_float_value1, -50.0f, 50.0f, "{:.1f}")
+		->add_color_picker(color_picker_value1)
+		->add_key_bind(key_bind_value1);
+
+	group->new_slider("Example int slider", slider_int_value1, 0, 50, "{}")
+		->add_key_bind(key_bind_value2)
+		->add_key_bind(key_bind_value2);
+
+	group->new_button("Example button", [] () { printf("Nigger 1 \n"); });
+	group->new_button("Example button", [] () { printf("Nigger 2 \n"); }, ICON_FA_TAG, FONT_FA_SOLID_32)
+		->add_key_bind(key_bind_value1);
+
+	group->new_text_input("Example text input", text_input_value1)
+		->add_color_picker(color_picker_value1)
+		->add_key_bind(key_bind_value2);*/
+
+	if (const auto aim_category = main_window->new_category(XORSTR("Aim Assistance")))
 	{
-		for (auto i = 0; i < 2; i++)
-		{
-			settings_t::legitbot_t* legitbot_settings = nullptr;
-			const auto group = tab->new_group("Group");
+		if (const auto legit_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_CROSSHAIRS, "Legit")) {
+			settings_t::legitbot_t* legitbot_settings = &settings.lbot_pistols;
 
-			group->new_checkbox("Weapon config", settings.global.weapon_groups);
-			group->new_select("Weapon groups", weapon_group, { "Pistols", "Heavy pistol", "Rifles", "AWP", "Scout", "Auto", "Other" });
-
-			if (settings.global.weapon_groups) {
-				switch (weapon_group) {
-					case 0:
-						legitbot_settings = &settings.lbot_pistols;
-						break;						  
-					case 1:							  
-						legitbot_settings = &settings.lbot_hpistols;
-						break;						  
-					case 2:							  
-						legitbot_settings = &settings.lbot_rifles;
-						break;						  
-					case 3:							  
-						legitbot_settings = &settings.lbot_awp;
-						break;
-					case 4:							  
-						legitbot_settings = &settings.lbot_scout;
-						break;
-					case 5:							  
-						legitbot_settings = &settings.lbot_auto;
-						break;
-					default:
-						break;
-				}
-			}
-			else {
-				legitbot_settings = &settings.lbot_global;
+			if (const auto group = legit_tab->new_group("Weapon groups")) {
+				group->new_checkbox("Enabled", settings.global.weapon_groups);
+				group->new_select("Group", weapon_group, { "Pistols", "Heavy pistol", "Rifles", "AWP", "Scout", "Auto", "Other" });
 			}
 
-			/*group->new_checkbox("Example checkbox", checkbox_value1)
-				->add_color_picker(ui::get_accent_color(), false)
-				->add_key_bind(key_bind_value1);
+			if (const auto group = legit_tab->new_group("Flickbot")) {
+				group->new_select("Enabled", legitbot_settings->flick_bot.enabled, { "Disabled", "Normal", "Silent" });
+				group->new_slider(XORSTR("Field of view"), legitbot_settings->flick_bot.fov, 0.1f, 180.0f, "{:.1f}");
+				group->new_slider(XORSTR("Hitchance"), legitbot_settings->flick_bot.hit_chance, 0, 100, "{}%");
+			}
+			
+			if (const auto group = legit_tab->new_group("Aim assist")) {
+				group->new_checkbox("Enabled", legitbot_settings->assist.enabled);
+				group->new_slider(XORSTR("Field of view"), legitbot_settings->assist.fov, 0.1f, 180.0f, "{:.1f}");
+				group->new_slider(XORSTR("Strength"), legitbot_settings->assist.strength, 0.1f, 1.f, "{:.1f}");
+			}
 
-			group->new_checkbox("Example checkbox", checkbox_value2)
-				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
+			if (const auto group = legit_tab->new_group("Backtracking")) {
+				group->new_checkbox("Enabled", legitbot_settings->backtrack.enabled);
+				group->new_slider(XORSTR("Field of view"), legitbot_settings->backtrack.fov, 0.1f, 180.0f, "{:.1f}");
+				group->new_slider(XORSTR("Max time"), legitbot_settings->backtrack.time, 0, 200, "{}(ms)");
+			}
 
-			group->new_select("Example select", select_value1, { "Test option 1", "Test option 2", "Test option 3", "Test option 4", "Test option 5" })
-				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value1);
+			if (const auto group = legit_tab->new_group("Aim options")) {
+				group->new_slider(XORSTR("Speed"), legitbot_settings->speed, 0.0f, 100.0f, "{:.1f}");
+				group->new_slider(XORSTR("Speed exponent"), legitbot_settings->speed_exponent, 1.0f, 2.5f, "{:.1f}");
+				group->new_slider(XORSTR("RCS X"), legitbot_settings->rcs_x, 0.0f, 100.0f, "{:.1f}");
+				group->new_slider(XORSTR("RCS Y"), legitbot_settings->rcs_y, 0.0f, 100.0f, "{:.1f}");
+				group->new_checkbox(XORSTR("Adaptive"), legitbot_settings->smoothing.enabled);
+				
+				// check if the adaptive bool returns true, if so show these options @czapek
+				group->new_slider(XORSTR("Smoothing Samples"), legitbot_settings->smoothing.samples, 2, 28, "{}");
+				group->new_slider(XORSTR("Smoothing Factor"), legitbot_settings->smoothing.factor, 0.1f, 2.0f, "{}");
+			}
 
-			group->new_select("Example multi select", multi_select_value1, { "Test oasfddddption 1", "Test option 2", "Test option 3", "Test option 4", "Testdfhgderherwsdf option 5" }, true)
-				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
+			if (const auto group = legit_tab->new_group("Prerequisites")) {
+				group->new_slider(XORSTR("Field of view"), legitbot_settings->fov, 0.0f, 180.0f, "{:.1f}");
+				group->new_slider(XORSTR("Start bullets"), legitbot_settings->start_bullets, 0, 10, "{}");
+				group->new_select("Hitbox method", weapon_group, { "Static", "Nearest" });
+				group->new_select("Target hitbox", weapon_group, { "Head", "Neck", "Upper chest", "Lower chest", "Stomach" }, true);
+				group->new_checkbox(XORSTR("Target backtrack"), legitbot_settings->target_backtrack);
+			}
 
-			group->new_slider("Example float slider", slider_float_value1, -50.0f, 50.0f, "{:.1f}")
-				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value1);
+			if (const auto group = legit_tab->new_group("Filters")) {
+				group->new_checkbox(XORSTR("Visible check"), legitbot_settings->check_visible);
+				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->check_team);
+				group->new_checkbox(XORSTR("Smoke check"), legitbot_settings->check_smoked);
+				group->new_checkbox(XORSTR("Flash check"), legitbot_settings->check_flashed);
+			}
 
-			group->new_slider("Example int slider", slider_int_value1, 0, 50, "{}")
-				->add_key_bind(key_bind_value2)
-				->add_key_bind(key_bind_value2);
+			if (const auto group = legit_tab->new_group("Standalone RCS")) {
+				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->rcs.enabled);
+				group->new_slider(XORSTR("X"), legitbot_settings->rcs.x, 0.0f, 100.0f, "{:.1f}");
+				group->new_slider(XORSTR("Y"), legitbot_settings->rcs.y, 0.0f, 100.0f, "{:.1f}");
+			}
 
-			group->new_button("Example button", [] () { printf("Nigger 1 \n"); });
-			group->new_button("Example button", [] () { printf("Nigger 2 \n"); }, ICON_FA_TAG, FONT_FA_SOLID_32)
-				->add_key_bind(key_bind_value1);
+			if (const auto group = legit_tab->new_group("Triggerbot")) {
+				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->triggerbot.enabled);
+				group->add_key_bind(legitbot_settings->triggerbot.hotkey);
+				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->triggerbot.check_team);
+				group->new_checkbox(XORSTR("Smoke check"), legitbot_settings->triggerbot.check_smoked);
+				group->new_checkbox(XORSTR("Flash check"), legitbot_settings->triggerbot.check_flashed);
+				group->new_slider(XORSTR("Hitchance"), legitbot_settings->triggerbot.hit_chance, 0, 100, "{}");
+				group->new_slider(XORSTR("Delay"), legitbot_settings->triggerbot.delay, 0, 1000, "{}ms");
 
-			group->new_text_input("Example text input", text_input_value1)
-				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);*/
+				group->new_checkbox(XORSTR("Backtrack"), legitbot_settings->triggerbot.backtrack.enabled);
+
+				// check if the adaptive bool returns true, if so show this option @czapek
+				group->new_slider(XORSTR("Backtracking max time"), legitbot_settings->triggerbot.backtrack.time, 0, 200, "{}ms");
+				
+			}
 		}
-	};
 
-	if (const auto aim_category = main_window->new_category("Aim Assistance"))
-	{
-		const auto legit_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_CROSSHAIRS, "Legit");
 		const auto rage_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_SKULL, "Rage");
 		const auto anti_aim_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_REDO, "Anti-aim");
-
-		prepare_tab(legit_tab);
-		prepare_tab(rage_tab);
-		prepare_tab(anti_aim_tab);
 	}
 
 	if (const auto visual_category = main_window->new_category("Visualizations"))
@@ -149,11 +181,6 @@ void ui::init()
 		const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, "Weapons");
 		const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, "World");
 		const auto view_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_EYE, "View");
-
-		prepare_tab(players_tab);
-		prepare_tab(weapons_tab);
-		prepare_tab(world_tab);
-		prepare_tab(view_tab);
 	}
 
 	if (const auto misc_category = main_window->new_category("Miscellaneous"))
@@ -162,11 +189,6 @@ void ui::init()
 		const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, "Presets");
 		const auto scripts_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_FILE_CODE, "Scripts");
 		const auto inventory_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_WALLET, "Inventory");
-
-		prepare_tab(main_tab);
-		prepare_tab(presets_tab);
-		prepare_tab(scripts_tab);
-		prepare_tab(inventory_tab);
 
 		set_active_tab(presets_tab);
 	}
