@@ -71,7 +71,9 @@ struct settings_t {
 				int  time = 200;
 			} backtrack;
 		} triggerbot;
-	} legitbot_global, legitbot_pistols, legitbot_rifles, legitbot_snipers, legitbot_other;
+		//			group->new_select("Weapon groups", weapon_group, { "Pistols", "Heavy pistol", "Rifles", "AWP", "Scout", "Auto", "Other" });
+
+	} lbot_global, lbot_pistols, lbot_hpistols, lbot_rifles, lbot_awp, lbot_scout, lbot_auto, lbot_other;
 
 	struct {
 		bool  enabled = false;
@@ -252,4 +254,4 @@ struct settings_t {
 };
 
 extern settings_t              settings;
-extern settings_t::legitbot_t* settings_legitbot;
+extern settings_t::legitbot_t* settings_lbot;

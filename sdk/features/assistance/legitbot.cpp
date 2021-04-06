@@ -46,7 +46,7 @@ namespace features::legitbot {
 	void aimbot(float* x, float* y) {
 		aiming = false;
 
-		if (!settings_legitbot->enabled || settings.ragebot.enabled) 
+		if (!settings_lbot->enabled || settings.ragebot.enabled) 
 			return;
 		
 		const auto wpn = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
@@ -60,14 +60,14 @@ namespace features::legitbot {
 		delta_time = time - old_time;
 		old_time = time;
 
-		if (settings_legitbot->smoothing.enabled) {
-			const float avg_delta = get_average_delta() * settings_legitbot->smoothing.factor;
+		if (settings_lbot->smoothing.enabled) {
+			const float avg_delta = get_average_delta() * settings_lbot->smoothing.factor;
 
 			if (avg_delta > delta_time) 
 				delta_time = avg_delta;
 		}
 
-		const auto target = get_target(settings_legitbot->hitbox_method, settings_legitbot->fov);
+		const auto target = get_target(settings_lbot->hitbox_method, settings_lbot->fov);
 		const auto target_idx = std::get< 0 >(target);
 
 		if (target_idx != -1) {
@@ -86,10 +86,10 @@ namespace features::legitbot {
 	}
 
 	void assist(c_player* target, float* x, float* y) {
-		if (!settings_legitbot->assist.enabled)
+		if (!settings_lbot->assist.enabled)
 			return;
 		
-		const int hitbox = get_bone(target, 1, settings_legitbot->assist.fov);
+		const int hitbox = get_bone(target, 1, settings_lbot->assist.fov);
 
 		if (hitbox == -1) 
 			return;
@@ -104,8 +104,8 @@ namespace features::legitbot {
 		if (!math::normalize_angles(aim_angs)) 
 			return;
 
-		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_legitbot->rcs_x / 100.0f);
-		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_legitbot->rcs_y / 100.0f);
+		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_lbot->rcs_x / 100.0f);
+		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_lbot->rcs_y / 100.0f);
 
 		if (!math::normalize_angles(aim_angs)) 
 			return;
@@ -116,7 +116,7 @@ namespace features::legitbot {
 			return;
 		
 		vector_t move_angs = pixels_to_angles(point_t(*x, *y));
-		move_angs *= settings_legitbot->assist.strength;
+		move_angs *= settings_lbot->assist.strength;
 
 		const float delta_x = std::abs(move_angs.x);
 		const float delta_y = std::abs(move_angs.y);
@@ -133,30 +133,30 @@ namespace features::legitbot {
 	void flick_bot(c_user_cmd* cmd, c_weapon* wpn) {
 		flicked = false;
 
-		if (!settings_legitbot->flick_bot.enabled) 
+		if (!settings_lbot->flick_bot.enabled) 
 			return;
 
-		if (settings_legitbot->check_flashed && cheat::local_player->is_flashed()) 
+		if (settings_lbot->check_flashed && cheat::local_player->is_flashed()) 
 			return;
 		
-		const auto target = get_target(settings_legitbot->hitbox_method, settings_legitbot->flick_bot.fov);
+		const auto target = get_target(settings_lbot->hitbox_method, settings_lbot->flick_bot.fov);
 		const auto target_idx = std::get< 0 >(target);
 
 		if (target_idx != -1) {
 			if (cmd->buttons & BUTTON_IN_ATTACK &&
 				cheat::local_player->get_shots_fired() == 0 &&
 				cheat::local_player->can_shoot(wpn)) {
-				flick_to_target(target, cmd, wpn, settings_legitbot->flick_bot.enabled == 2);
+				flick_to_target(target, cmd, wpn, settings_lbot->flick_bot.enabled == 2);
 				flicked = true;
 			}
 		}
 	}
 
 	void standalone_rcs(c_user_cmd* cmd, c_weapon* wpn) {
-		if (wpn->is_sniper() || wpn->is_shotgun() || wpn->is_pistol()) 
+		if (wpn->is_awp() || wpn->is_scout() || wpn->is_auto() || wpn->is_shotgun() || wpn->is_pistol()) 
 			return;
 		
-		if (!settings_legitbot->rcs.enabled || settings_legitbot->rcs.x <= 0.0f && settings_legitbot->rcs.y <= 0.0f) 
+		if (!settings_lbot->rcs.enabled || settings_lbot->rcs.x <= 0.0f && settings_lbot->rcs.y <= 0.0f) 
 			return;
 
 		static vector_t old_aim_punch;
@@ -173,8 +173,8 @@ namespace features::legitbot {
 			}
 
 			vector_t compensated_angs = {
-				settings_legitbot->rcs.x > 0.0f ? (aim_punch.x - old_aim_punch.x) * (2.0f * (settings_legitbot->rcs.x / 100.0f)) : 0.0f,
-				settings_legitbot->rcs.y > 0.0f ? (aim_punch.y - old_aim_punch.y) * (2.0f * (settings_legitbot->rcs.y / 100.0f)) : 0.0f,
+				settings_lbot->rcs.x > 0.0f ? (aim_punch.x - old_aim_punch.x) * (2.0f * (settings_lbot->rcs.x / 100.0f)) : 0.0f,
+				settings_lbot->rcs.y > 0.0f ? (aim_punch.y - old_aim_punch.y) * (2.0f * (settings_lbot->rcs.y / 100.0f)) : 0.0f,
 				0.0f
 			};
 
@@ -214,24 +214,33 @@ namespace features::legitbot {
 		}
 
 		if (settings.global.weapon_groups) {
-			if (wpn->is_rifle()) {
-				settings_legitbot = &settings.legitbot_rifles;
+			if (wpn->is_pistol()) {
+				settings_lbot = &settings.lbot_pistols;
 			}
-			else if (wpn->is_sniper()) {
-				settings_legitbot = &settings.legitbot_snipers;
+			else if (wpn->is_heavy_pistol()) {
+				settings_lbot = &settings.lbot_hpistols;
 			}
-			else if (wpn->is_pistol()) {
-				settings_legitbot = &settings.legitbot_pistols;
+			else if (wpn->is_rifle()) {
+				settings_lbot = &settings.lbot_rifles;
+			}	
+			else if (wpn->is_awp()) {
+				settings_lbot = &settings.lbot_awp;
+			}	
+			else if (wpn->is_scout()) {
+				settings_lbot = &settings.lbot_scout;
+			}
+			else if (wpn->is_auto()) {
+				settings_lbot = &settings.lbot_auto;
 			}
 			else {
-				settings_legitbot = &settings.legitbot_other;
+				settings_lbot = &settings.lbot_other;
 			}
 		}
 		else {
-			settings_legitbot = &settings.legitbot_global;
+			settings_lbot = &settings.lbot_global;
 		}
 
-		return settings_legitbot != nullptr;
+		return settings_lbot != nullptr;
 	}
 
 	void aim_at_target(const target_t& data, float* x, float* y) {
@@ -248,8 +257,8 @@ namespace features::legitbot {
 		if (!math::normalize_angles(aim_angs)) 
 			return;
 
-		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_legitbot->rcs_x / 100.0f);
-		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_legitbot->rcs_y / 100.0f);
+		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_lbot->rcs_x / 100.0f);
+		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_lbot->rcs_y / 100.0f);
 
 		if (!math::normalize_angles(aim_angs)) 
 			return;
@@ -264,14 +273,14 @@ namespace features::legitbot {
 		if (delta_length > 0.0f) {
 			cur_time += delta_time;
 
-			if (settings_legitbot->speed != 0) {
-				const float final_time = delta_length / (settings_legitbot->speed / 75.0f);
+			if (settings_lbot->speed != 0) {
+				const float final_time = delta_length / (settings_lbot->speed / 75.0f);
 
 				if (cur_time > final_time) 
 					cur_time = final_time;
 
 				float aim_progress = cur_time / final_time;
-				aim_progress = math::ease_in(0.0f, 1.0f, aim_progress, settings_legitbot->speed_exponent);
+				aim_progress = math::ease_in(0.0f, 1.0f, aim_progress, settings_lbot->speed_exponent);
 
 				delta *= aim_progress;
 			}
@@ -296,14 +305,14 @@ namespace features::legitbot {
 		if (!math::normalize_angles(aim_angs))
 			return;
 
-		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_legitbot->rcs_x / 100.0f);
-		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_legitbot->rcs_y / 100.0f);
+		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_lbot->rcs_x / 100.0f);
+		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_lbot->rcs_y / 100.0f);
 
 		if (!math::normalize_angles(aim_angs) || !math::clamp_angles(aim_angs)) 
 			return;
 
-		if (settings_legitbot->flick_bot.hit_chance > 0) {
-			if (!hit_chance::can_hit(ent, wpn, aim_angs, settings_legitbot->flick_bot.hit_chance, std::get< 2 >(data))) {
+		if (settings_lbot->flick_bot.hit_chance > 0) {
+			if (!hit_chance::can_hit(ent, wpn, aim_angs, settings_lbot->flick_bot.hit_chance, std::get< 2 >(data))) {
 				return;
 			}
 		}
@@ -334,7 +343,7 @@ namespace features::legitbot {
 
 			vector_t aim_pos;
 
-			if (!settings_legitbot->target_backtrack)
+			if (!settings_lbot->target_backtrack)
 				aim_pos = ent->get_hitbox_pos(hitbox);
 			else 
 				aim_pos = lag_comp::get_backtracked_position(i);
@@ -347,12 +356,12 @@ namespace features::legitbot {
 				
 			}
 
-			if (!settings_legitbot->check_visible) {
+			if (!settings_lbot->check_visible) {
 				if (!ent->is_visible(cheat::local_player, cheat::local_player->get_eye_pos(), aim_pos)) 
 					continue;
 			}
 
-			if (!settings_legitbot->check_smoked) {
+			if (!settings_lbot->check_smoked) {
 				if (util::line_goes_through_smoke(cheat::local_player->get_eye_pos(), aim_pos)) 
 					continue;
 			}
@@ -383,7 +392,7 @@ namespace features::legitbot {
 		float best_fov = fov;
 
 		if (method == 0) {
-			switch (settings_legitbot->hitbox) {
+			switch (settings_lbot->hitbox) {
 				case 0: best_hitbox = HEAD; break;
 				case 1: best_hitbox = NECK; break;
 				case 2: best_hitbox = U_CHEST; break;
@@ -444,7 +453,7 @@ namespace features::legitbot {
 
 		const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
 
-		if (!settings_legitbot->check_team) {
+		if (!settings_lbot->check_team) {
 			if (mp_teammates_are_enemies->get_int() == 0 && target->get_team_num() == cheat::local_player->get_team_num()) 
 				return false;
 		}
@@ -458,7 +467,7 @@ namespace features::legitbot {
 		if (!aiming)
 			angle_samples.push_front({ angles, time });
 
-		while (static_cast<int>(angle_samples.size()) > settings_legitbot->smoothing.samples)
+		while (static_cast<int>(angle_samples.size()) > settings_lbot->smoothing.samples)
 			angle_samples.pop_back();
 	}
 
@@ -481,7 +490,7 @@ namespace features::legitbot {
 			last_angs = it.view_angles;
 		}
 
-		return avg_delta / float(settings_legitbot->smoothing.samples);
+		return avg_delta / float(settings_lbot->smoothing.samples);
 	}
 
 	point_t angles_to_pixels(const vector_t& angles) {

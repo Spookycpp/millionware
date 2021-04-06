@@ -1,5 +1,6 @@
 ﻿#include "../resources/csgo_icons.h"
 #include "../resources/font_awesome.h"
+#include "../core/settings/settings.h"
 #include "../engine/input/input.h"
 #include "../engine/render/render.h"
 #include "ui.h"
@@ -52,6 +53,7 @@ static color_t color_picker_value1 = { 180, 30, 30 };
 static color_t color_picker_value2 = { 30, 180, 30 };
 static int key_bind_value1 = 0x2E;
 static int key_bind_value2 = 0x2D;
+static int weapon_group = 0;
 static std::string text_input_value1;
 
 void ui::init()
@@ -62,9 +64,41 @@ void ui::init()
 	{
 		for (auto i = 0; i < 2; i++)
 		{
+			settings_t::legitbot_t* legitbot_settings = nullptr;
 			const auto group = tab->new_group("Group");
 
-			group->new_checkbox("Example checkbox", checkbox_value1)
+			group->new_checkbox("Weapon config", settings.global.weapon_groups);
+			group->new_select("Weapon groups", weapon_group, { "Pistols", "Heavy pistol", "Rifles", "AWP", "Scout", "Auto", "Other" });
+
+			if (settings.global.weapon_groups) {
+				switch (weapon_group) {
+					case 0:
+						legitbot_settings = &settings.lbot_pistols;
+						break;						  
+					case 1:							  
+						legitbot_settings = &settings.lbot_hpistols;
+						break;						  
+					case 2:							  
+						legitbot_settings = &settings.lbot_rifles;
+						break;						  
+					case 3:							  
+						legitbot_settings = &settings.lbot_awp;
+						break;
+					case 4:							  
+						legitbot_settings = &settings.lbot_scout;
+						break;
+					case 5:							  
+						legitbot_settings = &settings.lbot_auto;
+						break;
+					default:
+						break;
+				}
+			}
+			else {
+				legitbot_settings = &settings.lbot_global;
+			}
+
+			/*group->new_checkbox("Example checkbox", checkbox_value1)
 				->add_color_picker(ui::get_accent_color(), false)
 				->add_key_bind(key_bind_value1);
 
@@ -94,7 +128,7 @@ void ui::init()
 
 			group->new_text_input("Example text input", text_input_value1)
 				->add_color_picker(color_picker_value1)
-				->add_key_bind(key_bind_value2);
+				->add_key_bind(key_bind_value2);*/
 		}
 	};
 

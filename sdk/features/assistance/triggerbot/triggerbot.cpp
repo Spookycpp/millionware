@@ -16,7 +16,7 @@ namespace features::legitbot::triggerbot {
 	int64_t current_time = 0;
 
 	void on_create_move(c_user_cmd* cmd, c_weapon* wpn) {
-		if (!settings_legitbot->triggerbot.enabled)
+		if (!settings_lbot->triggerbot.enabled)
 			return;
 
 		if (!wpn->is_valid() && wpn->get_item_definition_index() != WEAPON_TASER) 
@@ -56,7 +56,7 @@ namespace features::legitbot::triggerbot {
 		const vector_t src = cheat::local_player->get_eye_pos();
 		const vector_t dst = src + fwd;
 
-		if (!settings_legitbot->triggerbot.check_smoked) 
+		if (!settings_lbot->triggerbot.check_smoked) 
 			if (util::line_goes_through_smoke(src, dst))
 				return;
 
@@ -65,16 +65,16 @@ namespace features::legitbot::triggerbot {
 			return;
 		}
 
-		const bool should_shoot = !settings_legitbot->triggerbot.backtrack.enabled ?
+		const bool should_shoot = !settings_lbot->triggerbot.backtrack.enabled ?
 			trace_to_target(wpn, src, dst) :
 			trace_to_backtracked_target(cmd, wpn, src, dst);
 
 		if (should_shoot) {
-			if (settings_legitbot->triggerbot.delay > 0) {
+			if (settings_lbot->triggerbot.delay > 0) {
 				static int64_t delayed_time = 0;
 
 				if (current_time > delayed_time) {
-					delayed_time = current_time + settings_legitbot->triggerbot.delay;
+					delayed_time = current_time + settings_lbot->triggerbot.delay;
 					send_attack();
 				}
 			}
@@ -94,13 +94,13 @@ namespace features::legitbot::triggerbot {
 		if (!is_valid_target(tr.hit_ent))
 			return false;
 
-		if (settings_legitbot->triggerbot.hit_chance > 0) {
+		if (settings_lbot->triggerbot.hit_chance > 0) {
 			vector_t aim_angs = math::vector_angles(start_pos, end_pos);
 
 			if (!math::normalize_angles(aim_angs)) 
 				return false;
 
-			if (!hit_chance::can_hit(static_cast<c_player*>(tr.hit_ent), wpn, aim_angs, settings_legitbot->triggerbot.hit_chance, tr.m_hitbox)) 
+			if (!hit_chance::can_hit(static_cast<c_player*>(tr.hit_ent), wpn, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox)) 
 				return false;
 		}
 
@@ -113,7 +113,7 @@ namespace features::legitbot::triggerbot {
 		if (settings.miscellaneous.fake_ping.enabled)
 			max_latency = 0.300f + interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING);
 		else 
-			max_latency = static_cast<float>(settings_legitbot->triggerbot.backtrack.time) * 0.001f + interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING);
+			max_latency = static_cast<float>(settings_lbot->triggerbot.backtrack.time) * 0.001f + interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING);
 
 		vector_t aim_angs = math::vector_angles(start_pos, end_pos);
 
@@ -167,10 +167,10 @@ namespace features::legitbot::triggerbot {
 						trace_t tr;
 						interfaces::trace->trace_ray(ray_t{ start_pos, *intersection }, MASK_SHOT | CONTENTS_GRATE, &filter, &tr);
 
-						if (settings_legitbot->triggerbot.hit_chance > 0) {
+						if (settings_lbot->triggerbot.hit_chance > 0) {
 							auto hit_ent = static_cast<c_player*>(tr.hit_ent);
 
-							if (hit_ent->is_valid() && !hit_chance::can_hit(hit_ent, wpn, aim_angs, settings_legitbot->triggerbot.hit_chance, tr.m_hitbox)) 
+							if (hit_ent->is_valid() && !hit_chance::can_hit(hit_ent, wpn, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox)) 
 								continue;
 						}
 
@@ -202,7 +202,7 @@ namespace features::legitbot::triggerbot {
 		
 		const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
 
-		if (!settings_legitbot->triggerbot.check_team) {
+		if (!settings_lbot->triggerbot.check_team) {
 
 			if (mp_teammates_are_enemies->get_int() == 0 && target->get_team_num() == cheat::local_player->get_team_num()) 
 				return false;
@@ -214,7 +214,7 @@ namespace features::legitbot::triggerbot {
 
 	bool should_activate() {
 
-		if (settings_legitbot->triggerbot.check_flashed) {
+		if (settings_lbot->triggerbot.check_flashed) {
 			if (cheat::local_player->is_flashed()) {
 				return false;
 			}

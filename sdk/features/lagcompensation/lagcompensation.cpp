@@ -76,7 +76,7 @@ namespace features::lag_compensation {
 	bool get_render_record(const int idx, matrix3x4_t* out) {
 		const auto is_time_valid = [&](const float time) {
 
-			if (!settings_legitbot) 
+			if (!settings_lbot) 
 				return false;
 			
 			const c_net_channel_info* nci = interfaces::engine_client->get_net_channel_info();
@@ -92,9 +92,9 @@ namespace features::lag_compensation {
 				return std::abs(delta) < 0.150f;
 			}
 
-			const float backtrack_time = settings_legitbot->backtrack.enabled ?
-				static_cast<float>(settings_legitbot->backtrack.time) :
-				static_cast<float>(settings_legitbot->triggerbot.backtrack.time);
+			const float backtrack_time = settings_lbot->backtrack.enabled ?
+				static_cast<float>(settings_lbot->backtrack.time) :
+				static_cast<float>(settings_lbot->triggerbot.backtrack.time);
 
 			return std::abs(delta) <= backtrack_time * 0.001f;
 		};

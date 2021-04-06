@@ -14,13 +14,13 @@ namespace features::legitbot::lag_comp {
 	std::array< std::deque< lag_record_t >, 65 > records = {};
 
 	void on_create_move(c_user_cmd* cmd) {
-		if (settings_legitbot->backtrack.enabled || settings_legitbot->triggerbot.backtrack.enabled) 
+		if (settings_lbot->backtrack.enabled || settings_lbot->triggerbot.backtrack.enabled) 
 			store_records();
 
-		if (!settings_legitbot->backtrack.enabled)
+		if (!settings_lbot->backtrack.enabled)
 			return;
 
-		const auto target = get_target(1, settings_legitbot->backtrack.fov);
+		const auto target = get_target(1, settings_lbot->backtrack.fov);
 		const auto target_idx = std::get< 0 >(target);
 
 		if (target_idx != -1) {
@@ -35,7 +35,7 @@ namespace features::legitbot::lag_comp {
 			return nullptr;
 
 		lag_record_t* best_record = nullptr;
-		float         best_fov    = settings_legitbot->backtrack.fov;
+		float         best_fov    = settings_lbot->backtrack.fov;
 
 		const vector_t local_pos = cheat::local_player->get_eye_pos();
 		vector_t local_angs; interfaces::engine_client->get_view_angles(local_angs);
@@ -53,7 +53,7 @@ namespace features::legitbot::lag_comp {
 			if (settings.miscellaneous.fake_ping.enabled) 
 				max_latency = 0.4f + net_channel->get_latency(FLOW_OUTGOING);
 			else 
-				max_latency = static_cast<float>(settings_legitbot->backtrack.time) * 0.001f + net_channel->get_latency(FLOW_OUTGOING);
+				max_latency = static_cast<float>(settings_lbot->backtrack.time) * 0.001f + net_channel->get_latency(FLOW_OUTGOING);
 			
 			if (std::abs(cur_tick_count - it.tick_count) > TIME_TO_TICKS(max_latency))
 				continue;
@@ -125,7 +125,7 @@ namespace features::legitbot::lag_comp {
 			if (ent && ent != cheat::local_player && ent->is_valid()) {
 				const auto idx = ent->get_networkable()->index();
 				const auto pos = ent->get_hitbox_pos(HEAD);
-				const vector_t aimbot_pos = ent->get_hitbox_pos(get_bone(ent, settings_legitbot->hitbox_method, settings_legitbot->backtrack.fov));
+				const vector_t aimbot_pos = ent->get_hitbox_pos(get_bone(ent, settings_lbot->hitbox_method, settings_lbot->backtrack.fov));
 
 				lag_record_t record = {};
 
