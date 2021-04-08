@@ -6,6 +6,7 @@
 
 #include "../../source engine/client_dll.h"
 #include "../../source engine/input.h"
+#include "../../source engine/matrix.h"
 
 #include "../../engine/math/math.h"
 

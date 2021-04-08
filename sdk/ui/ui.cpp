@@ -141,7 +141,7 @@ void ui::init()
 			}
 
 			if (const auto group = legit_tab->new_group("Filters")) {
-				group->new_checkbox(XORSTR("Visible check"), legitbot_settings->check_visible);
+				group->new_checkbox(XORSTR("Target invisible"), legitbot_settings->check_visible);
 				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->check_team);
 				group->new_checkbox(XORSTR("Smoke check"), legitbot_settings->check_smoked);
 				group->new_checkbox(XORSTR("Flash check"), legitbot_settings->check_flashed);

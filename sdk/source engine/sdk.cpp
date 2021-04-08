@@ -49,7 +49,7 @@ vector_t c_player::extrapolate_position(const vector_t& pos) {
 }
 
 float c_player::get_flash_time() {
-	return *reinterpret_cast<float*>(uintptr_t(this) + patterns::get_client_mode());
+	return *reinterpret_cast<float*>(uintptr_t(this) + patterns::get_flash_time());
 }
 
 bool c_player::is_flashed() {

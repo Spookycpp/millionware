@@ -1,12 +1,120 @@
-#include <algorithm>
-#include <cmath>
-
-#include "../../core/patterns/patterns.h"
-#include "../render/render.h"
 #include "math.h"
 
-void math::angle_to_vectors(const vector_t& angles, vector_t* forward, vector_t* right, vector_t* up) 
-{
+#include "../render/render.h"
+#include "../../core/patterns/patterns.h"
+#include "../../source engine/matrix.h"
+
+#include <algorithm>
+
+bool math::clamp_angles(vector_t& angles) {
+	if (std::isfinite(angles.x) && std::isfinite(angles.y) && std::isfinite(angles.z)) {
+		angles.x = std::clamp(angles.x, -89.0f, 89.0f);
+		angles.y = std::clamp(angles.y, -180.0f, 180.0f);
+		angles.z = 0.0f;
+
+		return true;
+	}
+
+	return false;
+}
+
+bool math::normalize_angles(vector_t& angles) {
+	if (std::isfinite(angles.x) && std::isfinite(angles.y) && std::isfinite(angles.z)) {
+		angles.x = std::remainder(angles.x, 360.0f);
+		angles.y = std::remainder(angles.y, 360.0f);
+
+		return true;
+	}
+
+	return false;
+}
+
+float math::normalize_angle(const float angle) {
+	if (!std::isfinite(angle)) {
+		return 0.0f;
+	}
+
+	return std::remainder(angle, 360.0f);
+}
+
+float math::strafe_opti_normalize_angle(float angle, float max) {
+	while (angle > max)
+		angle -= max * 2;
+	while (angle < -max)
+		angle += max * 2;
+	return angle;
+}
+
+float math::normalized_angle(float angle) {
+	normalize_angle(angle);
+	return angle;
+}
+
+float math::normalize_yaw(float angle) {
+	if (!std::isfinite(angle))
+		angle = 0.f;
+
+	return std::remainderf(angle, 360.0f);
+}
+
+vector_t math::to_angles(const vector_t& vec) {
+	vector_t angs;
+
+	if (vec.x == 0.0f && vec.y == 0.0f) {
+		angs.x = (vec.z > 0.0f) ? 270.0f : 90.0f;
+		angs.y = 0.0f;
+	}
+	else {
+		angs.x = std::atan2(-vec.z, vec.length_2d()) * rad_pi;
+
+		if (angs.x < 0.0f) {
+			angs.x += 360.0f;
+		}
+
+		angs.y = std::atan2(vec.y, vec.x) * rad_pi;
+
+		if (angs.y < 0.0f) {
+			angs.y += 360.0f;
+		}
+	}
+
+	angs.z = 0.0f;
+
+	return angs;
+}
+
+void math::sin_cos(const float radian, float* sin, float* cos) {
+	*sin = std::sin(radian);
+	*cos = std::cos(radian);
+}
+
+void math::angle_to_vector(const vector_t& angles, vector_t& forward) {
+	float sp, sy, cp, cy;
+
+	sin_cos(deg_to_rad(angles.y), &sy, &cy);
+	sin_cos(deg_to_rad(angles.x), &sp, &cp);
+
+	forward.x = cp * cy;
+	forward.y = cp * sy;
+	forward.z = -sp;
+}
+
+vector_t math::angle_to_vector(const vector_t& angles) {
+	float sp, sy, cp, cy;
+
+	sin_cos(deg_to_rad(angles.y), &sy, &cy);
+	sin_cos(deg_to_rad(angles.x), &sp, &cp);
+
+	return { cp * cy, cp * sy, -sp };
+}
+
+void math::matrix_position(const matrix3x4_t& matrix, vector_t& out) {
+	out.x = matrix.m_mat_val[0][3];
+	out.y = matrix.m_mat_val[1][3];
+	out.z = matrix.m_mat_val[2][3];
+}
+
+void math::angle_to_vectors(const vector_t& angles, vector_t* forward, vector_t* right, vector_t* up) {
 	float sp, sy, sr, cp, cy, cr;
 
 	sin_cos(deg_to_rad(angles.x), &sp, &cp);
@@ -26,137 +134,98 @@ void math::angle_to_vectors(const vector_t& angles, vector_t* forward, vector_t*
 	up->z = cr * cp;
 }
 
-void math::sin_cos(float radian, float* sin, float* cos)
-{
-	*sin = std::sin(radian);
-	*cos = std::cos(radian);
+vector_t math::vector_angles(const vector_t& start, const vector_t& end) {
+	const vector_t delta = end - start;
+
+	const float magnitude = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+	const float pitch = std::atan2(-delta.z, magnitude) * rad_pi;
+	const float yaw = std::atan2(delta.y, delta.x) * rad_pi;
+
+	return vector_t(pitch, yaw, 0.0f);
 }
 
-void math::set_matrix_position(vector_t pos, matrix3x4_t& matrix)
-{
-	matrix[0][3] = pos.x;
-	matrix[1][3] = pos.y;
-	matrix[2][3] = pos.z;
+vector_t math::vector_to_angles(const vector_t& start, const vector_t& end) {
+	const vector_t delta = end - start;
+
+	const float magnitude = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+	const float pitch = std::atan2(-delta.z, magnitude) * rad_pi;
+	const float yaw = std::atan2(delta.y, delta.x) * rad_pi;
+
+	return vector_t(pitch, yaw, 0.0f);
 }
 
-bool math::world_to_screen(const vector_t &world_pos, point_t &screen_pos)
-{
-	const static auto &view_matrix = *(matrix4x4_t *) patterns::get_view_matrix();
+vector_t math::vector_to_angles(const vector_t& v) {
+	const float magnitude = std::sqrt(v.x * v.x + v.y * v.y);
+	const float pitch = std::atan2(-v.z, magnitude) * rad_pi;
+	const float yaw = std::atan2(v.y, v.x) * rad_pi;
 
-	const auto x = view_matrix[0][0] * world_pos.x + view_matrix[0][1] * world_pos.y + view_matrix[0][2] * world_pos.z + view_matrix[0][3];
-	const auto y = view_matrix[1][0] * world_pos.x + view_matrix[1][1] * world_pos.y + view_matrix[1][2] * world_pos.z + view_matrix[1][3];
-	const auto w = view_matrix[3][0] * world_pos.x + view_matrix[3][1] * world_pos.y + view_matrix[3][2] * world_pos.z + view_matrix[3][3];
-
-	screen_pos.x = x;
-	screen_pos.y = y;
-
-	if (w < 0.01f)
-		return false;
-
-	const auto inverse_w = 1.0f / w;
-
-	screen_pos.x *= inverse_w;
-	screen_pos.y *= inverse_w;
-
-	const auto screen_size = render::get_screen_size();
-	const auto screen_center = screen_size * 0.5f;
-
-	screen_pos.x = screen_center.x + screen_pos.x * 0.5f * screen_size.x + 0.5f;
-	screen_pos.y = screen_center.y - screen_pos.y * 0.5f * screen_size.y + 0.5f;
-
-	return true;
+	return vector_t(pitch, yaw, 0.0f);
 }
 
-bool math::normalize_angles(vector_t &angle)
-{
-	if (std::isfinite(angle.x) && std::isfinite(angle.y) && std::isfinite(angle.z))
-	{
-		angle.x = std::remainder(angle.x, 360.0f);
-		angle.y = std::remainder(angle.y, 360.0f);
+void math::angle_matrix(const vector_t& angles, matrix3x4_t& matrix) {
+	float sr, sp, sy, cr, cp, cy;
 
-		return true;
-	}
-
-	return false;
-}
-
-bool math::clamp_angles(vector_t &angle)
-{
-	if (std::isfinite(angle.x) && std::isfinite(angle.y) && std::isfinite(angle.z))
-	{
-		angle.x = std::clamp(angle.x, -89.0f, 89.0f);
-		angle.y = std::clamp(angle.y, -180.0f, 180.0f);
-		angle.z = 0.0f;
-
-		return true;
-	}
-
-	return false;
-}
-
-float math::get_fov(const vector_t &view_angle, const vector_t &aim_angle)
-{
-	const auto angle_forward = get_forward_vector(view_angle);
-	const auto aim_forward = get_forward_vector(aim_angle);
-
-	return rad_to_deg(std::acos(aim_forward.dot_product(angle_forward) / aim_forward.length_square()));
-}
-
-vector_t math::get_forward_vector(const vector_t &angle)
-{
-	const auto sp = std::sin(angle.x);
-	const auto sy = std::sin(angle.y);
-	const auto cp = std::cos(angle.x);
-	const auto cy = std::cos(angle.y);
-
-	return { cp * cy, cp * sy, -sp };
-}
-
-vector_t math::get_right_vector(const vector_t &angle)
-{
-	const auto sp = std::sin(angle.x);
-	const auto sy = std::sin(angle.y);
-	const auto sr = std::sin(angle.z);
-	const auto cp = std::cos(angle.x);
-	const auto cy = std::cos(angle.y);
-	const auto cr = std::cos(angle.z);
-
-	return
-	{
-		-1.0f * sr * sp * cy + -1.0f * cr * -sy,
-		-1.0f * sr * sp * sy + -1.0f * cr * cy,
-		-1.0f * sr * cp,
-	};
-}
-
-vector_t math::get_up_vector(const vector_t &angle)
-{
-	const auto sp = std::sin(angle.x);
-	const auto sy = std::sin(angle.y);
-	const auto sr = std::sin(angle.z);
-	const auto cp = std::cos(angle.x);
-	const auto cy = std::cos(angle.y);
-	const auto cr = std::cos(angle.z);
-
-	return
-	{
-		cr * sp * cy + -sr * -sy,
-		cr * sp * sy + -sr * cy,
-		cr * cp
-	};
-}
-
-vector_t math::angle_to_vector(const vector_t& angles)
-{
-	float sp, sy, cp, cy;
-
-	sin_cos(deg_to_rad(angles.y), &sy, &cy);
 	sin_cos(deg_to_rad(angles.x), &sp, &cp);
+	sin_cos(deg_to_rad(angles.y), &sy, &cy);
+	sin_cos(deg_to_rad(angles.z), &sr, &cr);
 
-	return { cp * cy, cp * sy, -sp };
+	matrix[0][0] = cp * cy;
+	matrix[1][0] = cp * sy;
+	matrix[2][0] = -sp;
+
+	const float crcy = cr * cy,
+		crsy = cr * sy,
+		srcy = sr * cy,
+		srsy = sr * sy;
+
+	matrix[0][1] = sp * srcy - crsy;
+	matrix[1][1] = sp * srsy + crcy;
+	matrix[2][1] = sr * cp;
+
+	matrix[0][2] = (sp * crcy + srsy);
+	matrix[1][2] = (sp * crsy - srcy);
+	matrix[2][2] = cr * cp;
+
+	matrix[0][3] = 0.0f;
+	matrix[1][3] = 0.0f;
+	matrix[2][3] = 0.0f;
 }
 
-vector_t math::dist_segment_to_segment(vector_t s1, vector_t s2, vector_t k1, vector_t k2) {
+vector_t math::vector_transform(const vector_t& in, const matrix3x4_t& matrix) {
+	return vector_t(
+		in.dot(matrix[0]) + matrix[0][3],
+		in.dot(matrix[1]) + matrix[1][3],
+		in.dot(matrix[2]) + matrix[2][3]
+	);
+}
+
+float math::approach_angle(const float to, float from, const float speed) {
+	const float delta = std::remainder(to - from, 360.0f);
+
+	if (delta > speed) {
+		from += speed;
+	}
+	else if (delta < -speed) {
+		from -= speed;
+	}
+	else {
+		from = to;
+	}
+
+	return std::clamp(from, -180.0f, 180.0f);
+}
+
+vector_t math::get_matrix_position(const matrix3x4_t& src) {
+	return vector_t(src[0][3], src[1][3], src[2][3]);
+}
+
+void math::set_matrix_position(vector_t pos, matrix3x4_t& matrix) {
+	for (size_t i = 0; i < 3; ++i) {
+		matrix[i][3] = ((float*)&pos)[i];
+	}
+}
+
+vector_t math::dist_segment_to_segment(const vector_t s1, const vector_t s2, const vector_t k1, const vector_t k2) {
 	static constexpr float SMALL_NUM = 0.00000001f;
 
 	const vector_t u = s2 - s1;
@@ -230,26 +299,29 @@ vector_t math::dist_segment_to_segment(vector_t s1, vector_t s2, vector_t k1, ve
 	return w + u * sc - v * tc;
 }
 
-vector_t math::vector_angles(const vector_t &source, const vector_t &target)
-{
-	const auto delta = target - source;
-	const auto magnitude = std::sqrt(delta.x * delta.x + delta.y * delta.y);
-	const auto pitch = std::atan2(-delta.z, magnitude) * rad_pi;
-	const auto yaw = std::atan2(delta.y, delta.x) * rad_pi;
+bool math::world_to_screen(const vector_t& world_pos, point_t& screen_pos) {
+	const static auto& view_matrix = *(matrix4x4_t*)patterns::get_view_matrix();
 
-	return { pitch, yaw, 0.0f };
-}
+	const auto x = view_matrix[0][0] * world_pos.x + view_matrix[0][1] * world_pos.y + view_matrix[0][2] * world_pos.z + view_matrix[0][3];
+	const auto y = view_matrix[1][0] * world_pos.x + view_matrix[1][1] * world_pos.y + view_matrix[1][2] * world_pos.z + view_matrix[1][3];
+	const auto w = view_matrix[3][0] * world_pos.x + view_matrix[3][1] * world_pos.y + view_matrix[3][2] * world_pos.z + view_matrix[3][3];
 
-vector_t math::vector_transform(const vector_t &vector, const matrix3x4_t &transformation_matrix)
-{
-	return
-	{
-		vector.dot_product((const vector_t &) transformation_matrix[0]) + transformation_matrix[0][3],
-		vector.dot_product((const vector_t &) transformation_matrix[1]) + transformation_matrix[1][3],
-		vector.dot_product((const vector_t &) transformation_matrix[2]) + transformation_matrix[2][3]
-	};
-}
+	screen_pos.x = x;
+	screen_pos.y = y;
 
-vector_t math::get_matrix_position(const matrix3x4_t& src) {
-	return vector_t(src[0][3], src[1][3], src[2][3]);
+	if (w < 0.01f)
+		return false;
+
+	const auto inverse_w = 1.0f / w;
+
+	screen_pos.x *= inverse_w;
+	screen_pos.y *= inverse_w;
+
+	const auto screen_size = render::get_screen_size();
+	const auto screen_center = screen_size * 0.5f;
+
+	screen_pos.x = screen_center.x + screen_pos.x * 0.5f * screen_size.x + 0.5f;
+	screen_pos.y = screen_center.y - screen_pos.y * 0.5f * screen_size.y + 0.5f;
+
+	return true;
 }

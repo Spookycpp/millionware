@@ -5,8 +5,7 @@
 #include "macros.h"
 #include "studio.h"
 #include "vector.h"
-
-using matrix3x4_t = typename float[3][4];
+#include "matrix.h"
 
 struct c_model
 {

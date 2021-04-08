@@ -4,6 +4,7 @@
 #include "../../engine/logging/logging.h"
 #include "../../engine/render/render.h"
 #include "../../engine/security/xorstr.h"
+#include "../../features/hitchance/hitchance.h"
 #include "../../ui/ui.h"
 #include "../hooks/hooks.h"
 #include "../interfaces/interfaces.h"
@@ -33,6 +34,8 @@ bool cheat::init()
 	input::init(creation_params.hFocusWindow);
 
 	ui::init();
+
+	features::hit_chance::initialize();
 
 	if (!hooks::init())
 		return false;

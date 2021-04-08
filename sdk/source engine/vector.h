@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <cmath>
 
-using matrix3x4_t = typename float[3][4];
-using matrix4x4_t = typename float[4][4];
-
 struct point_t
 {
 	float x, y;
@@ -101,8 +98,21 @@ struct vector_t
 		return delta.length();
 	}
 
+	__forceinline float dot(const float* fl) const {
+		const vector_t& a = *this;
+		return a.x * fl[0] + a.y * fl[1] + a.z * fl[2];
+	}
+
 	inline float dot(const vector_t& vec) const {
 		return x * vec.x + y * vec.y + z * vec.z;
+	}
+
+	__forceinline float& operator[](int32_t i) {
+		return reinterpret_cast<float*>(this)[i];
+	}
+
+	__forceinline float operator[](int32_t i) const {
+		return reinterpret_cast<float*>((vector_t*)this)[i];
 	}
 
 	inline float length_sqr() const {

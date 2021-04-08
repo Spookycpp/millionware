@@ -11,8 +11,7 @@
 #include "util_vector.h"
 #include "vector.h"
 #include "weapon_system.h"
-	
-using matrix3x4_t = typename float[3][4];
+#include "matrix.h"
 
 enum e_item_definition_index
 {

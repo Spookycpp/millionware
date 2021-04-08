@@ -3,8 +3,8 @@
 #include <cstdint>
 
 #include "vector.h"
+#include "matrix.h"
 
-using matrix3x4_t = typename float[3][4];
 using quaternion_t = typename float[4];
 
 enum e_hitbox
