@@ -272,7 +272,7 @@ public:
 	vector_t get_hitbox_pos(int idx);
 	
 	bool can_shoot();
-	bool can_shoot(class c_weapon* wpn);
+	bool can_shoot(class c_weapon* weapon);
 	bool is_valid(bool check_alive = true);
 	bool is_alive();
 	bool is_visible(c_player* local, const vector_t& src, const vector_t& dst);

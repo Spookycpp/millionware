@@ -25,13 +25,13 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 	if (util::run_frame() && cheat::local_player->is_alive()) {
 		features::legitbot::sample_angle_data(user_cmd->view_angles);
 
-		c_weapon* local_wpn = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
+		c_weapon* local_weapon = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
 
-		if (local_wpn) {
-			if (features::legitbot::update_settings(local_wpn)) {
+		if (local_weapon) {
+			if (features::legitbot::update_settings(local_weapon)) {
 				features::legitbot::lag_comp::on_create_move(user_cmd);
-				features::legitbot::on_create_move(user_cmd, local_wpn);
-				features::legitbot::triggerbot::on_create_move(user_cmd, local_wpn);
+				features::legitbot::on_create_move(user_cmd, local_weapon);
+				features::legitbot::triggerbot::on_create_move(user_cmd, local_weapon);
 			}
 		}
 	}

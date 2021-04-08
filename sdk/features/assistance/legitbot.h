@@ -14,17 +14,17 @@ namespace features::legitbot {
 	using target_t = std::tuple< int, vector_t, int >;
 
 	void     on_override_mouse_input(float* x, float* y);
-	void     on_create_move(c_user_cmd* cmd, c_weapon* wpn);
+	void     on_create_move(c_user_cmd* user_cmd, c_weapon* weapon);
 
 	void     aimbot(float* x, float* y);
 	void     assist(c_player* target, float* x, float* y);
-	void     flick_bot(c_user_cmd* cmd, c_weapon* wpn);
-	void     standalone_rcs(c_user_cmd* cmd, c_weapon* wpn);
+	void     flick_bot(c_user_cmd* user_cmd, c_weapon* weapon);
+	void     standalone_rcs(c_user_cmd* user_cmd, c_weapon* weapon);
 
-	bool     update_settings(c_weapon* wpn);
+	bool     update_settings(c_weapon* weapon);
 
 	void     aim_at_target(const target_t& data, float* x, float* y);
-	void     flick_to_target(const target_t& data, c_user_cmd* cmd, c_weapon* wpn, bool silent);
+	void     flick_to_target(const target_t& data, c_user_cmd* user_cmd, c_weapon* weapon, bool silent);
 
 	target_t get_target(int method, float fov);
 	int      get_bone(c_player* target, int method, float fov);

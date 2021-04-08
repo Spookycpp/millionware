@@ -96,31 +96,31 @@ vector_t c_player::get_hitbox_pos(const int idx) {
 }
 
 bool c_player::can_shoot() {
-	const auto wpn = (c_weapon*)get_active_weapon_handle().get();
+	const auto weapon = (c_weapon*)get_active_weapon_handle().get();
 
-	if (!wpn) {
+	if (!weapon) {
 		return false;
 	}
 
-	return can_shoot(wpn);
+	return can_shoot(weapon);
 }
 
-bool c_player::can_shoot(c_weapon* wpn) {
+bool c_player::can_shoot(c_weapon* weapon) {
 	const float server_time = float(this->get_tick_base()) * interfaces::global_vars->interval_per_tick;
 
-	if (wpn->get_next_attack() > server_time) {
+	if (weapon->get_next_attack() > server_time) {
 		return false;
 	}
 
-	if ((wpn->get_item_definition_index() == WEAPON_FAMAS || wpn->get_item_definition_index() == WEAPON_GLOCK) && wpn->get_is_burst_mode() && wpn->get_burst_shots_remaining() > 0) {
+	if ((weapon->get_item_definition_index() == WEAPON_FAMAS || weapon->get_item_definition_index() == WEAPON_GLOCK) && weapon->get_is_burst_mode() && weapon->get_burst_shots_remaining() > 0) {
 		return false;
 	}
 
-	if (wpn->get_next_primary_attack() > server_time) {
+	if (weapon->get_next_primary_attack() > server_time) {
 		return false;
 	}
 
-	if (wpn->get_item_definition_index() == WEAPON_REVOLVER && wpn->get_ready_time() > server_time) {
+	if (weapon->get_item_definition_index() == WEAPON_REVOLVER && weapon->get_ready_time() > server_time) {
 		return false;
 	}
 

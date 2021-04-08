@@ -18,7 +18,7 @@ namespace hooks
 	bool init();
 	bool undo();
 
-	bool __fastcall create_move(c_client_mode *ecx, uintptr_t edx, float frame_time, c_user_cmd *cmd);
+	bool __fastcall create_move(c_client_mode *ecx, uintptr_t edx, float frame_time, c_user_cmd *user_cmd);
 	int __fastcall do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, int effect_id);
 	void __fastcall draw_model_execute(uintptr_t, uintptr_t, void* ctx, void* state, c_model_render_info* info, matrix3x4_t* matrix);
 	void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char*, int, const char*, float, float, int, int, int, const vector_t*, const vector_t*, vector_t*, bool, float, int, uintptr_t);

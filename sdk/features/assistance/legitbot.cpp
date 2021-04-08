@@ -1,8 +1,8 @@
 #include "legitbot.h"
-#include "../hitchance/hitchance.h"
 #include "lagcompensation/lag_comp.h"
 
-#include "../../core/cheat/cheat.h"
+#include "../hitchance/hitchance.h"
+
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/settings/settings.h"
 
@@ -11,10 +11,6 @@
 #include "../../engine/security/xorstr.h"
 
 #include "../../ui/ui.h"
-
-#include <algorithm>
-#include <deque>
-#include <vector>
 
 namespace features::legitbot {
 	vector_t local_angs = vector_t();
@@ -30,20 +26,20 @@ namespace features::legitbot {
 	void on_override_mouse_input(float* x, float* y) {
 		interfaces::engine_client->get_view_angles(local_angs);
 
-		if (local_angs.empty()) 
+		if (local_angs.empty())
 			return;
-		
+
 		aimbot(x, y);
 	}
 
-	void on_create_move(c_user_cmd* cmd, c_weapon* wpn) {
+	void on_create_move(c_user_cmd* user_cmd, c_weapon* weapon) {
 		interfaces::engine_client->get_view_angles(local_angs);
 
 		if (local_angs.empty()) 
 			return;
-		
-		flick_bot(cmd, wpn);
-		standalone_rcs(cmd, wpn);
+
+		flick_bot(user_cmd, weapon);
+		standalone_rcs(user_cmd, weapon);
 	}
 
 	void aimbot(float* x, float* y) {
@@ -52,9 +48,10 @@ namespace features::legitbot {
 		if (!settings_lbot->enabled || settings.ragebot.enabled) 
 			return;
 		
-		const auto wpn = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
 
-		if (!wpn || !update_settings(wpn)) 
+		const auto weapon = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
+
+		if (!weapon || !update_settings(weapon)) 
 			return;
 		
 		static float old_time = interfaces::global_vars->current_time;
@@ -66,8 +63,9 @@ namespace features::legitbot {
 		if (settings_lbot->smoothing.enabled) {
 			const float avg_delta = get_average_delta() * settings_lbot->smoothing.factor;
 
-			if (avg_delta > delta_time) 
+			if (avg_delta > delta_time) {
 				delta_time = avg_delta;
+			}
 		}
 
 		const auto target = get_target(settings_lbot->hitbox_method, settings_lbot->fov);
@@ -77,8 +75,9 @@ namespace features::legitbot {
 			if (should_activate()) {
 				aiming = true;
 
-				if (!flicked) 
+				if (!flicked) {
 					aim_at_target(target, x, y);
+				}
 			}
 
 			assist((c_player*)interfaces::entity_list->get_entity(target_idx), x, y);
@@ -89,13 +88,15 @@ namespace features::legitbot {
 	}
 
 	void assist(c_player* target, float* x, float* y) {
-		if (!settings_lbot->assist.enabled)
+		if (!settings_lbot->assist.enabled) {
 			return;
-		
+		}
+
 		const int hitbox = get_bone(target, 1, settings_lbot->assist.fov);
 
-		if (hitbox == -1) 
+		if (hitbox == -1) {
 			return;
+		}
 
 		const vector_t local_pos = cheat::local_player->get_eye_pos();
 		const vector_t enemy_pos = target->get_hitbox_pos(hitbox);
@@ -104,20 +105,23 @@ namespace features::legitbot {
 
 		vector_t aim_angs = math::vector_angles(local_pos, enemy_pos);
 
-		if (!math::normalize_angles(aim_angs)) 
+		if (!math::normalize_angles(aim_angs)) {
 			return;
+		}
 
 		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_lbot->rcs_x / 100.0f);
 		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_lbot->rcs_y / 100.0f);
 
-		if (!math::normalize_angles(aim_angs)) 
+		if (!math::normalize_angles(aim_angs)) {
 			return;
-		
+		}
+
 		vector_t view_delta = aim_angs - cur_angs;
 
-		if (!math::normalize_angles(view_delta) || !math::clamp_angles(view_delta)) 
+		if (!math::normalize_angles(view_delta) || !math::clamp_angles(view_delta)) {
 			return;
-		
+		}
+
 		vector_t move_angs = pixels_to_angles(point_t(*x, *y));
 		move_angs *= settings_lbot->assist.strength;
 
@@ -133,40 +137,44 @@ namespace features::legitbot {
 		*y += pixels.y;
 	}
 
-	void flick_bot(c_user_cmd* cmd, c_weapon* wpn) {
+	void flick_bot(c_user_cmd* user_cmd, c_weapon* weapon) {
 		flicked = false;
 
-		if (!settings_lbot->flick_bot.enabled) 
+		if (!settings_lbot->flick_bot.enabled) {
 			return;
+		}
 
-		if (settings_lbot->check_flashed && cheat::local_player->is_flashed()) 
+		if (settings_lbot->check_flashed && cheat::local_player->is_flashed()) {
 			return;
-		
+		}
+
 		const auto target = get_target(settings_lbot->hitbox_method, settings_lbot->flick_bot.fov);
 		const auto target_idx = std::get< 0 >(target);
 
 		if (target_idx != -1) {
-			if (cmd->buttons & BUTTON_IN_ATTACK &&
+			if (user_cmd->buttons & BUTTON_IN_ATTACK &&
 				cheat::local_player->get_shots_fired() == 0 &&
-				cheat::local_player->can_shoot(wpn)) {
-				flick_to_target(target, cmd, wpn, settings_lbot->flick_bot.enabled == 2);
+				cheat::local_player->can_shoot(weapon)) {
+				flick_to_target(target, user_cmd, weapon, settings_lbot->flick_bot.enabled == 2);
 				flicked = true;
 			}
 		}
 	}
 
-	void standalone_rcs(c_user_cmd* cmd, c_weapon* wpn) {
-		if (wpn->is_awp() || wpn->is_scout() || wpn->is_auto() || wpn->is_shotgun() || wpn->is_pistol()) 
+	void standalone_rcs(c_user_cmd* user_cmd, c_weapon* weapon) {
+		if (weapon->is_awp() || weapon->is_scout() || weapon->is_auto() || weapon->is_shotgun() || weapon->is_pistol()) {
 			return;
-		
-		if (!settings_lbot->rcs.enabled || settings_lbot->rcs.x <= 0.0f && settings_lbot->rcs.y <= 0.0f) 
+		}
+
+		if (!settings_lbot->rcs.enabled || settings_lbot->rcs.x <= 0.0f && settings_lbot->rcs.y <= 0.0f) {
 			return;
+		}
 
 		static vector_t old_aim_punch;
 
 		const int shots_fired = cheat::local_player->get_shots_fired();
 
-		if (cmd->buttons & BUTTON_IN_ATTACK) {
+		if (user_cmd->buttons & BUTTON_IN_ATTACK) {
 			const vector_t aim_punch = cheat::local_player->get_aim_punch_angle();
 			const float  length = aim_punch.length_2d();
 
@@ -211,28 +219,28 @@ namespace features::legitbot {
 		}
 	}
 
-	bool update_settings(c_weapon* wpn) {
-		if (wpn->is_grenade() || wpn->is_knife() || wpn->get_ammo1() <= 0) {
+	bool update_settings(c_weapon* weapon) {
+		if (weapon->is_grenade() || weapon->is_knife() || weapon->get_ammo1() <= 0) {
 			return false;
 		}
 
 		if (settings.global.weapon_groups) {
-			if (wpn->is_pistol()) {
+			if (weapon->is_pistol()) {
 				settings_lbot = &settings.lbot_pistols;
 			}
-			else if (wpn->is_heavy_pistol()) {
+			else if (weapon->is_heavy_pistol()) {
 				settings_lbot = &settings.lbot_hpistols;
 			}
-			else if (wpn->is_rifle()) {
+			else if (weapon->is_rifle()) {
 				settings_lbot = &settings.lbot_rifles;
-			}	
-			else if (wpn->is_awp()) {
+			}
+			else if (weapon->is_awp()) {
 				settings_lbot = &settings.lbot_awp;
-			}	
-			else if (wpn->is_scout()) {
+			}
+			else if (weapon->is_scout()) {
 				settings_lbot = &settings.lbot_scout;
 			}
-			else if (wpn->is_auto()) {
+			else if (weapon->is_auto()) {
 				settings_lbot = &settings.lbot_auto;
 			}
 			else {
@@ -251,7 +259,7 @@ namespace features::legitbot {
 
 		if (!is_valid_target(ent)) 
 			return;
-
+		
 		vector_t aim_angs = math::vector_angles(
 			cheat::local_player->get_eye_pos(),
 			ent->extrapolate_position(std::get< 1 >(data))
@@ -259,18 +267,18 @@ namespace features::legitbot {
 
 		if (!math::normalize_angles(aim_angs)) 
 			return;
-
+		
 		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_lbot->rcs_x / 100.0f);
 		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_lbot->rcs_y / 100.0f);
 
 		if (!math::normalize_angles(aim_angs)) 
-			return;
+			return;		
 
 		vector_t delta = aim_angs - local_angs;
 
-		if (!math::normalize_angles(delta) || !math::clamp_angles(delta))
+		if (!math::normalize_angles(delta) || !math::clamp_angles(delta)) 
 			return;
-
+		
 		const float delta_length = delta.length();
 
 		if (delta_length > 0.0f) {
@@ -281,7 +289,7 @@ namespace features::legitbot {
 
 				if (cur_time > final_time) 
 					cur_time = final_time;
-
+				
 				float aim_progress = cur_time / final_time;
 				aim_progress = math::ease_in(0.0f, 1.0f, aim_progress, settings_lbot->speed_exponent);
 
@@ -294,36 +302,37 @@ namespace features::legitbot {
 		}
 	}
 
-	void flick_to_target(const target_t& data, c_user_cmd* cmd, c_weapon* wpn, const bool silent) {
+	void flick_to_target(const target_t& data, c_user_cmd* user_cmd, c_weapon* weapon, const bool silent) {
 		const auto ent = (c_player*)interfaces::entity_list->get_entity(std::get<0>(data));
 
-		if (!is_valid_target(ent)) 
+		if (!is_valid_target(ent))
 			return;
-
+		
 		vector_t aim_angs = math::vector_angles(
 			cheat::local_player->get_eye_pos(),
 			ent->extrapolate_position(std::get< 1 >(data))
 		);
 
-		if (!math::normalize_angles(aim_angs))
-			return;
+		if (!math::normalize_angles(aim_angs)) 
+			return;		
 
 		aim_angs.x -= cheat::local_player->get_aim_punch_angle().x * 2.0f * (settings_lbot->rcs_x / 100.0f);
 		aim_angs.y -= cheat::local_player->get_aim_punch_angle().y * 2.0f * (settings_lbot->rcs_y / 100.0f);
 
 		if (!math::normalize_angles(aim_angs) || !math::clamp_angles(aim_angs)) 
 			return;
-
+		
 		if (settings_lbot->flick_bot.hit_chance > 0) {
-			if (!hit_chance::can_hit(ent, wpn, aim_angs, settings_lbot->flick_bot.hit_chance, std::get< 2 >(data))) {
+			if (!hit_chance::can_hit(ent, weapon, aim_angs, settings_lbot->flick_bot.hit_chance, std::get< 2 >(data))) {
 				return;
 			}
 		}
 
-		cmd->view_angles = aim_angs;
+		user_cmd->view_angles = aim_angs;
 
-		if (!silent) 
-			interfaces::engine_client->set_view_angles(cmd->view_angles);
+		if (!silent) {
+			interfaces::engine_client->set_view_angles(user_cmd->view_angles);
+		}
 	}
 
 	target_t get_target(const int method, const float fov) {
@@ -338,42 +347,45 @@ namespace features::legitbot {
 
 			if (!is_valid_target(ent)) 
 				continue;
-
+			
 			const int hitbox = get_bone(ent, method, fov);
 
 			if (hitbox == -1) 
 				continue;
-
+			
 			vector_t aim_pos;
 
-			if (!settings_lbot->target_backtrack)
+			if (!settings_lbot->target_backtrack) {
 				aim_pos = ent->get_hitbox_pos(hitbox);
-			else 
+			}
+			else {
 				aim_pos = lag_comp::get_backtracked_position(i);
+			}
 
 			if (aim_pos.empty()) {
 				aim_pos = ent->get_hitbox_pos(hitbox);
 
 				if (aim_pos.empty()) 
 					continue;
-				
 			}
 
 			if (!settings_lbot->check_visible) {
-				if (!ent->is_visible(cheat::local_player, cheat::local_player->get_eye_pos(), aim_pos)) 
+				if (!ent->is_visible(cheat::local_player, cheat::local_player->get_eye_pos(), aim_pos)) {
 					continue;
+				}
 			}
 
 			if (!settings_lbot->check_smoked) {
-				if (util::line_goes_through_smoke(cheat::local_player->get_eye_pos(), aim_pos)) 
+				if (util::line_goes_through_smoke(cheat::local_player->get_eye_pos(), aim_pos)) {
 					continue;
+				}
 			}
 
 			vector_t aim_angs = math::vector_angles(local_pos, aim_pos);
 
-			if (!math::normalize_angles(aim_angs))
+			if (!math::normalize_angles(aim_angs)) 
 				continue;
-
+			
 			const float cur_fov = math::get_fov(cur_angs, aim_angs);
 
 			if (!std::isfinite(cur_fov)) {
@@ -415,14 +427,14 @@ namespace features::legitbot {
 			for (auto& idx : hitboxes) {
 				vector_t aim_pos = target->get_hitbox_pos(idx);
 
-				if (aim_pos.empty())
+				if (aim_pos.empty()) 
 					continue;
-
+				
 				vector_t aim_angs = math::vector_angles(local_pos, aim_pos);
 
-				if (!math::normalize_angles(aim_angs)) 
+				if (!math::normalize_angles(aim_angs))
 					continue;
-
+				
 				const float cur_fov = math::get_fov(cur_angs, aim_angs);
 
 				if (!std::isfinite(cur_fov)) {
@@ -448,26 +460,29 @@ namespace features::legitbot {
 		if (!input::is_key_down(settings_lbot->hotkey))
 			return false;
 
-		if (settings_lbot->check_flashed && cheat::local_player->is_flashed( ) )
+		if (settings_lbot->check_flashed && cheat::local_player->is_flashed())
 			return false;
 
 		if (cheat::local_player->get_shots_fired() < settings_lbot->start_bullets)
 			return false;
-			
+
 		return true;
 	}
 
 	bool is_valid_target(c_player* target) {
-		if (!target || target == cheat::local_player) 
+		if (!target || target == cheat::local_player)
 			return false;
 
-		if (!target->is_valid()) 
+		if (!target->is_valid())
+			return false;
+
+		if (target->get_has_gun_game_immunity())
 			return false;
 
 		const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
 
 		if (!settings_lbot->check_team) {
-			if (mp_teammates_are_enemies->get_int() == 0 && target->get_team_num() == cheat::local_player->get_team_num()) 
+			if (mp_teammates_are_enemies->get_int() == 0 && target->get_team_num() == cheat::local_player->get_team_num())
 				return false;
 		}
 
@@ -477,16 +492,17 @@ namespace features::legitbot {
 	void sample_angle_data(const vector_t& angles) {
 		const float time = interfaces::global_vars->current_time;
 
-		if (!aiming)
+		if (!aiming) 
 			angle_samples.push_front({ angles, time });
-
-		while (static_cast<int>(angle_samples.size()) > settings_lbot->smoothing.samples)
+		
+		while (static_cast<int>(angle_samples.size()) > settings_lbot->smoothing.samples) 
 			angle_samples.pop_back();
 	}
 
 	float get_average_delta() {
-		if (angle_samples.empty())
+		if (angle_samples.empty()) {
 			return 0.0f;
+		}
 
 		float avg_delta = 0.0f;
 
@@ -496,7 +512,7 @@ namespace features::legitbot {
 			const float time_delta = interfaces::global_vars->current_time - it.time;
 			const float delta_diff = delta_time / (time_delta * 2.0f);
 
-			vector_t	    delta = (last_angs - it.view_angles).clamp();
+			vector_t delta = (last_angs - it.view_angles).clamp();
 			const float	delta_length = delta.length() * delta_diff;
 
 			avg_delta += delta_length;
@@ -507,7 +523,7 @@ namespace features::legitbot {
 	}
 
 	point_t angles_to_pixels(const vector_t& angles) {
-		static auto m_yaw   = interfaces::convar_system->find_convar(XORSTR("m_yaw"));
+		static auto m_yaw = interfaces::convar_system->find_convar(XORSTR("m_yaw"));
 		static auto m_pitch = interfaces::convar_system->find_convar(XORSTR("m_pitch"));
 
 		const float x = angles.x / m_pitch->get_float();
@@ -517,7 +533,7 @@ namespace features::legitbot {
 	}
 
 	vector_t pixels_to_angles(const point_t& pixels) {
-		static auto m_yaw   = interfaces::convar_system->find_convar(XORSTR("m_yaw"));
+		static auto m_yaw = interfaces::convar_system->find_convar(XORSTR("m_yaw"));
 		static auto m_pitch = interfaces::convar_system->find_convar(XORSTR("m_pitch"));
 
 		const float x = pixels.x * m_pitch->get_float();

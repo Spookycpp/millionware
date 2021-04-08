@@ -18,11 +18,11 @@
 namespace features::legitbot::triggerbot {
 	int64_t current_time = 0;
 
-	void on_create_move(c_user_cmd* cmd, c_weapon* wpn) {
+	void on_create_move(c_user_cmd* user_cmd, c_weapon* weapon) {
 		if (!settings_lbot->triggerbot.enabled)
 			return;
 
-		if (!wpn->is_valid() && wpn->get_item_definition_index() != WEAPON_TASER) 
+		if (!weapon->is_valid() && weapon->get_item_definition_index() != WEAPON_TASER) 
 			return;
 
 		// update timer
@@ -34,27 +34,27 @@ namespace features::legitbot::triggerbot {
 		}
 
 		if (should_activate()) 
-			think(cmd, wpn);
+			think(user_cmd, weapon);
 	}
 
-	void think(c_user_cmd* cmd, c_weapon* wpn) {
+	void think(c_user_cmd* user_cmd, c_weapon* weapon) {
 		const auto send_attack = [&]() -> void {
-			cmd->buttons |= wpn->get_item_definition_index() != WEAPON_REVOLVER ? BUTTON_IN_ATTACK : BUTTON_IN_ATTACK2;
+			user_cmd->buttons |= weapon->get_item_definition_index() != WEAPON_REVOLVER ? BUTTON_IN_ATTACK : BUTTON_IN_ATTACK2;
 		};
 
 		const auto unsend_attack = [&]() -> void {
-			cmd->buttons &= wpn->get_item_definition_index() != WEAPON_REVOLVER ? ~BUTTON_IN_ATTACK : ~BUTTON_IN_ATTACK2;
+			user_cmd->buttons &= weapon->get_item_definition_index() != WEAPON_REVOLVER ? ~BUTTON_IN_ATTACK : ~BUTTON_IN_ATTACK2;
 		};
 
-		const auto wpn_info = wpn ? interfaces::weapon_system->get_weapon_info(wpn->get_item_definition_index()) : nullptr;;
+		const auto weapon_info = weapon ? interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index()) : nullptr;;
 
-		if (!wpn_info) 
+		if (!weapon_info) 
 			return;
 
 		vector_t view_angs;
 		interfaces::engine_client->get_view_angles(view_angs);
 
-		const vector_t fwd = math::angle_to_vector(view_angs + cheat::local_player->get_aim_punch_angle() * 2.0f) * wpn_info->range;
+		const vector_t fwd = math::angle_to_vector(view_angs + cheat::local_player->get_aim_punch_angle() * 2.0f) * weapon_info->range;
 
 		const vector_t src = cheat::local_player->get_eye_pos();
 		const vector_t dst = src + fwd;
@@ -63,14 +63,14 @@ namespace features::legitbot::triggerbot {
 			if (util::line_goes_through_smoke(src, dst))
 				return;
 
-		if (!cheat::local_player->can_shoot(wpn)) {
+		if (!cheat::local_player->can_shoot(weapon)) {
 			unsend_attack();
 			return;
 		}
 
 		const bool should_shoot = !settings_lbot->triggerbot.backtrack.enabled ?
-			trace_to_target(wpn, src, dst) :
-			trace_to_backtracked_target(cmd, wpn, src, dst);
+			trace_to_target(weapon, src, dst) :
+			trace_to_backtracked_target(user_cmd, weapon, src, dst);
 
 		if (should_shoot) {
 			if (settings_lbot->triggerbot.delay > 0) {
@@ -87,7 +87,7 @@ namespace features::legitbot::triggerbot {
 		}
 	}
 
-	bool trace_to_target(c_weapon* wpn, const vector_t& start_pos, const vector_t& end_pos) {
+	bool trace_to_target(c_weapon* weapon, const vector_t& start_pos, const vector_t& end_pos) {
 		c_trace_filter filter;
 		filter.skip = cheat::local_player;
 
@@ -103,14 +103,14 @@ namespace features::legitbot::triggerbot {
 			if (!math::normalize_angles(aim_angs)) 
 				return false;
 
-			if (!hit_chance::can_hit(static_cast<c_player*>(tr.hit_ent), wpn, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox)) 
+			if (!hit_chance::can_hit(static_cast<c_player*>(tr.hit_ent), weapon, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox)) 
 				return false;
 		}
 
 		return tr.hit_group <= HIT_GROUP_RIGHT_LEG && tr.hit_group > HIT_GROUP_GENERIC;
 	}
 
-	bool trace_to_backtracked_target(c_user_cmd* cmd, c_weapon* wpn, const vector_t& start_pos, const vector_t& end_pos) {
+	bool trace_to_backtracked_target(c_user_cmd* user_cmd, c_weapon* weapon, const vector_t& start_pos, const vector_t& end_pos) {
 		float max_latency;
 
 		if (settings.miscellaneous.fake_ping.enabled)
@@ -173,14 +173,14 @@ namespace features::legitbot::triggerbot {
 						if (settings_lbot->triggerbot.hit_chance > 0) {
 							auto hit_ent = static_cast<c_player*>(tr.hit_ent);
 
-							if (hit_ent->is_valid() && !hit_chance::can_hit(hit_ent, wpn, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox)) 
+							if (hit_ent->is_valid() && !hit_chance::can_hit(hit_ent, weapon, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox)) 
 								continue;
 						}
 
 						if (tr.fraction <= 0.97f) 
 							continue;
 						
-						features::legitbot::lag_comp::backtrack_entity(cmd, i);
+						features::legitbot::lag_comp::backtrack_entity(user_cmd, i);
 
 						return true;
 					}
@@ -223,12 +223,11 @@ namespace features::legitbot::triggerbot {
 			}
 		}
 
-		if (ui::is_active)
+		if (ui::is_active())
 			return false;
 
 		if (!input::is_key_down(settings_lbot->triggerbot.hotkey))
 			return false;
-
 
 		return true;
 	}

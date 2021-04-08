@@ -42,8 +42,8 @@ namespace features::hit_chance {
 		}
 	}
 
-	vector_t get_spread_direction(c_weapon* wpn, const vector_t& angles, int seed) {
-		if (!wpn) {
+	vector_t get_spread_direction(c_weapon* weapon, const vector_t& angles, int seed) {
+		if (!weapon) {
 			return vector_t();
 		}
 
@@ -55,17 +55,17 @@ namespace features::hit_chance {
 
 		auto [rand_a, rand_b] = data->random;
 
-		if (wpn->get_item_definition_index() == WEAPON_NEGEV) {
-			auto wpn_info = wpn ? interfaces::weapon_system->get_weapon_info(wpn->get_item_definition_index()) : nullptr;;
+		if (weapon->get_item_definition_index() == WEAPON_NEGEV) {
+			auto weapon_info = weapon ? interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index()) : nullptr;;
 
-			if (wpn_info && wpn_info->recoil_seed < 3) {
-				rand_a = 1.0f - std::pow(rand_a, static_cast<float>(3 - wpn_info->recoil_seed + 1));
-				rand_b = 1.0f - std::pow(rand_b, static_cast<float>(3 - wpn_info->recoil_seed + 1));
+			if (weapon_info && weapon_info->recoil_seed < 3) {
+				rand_a = 1.0f - std::pow(rand_a, static_cast<float>(3 - weapon_info->recoil_seed + 1));
+				rand_b = 1.0f - std::pow(rand_b, static_cast<float>(3 - weapon_info->recoil_seed + 1));
 			}
 		}
 
-		const float rand_inaccuracy = rand_a * wpn->get_inaccuracy();
-		const float rand_spread = rand_b * wpn->get_spread();
+		const float rand_inaccuracy = rand_a * weapon->get_inaccuracy();
+		const float rand_spread = rand_b * weapon->get_spread();
 
 		const float spread_x = data->inaccuracy.first * rand_inaccuracy + data->spread.first * rand_spread;
 		const float spread_y = data->inaccuracy.second * rand_inaccuracy + data->spread.second * rand_spread;
@@ -142,14 +142,14 @@ namespace features::hit_chance {
 		return hitbox_data;
 	}
 
-	bool can_hit(c_player* target, c_weapon* wpn, const vector_t& angles, const int percentage, const int hitbox) {
-		if (!target || !wpn) {
+	bool can_hit(c_player* target, c_weapon* weapon, const vector_t& angles, const int percentage, const int hitbox) {
+		if (!target || !weapon) {
 			return false;
 		}
 
-		auto wpn_info = wpn ? interfaces::weapon_system->get_weapon_info(wpn->get_item_definition_index()) : nullptr;;
+		auto weapon_info = weapon ? interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index()) : nullptr;;
 
-		if (!wpn_info) {
+		if (!weapon_info) {
 			return false;
 		}
 
@@ -165,7 +165,7 @@ namespace features::hit_chance {
 		int       hits = 0;
 
 		for (int i = 0; i < 256; ++i) {
-			const vector_t end_pos = eye_pos + get_spread_direction(wpn, angles, i) * wpn_info->range;
+			const vector_t end_pos = eye_pos + get_spread_direction(weapon, angles, i) * weapon_info->range;
 
 			for (const auto& it : hitbox_data) {
 				if (util::intersects_hitbox(eye_pos, end_pos, it.min, it.max, it.radius)) {

@@ -13,7 +13,7 @@
 namespace features::legitbot::lag_comp {
 	std::array< std::deque< lag_record_t >, 65 > records = {};
 
-	void on_create_move(c_user_cmd* cmd) {
+	void on_create_move(c_user_cmd* user_cmd) {
 		if (settings_lbot->backtrack.enabled || settings_lbot->triggerbot.backtrack.enabled) 
 			store_records();
 
@@ -24,8 +24,8 @@ namespace features::legitbot::lag_comp {
 		const auto target_idx = std::get< 0 >(target);
 
 		if (target_idx != -1) {
-			if (cmd->buttons & BUTTON_IN_ATTACK) {
-				backtrack_entity(cmd, target_idx);
+			if (user_cmd->buttons & BUTTON_IN_ATTACK) {
+				backtrack_entity(user_cmd, target_idx);
 			}
 		}
 	}
@@ -82,14 +82,14 @@ namespace features::legitbot::lag_comp {
 		return best_record;
 	}
 
-	bool backtrack_entity(c_user_cmd* cmd, const int ent_idx) {
+	bool backtrack_entity(c_user_cmd* user_cmd, const int ent_idx) {
 		if (!can_backtrack_entity(ent_idx))
 			return false;
 
 		const auto best_record = find_best_record(ent_idx);
 
 		if (best_record) {
-			cmd->tick_count = best_record->tick_count;
+			user_cmd->tick_count = best_record->tick_count;
 			return true;
 		}
 

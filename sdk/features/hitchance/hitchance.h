@@ -13,7 +13,7 @@ namespace features::hit_chance {
 
 	void initialize();
 
-	vector_t get_spread_direction(c_weapon* wpn, const vector_t& angles, int seed);
+	vector_t get_spread_direction(c_weapon* weapon, const vector_t& angles, int seed);
 
-	bool can_hit(c_player* target, c_weapon* wpn, const vector_t& angles, int percentage, int hitbox);
+	bool can_hit(c_player* target, c_weapon* weapon, const vector_t& angles, int percentage, int hitbox);
 }

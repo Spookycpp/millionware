@@ -28,10 +28,10 @@ namespace features::legitbot::lag_comp {
 		}
 	};
 
-	void on_create_move(c_user_cmd* cmd);
+	void on_create_move(c_user_cmd* user_cmd);
 
 	lag_record_t* find_best_record(int ent_idx);
-	bool backtrack_entity(c_user_cmd* cmd, int ent_idx);
+	bool backtrack_entity(c_user_cmd* user_cmd, int ent_idx);
 	bool can_backtrack_entity(int ent_idx);
 	vector_t get_backtracked_position(int ent_idx);
 

@@ -107,7 +107,7 @@ void ui::init()
 				group->new_slider(XORSTR("Field of view"), legitbot_settings->fov, 0.0f, 180.0f, "{:.1f}");
 				group->new_slider(XORSTR("Start bullets"), legitbot_settings->start_bullets, 0, 10, "{}");
 				group->new_select("Hitbox method", legitbot_settings->hitbox_method, { "Static", "Nearest" });
-				group->new_select("Target hitbox", legitbot_settings->hitbox, { "Head", "Neck", "Upper chest", "Lower chest", "Stomach" }, true);
+				group->new_select("Target hitbox", legitbot_settings->hitbox, { "Head", "Neck", "Upper chest", "Lower chest", "Stomach" });
 				group->new_checkbox(XORSTR("Target backtrack"), legitbot_settings->target_backtrack);
 			}
 
@@ -125,7 +125,7 @@ void ui::init()
 
 				group->new_checkbox("Backtracking", legitbot_settings->backtrack.enabled);
 				group->new_slider(XORSTR("Field of view"), legitbot_settings->backtrack.fov, 0.1f, 180.0f, "{:.1f}");
-				group->new_slider(XORSTR("Max time"), legitbot_settings->backtrack.time, 0, 200, "{}(ms)");
+				group->new_slider(XORSTR("Max time"), legitbot_settings->backtrack.time, 0, 200, "{}ms");
 			}
 
 			if (const auto group = legit_tab->new_group("Aim options")) {
@@ -195,8 +195,7 @@ void ui::init()
 			}
 
 			if (const auto group = players_tab->new_group("Model")) {
-				group->new_checkbox(XORSTR("Player"), settings.miscellaneous.movement.bunny_hop)
-					->add_color_picker()
+				group->new_checkbox(XORSTR("Player"), settings.miscellaneous.movement.bunny_hop);
 				group->new_checkbox(XORSTR("Player (behind walls)"), settings.miscellaneous.movement.bunny_hop);
 				group->new_checkbox(XORSTR("Render chams in smoke"), settings.miscellaneous.movement.bunny_hop);
 				group->new_checkbox(XORSTR("Visualize backtrack"), settings.miscellaneous.movement.bunny_hop);
