@@ -6,8 +6,11 @@
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/settings/settings.h"
 
+#include "../../engine/input/input.h"
 #include "../../engine/math/math.h"
 #include "../../engine/security/xorstr.h"
+
+#include "../../ui/ui.h"
 
 #include <algorithm>
 #include <deque>
@@ -439,8 +442,18 @@ namespace features::legitbot {
 
 	bool should_activate(const bool check_hotkey_only) {
 
-		// gui visible, hotkey active & aimbot start bullets check here.
+		if (ui::is_active())
+			return false;
 
+		if (!input::is_key_down(settings_lbot->hotkey))
+			return false;
+
+		if (settings_lbot->check_flashed && cheat::local_player->is_flashed( ) )
+			return false;
+
+		if (cheat::local_player->get_shots_fired() < settings_lbot->start_bullets)
+			return false;
+			
 		return true;
 	}
 

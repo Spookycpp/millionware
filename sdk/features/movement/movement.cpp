@@ -6,6 +6,7 @@
 #include "../../core/settings/settings.h"
 
 #include "../../engine/hash/hash.h"
+#include "../../engine/input/input.h"
 #include "../../engine/security/xorstr.h"
 
 void features::movement::pre_prediction(c_user_cmd* user_cmd) {
@@ -15,7 +16,7 @@ void features::movement::pre_prediction(c_user_cmd* user_cmd) {
 	}
 
 	if (settings.miscellaneous.movement.bunny_hop) {
-		if (cheat::local_player->get_move_type() == MOVE_TYPE_LADDER); // || input::is_hotkey_active(FNV_CT("misc.movement.jump_bug.hotkey")))
+		if (cheat::local_player->get_move_type() == MOVE_TYPE_LADDER || input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey))
 			return;
 
 		if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND)) {
@@ -27,7 +28,7 @@ void features::movement::pre_prediction(c_user_cmd* user_cmd) {
 
 void features::movement::post_prediction(c_user_cmd* user_cmd, int pre_flags, int post_flags) {
 
-	if (settings.miscellaneous.movement.jump_bug /* && hotkey active here */) {
+	if (settings.miscellaneous.movement.jump_bug && input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey)) {
 		cheat::b_predicting = true;
 
 		if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND) {
@@ -39,7 +40,7 @@ void features::movement::post_prediction(c_user_cmd* user_cmd, int pre_flags, in
 		}
 	}
 
-	if (settings.miscellaneous.movement.edge_bug /* && hotkey active here */) {
+	if (settings.miscellaneous.movement.edge_bug && input::is_key_down(settings.miscellaneous.movement.edge_bug_hotkey)) {
 		if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND)
 			user_cmd->buttons |= BUTTON_IN_DUCK;
 	}

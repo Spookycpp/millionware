@@ -103,20 +103,27 @@ void ui::init()
 				group->new_select("Group", weapon_group, { "Pistols", "Heavy pistol", "Rifles", "AWP", "Scout", "Auto", "Other" });
 			}
 
-			if (const auto group = legit_tab->new_group("Flickbot")) {
-				group->new_select("Enabled", legitbot_settings->flick_bot.enabled, { "Disabled", "Normal", "Silent" });
-				group->new_slider(XORSTR("Field of view"), legitbot_settings->flick_bot.fov, 0.1f, 180.0f, "{:.1f}");
-				group->new_slider(XORSTR("Hitchance"), legitbot_settings->flick_bot.hit_chance, 0, 100, "{}%");
-			}
-			
-			if (const auto group = legit_tab->new_group("Aim assist")) {
-				group->new_checkbox("Enabled", legitbot_settings->assist.enabled);
-				group->new_slider(XORSTR("Field of view"), legitbot_settings->assist.fov, 0.1f, 180.0f, "{:.1f}");
-				group->new_slider(XORSTR("Strength"), legitbot_settings->assist.strength, 0.1f, 1.f, "{:.1f}");
+			if (const auto group = legit_tab->new_group("Prerequisites")) {
+				group->new_slider(XORSTR("Field of view"), legitbot_settings->fov, 0.0f, 180.0f, "{:.1f}");
+				group->new_slider(XORSTR("Start bullets"), legitbot_settings->start_bullets, 0, 10, "{}");
+				group->new_select("Hitbox method", legitbot_settings->hitbox_method, { "Static", "Nearest" });
+				group->new_select("Target hitbox", legitbot_settings->hitbox, { "Head", "Neck", "Upper chest", "Lower chest", "Stomach" }, true);
+				group->new_checkbox(XORSTR("Target backtrack"), legitbot_settings->target_backtrack);
 			}
 
-			if (const auto group = legit_tab->new_group("Backtracking")) {
-				group->new_checkbox("Enabled", legitbot_settings->backtrack.enabled);
+			if (const auto group = legit_tab->new_group("General")) {
+				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->enabled)
+					->add_key_bind(legitbot_settings->hotkey);
+
+				group->new_select("Flickbot", legitbot_settings->flick_bot.enabled, { "Disabled", "Normal", "Silent" });
+				group->new_slider(XORSTR("Field of view"), legitbot_settings->flick_bot.fov, 0.1f, 180.0f, "{:.1f}");
+				group->new_slider(XORSTR("Hitchance"), legitbot_settings->flick_bot.hit_chance, 0, 100, "{}%");
+
+				group->new_checkbox("Aim assist", legitbot_settings->assist.enabled);
+				group->new_slider(XORSTR("Field of view"), legitbot_settings->assist.fov, 0.1f, 180.0f, "{:.1f}");
+				group->new_slider(XORSTR("Strength"), legitbot_settings->assist.strength, 0.1f, 1.f, "{:.1f}");
+
+				group->new_checkbox("Backtracking", legitbot_settings->backtrack.enabled);
 				group->new_slider(XORSTR("Field of view"), legitbot_settings->backtrack.fov, 0.1f, 180.0f, "{:.1f}");
 				group->new_slider(XORSTR("Max time"), legitbot_settings->backtrack.time, 0, 200, "{}(ms)");
 			}
@@ -133,14 +140,6 @@ void ui::init()
 				group->new_slider(XORSTR("Smoothing Factor"), legitbot_settings->smoothing.factor, 0.1f, 2.0f, "{}");
 			}
 
-			if (const auto group = legit_tab->new_group("Prerequisites")) {
-				group->new_slider(XORSTR("Field of view"), legitbot_settings->fov, 0.0f, 180.0f, "{:.1f}");
-				group->new_slider(XORSTR("Start bullets"), legitbot_settings->start_bullets, 0, 10, "{}");
-				group->new_select("Hitbox method", weapon_group, { "Static", "Nearest" });
-				group->new_select("Target hitbox", weapon_group, { "Head", "Neck", "Upper chest", "Lower chest", "Stomach" }, true);
-				group->new_checkbox(XORSTR("Target backtrack"), legitbot_settings->target_backtrack);
-			}
-
 			if (const auto group = legit_tab->new_group("Filters")) {
 				group->new_checkbox(XORSTR("Visible check"), legitbot_settings->check_visible);
 				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->check_team);
@@ -155,8 +154,9 @@ void ui::init()
 			}
 
 			if (const auto group = legit_tab->new_group("Triggerbot")) {
-				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->triggerbot.enabled);
-				group->add_key_bind(legitbot_settings->triggerbot.hotkey);
+				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->triggerbot.enabled)
+				->add_key_bind(legitbot_settings->triggerbot.hotkey);
+
 				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->triggerbot.check_team);
 				group->new_checkbox(XORSTR("Smoke check"), legitbot_settings->triggerbot.check_smoked);
 				group->new_checkbox(XORSTR("Flash check"), legitbot_settings->triggerbot.check_flashed);
@@ -177,7 +177,32 @@ void ui::init()
 
 	if (const auto visual_category = main_window->new_category("Visualizations"))
 	{
-		const auto players_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_USER, "Players");
+		if (const auto players_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_USER, "Players"))
+		{
+			if (const auto group = players_tab->new_group("1")) {
+				group->new_checkbox(XORSTR("Bounding box"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Name"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Health"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Armor"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Weapon"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Ammo"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Skeleton"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Headspot"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Barrel"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Glow"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Outside of FOV"), settings.miscellaneous.movement.bunny_hop);
+					// fov radius & size
+			}
+
+			if (const auto group = players_tab->new_group("Model")) {
+				group->new_checkbox(XORSTR("Player"), settings.miscellaneous.movement.bunny_hop)
+					->add_color_picker()
+				group->new_checkbox(XORSTR("Player (behind walls)"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Render chams in smoke"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Visualize backtrack"), settings.miscellaneous.movement.bunny_hop);
+			}
+		}
+
 		const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, "Weapons");
 		const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, "World");
 		const auto view_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_EYE, "View");
@@ -185,7 +210,19 @@ void ui::init()
 
 	if (const auto misc_category = main_window->new_category("Miscellaneous"))
 	{
-		const auto main_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_TOOLS, "Main");
+		if (const auto main_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_TOOLS, "Main")) {
+
+			if (const auto group = main_tab->new_group("Movement")) {
+				group->new_checkbox(XORSTR("Bunnyhop"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Infinite duck"), settings.miscellaneous.movement.no_duck_cooldown);
+
+				group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)
+				->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
+
+				group->new_checkbox(XORSTR("Edgebug (non assisted)"), settings.miscellaneous.movement.edge_bug)
+				->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
+			}
+		}
 		const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, "Presets");
 		const auto scripts_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_FILE_CODE, "Scripts");
 		const auto inventory_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_WALLET, "Inventory");

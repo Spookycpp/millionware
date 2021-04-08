@@ -8,6 +8,8 @@
 #include "../features/assistance/legitbot.h"
 #include "../features/assistance/triggerbot/triggerbot.h"
 
+#include "../features/miscellaneous/miscellaneous.h"
+
 #include "../features/movement/movement.h"
 #include "../features/movement/engine prediction/engine_prediction.h"
 
@@ -33,6 +35,8 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 			}
 		}
 	}
+
+	features::miscellaneous::auto_pistol(user_cmd);
 
 	features::movement::pre_prediction(user_cmd);
 

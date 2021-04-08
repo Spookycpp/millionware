@@ -10,8 +10,7 @@ struct settings_t {
 
 	struct legitbot_t {
 		bool  enabled = false;
-		int   hotkey_hold = 1;
-		int   hotkey_toggle = 0;
+		int   hotkey  = 1;
 		bool  check_visible = false;
 		bool  check_team = false;
 		bool  check_flashed = false;
@@ -58,8 +57,7 @@ struct settings_t {
 
 		struct {
 			bool  enabled = false;
-			int   hotkey_hold = 18;
-			int   hotkey_toggle = 0;
+			int   hotkey = 18;
 			bool  check_team = false;
 			bool  check_flashed = false;
 			bool  check_smoked = false;
@@ -71,9 +69,8 @@ struct settings_t {
 				int  time = 200;
 			} backtrack;
 		} triggerbot;
-		//			group->new_select("Weapon groups", weapon_group, { "Pistols", "Heavy pistol", "Rifles", "AWP", "Scout", "Auto", "Other" });
 
-	} lbot_global, lbot_pistols, lbot_hpistols, lbot_rifles, lbot_awp, lbot_scout, lbot_auto, lbot_other;
+	} lbot_global, lbot_pistols, lbot_hpistols, lbot_rifles, lbot_smg, lbot_shotgun, lbot_awp, lbot_scout, lbot_auto, lbot_other;
 
 	struct {
 		bool  enabled = false;
@@ -95,7 +92,7 @@ struct settings_t {
 
 		struct {
 			int   activation_type = 0;
-			int   hotkey_toggle = 0;
+			int   hotkey = 0;
 			bool  draw_visible = false;
 			bool  draw_teammates = false;
 			bool  damage_logs = false;
@@ -185,7 +182,9 @@ struct settings_t {
 		struct {
 			bool  bunny_hop = false;
 			bool  jump_bug = false;
+			int   jump_bug_hotkey = 0;
 			bool  edge_bug = false;
+			int	  edge_bug_hotkey = 0;
 			int   auto_strafe = 0;
 			bool  air_duck = false;
 			bool  no_duck_cooldown = false;

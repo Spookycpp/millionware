@@ -9,6 +9,9 @@
 
 #include "../../../engine/math/math.h"
 #include "../../../engine/security/xorstr.h"
+#include "../../engine/input/input.h"
+
+#include "../../ui/ui.h"
 
 #include <chrono>
 
@@ -220,7 +223,12 @@ namespace features::legitbot::triggerbot {
 			}
 		}
 
-		//@todo: check if gui visible & hotkey is active
+		if (ui::is_active)
+			return false;
+
+		if (!input::is_key_down(settings_lbot->triggerbot.hotkey))
+			return false;
+
 
 		return true;
 	}
