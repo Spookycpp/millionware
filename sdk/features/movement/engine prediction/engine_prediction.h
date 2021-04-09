@@ -14,7 +14,7 @@ namespace engine_prediction {
 	inline c_user_cmd* last_command;
 
 	void init();
-	void start_prediction(c_user_cmd* user_cmd);
-	void store(c_user_cmd* user_cmd);
-	void end_prediction(c_user_cmd* user_cmd);
+	void start_prediction(c_user_cmd* cmd);
+	void store(c_user_cmd* cmd);
+	void end_prediction(c_user_cmd* cmd);
 }

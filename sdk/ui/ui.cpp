@@ -180,25 +180,25 @@ void ui::init()
 		if (const auto players_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_USER, "Players"))
 		{
 			if (const auto group = players_tab->new_group("1")) {
-				group->new_checkbox(XORSTR("Bounding box"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Name"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Health"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Armor"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Weapon"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Ammo"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Skeleton"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Headspot"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Barrel"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Glow"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Outside of FOV"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Bounding box"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Name"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Health"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Armor"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Weapon"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Ammo"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Skeleton"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Headspot"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Barrel"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Glow"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Outside of FOV"), settings.miscellaneous.movement.bunny_hop);
 					// fov radius & size
 			}
 
 			if (const auto group = players_tab->new_group("Model")) {
-				group->new_checkbox(XORSTR("Player"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Player (behind walls)"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Render chams in smoke"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Visualize backtrack"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Player"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Player (behind walls)"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Render chams in smoke"), settings.miscellaneous.movement.bunny_hop);
+				//group->new_checkbox(XORSTR("Visualize backtrack"), settings.miscellaneous.movement.bunny_hop);
 			}
 		}
 
@@ -218,8 +218,17 @@ void ui::init()
 				group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)
 				->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
 
-				group->new_checkbox(XORSTR("Edgebug (non assisted)"), settings.miscellaneous.movement.edge_bug)
+				group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)
 				->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
+
+				group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)
+					->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
+
+				group->new_slider(XORSTR("eb ticks"), settings.miscellaneous.movement.edge_bug_radius, 0, 64, "{}");
+				group->new_checkbox(XORSTR("crouch on eb"), settings.miscellaneous.movement.edge_bug_crouch);
+				group->new_checkbox(XORSTR("stop movement"), settings.miscellaneous.movement.edge_bug_movement);
+				group->new_checkbox(XORSTR("stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
+				group->new_slider(XORSTR("eb pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, "{:.1f}");
 			}
 		}
 		const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, "Presets");

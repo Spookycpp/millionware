@@ -97,6 +97,9 @@ public:
 	vector_t view_angles;
 	vector_t aim_direction;
 	vector_t move_direction;
+	float forward_move;
+	float side_move;
+	float up_move;
 	int buttons;
 
 private:

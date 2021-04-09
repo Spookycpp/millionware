@@ -185,6 +185,15 @@ struct settings_t {
 			int   jump_bug_hotkey = 0;
 			bool  edge_bug = false;
 			int	  edge_bug_hotkey = 0;
+
+			bool  edge_bug_assist = false;
+			bool  edge_bug_crouch = false;
+			bool  edge_bug_mouse = false;
+			bool  edge_bug_movement = false;
+			int   edge_bug_assist_hotkey = 0;
+			int   edge_bug_radius = 0;
+			float edgebug_rage_amount = 0.f;
+
 			int   auto_strafe = 0;
 			bool  air_duck = false;
 			bool  no_duck_cooldown = false;

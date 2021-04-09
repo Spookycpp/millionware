@@ -1,3 +1,5 @@
+#include "../core/cheat/cheat.h"
+#include "../core/interfaces/interfaces.h"
 #include "../core/hooks/hooks.h"
 
 #include "../engine/logging/logging.h"
@@ -15,6 +17,20 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
 
 		if (strstr(sample_name, XORSTR("competitive_accept_beep"))) {
 			volume = 0.0f;
+		}
+	}
+
+	// theres most certainly a better way to do this, no?
+	if (entity_index == interfaces::engine_client->get_local_player()) {
+		if (strstr(sample_name, XORSTR("land")) && cheat::b_predicting) {
+			cheat::b_predicting = false;
+			cheat::landed = true;
+			return;
+		}
+
+		if (strstr(sample_name, XORSTR("suit")) && cheat::landed) {
+			cheat::landed = false;
+			return;
 		}
 	}
 	
