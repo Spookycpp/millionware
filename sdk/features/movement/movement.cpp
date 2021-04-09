@@ -1,4 +1,5 @@
 #include "movement.h"
+#include "engine prediction/engine_prediction.h"
 
 #include "../../core/cheat/cheat.h"
 #include "../../core/interfaces/interfaces.h"
@@ -8,7 +9,6 @@
 #include "../../engine/hash/hash.h"
 #include "../../engine/input/input.h"
 #include "../../engine/security/xorstr.h"
-#include "engine prediction/engine_prediction.h"
 #include "../../engine/logging/logging.h"
 
 void features::movement::pre_prediction(c_user_cmd* user_cmd) {
@@ -51,7 +51,8 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
 	// we are going to try and do this without pasting
 	c_user_cmd* backuuser_cmd = user_cmd;
 	c_player* backupLocal = cheat::local_player;
-	static auto old_sens = interfaces::convar_system->find_convar(XORSTR("sensitivity"));
+	static auto old_sens = interfaces::convar_system->find_convar(XORSTR("sensitivity"))->get_float();
+
 	static c_convar* sens = interfaces::convar_system->find_convar(XORSTR("sensitivity"));
 	bool shouldDuck = false;
 
@@ -64,7 +65,7 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
 		return;
 
 	if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) {
-		sens->set_value(1.5f);
+		sens->set_value(old_sens);
 		return;
 	}
 
@@ -84,7 +85,7 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
 					if (i < 7)
 						shouldDuck = true;
 					stop_movement = true;
-					logging::info("predicted edgebug on tick%i\n", i);
+					logging::info("predicted edgebug on tick", i);
 				}
 				break;
 			}
@@ -117,13 +118,14 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
 	if (cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND) {
 		stop_movement = false;
 		shouldDuck = false;
-		sens->set_value(1.5f);
+		sens->set_value(old_sens);
 	}
 	else if ((curVel.z < 1.f && unpredicted_velocity.z + 0.5 < curVel.z && next_possible_eb < interfaces::global_vars->current_time)) {
 		if (shouldDuck && settings.miscellaneous.movement.edge_bug_crouch) {
 			stop_movement = false;
 			shouldDuck = false;
-			sens->set_value(1.5f);
+			is_edge_bugging = true;
+			sens->set_value(old_sens);
 			user_cmd->buttons |= BUTTON_IN_DUCK;
 			logging::info("pog");
 		}
@@ -132,4 +134,5 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
 	//oldVel = vel;
 	next_possible_eb = interfaces::global_vars->current_time;
 	unpredicted_velocity = curVel;
+	is_edge_bugging = false;
 }

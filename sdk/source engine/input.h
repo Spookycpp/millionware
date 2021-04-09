@@ -96,11 +96,11 @@ public:
 	int tick_count;
 	vector_t view_angles;
 	vector_t aim_direction;
-	vector_t move_direction;
 	float forward_move;
 	float side_move;
 	float up_move;
 	int buttons;
+	unsigned char impulse;
 
 private:
 	char padding1[0x9];

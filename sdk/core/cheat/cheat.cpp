@@ -36,7 +36,7 @@ bool cheat::init()
 	ui::init();
 
 	features::hit_chance::initialize();
-
+	
 	if (!hooks::init())
 		return false;
 

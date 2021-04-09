@@ -58,9 +58,9 @@ public:
 	virtual int get_last_acknowledged_cmd_number(void) const;
 	virtual int get_incoming_packet_number(void) const;
 	virtual void check_moving_ground(void* player, double frametime);
-	virtual void run_command(void* player, void* cmd, c_move_helper* moveHelper);
-	virtual void setup_move(void* player, void* cmd, c_move_helper* helper, movedata_t* movement);
-	virtual void finish_move(void* player, void* cmd, movedata_t* movement);
+	virtual void run_command(void* player, void* user_cmd, c_move_helper* moveHelper);
+	virtual void setup_move(void* player, void* user_cmd, c_move_helper* helper, movedata_t* movement);
+	virtual void finish_move(void* player, void* user_cmd, movedata_t* movement);
 	virtual void set_ideal_pitch(int slot, void* player, const vector_t& origin, const vector_t& angles, const vector_t& viewheight);
 	virtual void check_error(int slot, void* player, int commands_acknowledged);
 public:
@@ -74,7 +74,7 @@ public:
 	void reinit_predictables(void);
 	void remove_stale_predicted_entities(int slot, int last_command_packet);
 	void restore_original_ent_state(int slot);
-	void run_simulation(int current_command, float curtime, c_user_cmd* cmd, void* local_player);
+	void run_simulation(int current_command, float curtime, c_user_cmd* user_cmd, void* local_player);
 	void untouch(int slot);
 	void store_prediction_results(int slot, int predicted_frame);
 	bool should_dump_entity(void* ent);

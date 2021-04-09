@@ -38,8 +38,6 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 
 	features::miscellaneous::auto_pistol(user_cmd);
 
-	//features::movement::edgebug_assist(user_cmd);
-
 	features::movement::pre_prediction(user_cmd);
 
 	const auto pre_flags = cheat::local_player->get_flags();
@@ -50,6 +48,8 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 	const auto post_flags = cheat::local_player->get_flags();
 
 	features::movement::post_prediction(user_cmd, pre_flags, post_flags);
+
+	features::movement::edgebug_assist(user_cmd);
 
 	return create_move_original(ecx, edx, frame_time, user_cmd);
 }
