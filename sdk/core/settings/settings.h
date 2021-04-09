@@ -185,6 +185,8 @@ struct settings_t {
 			int   jump_bug_hotkey = 0;
 			bool  edge_bug = false;
 			int	  edge_bug_hotkey = 0;
+			bool  edge_jump = false;
+			int	  edge_jump_hotkey = 0;
 
 			bool  edge_bug_assist = false;
 			bool  edge_bug_crouch = false;

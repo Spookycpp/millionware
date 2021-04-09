@@ -1,9 +1,11 @@
 #include "../core/cheat/cheat.h"
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
+#include "../core/settings/settings.h"
+
+#include "../engine/input/input.h"
 
 #include "../features/assistance/legitbot.h"
-#include "../core/settings/settings.h"
 
 void __fastcall hooks::override_mouse_input(c_client_mode *ecx, uintptr_t edx, float *x, float *y)
 {
@@ -15,6 +17,6 @@ void __fastcall hooks::override_mouse_input(c_client_mode *ecx, uintptr_t edx, f
 
 	return override_mouse_input_original(ecx, edx, x, y);
 
-	if (settings.miscellaneous.movement.edge_bug_assist_hotkey)
-		*x *= (1.f - (0.1 * eb_rage ));
+	if (cheat::stop_movement && input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
+		*x *= (1.f - (0.1 * settings.miscellaneous.movement.edgebug_rage_amount));
 }

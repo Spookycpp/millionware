@@ -224,11 +224,14 @@ void ui::init()
 				group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)
 					->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
-				group->new_slider(XORSTR("eb ticks"), settings.miscellaneous.movement.edge_bug_radius, 0, 64, "{}");
-				group->new_checkbox(XORSTR("crouch on eb"), settings.miscellaneous.movement.edge_bug_crouch);
-				group->new_checkbox(XORSTR("stop movement"), settings.miscellaneous.movement.edge_bug_movement);
-				group->new_checkbox(XORSTR("stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
-				group->new_slider(XORSTR("eb pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, "{:.1f}");
+				group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, "{}");
+				group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch);
+				group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement);
+				group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
+				group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, "{:.1f}");
+
+				group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)
+					->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);
 			}
 		}
 		const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, "Presets");

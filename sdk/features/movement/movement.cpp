@@ -45,94 +45,80 @@ void features::movement::post_prediction(c_user_cmd* user_cmd, int pre_flags, in
 		if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND)
 			user_cmd->buttons |= BUTTON_IN_DUCK;
 	}
+
+    if (settings.miscellaneous.movement.edge_jump && input::is_key_down(settings.miscellaneous.movement.edge_jump_hotkey)) {
+        if (pre_flags & ENTITY_FLAG_ONGROUND && !(post_flags & ENTITY_FLAG_ONGROUND))
+            user_cmd->buttons |= BUTTON_IN_JUMP;
+    }
 }
 
 void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
-	// we are going to try and do this without pasting
-	c_user_cmd* backuuser_cmd = user_cmd;
-	c_player* backupLocal = cheat::local_player;
-	static auto old_sens = interfaces::convar_system->find_convar(XORSTR("sensitivity"))->get_float();
+    // we are going to try and do this without pasting
 
-	static c_convar* sens = interfaces::convar_system->find_convar(XORSTR("sensitivity"));
-	bool shouldDuck = false;
+    c_user_cmd* backupCmd = user_cmd;
+    static auto backupLocal = cheat::local_player;
+    bool shouldDuck = false;
 
-	vector_t loggedMove = { 0 ,0 ,0 };
+    if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) 
+        return;
 
-	if (!cheat::local_player->is_alive())
-		return;
+    if (!cheat::local_player->is_alive())
+        return;
 
-	if (cheat::local_player->get_velocity().z > 0)
-		return;
+    if (cheat::local_player->get_velocity().z > 0)
+        return;
 
-	if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) {
-		sens->set_value(old_sens);
-		return;
-	}
+    vector_t vel;
 
-	vector_t vel;
+    for (int i = 0; i <= settings.miscellaneous.movement.edge_bug_radius; i++) {
+        engine_prediction::start_prediction(user_cmd);
+        cheat::b_predicting = true;
+        backupCmd = user_cmd;
+        backupLocal = cheat::local_player;
 
-	for (int i = 0; i <= settings.miscellaneous.movement.edge_bug_radius; i++) {
-		engine_prediction::start_prediction(user_cmd);
-		cheat::b_predicting = true;
-		backuuser_cmd = user_cmd;
-		backupLocal = cheat::local_player;
+        vel = backupLocal->get_velocity();
 
-		vel = backupLocal->get_velocity();
+        if (!(backupLocal->get_flags() & ENTITY_FLAG_ONGROUND) && backupLocal->get_move_type() != MOVE_TYPE_NOCLIP) {
+            if (vel.z < 1.f && old_vel.z + 0.5 < vel.z) {
+                if (i != 0) {
+                    if (i < 7)
+                        shouldDuck = true;
+                    cheat::stop_movement = true;
+                    logging::info("predicted edgebug on tick");
+                }
+                break;
+            }
+        }
+        old_vel = vel;
+    }
 
-		if (!(backupLocal->get_flags() & ENTITY_FLAG_ONGROUND) && backupLocal->get_move_type() != MOVE_TYPE_NOCLIP) {
-			if (vel.z < 1.f && old_vel.z + 0.5 < vel.z) {
-				if (i != 0) {
-					if (i < 7)
-						shouldDuck = true;
-					stop_movement = true;
-					logging::info("predicted edgebug on tick", i);
-				}
-				break;
-			}
-		}
-		old_vel = vel;
-	}
+    engine_prediction::end_prediction(user_cmd);
+    cheat::b_predicting = false;
 
-	engine_prediction::end_prediction(user_cmd);
-	cheat::b_predicting = false;
+    if (cheat::stop_movement) {
+        if (settings.miscellaneous.movement.edge_bug_movement) {
+        user_cmd->side_move = 0;
+        user_cmd->forward_move = 0;
+        }
+    }
 
-	loggedMove.x = user_cmd->side_move;
-	loggedMove.y = user_cmd->forward_move;
+    vector_t curVel = cheat::local_player->get_velocity();
 
-	if (stop_movement) {
-		if (settings.miscellaneous.movement.edge_bug_mouse)
-			if (settings.miscellaneous.movement.edgebug_rage_amount == 0.0f)
-				sens->set_value(0);
-			else
-				sens->set_value(1.5f / settings.miscellaneous.movement.edge_bug_radius);
-		if (settings.miscellaneous.movement.edge_bug_movement) {
-			user_cmd->side_move = loggedMove.x;
-			user_cmd->forward_move = loggedMove.y;
-		}
-	}
+    // wow this if statement is so fucking ugly
 
-	vector_t curVel = cheat::local_player->get_velocity();
+    if (cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND) {
+        cheat::stop_movement = false;
+        shouldDuck = false;
+    }
+    else if ((curVel.z < 1.f && unpredicted_velocity.z + 0.5 < curVel.z && next_possible_eb < interfaces::global_vars->current_time)) {
+        if (shouldDuck && settings.miscellaneous.movement.edge_bug_crouch) {
+            cheat::stop_movement = false;
+            shouldDuck = false;
+            user_cmd->buttons |= BUTTON_IN_DUCK;
+            logging::info("pog");
+        }
+    }
 
-	// wow this if statement is so fucking ugly
-
-	if (cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND) {
-		stop_movement = false;
-		shouldDuck = false;
-		sens->set_value(old_sens);
-	}
-	else if ((curVel.z < 1.f && unpredicted_velocity.z + 0.5 < curVel.z && next_possible_eb < interfaces::global_vars->current_time)) {
-		if (shouldDuck && settings.miscellaneous.movement.edge_bug_crouch) {
-			stop_movement = false;
-			shouldDuck = false;
-			is_edge_bugging = true;
-			sens->set_value(old_sens);
-			user_cmd->buttons |= BUTTON_IN_DUCK;
-			logging::info("pog");
-		}
-	}
-
-	//oldVel = vel;
-	next_possible_eb = interfaces::global_vars->current_time;
-	unpredicted_velocity = curVel;
-	is_edge_bugging = false;
+    next_possible_eb = interfaces::global_vars->current_time;
+    unpredicted_velocity = curVel;
 }

@@ -12,4 +12,5 @@ namespace cheat
 	inline uint32_t unpredicted_flags;
 	inline bool b_predicting;
 	inline bool landed = false;
+	inline bool stop_movement;
 }
