@@ -155,5 +155,8 @@ bool patterns::init()
 	if ((accept_match = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"))) == 0u)
 		return false;
 
+	if ((send_datagram = get_pattern(XORSTR("engine.dll"), XORSTR("55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? 56 57 8B F9 89 7C 24 18"))) == 0u)
+		return false;
+
 	return true;
 }

@@ -8,6 +8,8 @@
 #include "../features/assistance/legitbot.h"
 #include "../features/assistance/triggerbot/triggerbot.h"
 
+#include "../features/fake ping/fake_ping.h"
+
 #include "../features/miscellaneous/miscellaneous.h"
 
 #include "../features/movement/movement.h"
@@ -35,6 +37,8 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 			}
 		}
 	}
+
+	features::fake_ping::on_create_move();
 
 	features::miscellaneous::auto_pistol(user_cmd);
 

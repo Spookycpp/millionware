@@ -254,6 +254,7 @@ public:
 	DECLARE_NETVAR(entity_handle_t, observer_target, "DT_BasePlayer", "m_hObserverTarget");
 	DECLARE_NETVAR(entity_handle_t, active_weapon_handle, "DT_BaseCombatCharacter", "m_hActiveWeapon");
 	DECLARE_NETVAR(entity_handle_t, view_model_handle, "DT_BasePlayer", "m_hViewModel[0]");
+	DECLARE_NETVAR(entity_handle_t, ground_entity, "DT_BasePlayer", "m_hGroundEntity");
 
 	DECLARE_NETVAR_OFFSET(int, old_simulation_time, "DT_BaseEntity", "m_flSimulationTime", 4);
 	DECLARE_NETVAR_OFFSET(int, move_type, "DT_BaseEntity", "m_nRenderMode", 1);

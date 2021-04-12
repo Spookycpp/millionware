@@ -187,6 +187,7 @@
     <ClCompile Include="features\assistance\lagcompensation\lag_comp.cpp" />
     <ClCompile Include="features\assistance\legitbot.cpp" />
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
+    <ClCompile Include="features\fake ping\fake_ping.cpp" />
     <ClCompile Include="features\hitchance\hitchance.cpp" />
     <ClCompile Include="features\lagcompensation\lagcompensation.cpp" />
     <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
@@ -211,6 +212,7 @@
     <ClCompile Include="hooks\override_view.cpp" />
     <ClCompile Include="hooks\paint_traverse.cpp" />
     <ClCompile Include="hooks\present.cpp" />
+    <ClCompile Include="hooks\send_datagram.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="core\cheat\cheat.cpp" />
     <ClCompile Include="core\exports\exports.cpp" />
@@ -252,6 +254,7 @@
     <ClInclude Include="features\assistance\lagcompensation\lag_comp.h" />
     <ClInclude Include="features\assistance\legitbot.h" />
     <ClInclude Include="features\assistance\triggerbot\triggerbot.h" />
+    <ClInclude Include="features\fake ping\fake_ping.h" />
     <ClInclude Include="features\hitchance\hitchance.h" />
     <ClInclude Include="features\lagcompensation\lagcompensation.h" />
     <ClInclude Include="features\miscellaneous\miscellaneous.h" />

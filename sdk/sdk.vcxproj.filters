@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="core\hooks\hooks.cpp" />
@@ -59,6 +59,8 @@
     <ClCompile Include="gui\base_element.cpp" />
     <ClCompile Include="ui\ui.cpp" />
     <ClCompile Include="thirdparty\layout\layout.cpp" />
+    <ClCompile Include="features\fake ping\fake_ping.cpp" />
+    <ClCompile Include="hooks\send_datagram.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -146,5 +148,6 @@
     <ClInclude Include="resources\transparency_checkerboard_png.h" />
     <ClInclude Include="resources\trollface_png.h" />
     <ClInclude Include="source engine\matrix.h" />
+    <ClInclude Include="features\fake ping\fake_ping.h" />
   </ItemGroup>
 </Project>

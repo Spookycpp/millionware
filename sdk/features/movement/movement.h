@@ -16,4 +16,6 @@ namespace features::movement {
 	void post_prediction(c_user_cmd* user_cmd, int pre_flags, int post_flags);
 
 	void edgebug_assist(c_user_cmd* user_cmd);
+	void fast_walk(c_user_cmd* user_cmd);
+	void slide_walk(c_user_cmd* user_cmd);
 }

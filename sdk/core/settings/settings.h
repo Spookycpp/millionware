@@ -97,11 +97,11 @@ struct settings_t {
 			bool  draw_teammates = false;
 			bool  damage_logs = false;
 			bool  engine_radar = false;
-			bool  box = false;
-			bool  name = false;
+			bool  bounding_box = false;
+			bool  player_name = false;
 			bool  health = false;
 			bool  armor = false;
-			int   weapon = 0;
+			bool  weapon = false;
 			bool  ammo = false;
 			bool  skeleton = false;
 			bool  head_spot = false;
@@ -116,7 +116,7 @@ struct settings_t {
 			bool  c4_carrier = false;
 			bool  footsteps = false;
 			bool  visualize_backtrack = false;
-			int   glow = 0;
+			bool  glow = false;
 			bool  outside_fov = false;
 			float outside_fov_radius = 0.75f;
 			int   outside_fov_size = 25;
@@ -144,7 +144,7 @@ struct settings_t {
 		} world;
 
 		struct {
-			int  recoil_crosshair = 0;
+			bool recoil_crosshair = false;
 			bool penetration_crosshair = false;
 			bool sniper_crosshair = false;
 			bool grenade_prediction = false;
@@ -153,6 +153,7 @@ struct settings_t {
 			bool disable_post_processing = false;
 			bool disable_dynamic_shadows = false;
 			bool disable_panorama_blur   = false;
+			bool disable_fog			 = false;
 			float flash_alpha  = 255.f;
 			float aspect_ratio = 0.f;
 			float override_fov = 90.0f;

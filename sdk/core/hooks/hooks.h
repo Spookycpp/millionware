@@ -34,6 +34,7 @@ namespace hooks
 	void __fastcall lock_cursor(c_vgui_surface *ecx, uintptr_t edx);
 	void __fastcall override_mouse_input(c_client_mode *ecx, uintptr_t edx, float *x, float *y);
 	int __fastcall override_view(c_client_mode *ecx, uintptr_t edx, view_setup_t *view_setup);
+	int __fastcall send_datagram(c_net_channel*, uintptr_t*, void*);
 	void __fastcall paint_traverse(c_vgui_panel *ecx, uintptr_t edx, int panel_id, bool force_repaint, bool allow_force);
 	long __stdcall present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region);
 
@@ -53,6 +54,7 @@ namespace hooks
 	inline decltype(&lock_cursor) lock_cursor_original;
 	inline decltype(&override_mouse_input) override_mouse_input_original;
 	inline decltype(&override_view) override_view_original;
+	inline decltype(&send_datagram) send_datagram_original;
 	inline decltype(&paint_traverse) paint_traverse_original;
 	inline decltype(&present) present_original;
 }

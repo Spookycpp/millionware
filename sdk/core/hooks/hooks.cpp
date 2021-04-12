@@ -52,6 +52,7 @@ bool hooks::init()
 	lock_cursor_original = create_hook((uintptr_t) interfaces::surface, 67, &lock_cursor);
 	override_mouse_input_original = create_hook((uintptr_t) interfaces::client_mode, 23, &override_mouse_input);
 	override_view_original = create_hook((uintptr_t) interfaces::client_mode, 18, &override_view);
+	send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t)patterns::send_datagram, (uintptr_t)&send_datagram)); // holy
 	paint_traverse_original = create_hook((uintptr_t) interfaces::panel, 42, &paint_traverse);
 
 	present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);
@@ -79,6 +80,7 @@ bool hooks::init()
 	INIT_HOOK(lock_cursor_original, "LockCursor");
 	INIT_HOOK(override_mouse_input_original, "OverrideMouseInput");
 	INIT_HOOK(override_view_original, "OverrideView");
+	INIT_HOOK(send_datagram_original, "SendDatagram");
 	INIT_HOOK(paint_traverse_original, "PaintTraverse");
 
 	INIT_HOOK(present_original, "Present");

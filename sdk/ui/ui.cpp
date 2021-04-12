@@ -18,28 +18,23 @@ static std::shared_ptr<c_element> next_blocking_ptr;
 
 static color_t accent_color = { 222, 102, 122 };
 
-color_t &ui::get_accent_color()
-{
+color_t& ui::get_accent_color() {
 	return accent_color;
 }
 
-std::shared_ptr<c_tab> ui::get_active_tab()
-{
+std::shared_ptr<c_tab> ui::get_active_tab() {
 	return active_tab_ptr;
 }
 
-std::shared_ptr<c_element> ui::get_blocking()
-{
+std::shared_ptr<c_element> ui::get_blocking() {
 	return blocking_ptr;
 }
 
-void ui::set_active_tab(std::shared_ptr<c_tab> active_tab)
-{
+void ui::set_active_tab(std::shared_ptr<c_tab> active_tab) {
 	next_active_tab_ptr = active_tab;
 }
 
-void ui::set_blocking(std::shared_ptr<c_element> blocking)
-{
+void ui::set_blocking(std::shared_ptr<c_element> blocking) {
 	new_blocking = true;
 	next_blocking_ptr = blocking;
 }
@@ -57,8 +52,7 @@ static int key_bind_value2 = 0x2D;
 static int weapon_group = 0;
 static std::string text_input_value1;
 
-void ui::init()
-{
+void ui::init() {
 	main_window = std::make_shared<c_window>(point_t(64.0f, 64.0f), point_t(1000.0f, 704.0f));
 
 	/*group->new_checkbox("Example checkbox", checkbox_value1)
@@ -93,8 +87,7 @@ void ui::init()
 		->add_color_picker(color_picker_value1)
 		->add_key_bind(key_bind_value2);*/
 
-	if (const auto aim_category = main_window->new_category(XORSTR("Aim Assistance")))
-	{
+	if (const auto aim_category = main_window->new_category(XORSTR("Aim Assistance"))) {
 		if (const auto legit_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_CROSSHAIRS, "Legit")) {
 			settings_t::legitbot_t* legitbot_settings = &settings.lbot_pistols;
 
@@ -134,7 +127,7 @@ void ui::init()
 				group->new_slider(XORSTR("RCS X"), legitbot_settings->rcs_x, 0.0f, 100.0f, "{:.1f}");
 				group->new_slider(XORSTR("RCS Y"), legitbot_settings->rcs_y, 0.0f, 100.0f, "{:.1f}");
 				group->new_checkbox(XORSTR("Adaptive"), legitbot_settings->smoothing.enabled);
-				
+
 				// check if the adaptive bool returns true, if so show these options @czapek
 				group->new_slider(XORSTR("Smoothing Samples"), legitbot_settings->smoothing.samples, 2, 28, "{}");
 				group->new_slider(XORSTR("Smoothing Factor"), legitbot_settings->smoothing.factor, 0.1f, 2.0f, "{}");
@@ -155,7 +148,7 @@ void ui::init()
 
 			if (const auto group = legit_tab->new_group("Triggerbot")) {
 				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->triggerbot.enabled)
-				->add_key_bind(legitbot_settings->triggerbot.hotkey);
+					->add_key_bind(legitbot_settings->triggerbot.hotkey);
 
 				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->triggerbot.check_team);
 				group->new_checkbox(XORSTR("Smoke check"), legitbot_settings->triggerbot.check_smoked);
@@ -167,7 +160,7 @@ void ui::init()
 
 				// check if the adaptive bool returns true, if so show this option @czapek
 				group->new_slider(XORSTR("Backtracking max time"), legitbot_settings->triggerbot.backtrack.time, 0, 200, "{}ms");
-				
+
 			}
 		}
 
@@ -175,23 +168,24 @@ void ui::init()
 		const auto anti_aim_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_REDO, "Anti-aim");
 	}
 
-	if (const auto visual_category = main_window->new_category("Visualizations"))
-	{
-		if (const auto players_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_USER, "Players"))
-		{
-			if (const auto group = players_tab->new_group("1")) {
-				//group->new_checkbox(XORSTR("Bounding box"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Name"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Health"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Armor"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Weapon"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Ammo"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Skeleton"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Headspot"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Barrel"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Glow"), settings.miscellaneous.movement.bunny_hop);
-				//group->new_checkbox(XORSTR("Outside of FOV"), settings.miscellaneous.movement.bunny_hop);
-					// fov radius & size
+	if (const auto visual_category = main_window->new_category("Visualizations")) {
+		if (const auto players_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_USER, "Players")) {
+			if (const auto group = players_tab->new_group("Player ESP")) {
+				group->new_checkbox(XORSTR("Bounding box"), settings.visuals.player.bounding_box);
+				group->new_checkbox(XORSTR("Name"), settings.visuals.player.player_name);
+				group->new_checkbox(XORSTR("Health"), settings.visuals.player.health);
+				group->new_checkbox(XORSTR("Armor"), settings.visuals.player.armor);
+				group->new_checkbox(XORSTR("Weapon"), settings.visuals.player.weapon);
+				group->new_checkbox(XORSTR("Ammo"), settings.visuals.player.ammo);
+				group->new_checkbox(XORSTR("Skeleton"), settings.visuals.player.skeleton);
+				group->new_checkbox(XORSTR("Headspot"), settings.visuals.player.head_spot);
+				group->new_checkbox(XORSTR("Barrel"), settings.visuals.player.barrel);
+				group->new_checkbox(XORSTR("Glow"), settings.visuals.player.glow);
+				if (group->new_checkbox(XORSTR("Outside of FOV"), settings.visuals.player.outside_fov)) {
+					group->new_slider(XORSTR("Radius"), settings.visuals.player.outside_fov_radius, 0.f, 2.0f, "{:.1f}");
+					group->new_slider(XORSTR("Size"), settings.visuals.player.outside_fov_size, 0, 30, "{}");
+				}
+
 			}
 
 			if (const auto group = players_tab->new_group("Model")) {
@@ -204,11 +198,29 @@ void ui::init()
 
 		const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, "Weapons");
 		const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, "World");
-		const auto view_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_EYE, "View");
+
+		if (const auto view_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_EYE, "View")) {
+
+			if (const auto group = view_tab->new_group("Local")) {
+				group->new_slider(XORSTR("Field of view"), settings.visuals.local.override_fov, 50.f, 130.f, "{:.1f}");
+				group->new_checkbox(XORSTR("Recoil crosshair"), settings.visuals.local.recoil_crosshair);
+				group->new_checkbox(XORSTR("Sniper crosshair"), settings.visuals.local.sniper_crosshair);
+				group->new_checkbox(XORSTR("Grenade prediction"), settings.visuals.local.grenade_prediction);
+				group->new_checkbox(XORSTR("Spectator list"), settings.visuals.local.spectator_list);
+				group->new_checkbox(XORSTR("Kill effect"), settings.visuals.local.kill_effect);
+
+			}
+
+			if (const auto group = view_tab->new_group("Local removals")) {
+				group->new_checkbox(XORSTR("Disable post processing"), settings.visuals.local.disable_post_processing);
+				group->new_checkbox(XORSTR("Disable panorama blur"), settings.visuals.local.disable_panorama_blur);
+				group->new_checkbox(XORSTR("Disable fog"), settings.visuals.local.disable_fog);
+				group->new_checkbox(XORSTR("Disable dynamic shadows"), settings.visuals.local.disable_dynamic_shadows);
+			}
+		}
 	}
 
-	if (const auto misc_category = main_window->new_category("Miscellaneous"))
-	{
+	if (const auto misc_category = main_window->new_category("Miscellaneous")) {
 		if (const auto main_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_TOOLS, "Main")) {
 
 			if (const auto group = main_tab->new_group("Movement")) {
@@ -216,22 +228,30 @@ void ui::init()
 				group->new_checkbox(XORSTR("Infinite duck"), settings.miscellaneous.movement.no_duck_cooldown);
 
 				group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)
-				->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
+					->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
 
 				group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)
-				->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
+					->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
 
 				group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)
 					->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
 				group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, "{}");
+				group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, "{:.1f}");
 				group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch);
 				group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement);
 				group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
-				group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, "{:.1f}");
 
 				group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)
 					->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);
+
+				group->new_checkbox(XORSTR("Air duck"), settings.miscellaneous.movement.air_duck);
+
+				group->new_checkbox(XORSTR("Fast walk"), settings.miscellaneous.movement.fast_walk)
+					->add_key_bind(settings.miscellaneous.movement.fast_walk_hotkey);
+
+				group->new_checkbox(XORSTR("Slide walk"), settings.miscellaneous.movement.slide_walk);
+
 			}
 		}
 		const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, "Presets");
@@ -242,10 +262,8 @@ void ui::init()
 	}
 }
 
-void ui::frame()
-{
-	if (input::is_key_pressed(VK_INSERT))
-	{
+void ui::frame() {
+	if (input::is_key_pressed(VK_INSERT)) {
 		is_menu_active ^= true;
 
 		new_blocking = false;
@@ -262,20 +280,17 @@ void ui::frame()
 	if (blocking_ptr != nullptr)
 		blocking_ptr->render();
 
-	if (next_active_tab_ptr != nullptr)
-	{
+	if (next_active_tab_ptr != nullptr) {
 		active_tab_ptr = next_active_tab_ptr;
 		next_active_tab_ptr = nullptr;
 	}
 
-	if (new_blocking)
-	{
+	if (new_blocking) {
 		new_blocking = false;
 		blocking_ptr = next_blocking_ptr;
 	}
 }
 
-bool ui::is_active()
-{
+bool ui::is_active() {
 	return is_menu_active;
 }
