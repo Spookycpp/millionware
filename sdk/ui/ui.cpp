@@ -203,6 +203,8 @@ void ui::init() {
 
 			if (const auto group = view_tab->new_group("Local")) {
 				group->new_slider(XORSTR("Field of view"), settings.visuals.local.override_fov, 50.f, 130.f, "{:.1f}");
+				group->new_slider(XORSTR("Aspect ratio"), settings.visuals.local.aspect_ratio, 0.f, 5.f, "{:.1f}");
+				group->new_slider(XORSTR("Flash alpha"), settings.visuals.local.flash_alpha, 0.f, 255.f, "{:.1f}");
 				group->new_checkbox(XORSTR("Recoil crosshair"), settings.visuals.local.recoil_crosshair);
 				group->new_checkbox(XORSTR("Sniper crosshair"), settings.visuals.local.sniper_crosshair);
 				group->new_checkbox(XORSTR("Grenade prediction"), settings.visuals.local.grenade_prediction);
@@ -216,6 +218,11 @@ void ui::init() {
 				group->new_checkbox(XORSTR("Disable panorama blur"), settings.visuals.local.disable_panorama_blur);
 				group->new_checkbox(XORSTR("Disable fog"), settings.visuals.local.disable_fog);
 				group->new_checkbox(XORSTR("Disable dynamic shadows"), settings.visuals.local.disable_dynamic_shadows);
+			}
+
+			if (const auto group = view_tab->new_group(XORSTR("Model"))) {
+				group->new_checkbox(XORSTR("Ragdoll push"), settings.miscellaneous.ragdoll_push);
+				group->new_checkbox(XORSTR("Ragdoll float"), settings.miscellaneous.ragdoll_float);
 			}
 		}
 	}

@@ -98,7 +98,6 @@
     <ClInclude Include="source engine\debug_overlay.h" />
     <ClInclude Include="source engine\engine_client.h" />
     <ClInclude Include="source engine\entity.h" />
-    <ClInclude Include="source engine\game_events.h" />
     <ClInclude Include="source engine\globals.h" />
     <ClInclude Include="source engine\input.h" />
     <ClInclude Include="source engine\leaf_system.h" />
@@ -150,5 +149,6 @@
     <ClInclude Include="source engine\matrix.h" />
     <ClInclude Include="features\fake ping\fake_ping.h" />
     <ClInclude Include="source engine\effects.h" />
+    <ClInclude Include="source engine\game_events.h" />
   </ItemGroup>
 </Project>

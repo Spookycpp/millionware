@@ -134,10 +134,13 @@ namespace features::miscellaneous {
 	void ragdoll_push() {
 		const static auto phys_pushscale = interfaces::convar_system->find_convar(XORSTR("phys_pushscale"));
 
-		if (settings.miscellaneous.ragdoll_push)
+		if (settings.miscellaneous.ragdoll_push) {
+			phys_pushscale->get_flags() |= 0;
+			phys_pushscale->set_value(6000);
+		}
+		else {
 			phys_pushscale->set_value(1);
-		else 
-			phys_pushscale->set_value(0);
+		}
 	}
 
 	void ragdoll_float() {

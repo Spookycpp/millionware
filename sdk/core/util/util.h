@@ -3,6 +3,7 @@
 #include "../../source engine/vector.h"
 
 #include <optional>
+#include <string>
 
 extern int   TIME_TO_TICKS(float dt);
 extern float TICKS_TO_TIME(int tick);
@@ -26,4 +27,5 @@ namespace util {
 	void on_map_load();
 
 	std::optional< vector_t > get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius);
+	std::string sanitize_string(const std::string& str);
 }

@@ -123,3 +123,19 @@ std::optional<vector_t> util::get_intersection(const vector_t& start, const vect
 
 	return {};
 }
+
+std::string util::sanitize_string(const std::string& str) {
+	std::string ret = str;
+
+	for (auto& it : ret) {
+		switch (it) {
+			case '"': case '\\': case ';': case '\n':
+				it = ' ';
+				break;
+			default:
+				break;
+		}
+	}
+
+	return ret;
+}
