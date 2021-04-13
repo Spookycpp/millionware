@@ -13,6 +13,8 @@ namespace features::miscellaneous {
 	void on_create_move(c_user_cmd* user_cmd, c_weapon* weapon) {
 
 		auto_pistol(user_cmd);
+		foot_fx();
+		foot_trail();
 	}
 
 	void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
@@ -23,6 +25,7 @@ namespace features::miscellaneous {
 				post_processing();
 
 				force_crosshair();
+				recoil_crosshair();
 				flash_alpha();
 
 				ragdoll_float();
@@ -122,7 +125,7 @@ namespace features::miscellaneous {
 		if (!cheat::local_player)
 			return;
 
-		cheat::local_player->get_flash_alpha() = settings.visuals.local.flash_alpha;
+		cheat::local_player->get_flash_alpha() = 255.0f * settings.visuals.local.flash_alpha / 100.0f;
 	}
 
 	void recoil_crosshair() {
@@ -166,22 +169,32 @@ namespace features::miscellaneous {
 
 		static auto r_3dsky = interfaces::convar_system->find_convar(XORSTR("r_3dsky"));
 
-		if (r_3dsky)
+		if (!r_3dsky)
 			return;
 
 		std::string skybox_name;
 
 		switch (skybox) {
-			case 1:  skybox_name = XORSTR("cs_baggage_skybox_");	  break;
-			case 2:  skybox_name = XORSTR("cs_tibet");			      break;
-			case 3:  skybox_name = XORSTR("italy");					  break;
-			case 4:  skybox_name = XORSTR("jungle");				  break;
-			case 5:  skybox_name = XORSTR("office");				  break;
-			case 6:  skybox_name = XORSTR("sky_cs15_daylight02_hdr"); break;
-			case 7:  skybox_name = XORSTR("sky_csgo_night02");        break;
-			case 8:  skybox_name = XORSTR("vertigo");			      break;
-			case 9:  skybox_name = XORSTR("sky_csgo_cloudy01");       break;
-			case 10: skybox_name = XORSTR("vietnam");			      break;
+			case 1:  skybox_name = XORSTR("cs_tibet");				  break;
+			case 2:  skybox_name = XORSTR("cs_baggage_skybox_");	  break;
+			case 3:  skybox_name = XORSTR("embassy");				  break;
+			case 4:  skybox_name = XORSTR("italy");				      break;
+			case 5:  skybox_name = XORSTR("jungle");				  break;
+			case 6:  skybox_name = XORSTR("office");				  break;
+			case 7:  skybox_name = XORSTR("sky_cs15_daylight01_hdr"); break;
+			case 8:  skybox_name = XORSTR("vertigoblue_hdr");		  break;
+			case 9:  skybox_name = XORSTR("sky_cs15_daylight02_hdr"); break;
+			case 10: skybox_name = XORSTR("sky_day02_05_hdr");		  break;
+			case 11: skybox_name = XORSTR("sky_venice");			  break;
+			case 12: skybox_name = XORSTR("sky_cs15_daylight03_hdr"); break;
+			case 13: skybox_name = XORSTR("sky_cs15_daylight04_hdr"); break;
+			case 14: skybox_name = XORSTR("sky_csgo_cloudy01");		  break;
+			case 15: skybox_name = XORSTR("sky_csgo_night02");		  break;
+			case 16: skybox_name = XORSTR("sky_csgo_night02b");		  break;
+			case 17: skybox_name = XORSTR("sky_csgo_night_flat");	  break;
+			case 18: skybox_name = XORSTR("sky_dust");			      break;
+			case 19: skybox_name = XORSTR("vietnam");			      break;
+			case 20: skybox_name = XORSTR("custom");			      break;
 			default: skybox_name = sv_skyname->get_string();	      break;
 		}
 
@@ -208,12 +221,14 @@ namespace features::miscellaneous {
 
 		switch (settings.visuals.local.feet_fx) {
 			case 0:
-				interfaces::effects->sparks(cheat::local_player->get_vec_origin());
 				break;
 			case 1:
-				interfaces::effects->dust(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.5f, 1.f, cheat::local_player->get_velocity().length_2d() / 250.f);
+				interfaces::effects->sparks(cheat::local_player->get_vec_origin());
 				break;
 			case 2:
+				interfaces::effects->dust(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.5f, 1.f, cheat::local_player->get_velocity().length_2d() / 250.f);
+				break;
+			case 3:
 				interfaces::effects->energy_splash(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.2f, true);
 				break;
 		}

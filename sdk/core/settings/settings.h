@@ -154,7 +154,7 @@ struct settings_t {
 			bool disable_dynamic_shadows = false;
 			bool disable_panorama_blur   = false;
 			bool disable_fog			 = false;
-			float flash_alpha  = 255.f;
+			int  flash_alpha  = 100;
 			float aspect_ratio = 0.f;
 			float override_fov = 90.0f;
 			int feet_fx = 0;
