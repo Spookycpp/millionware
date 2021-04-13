@@ -1,4 +1,5 @@
 #pragma once
+#include "../../source engine/client_dll.h"
 #include "../../source engine/vector.h"
 #include "../../source engine/matrix.h"
 
@@ -15,7 +16,7 @@ namespace features::lag_compensation {
 		float valid_time = 0.0f;
 	};
 
-	void on_frame_stage_notify(const int frame_stage);
+	void on_frame_stage_notify(e_client_frame_stage frame_stage);
 
 	void store_visuals();
 	bool get_render_record(int idx, matrix3x4_t* out);

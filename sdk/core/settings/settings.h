@@ -157,6 +157,7 @@ struct settings_t {
 			float flash_alpha  = 255.f;
 			float aspect_ratio = 0.f;
 			float override_fov = 90.0f;
+			int feet_fx = 0;
 		} local;
 	} visuals;
 

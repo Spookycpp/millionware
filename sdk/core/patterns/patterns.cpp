@@ -146,16 +146,19 @@ bool patterns::init()
 	if ((flash_time = get_pattern(XORSTR("client.dll"), XORSTR("F3 0F 10 86 ???? 0F 2F 40 10 76 30"))) == 0u)
 		return false;
 
-	if ((line_goes_through_smoke = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 EC 08 8B 15 ? ? ? ? 0F 57 C0"))) == 0u)
+	if ((line_goes_through_smoke = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 EC 08 8B 15 ???? 0F 57 C0"))) == 0u)
 		return false;
 
-	if ((move_helper = get_pattern(XORSTR("client.dll"), XORSTR("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01"))) == 0u)
+	if ((move_helper = get_pattern(XORSTR("client.dll"), XORSTR("8B 0D ???? 8B 45 ? 51 8B D4 89 02 8B 01"))) == 0u)
 		return false;	
 	
-	if ((accept_match = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"))) == 0u)
+	if ((accept_match = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 8B 4D 08 BA ???? E8 ???? 85 C0 75 12"))) == 0u)
 		return false;
 
-	if ((send_datagram = get_pattern(XORSTR("engine.dll"), XORSTR("55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? 56 57 8B F9 89 7C 24 18"))) == 0u)
+	if ((send_datagram = get_pattern(XORSTR("engine.dll"), XORSTR("55 8B EC 83 E4 F0 B8 ???? E8 ???? 56 57 8B F9 89 7C 24 18"))) == 0u)
+		return false;
+
+	if ((load_named_sky = get_pattern(XORSTR("engine.dll"), XORSTR("55 8B EC 81 EC ???? 56 57 8B F9 C7 45"))) == 0u)
 		return false;
 
 	return true;

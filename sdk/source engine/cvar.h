@@ -13,6 +13,7 @@ private:
 
 public:
 	int flags;
+	char* string;
 
 private:
 	char padding1_[4];
@@ -31,6 +32,10 @@ public:
 	DECLARE_VFUNC(15, set_value(float value), void(__thiscall *)(void *, float))(value);
 	DECLARE_VFUNC(16, set_value(int value), void(__thiscall *)(void *, int))(value);
 	DECLARE_VFUNC(16, set_value(bool value), void(__thiscall *)(void *, int))((int) value);
+
+	const char* get_string() const {
+		return string;
+	}
 
 	int& get_flags() {
 		return flags;

@@ -149,5 +149,6 @@
     <ClInclude Include="resources\trollface_png.h" />
     <ClInclude Include="source engine\matrix.h" />
     <ClInclude Include="features\fake ping\fake_ping.h" />
+    <ClInclude Include="source engine\effects.h" />
   </ItemGroup>
 </Project>

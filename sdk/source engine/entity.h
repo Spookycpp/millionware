@@ -219,7 +219,7 @@ public:
 	DECLARE_NETVAR(bool, is_spotted, "DT_BaseEntity", "m_bSpotted");
 	DECLARE_NETVAR(int, flags, "DT_BasePlayer", "m_fFlags");
 	DECLARE_NETVAR(int, team_num, "DT_BaseEntity", "m_iTeamNum");
-	DECLARE_NETVAR(vector_t, origin, "DT_BaseEntity", "m_vecOrigin");
+	DECLARE_NETVAR(vector_t, vec_origin, "DT_BaseEntity", "m_vecOrigin");
 	DECLARE_NETVAR(entity_handle_t, owner_handle, "DT_BaseEntity", "m_hOwnerEntity");
 
 	DECLARE_NETVAR_OFFSET(matrix3x4_t, transformation_matrix, "DT_BaseEntity", "m_CollisionGroup", -48);

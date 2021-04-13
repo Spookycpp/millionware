@@ -17,12 +17,13 @@
 
 static std::once_flag prediction_init;
 
-bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float frame_time, c_user_cmd *user_cmd)
-{
+bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float frame_time, c_user_cmd* user_cmd) {
 	std::call_once(prediction_init, engine_prediction::init);
 
 	if (!user_cmd || !user_cmd->command_number)
 		return create_move_original(ecx, edx, frame_time, user_cmd);
+
+	features::fake_ping::on_create_move();
 
 	if (util::run_frame() && cheat::local_player->is_alive()) {
 		features::legitbot::sample_angle_data(user_cmd->view_angles);
@@ -35,22 +36,20 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 				features::legitbot::on_create_move(user_cmd, local_weapon);
 				features::legitbot::triggerbot::on_create_move(user_cmd, local_weapon);
 			}
+
+			features::miscellaneous::on_create_move(user_cmd, local_weapon);
 		}
 	}
 
 	features::fake_ping::on_create_move();
 
-	features::miscellaneous::auto_pistol(user_cmd);
+	features::miscellaneous::rank_reveal(user_cmd);
 
 	features::movement::pre_prediction(user_cmd);
-
 	const auto pre_flags = cheat::local_player->get_flags();
-
 	engine_prediction::start_prediction(user_cmd);
 	engine_prediction::end_prediction(user_cmd);
-
 	const auto post_flags = cheat::local_player->get_flags();
-
 	features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
 	features::movement::edgebug_assist(user_cmd);

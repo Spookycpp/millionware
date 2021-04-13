@@ -278,6 +278,7 @@
     <ClInclude Include="source engine\color.h" />
     <ClInclude Include="source engine\cvar.h" />
     <ClInclude Include="source engine\debug_overlay.h" />
+    <ClInclude Include="source engine\effects.h" />
     <ClInclude Include="source engine\engine_client.h" />
     <ClInclude Include="source engine\engine_sound.h" />
     <ClInclude Include="source engine\entity.h" />

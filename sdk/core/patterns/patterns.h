@@ -25,6 +25,7 @@ namespace patterns
 	inline uintptr_t move_helper;
 	inline uintptr_t accept_match;
 	inline uintptr_t send_datagram;
+	inline uintptr_t load_named_sky;
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
@@ -43,6 +44,7 @@ namespace patterns
 	PATTERN_GET(move_helper, **(uint32_t ***)(move_helper + 2u));
 	PATTERN_GET(accept_match, accept_match);
 	PATTERN_GET(send_datagram, send_datagram);
+	PATTERN_GET(load_named_sky, load_named_sky);
 
 	bool init();
 }

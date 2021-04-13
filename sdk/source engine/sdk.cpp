@@ -41,7 +41,7 @@ CUtlVector<matrix3x4_t>& c_player::get_cached_bone_data() {
 }
 
 vector_t c_player::get_eye_pos() const {
-	return get_origin() + get_view_offset();
+	return get_vec_origin() + get_view_offset();
 }
 
 vector_t c_player::extrapolate_position(const vector_t& pos) {

@@ -17,8 +17,8 @@ namespace features::lag_compensation {
 
 	std::array< float, 65 > last_sim_time = {};
 
-	void on_frame_stage_notify(const int frame_stage) {
-		if (frame_stage != FRAME_STAGE_RENDER_END) {
+	void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
+		if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_END) {
 			return;
 		}
 
@@ -47,7 +47,7 @@ namespace features::lag_compensation {
 			if (std::abs(last_sim_time[i] - ent->get_simulation_time()) != 0.0f) {
 				render_record_t new_record = {};
 				new_record.simulation_time = ent->get_simulation_time() /*+ util::get_lerp_time( )*/;
-				new_record.origin = ent->get_origin();
+				new_record.origin = ent->get_vec_origin();
 				new_record.global_time = interfaces::global_vars->current_time /*- util::get_lerp_time( )*/;
 				new_record.valid_time = 0.0f;
 
@@ -55,7 +55,7 @@ namespace features::lag_compensation {
 				ent->get_renderable()->setup_bones(matrices.data(), 128, BONE_USED_BY_ANYTHING, 0.0f);
 
 				for (auto& matrix : matrices) {
-					const vector_t origin = ent->get_origin();
+					const vector_t origin = ent->get_vec_origin();
 					vector_t       delta  = math::get_matrix_position(matrix) - origin;
 
 					math::set_matrix_position(delta + origin, matrix);
@@ -117,7 +117,7 @@ namespace features::lag_compensation {
 				continue;
 			}
 
-			if (it->origin.dist(ent->get_origin()) < 1.0f) {
+			if (it->origin.dist(ent->get_vec_origin()) < 1.0f) {
 				return false;
 			}
 
@@ -147,7 +147,7 @@ namespace features::lag_compensation {
 				delta = math::ease_out(0.0f, 1.0f, delta);
 			}
 
-			const vector_t next = it + 1 == data.rend() ? ent->get_origin() : (it + 1)->origin;
+			const vector_t next = it + 1 == data.rend() ? ent->get_vec_origin() : (it + 1)->origin;
 			const vector_t lerp = math::lerp(it->origin, next, delta);
 
 			std::array< matrix3x4_t, 128 > ret = {};

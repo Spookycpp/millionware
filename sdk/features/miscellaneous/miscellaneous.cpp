@@ -1,3 +1,5 @@
+#include <string>
+
 #include "miscellaneous.h"
 
 #include "../../core/cheat/cheat.h"
@@ -7,6 +9,32 @@
 #include "../../engine/security/xorstr.h"
 
 namespace features::miscellaneous {
+
+	void on_create_move(c_user_cmd* user_cmd, c_weapon* weapon) {
+
+		auto_pistol(user_cmd);
+	}
+
+	void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
+
+		switch (frame_stage) {
+			case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
+				panorama_blur();
+				post_processing();
+
+				force_crosshair();
+				flash_alpha();
+
+				ragdoll_float();
+				ragdoll_push();
+			}
+		}
+	}
+
+	void on_override_view(view_setup_t* view_setup) {
+		override_fov(view_setup);
+	}
+
 
 	void auto_pistol(c_user_cmd* user_cmd) {
 		
@@ -124,12 +152,79 @@ namespace features::miscellaneous {
 		}
 	}
 
-	void skybox_changer() {
-		// map list here ( const char* or ill fucking kill you )
-	
-		static auto load_named_sky = nullptr; // pattern here
+	void skybox_changer(const int skybox) {
+		if (!interfaces::engine_client->is_in_game())
+			return;
 
-		// finishing function later, need something.
+		static auto sv_skyname = interfaces::convar_system->find_convar(XORSTR("sv_skyname"));
+
+		if (!sv_skyname)
+			return;
+
+		static auto r_3dsky = interfaces::convar_system->find_convar(XORSTR("r_3dsky"));
+
+		if (r_3dsky)
+			return;
+
+		std::string skybox_name;
+
+		switch (skybox) {
+			case 1:  skybox_name = XORSTR("cs_baggage_skybox_");	  break;
+			case 2:  skybox_name = XORSTR("cs_tibet");			      break;
+			case 3:  skybox_name = XORSTR("italy");					  break;
+			case 4:  skybox_name = XORSTR("jungle");				  break;
+			case 5:  skybox_name = XORSTR("office");				  break;
+			case 6:  skybox_name = XORSTR("sky_cs15_daylight02_hdr"); break;
+			case 7:  skybox_name = XORSTR("sky_csgo_night02");        break;
+			case 8:  skybox_name = XORSTR("vertigo");			      break;
+			case 9:  skybox_name = XORSTR("sky_csgo_cloudy01");       break;
+			case 10: skybox_name = XORSTR("vietnam");			      break;
+			default: skybox_name = sv_skyname->get_string();	      break;
+		}
+
+		if (skybox_name.empty())
+			return;
+
+		static auto load_named_sky_addr = patterns::load_named_sky;
+		static auto load_named_sky_fn   = reinterpret_cast<void(__fastcall*)(const char*)>(load_named_sky_addr);
+
+		if (!load_named_sky_fn) 
+			return;
+		
+		load_named_sky_fn(skybox_name.c_str());
+
+		r_3dsky->set_value( skybox != 0 ? 0 : 1 );
+	}
+
+	void foot_fx() {
+		if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
+			return;
+
+		if (interfaces::engine_client->is_in_game() && !interfaces::engine_client->is_connected())
+			return;
+
+		switch (settings.visuals.local.feet_fx) {
+			case 0:
+				interfaces::effects->sparks(cheat::local_player->get_vec_origin());
+				break;
+			case 1:
+				interfaces::effects->dust(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.5f, 1.f, cheat::local_player->get_velocity().length_2d() / 250.f);
+				break;
+			case 2:
+				interfaces::effects->energy_splash(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.2f, true);
+				break;
+		}
+	}
+
+	void foot_trail() {
+		
+		if (interfaces::engine_client->is_in_game() && !interfaces::engine_client->is_connected())
+			return;
+
+		if (!cheat::local_player || !cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
+			return;
+
+
 	}
 
 }

@@ -23,7 +23,7 @@ namespace hooks
 	void __fastcall draw_model_execute(uintptr_t, uintptr_t, void* ctx, void* state, c_model_render_info* info, matrix3x4_t* matrix);
 	void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char*, int, const char*, float, float, int, int, int, const vector_t*, const vector_t*, vector_t*, bool, float, int, uintptr_t);
 	bool _fastcall fire_event_client_side(uintptr_t, uintptr_t, c_game_event* event);
-	void __fastcall frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx, int stage);
+	void __fastcall frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx, e_client_frame_stage stage);
 	float __fastcall get_screen_aspect_ratio(uintptr_t, uintptr_t, int, int);
 	bool __fastcall get_player_info(c_engine_client *ecx, uintptr_t edx, int ent_index, player_info_t &buffer);
 	bool __fastcall is_connected(c_engine_client *ecx, uintptr_t edx);

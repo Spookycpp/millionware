@@ -8,6 +8,8 @@
 #include "../../engine/security/xorstr.h"
 #include "../../engine/math/math.h"
 
+#include "../../features/miscellaneous/miscellaneous.h"
+
 float TICK_INTERVAL() {
 	return interfaces::global_vars->interval_per_tick;
 }
@@ -83,6 +85,10 @@ void util::set_random_seed(const int seed) {
 		return;
 
 	random_seed_fn(seed);
+}
+
+void util::on_map_load() {
+	features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
 }
 
 std::optional<vector_t> util::get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius) {

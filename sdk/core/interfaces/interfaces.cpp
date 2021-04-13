@@ -54,6 +54,9 @@ bool interfaces::init()
 		return false;
 
 	if ((entity_list = (c_entity_list *) get_interface(XORSTR("client.dll"), XORSTR("VClientEntityList003"))) == nullptr)
+		return false;
+	
+	if ((effects = (c_effects *) get_interface(XORSTR("client.dll"), XORSTR("IEffects001"))) == nullptr)
 		return false;	
 	
 	if ((engine_sound = (c_engine_sound *) get_interface(XORSTR("engine.dll"), XORSTR("IEngineSoundClient003"))) == nullptr)

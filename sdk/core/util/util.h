@@ -23,6 +23,7 @@ namespace util {
 	bool intersects_hitbox(const vector_t eye_pos, const vector_t end_pos, const vector_t min, const vector_t max, const float radius);
 
 	void set_random_seed(const int seed);
+	void on_map_load();
 
 	std::optional< vector_t > get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius);
 }

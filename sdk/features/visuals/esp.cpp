@@ -99,7 +99,7 @@ void features::visuals::esp::frame()
 		if (!entity->get_networkable()->is_dormant())
 		{
 			entity_info.last_server_update = interfaces::global_vars->current_time;
-			entity_info.position = entity->get_origin();
+			entity_info.position = entity->get_vec_origin();
 		}
 
 		const auto player = (c_player *) entity;
