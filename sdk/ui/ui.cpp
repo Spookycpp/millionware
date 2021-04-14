@@ -131,11 +131,11 @@ void ui::init() {
 				group->new_slider(XORSTR("Speed exponent"), legitbot_settings->speed_exponent, 1.0f, 2.5f, XORSTR("{:.1f}"));
 				group->new_slider(XORSTR("RCS X"), legitbot_settings->rcs_x, 0.0f, 100.0f, XORSTR("{:.1f}"));
 				group->new_slider(XORSTR("RCS Y"), legitbot_settings->rcs_y, 0.0f, 100.0f, XORSTR("{:.1f}"));
-				group->new_checkbox(XORSTR("Adaptive"), legitbot_settings->smoothing.enabled);
-
-				// check if the adaptive bool returns true, if so show these options @czapek
-				group->new_slider(XORSTR("Smoothing Samples"), legitbot_settings->smoothing.samples, 2, 28, XORSTR("{}"));
-				group->new_slider(XORSTR("Smoothing Factor"), legitbot_settings->smoothing.factor, 0.1f, 2.0f, XORSTR("{}"));
+				
+				if (group->new_checkbox(XORSTR("Adaptive"), legitbot_settings->smoothing.enabled)) {
+					group->new_slider(XORSTR("Smoothing Samples"), legitbot_settings->smoothing.samples, 2, 28, XORSTR("{}"));
+					group->new_slider(XORSTR("Smoothing Factor"), legitbot_settings->smoothing.factor, 0.1f, 2.0f, XORSTR("{}"));
+				}
 			}
 
 			if (const auto group = legit_tab->new_group("Filters")) {
@@ -161,11 +161,8 @@ void ui::init() {
 				group->new_slider(XORSTR("Hitchance"), legitbot_settings->triggerbot.hit_chance, 0, 100, "{}");
 				group->new_slider(XORSTR("Delay"), legitbot_settings->triggerbot.delay, 0, 1000, XORSTR("{}ms"));
 
-				group->new_checkbox(XORSTR("Backtrack"), legitbot_settings->triggerbot.backtrack.enabled);
-
-				// check if the adaptive bool returns true, if so show this option @czapek
-				group->new_slider(XORSTR("Backtracking max time"), legitbot_settings->triggerbot.backtrack.time, 0, 200, XORSTR("{}ms"));
-
+				if (group->new_checkbox(XORSTR("Backtrack"), legitbot_settings->triggerbot.backtrack.enabled))
+					group->new_slider(XORSTR("Backtracking max time"), legitbot_settings->triggerbot.backtrack.time, 0, 200, XORSTR("{}ms"));
 			}
 		}
 
@@ -211,7 +208,31 @@ void ui::init() {
 		}
 
 		const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, XORSTR("Weapons"));
-		const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, XORSTR("World"));
+		
+		if (const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, XORSTR("World"))) {
+			if (const auto group = world_tab->new_group(XORSTR("Main"))) {
+				// nightmode
+				// fullbright
+				// weather (rain, snow & wtv else we can do)
+				// skybox (include custom)
+				// asus walls
+				// asus props
+				// removals (smoke, fog, blood, teammates, ragdolls, weapons
+			}
+
+			if (const auto group = world_tab->new_group(XORSTR("Other"))) {
+				group->new_checkbox(XORSTR("Rank reveal"), settings.miscellaneous.rank_reveal);
+				//group->new_checkbox(XORSTR("Money reveal"), settings.miscellaneous.reveal_money);
+				//group->new_checkbox(XORSTR("Money reveal"), settings.miscellaneous.preserve_killfeed);
+			}
+
+			if (const auto group = world_tab->new_group(XORSTR("Fog"))) {
+				// enable fog
+				// start dist
+				// end dist
+				// densisty
+			}
+		}
 
 		if (const auto view_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_EYE, XORSTR("View"))) {
 
@@ -230,8 +251,6 @@ void ui::init() {
 			if (const auto group = view_tab->new_group("Local removals")) {
 				group->new_checkbox(XORSTR("Disable post processing"), settings.visuals.local.disable_post_processing);
 				group->new_checkbox(XORSTR("Disable panorama blur"), settings.visuals.local.disable_panorama_blur);
-				group->new_checkbox(XORSTR("Disable fog"), settings.visuals.local.disable_fog);
-				group->new_checkbox(XORSTR("Disable dynamic shadows"), settings.visuals.local.disable_dynamic_shadows);
 			}
 
 			if (const auto group = view_tab->new_group(XORSTR("Model"))) {
@@ -255,14 +274,15 @@ void ui::init() {
 				group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)
 					->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
 
-				group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)
-					->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
+				if (group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)) {
+					group->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
-				group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"));
-				group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"));
-				group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch);
-				group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement);
-				group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
+						group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"));
+						group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"));
+						group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch);
+						group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement);
+						group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
+				}
 
 				group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)
 					->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);

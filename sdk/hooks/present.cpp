@@ -12,6 +12,7 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 	render::begin();
 
 	features::visuals::esp::frame();
+	features::visuals::esp::indicators();
 
 	ui::frame();
 

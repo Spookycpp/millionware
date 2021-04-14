@@ -167,6 +167,7 @@ void render::init(HWND window, IDirect3DDevice9 *device)
 	io.LogFilename = nullptr;
 
 	fonts[FONT_VERDANA_12] = create_from_system(io, XORSTR("Verdana"), 13.0f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+	fonts[FONT_VERDANA_24] = create_from_system(io, XORSTR("Verdana"), 25.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
 	fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
 	fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
 	fonts[FONT_CEREBRI_SANS_MEDIUM_18] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 18.0f);

@@ -151,9 +151,12 @@ struct settings_t {
 			bool spectator_list = false;
 			bool kill_effect = false;
 			bool disable_post_processing = false;
-			bool disable_dynamic_shadows = false;
 			bool disable_panorama_blur   = false;
-			bool disable_fog			 = false;
+			bool indicators				 = false;
+			bool jb_indicator			 = false;
+			bool eb_indicator			 = false;
+			bool ej_indicator			 = false;
+			bool mj_indicator			 = false;
 			int  flash_alpha  = 100;
 			float aspect_ratio = 0.f;
 			float override_fov = 90.0f;
