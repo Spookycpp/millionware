@@ -98,7 +98,7 @@ void ui::init() {
 
 			if (const auto group = legit_tab->new_group(XORSTR("Weapon groups"))) {
 				group->new_checkbox(XORSTR("Enabled"), settings.global.weapon_groups);
-				group->new_select(XORSTR("Group"), weapon_group, { XORSTR("Pistols"), XORSTR("Heavy pistol"), XORSTR("Rifles"), XORSTR("AWP"), XORSTR("Scout"), XORSTR("Auto"), XORSTR("Other")});
+				group->new_select(XORSTR("Group"), weapon_group, { XORSTR("Pistols"), XORSTR("Heavy pistol"), XORSTR("Rifles"), XORSTR("AWP"), XORSTR("Scout"), XORSTR("Auto"), XORSTR("Other") });
 			}
 
 			if (const auto group = legit_tab->new_group("Prerequisites")) {
@@ -131,7 +131,7 @@ void ui::init() {
 				group->new_slider(XORSTR("Speed exponent"), legitbot_settings->speed_exponent, 1.0f, 2.5f, XORSTR("{:.1f}"));
 				group->new_slider(XORSTR("RCS X"), legitbot_settings->rcs_x, 0.0f, 100.0f, XORSTR("{:.1f}"));
 				group->new_slider(XORSTR("RCS Y"), legitbot_settings->rcs_y, 0.0f, 100.0f, XORSTR("{:.1f}"));
-				
+
 				if (group->new_checkbox(XORSTR("Adaptive"), legitbot_settings->smoothing.enabled)) {
 					group->new_slider(XORSTR("Smoothing Samples"), legitbot_settings->smoothing.samples, 2, 28, XORSTR("{}"));
 					group->new_slider(XORSTR("Smoothing Factor"), legitbot_settings->smoothing.factor, 0.1f, 2.0f, XORSTR("{}"));
@@ -174,7 +174,7 @@ void ui::init() {
 
 		if (const auto anti_aim_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_REDO, XORSTR("Anti-aim"))) {
 			if (const auto group = anti_aim_tab->new_group(XORSTR("Angles"))) {
-				
+
 			}
 		}
 	}
@@ -186,8 +186,9 @@ void ui::init() {
 				group->new_checkbox(XORSTR("Name"), settings.visuals.player.player_name);
 				group->new_checkbox(XORSTR("Health"), settings.visuals.player.health);
 				group->new_checkbox(XORSTR("Armor"), settings.visuals.player.armor);
-				group->new_checkbox(XORSTR("Weapon"), settings.visuals.player.weapon);
+				group->new_checkbox(XORSTR("Weapon"), settings.visuals.player.weapon_text);
 				group->new_checkbox(XORSTR("Ammo"), settings.visuals.player.ammo);
+				group->new_checkbox(XORSTR("Flags"), settings.visuals.player.flags);
 				group->new_checkbox(XORSTR("Skeleton"), settings.visuals.player.skeleton);
 				group->new_checkbox(XORSTR("Headspot"), settings.visuals.player.head_spot);
 				group->new_checkbox(XORSTR("Barrel"), settings.visuals.player.barrel);
@@ -208,13 +209,17 @@ void ui::init() {
 		}
 
 		const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, XORSTR("Weapons"));
-		
+
 		if (const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, XORSTR("World"))) {
 			if (const auto group = world_tab->new_group(XORSTR("Main"))) {
 				// nightmode
 				// fullbright
 				// weather (rain, snow & wtv else we can do)
-				// skybox (include custom)
+				group->new_select("Skybox", settings.visuals.world.skybox, { XORSTR("Default"), XORSTR("Tibet"), XORSTR("Baggage"), XORSTR("Monastery"), XORSTR("Italy"),
+					XORSTR("Aztec"), XORSTR("Vertigo"), XORSTR("Daylight"), XORSTR("Daylight 2"), XORSTR("Clouds"), XORSTR("Clouds 2"), XORSTR("Gray"),
+					XORSTR("Clear"), XORSTR("Canals"), XORSTR("Cobblestone"), XORSTR("Assault"), XORSTR("Clouds Dark"), XORSTR("Night"), XORSTR("Night 2"),
+					XORSTR("Night Flat"), XORSTR("Dusty"), XORSTR("Rainy"), XORSTR("Custom") });
+
 				// asus walls
 				// asus props
 				// removals (smoke, fog, blood, teammates, ragdolls, weapons
@@ -246,6 +251,12 @@ void ui::init() {
 				group->new_checkbox(XORSTR("Spectator list"), settings.visuals.local.spectator_list);
 				group->new_checkbox(XORSTR("Kill effect"), settings.visuals.local.kill_effect);
 
+				if (group->new_checkbox(XORSTR("Viewmodel offset"), settings.visuals.local.viewmodel_offset)) {
+					group->new_slider(XORSTR("X"), settings.visuals.local.viewmodel_offset_x, -10.f, 10.f, XORSTR("{:.1f}°"));
+					group->new_slider(XORSTR("Y"), settings.visuals.local.viewmodel_offset_y, -10.f, 10.f, XORSTR("{:.1f}°"));
+					group->new_slider(XORSTR("Z"), settings.visuals.local.viewmodel_offset_z, -10.f, 10.f, XORSTR("{:.1f}°"));
+					group->new_slider(XORSTR("R"), settings.visuals.local.viewmodel_offset_r, 0.f, 360.f, XORSTR("{:.1f}°"));
+				}
 			}
 
 			if (const auto group = view_tab->new_group("Local removals")) {
@@ -265,23 +276,25 @@ void ui::init() {
 		if (const auto main_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_TOOLS, XORSTR("Main"))) {
 
 			if (const auto group = main_tab->new_group(XORSTR("Movement"))) {
+				group->new_checkbox(XORSTR("Indicators"), settings.visuals.local.indicators);
+
 				group->new_checkbox(XORSTR("Bunnyhop"), settings.miscellaneous.movement.bunny_hop);
 				group->new_checkbox(XORSTR("Infinite duck"), settings.miscellaneous.movement.no_duck_cooldown);
 
 				group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)
 					->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
-
+					
 				group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)
 					->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
 
 				if (group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)) {
 					group->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
-						group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"));
-						group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"));
-						group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch);
-						group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement);
-						group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
+					group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"));
+					group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"));
+					group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch);
+					group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement);
+					group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
 				}
 
 				group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)
@@ -297,11 +310,31 @@ void ui::init() {
 			}
 
 		}
-		const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, XORSTR("Presets"));
-		const auto scripts_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_FILE_CODE, XORSTR("Scripts"));
+
+		if (const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, XORSTR("Settings"))) {
+			if (const auto group = presets_tab->new_group(XORSTR("YADA"))) {
+				static bool test;
+				// add raw text.
+				group->new_checkbox("niggers", test)
+					->add_color_picker(ui::get_accent_color(), false);
+			}
+
+			if (const auto group = presets_tab->new_group(XORSTR("BADA"))) {
+			}
+
+			set_active_tab(presets_tab);
+		}
+
+		if (const auto scripts_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_FILE_CODE, XORSTR("Scripts"))) {
+			if (const auto group = scripts_tab->new_group(XORSTR("A"))) {
+			}
+
+			if (const auto group = scripts_tab->new_group(XORSTR("B"))) {
+			}
+		}
+
 		const auto inventory_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_WALLET, XORSTR("Inventory"));
 
-		set_active_tab(presets_tab);
 	}
 }
 

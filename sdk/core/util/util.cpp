@@ -87,7 +87,10 @@ void util::set_random_seed(const int seed) {
 	random_seed_fn(seed);
 }
 
-void util::on_map_load() {
+void util::on_frame_stage_notify(const e_client_frame_stage frame_stage) {
+	if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_START)
+		return;
+
 	features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
 }
 

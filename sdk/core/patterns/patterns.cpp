@@ -161,5 +161,11 @@ bool patterns::init()
 	if ((load_named_sky = get_pattern(XORSTR("engine.dll"), XORSTR("55 8B EC 81 EC ???? 56 57 8B F9 C7 45"))) == 0u)
 		return false;
 
+	if ((set_abs_angles = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8"))) == 0u)
+		return false;
+
+	if ((get_sequence_activity = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 53 8B 5D 08 56 8B F1 83"))) == 0u)
+		return false;
+
 	return true;
 }

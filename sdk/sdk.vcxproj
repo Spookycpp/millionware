@@ -193,7 +193,8 @@
     <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
     <ClCompile Include="features\movement\engine prediction\engine_prediction.cpp" />
     <ClCompile Include="features\movement\movement.cpp" />
-    <ClCompile Include="features\visuals\esp.cpp" />
+    <ClCompile Include="features\visuals\players\esp.cpp" />
+    <ClCompile Include="features\visuals\world\indicators.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\do_post_screen_effects.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
@@ -260,7 +261,8 @@
     <ClInclude Include="features\miscellaneous\miscellaneous.h" />
     <ClInclude Include="features\movement\engine prediction\engine_prediction.h" />
     <ClInclude Include="features\movement\movement.h" />
-    <ClInclude Include="features\visuals\esp.h" />
+    <ClInclude Include="features\visuals\players\esp.h" />
+    <ClInclude Include="features\visuals\world\indicators.h" />
     <ClInclude Include="resources\cerebri_sans_medium_ttf.h" />
     <ClInclude Include="resources\cerebri_sans_regular_ttf.h" />
     <ClInclude Include="resources\csgo_icons.h" />
@@ -287,6 +289,7 @@
     <ClInclude Include="source engine\globals.h" />
     <ClInclude Include="source engine\input.h" />
     <ClInclude Include="source engine\leaf_system.h" />
+    <ClInclude Include="source engine\localize.h" />
     <ClInclude Include="source engine\macros.h" />
     <ClInclude Include="source engine\material.h" />
     <ClInclude Include="source engine\material_handle.h" />

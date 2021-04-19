@@ -17,7 +17,7 @@ namespace features::miscellaneous {
 	void auto_accept();
 	void rank_reveal(c_user_cmd* user_cmd);
 
-	// local view
+	// override view
 	void override_fov(view_setup_t* view_setup);
 
 	// visual
@@ -31,4 +31,5 @@ namespace features::miscellaneous {
 	void skybox_changer(int skybox);
 	void foot_fx();
 	void foot_trail();
+	void viewmodel_offset();
 }

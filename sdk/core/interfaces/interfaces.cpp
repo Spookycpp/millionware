@@ -102,6 +102,9 @@ bool interfaces::init()
 		return false;
 
 	if ((prediction = (c_prediction*) get_interface(XORSTR("client.dll"), XORSTR("VClientPrediction001"))) == nullptr)
+		return false;
+	
+	if ((localize = (c_localize*) get_interface(XORSTR("localize.dll"), XORSTR("Localize_001"))) == nullptr)
 		return false;	
 
 

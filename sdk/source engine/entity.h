@@ -161,6 +161,25 @@ enum e_bone_mask_t {
 	BONE_USED_BY_BONE_MERGE = 0x00040000	// bone is available for bone merge to occur against it
 };
 
+class c_animation_layer {
+public:
+	bool client_blend;
+	float layer_fade_time;
+	void* studio_hdr;
+	int dispatch_sequence_primary;
+	int dispatch_sequence_secondary;
+	int order;
+	int sequence;
+	float prev_cycle;
+	float weight;
+	float weight_delta_rate;
+	float playback_rate;
+	float cycle;
+	void* owner;
+	char pad[4];
+};
+
+
 struct entity_handle_t
 {
 	uintptr_t handle;
@@ -258,25 +277,28 @@ public:
 
 	DECLARE_NETVAR_OFFSET(int, old_simulation_time, "DT_BaseEntity", "m_flSimulationTime", 4);
 	DECLARE_NETVAR_OFFSET(int, move_type, "DT_BaseEntity", "m_nRenderMode", 1);
-
+	
+	CUtlVector<c_animation_layer>& animation_overlay();
 	CUtlVector<matrix3x4_t>& get_cached_bone_data();
 
-	vector_t get_eye_pos( ) const;
+	void set_abs_angles(const vector_t& angle);
 
+	vector_t get_eye_pos( ) const;
 	vector_t extrapolate_position(const vector_t& pos);
-	
+	vector_t get_hitbox_pos(int idx);
+
 	float get_flash_time();
 
-	bool is_flashed();
+	int sequence_activity(int sequence);
 
-	vector_t get_hitbox_pos(int idx);
-	
+	bool is_flashed();
 	bool can_shoot();
 	bool can_shoot(class c_weapon* weapon);
 	bool is_valid(bool check_alive = true);
 	bool is_alive();
 	bool is_visible(c_player* local, const vector_t& src, const vector_t& dst);
 	bool is_visible(c_player* local, const vector_t& src);
+	bool is_reloading();
 };
 
 class c_economy_item : public c_entity

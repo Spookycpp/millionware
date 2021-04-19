@@ -23,6 +23,7 @@
 #include "../../source engine/trace.h"
 #include "../../source engine/vgui.h"
 #include "../../source engine/weapon_system.h"
+#include "../../source engine/localize.h"
 
 namespace interfaces
 {
@@ -46,6 +47,7 @@ namespace interfaces
 	inline c_ui_engine			*ui_engine;
 	inline c_cvar			    *convar_system;
 	inline c_prediction			*prediction;
+	inline c_localize			*localize;
 
 	inline IDirect3DDevice9		*d3d9_device;
 	inline c_client_mode		*client_mode;

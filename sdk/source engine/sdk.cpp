@@ -36,8 +36,24 @@ bool entity_handle_t::operator !=(c_entity *entity) const
 	return get() != entity;
 }
 
+CUtlVector<c_animation_layer>& c_player::animation_overlay() {
+	const static auto offset = netvars::get(CRC_CT("DT_BaseAnimating:m_hLightingOrigin"));
+
+	return *(CUtlVector<c_animation_layer>*)((uintptr_t)this + offset + 0x3c);
+}
+
 CUtlVector<matrix3x4_t>& c_player::get_cached_bone_data() {
 	return *(CUtlVector<matrix3x4_t>*) ((uintptr_t)this + 0x290C + sizeof(void*));
+}
+
+void c_player::set_abs_angles(const vector_t& angle) {
+	if (!this) //-V704
+		return;
+
+	using Fn = void(__thiscall*)(void*, const vector_t&);
+	static auto fn = reinterpret_cast<Fn>(patterns::set_abs_angles);
+
+	return fn(this, angle);
 }
 
 vector_t c_player::get_eye_pos() const {
@@ -46,14 +62,6 @@ vector_t c_player::get_eye_pos() const {
 
 vector_t c_player::extrapolate_position(const vector_t& pos) {
 	return pos + this->get_velocity() * TICK_INTERVAL();
-}
-
-float c_player::get_flash_time() {
-	return *reinterpret_cast<float*>(uintptr_t(this) + patterns::get_flash_time());
-}
-
-bool c_player::is_flashed() {
-	return get_flash_time() > interfaces::global_vars->current_time;
 }
 
 vector_t c_player::get_hitbox_pos(const int idx) {
@@ -93,6 +101,28 @@ vector_t c_player::get_hitbox_pos(const int idx) {
 	const auto max = math::vector_transform(bbox->maxs + modifier, matrix);
 
 	return (min + max) * 0.5f;
+}
+
+float c_player::get_flash_time() {
+	return *reinterpret_cast<float*>(uintptr_t(this) + patterns::get_flash_time());
+}
+
+int c_player::sequence_activity(int sequence) {
+	const auto model = this->get_renderable()->get_model();
+	if (!model) {
+		return -1;
+	}
+
+	const auto hdr = interfaces::model_info->get_studio_model(model);
+	if (!hdr) {
+		return -1;
+	}
+
+	return reinterpret_cast<int(__fastcall*)(void*, studio_hdr_t*, int)>(patterns::get_sequence_activity)(this, hdr, sequence);
+}
+
+bool c_player::is_flashed() {
+	return get_flash_time() > interfaces::global_vars->current_time;
 }
 
 bool c_player::can_shoot() {
@@ -206,6 +236,16 @@ bool c_player::is_visible(c_player* local, const vector_t& src) {
 	return ret;
 }
 
+bool c_player::is_reloading() {
+	const auto& reload_layer = animation_overlay().Element(1);
+	if (reload_layer.owner) {
+		const int activity = sequence_activity(reload_layer.sequence);
+
+		return activity == 967 && reload_layer.weight != 0.f;
+	}
+
+	return false;
+}
 
 bool c_player::is_valid(const bool check_alive) {
 	if (!this || this->get_networkable()->is_dormant() || !this->is_player()) {

@@ -101,12 +101,13 @@ struct settings_t {
 			bool  player_name = false;
 			bool  health = false;
 			bool  armor = false;
-			bool  weapon = false;
+			bool  weapon_text = false;
+			bool  weapon_icon = false;
 			bool  ammo = false;
 			bool  skeleton = false;
 			bool  head_spot = false;
 			bool  barrel = false;
-			bool  icon_flags = false;
+			bool  flags = false;
 			bool  money = false;
 			bool  kevlar = false;
 			bool  helmet = false;
@@ -150,6 +151,7 @@ struct settings_t {
 			bool grenade_prediction = false;
 			bool spectator_list = false;
 			bool kill_effect = false;
+			bool viewmodel_offset = false;
 			bool disable_post_processing = false;
 			bool disable_panorama_blur   = false;
 			bool indicators				 = false;
@@ -160,6 +162,10 @@ struct settings_t {
 			int  flash_alpha  = 100;
 			float aspect_ratio = 0.f;
 			float override_fov = 90.0f;
+			float viewmodel_offset_x = 0.f;
+			float viewmodel_offset_y = 0.f;
+			float viewmodel_offset_z = 0.f;
+			float viewmodel_offset_r = 0.f; 
 			int feet_fx = 0;
 		} local;
 	} visuals;

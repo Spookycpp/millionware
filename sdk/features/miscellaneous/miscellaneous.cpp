@@ -15,6 +15,7 @@ namespace features::miscellaneous {
 		auto_pistol(user_cmd);
 		foot_fx();
 		foot_trail();
+		viewmodel_offset();
 	}
 
 	void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
@@ -37,7 +38,6 @@ namespace features::miscellaneous {
 	void on_override_view(view_setup_t* view_setup) {
 		override_fov(view_setup);
 	}
-
 
 	void auto_pistol(c_user_cmd* user_cmd) {
 		
@@ -139,7 +139,7 @@ namespace features::miscellaneous {
 
 		if (settings.miscellaneous.ragdoll_push) {
 			phys_pushscale->get_flags() |= 0;
-			phys_pushscale->set_value(6000);
+			phys_pushscale->set_value(3000);
 		}
 		else {
 			phys_pushscale->set_value(1);
@@ -175,27 +175,29 @@ namespace features::miscellaneous {
 		std::string skybox_name;
 
 		switch (skybox) {
-			case 1:  skybox_name = XORSTR("cs_tibet");				  break;
-			case 2:  skybox_name = XORSTR("cs_baggage_skybox_");	  break;
-			case 3:  skybox_name = XORSTR("embassy");				  break;
-			case 4:  skybox_name = XORSTR("italy");				      break;
-			case 5:  skybox_name = XORSTR("jungle");				  break;
-			case 6:  skybox_name = XORSTR("office");				  break;
-			case 7:  skybox_name = XORSTR("sky_cs15_daylight01_hdr"); break;
-			case 8:  skybox_name = XORSTR("vertigoblue_hdr");		  break;
-			case 9:  skybox_name = XORSTR("sky_cs15_daylight02_hdr"); break;
-			case 10: skybox_name = XORSTR("sky_day02_05_hdr");		  break;
-			case 11: skybox_name = XORSTR("sky_venice");			  break;
-			case 12: skybox_name = XORSTR("sky_cs15_daylight03_hdr"); break;
-			case 13: skybox_name = XORSTR("sky_cs15_daylight04_hdr"); break;
-			case 14: skybox_name = XORSTR("sky_csgo_cloudy01");		  break;
-			case 15: skybox_name = XORSTR("sky_csgo_night02");		  break;
-			case 16: skybox_name = XORSTR("sky_csgo_night02b");		  break;
-			case 17: skybox_name = XORSTR("sky_csgo_night_flat");	  break;
-			case 18: skybox_name = XORSTR("sky_dust");			      break;
-			case 19: skybox_name = XORSTR("vietnam");			      break;
-			case 20: skybox_name = XORSTR("custom");			      break;
-			default: skybox_name = sv_skyname->get_string();	      break;
+			case 1:  skybox_name = XORSTR("cs_tibet");					break;
+			case 2:  skybox_name = XORSTR("cs_baggage_skybox_");		break;
+			case 3:  skybox_name = XORSTR("embassy");					break;
+			case 4:  skybox_name = XORSTR("italy");						break;
+			case 5:  skybox_name = XORSTR("jungle");					break;
+			case 6:  skybox_name = XORSTR("office");					break;
+			case 7:  skybox_name = XORSTR("sky_cs15_daylight01_hdr");	break;
+			case 8:  skybox_name = XORSTR("vertigoblue_hdr");			break;
+			case 9:  skybox_name = XORSTR("sky_cs15_daylight02_hdr");	break;
+			case 10: skybox_name = XORSTR("vertigo");					break;
+			case 11: skybox_name = XORSTR("sky_day02_05_hdr");			break;
+			case 12: skybox_name = XORSTR("nukeblank");					break;
+			case 13: skybox_name = XORSTR("sky_venice");				break;
+			case 14: skybox_name = XORSTR("sky_cs15_daylight03_hdr");	break;
+			case 15: skybox_name = XORSTR("sky_cs15_daylight04_hdr");	break;
+			case 16: skybox_name = XORSTR("sky_csgo_cloudy01");			break;
+			case 17: skybox_name = XORSTR("sky_csgo_night02");			break;
+			case 18: skybox_name = XORSTR("sky_csgo_night02b");			break;
+			case 19: skybox_name = XORSTR("sky_csgo_night_flat");		break;
+			case 20: skybox_name = XORSTR("sky_dust");					break;
+			case 21: skybox_name = XORSTR("vietnam");					break;
+			case 22: skybox_name = XORSTR("custom");					break;
+			default: skybox_name = sv_skyname->get_string();			break;
 		}
 
 		if (skybox_name.empty())
@@ -236,13 +238,52 @@ namespace features::miscellaneous {
 
 	void foot_trail() {
 		
+		if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
+			return;
+
 		if (interfaces::engine_client->is_in_game() && !interfaces::engine_client->is_connected())
 			return;
 
-		if (!cheat::local_player || !cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
-			return;
 
+	}
 
+	void viewmodel_offset() {
+
+		// hash
+		static float last_hash = 0.f;
+
+		// finding original values of viewmodel x, y & z
+		static float og_x = 0;
+		static float og_y = 0;
+		static float og_z = 0;
+
+		if (!og_x || !og_y || !og_z) {
+			og_x = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_x"))->get_float();
+			og_y = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_y"))->get_float();
+			og_z = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_z"))->get_float();
+		}
+
+		static bool is_disabled = false;
+		if (settings.visuals.local.viewmodel_offset) {
+			float cur_hash = settings.visuals.local.viewmodel_offset_x + settings.visuals.local.viewmodel_offset_y + settings.visuals.local.viewmodel_offset_z;
+			if (last_hash != cur_hash) {
+				// setting viewmodel to the menu element value
+				interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_x"))->set_value(settings.visuals.local.viewmodel_offset_x);
+				interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_y"))->set_value(settings.visuals.local.viewmodel_offset_y);
+				interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_z"))->set_value(settings.visuals.local.viewmodel_offset_z);
+				is_disabled = false;
+				last_hash = cur_hash;
+			}
+		}
+		else {
+			if (!is_disabled) {
+				// restoring original xyz
+				interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_x"))->set_value(og_x);
+				interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_y"))->set_value(og_y);
+				interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_z"))->set_value(og_z);
+				is_disabled = true;
+			}
+		}
 	}
 
 }

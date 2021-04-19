@@ -14,7 +14,6 @@
     <ClCompile Include="engine\pe\pe.cpp" />
     <ClCompile Include="engine\render\render.cpp" />
     <ClCompile Include="features\assistance\legitbot.cpp" />
-    <ClCompile Include="features\visuals\esp.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\do_post_screen_effects.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
@@ -61,6 +60,8 @@
     <ClCompile Include="thirdparty\layout\layout.cpp" />
     <ClCompile Include="features\fake ping\fake_ping.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
+    <ClCompile Include="features\visuals\players\esp.cpp" />
+    <ClCompile Include="features\visuals\world\indicators.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -81,7 +82,6 @@
     <ClInclude Include="core\cheat\cheat.h" />
     <ClInclude Include="core\exports\exports.h" />
     <ClInclude Include="features\assistance\legitbot.h" />
-    <ClInclude Include="features\visuals\esp.h" />
     <ClInclude Include="resources\cerebri_sans_medium_ttf.h" />
     <ClInclude Include="resources\cerebri_sans_regular_ttf.h" />
     <ClInclude Include="resources\csgo_icons.h" />
@@ -150,5 +150,8 @@
     <ClInclude Include="features\fake ping\fake_ping.h" />
     <ClInclude Include="source engine\effects.h" />
     <ClInclude Include="source engine\game_events.h" />
+    <ClInclude Include="features\visuals\players\esp.h" />
+    <ClInclude Include="features\visuals\world\indicators.h" />
+    <ClInclude Include="source engine\localize.h" />
   </ItemGroup>
 </Project>
