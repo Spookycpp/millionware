@@ -297,6 +297,15 @@ void features::visuals::esp::draw_flags(const bounding_box_t& entity_box, c_play
 
 	if (player->is_reloading())
 		draw_flag(XORSTR("RELOADING"), { 2, 106, 198 });
+
+	if (player->is_flashed())
+		draw_flag(XORSTR("FLASHED"), { 255, 255, 255 });
+
+	if (player->has_bomb())
+		draw_flag(XORSTR("BOMB"), { 255, 100, 0 });
+
+	if (player->is_smoked())
+		draw_flag(XORSTR("SMOKED"), { 255, 255, 255 });
 }
 
 void features::visuals::esp::update_dormant_pos(int index, const vector_t& position) {

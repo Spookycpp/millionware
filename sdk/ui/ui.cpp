@@ -98,72 +98,96 @@ void ui::init() {
 
 			if (const auto group = legit_tab->new_group(XORSTR("Weapon groups"))) {
 				group->new_checkbox(XORSTR("Enabled"), settings.global.weapon_groups);
-				group->new_select(XORSTR("Group"), weapon_group, { XORSTR("Pistols"), XORSTR("Heavy pistol"), XORSTR("Rifles"), XORSTR("AWP"), XORSTR("Scout"), XORSTR("Auto"), XORSTR("Other") });
+				group->new_select(XORSTR("Group"), weapon_group, { XORSTR("Global"), XORSTR("Pistols"), XORSTR("Heavy pistol"), XORSTR("Rifles"), XORSTR("AWP"), XORSTR("Scout"), XORSTR("Auto"), XORSTR("Other") });
 			}
 
-			if (const auto group = legit_tab->new_group("Prerequisites")) {
-				group->new_slider(XORSTR("Field of view"), legitbot_settings->fov, 0.0f, 180.0f, "{:.1f}°");
-				group->new_slider(XORSTR("Start bullets"), legitbot_settings->start_bullets, 0, 10, "{}");
-				group->new_select("Hitbox method", legitbot_settings->hitbox_method, { XORSTR("Static"), XORSTR("Nearest") });
-				group->new_select("Target hitbox", legitbot_settings->hitbox, { XORSTR("Head"), XORSTR("Neck"), XORSTR("Upper chest"), XORSTR("Lower chest"), XORSTR("Stomach") });
-				group->new_checkbox(XORSTR("Target backtrack"), legitbot_settings->target_backtrack);
-			}
+#define WEAPON_GROUP_UI(group_name, settings_weapon_group, weapon_group_index)																													  \
+            const auto group_name##_dependency = [](const auto _) { return weapon_group == weapon_group_index; };                                                                                 \
+            if (const auto group = legit_tab->new_group("Prerequisites")) {                                                                                                                       \
+                group->new_slider(XORSTR("Field of view"), settings_weapon_group.fov, 0.0f, 180.0f, "{:.1f}");                                                                                    \
+                group->new_slider(XORSTR("Start bullets"), settings_weapon_group.start_bullets, 0, 10, "{}");                                                                                     \
+                group->new_select("Hitbox method", settings_weapon_group.hitbox_method, { XORSTR("Static"), XORSTR("Nearest") });                                                                 \
+                group->new_select("Target hitbox", settings_weapon_group.hitbox, { XORSTR("Head"), XORSTR("Neck"), XORSTR("Upper chest"), XORSTR("Lower chest"), XORSTR("Stomach") });            \
+                group->new_checkbox(XORSTR("Target backtrack"), settings_weapon_group.target_backtrack);                                                                                          \
+                group->add_dependency(group_name##_dependency);                                                                                                                                   \
+            }                                                                                                                                                                                     \
+            if (const auto group = legit_tab->new_group("General")) {                                                                                                                             \
+                const auto enabled_check = [](const auto _) { return settings_weapon_group.enabled; };                                                                                            \
+                const auto flick_bot_check = [](const auto _) { return settings_weapon_group.flick_bot.enabled > 0; };											                                  \
+                const auto aim_assist_check = [](const auto _) { return settings_weapon_group.assist.enabled; };                                                                                  \
+                const auto backtrack_check = [](const auto _) { return settings_weapon_group.backtrack.enabled; };                                                                                \
+                                                                                                                                                                                                  \
+                group->new_checkbox(XORSTR("Enabled"), settings_weapon_group.enabled)->add_key_bind(settings_weapon_group.hotkey);                                                                \
+                group->new_select(XORSTR("Flickbot"), settings_weapon_group.flick_bot.enabled, { XORSTR("Disabled"), XORSTR("Normal"), XORSTR("Silent") })->add_dependency(enabled_check);        \
+                group->new_slider(XORSTR("Field of view"), settings_weapon_group.flick_bot.fov, 0.1f, 180.0f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, flick_bot_check);                \
+                group->new_slider(XORSTR("Hitchance"), settings_weapon_group.flick_bot.hit_chance, 0, 100, XORSTR("{}%"))->add_dependencies(enabled_check, flick_bot_check);                      \
+                                                                                                                                                                                                  \
+                group->new_checkbox("Aim assist", settings_weapon_group.assist.enabled)->add_dependency(enabled_check);                                                                           \
+                group->new_slider(XORSTR("Field of view"), settings_weapon_group.assist.fov, 0.1f, 180.0f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, aim_assist_check);                  \
+                group->new_slider(XORSTR("Strength"), settings_weapon_group.assist.strength, 0.1f, 1.f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, aim_assist_check);                     \
+                                                                                                                                                                                                  \
+                group->new_checkbox("Backtracking", settings_weapon_group.backtrack.enabled)->add_dependency(enabled_check);                                                                      \
+                group->new_slider(XORSTR("Field of view"), settings_weapon_group.backtrack.fov, 0.1f, 180.0f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, backtrack_check);	              \
+                group->new_slider(XORSTR("Max time"), settings_weapon_group.backtrack.time, 0, 200, XORSTR("{}ms"))->add_dependencies(enabled_check, backtrack_check);				              \
+                                                                                                                                                                                                  \
+                group->add_dependency(group_name##_dependency);                                                                                                                                   \
+            }                                                                                                                                                                                     \
+            if (const auto group = legit_tab->new_group("Aim options")) {                                                                                                                         \
+                const auto smoothing_check = [](const auto _) { return settings_weapon_group.smoothing.enabled; };		                                                                          \
+                                                                                                                                                                                                  \
+                group->new_slider(XORSTR("Speed"), settings_weapon_group.speed, 0.0f, 100.0f, XORSTR("{:.1f}"));                                                                                  \
+                group->new_slider(XORSTR("Speed exponent"), settings_weapon_group.speed_exponent, 1.0f, 2.5f, XORSTR("{:.1f}"));                                                                  \
+                group->new_slider(XORSTR("RCS X"), settings_weapon_group.rcs_x, 0.0f, 100.0f, XORSTR("{:.1f}"));                                                                                  \
+                group->new_slider(XORSTR("RCS Y"), settings_weapon_group.rcs_y, 0.0f, 100.0f, XORSTR("{:.1f}"));                                                                                  \
+                                                                                                                                                                                                  \
+                group->new_checkbox(XORSTR("Adaptive"), settings_weapon_group.smoothing.enabled);                                                                                                 \
+                group->new_slider(XORSTR("Smoothing Samples"), settings_weapon_group.smoothing.samples, 2, 28, XORSTR("{}"))->add_dependency(smoothing_check);                                    \
+                group->new_slider(XORSTR("Smoothing Factor"), settings_weapon_group.smoothing.factor, 0.1f, 2.0f, XORSTR("{}"))->add_dependency(smoothing_check);                                 \
+                                                                                                                                                                                                  \
+                group->add_dependency(group_name##_dependency);                                                                                                                                   \
+            }                                                                                                                                                                                     \
+            if (const auto group = legit_tab->new_group("Filters")) {                                                                                                                             \
+                group->new_checkbox(XORSTR("Target invisible"), settings_weapon_group.check_visible);                                                                                             \
+                group->new_checkbox(XORSTR("Target teammates"), settings_weapon_group.check_team);                                                                                                \
+                group->new_checkbox(XORSTR("Smoke check"), settings_weapon_group.check_smoked);                                                                                                   \
+                group->new_checkbox(XORSTR("Flash check"), settings_weapon_group.check_flashed);                                                                                                  \
+                                                                                                                                                                                                  \
+                group->add_dependency(group_name##_dependency);                                                                                                                                   \
+            }                                                                                                                                                                                     \
+            if (const auto group = legit_tab->new_group("Standalone RCS")) {                                                                                                                      \
+                const auto rcs_check = [](const auto _) { return settings_weapon_group.rcs.enabled; };                                                                                            \
+                                                                                                                                                                                                  \
+                group->new_checkbox(XORSTR("Enabled"), settings_weapon_group.rcs.enabled);                                                                                                        \
+                group->new_slider(XORSTR("X"), settings_weapon_group.rcs.x, 0.0f, 100.0f, XORSTR("{:.1f}"))->add_dependency(rcs_check);                                                           \
+                group->new_slider(XORSTR("Y"), settings_weapon_group.rcs.y, 0.0f, 100.0f, XORSTR("{:.1f}"))->add_dependency(rcs_check);                                                           \
+                                                                                                                                                                                                  \
+                group->add_dependency(group_name##_dependency);                                                                                                                                   \
+            }                                                                                                                                                                                     \
+            if (const auto group = legit_tab->new_group("Triggerbot")) {                                                                                                                          \
+                const auto triggerbot_check = [](const auto _) { return settings_weapon_group.triggerbot.enabled; };                                                                              \
+                const auto backtrack_check = [](const auto _) { return settings_weapon_group.triggerbot.backtrack.enabled; };                                                                     \
+                                                                                                                                                                                                  \
+                group->new_checkbox(XORSTR("Enabled"), settings_weapon_group.triggerbot.enabled)->add_key_bind(settings_weapon_group.triggerbot.hotkey);                                          \
+                group->new_checkbox(XORSTR("Target teammates"), settings_weapon_group.triggerbot.check_team)->add_dependency(triggerbot_check);                                                   \
+                group->new_checkbox(XORSTR("Smoke check"), settings_weapon_group.triggerbot.check_smoked)->add_dependency(triggerbot_check);                                                      \
+                group->new_checkbox(XORSTR("Flash check"), settings_weapon_group.triggerbot.check_flashed)->add_dependency(triggerbot_check);                                                     \
+                group->new_slider(XORSTR("Hitchance"), settings_weapon_group.triggerbot.hit_chance, 0, 100, "{}")->add_dependency(triggerbot_check);                                              \
+                group->new_slider(XORSTR("Delay"), settings_weapon_group.triggerbot.delay, 0, 1000, XORSTR("{}ms"))->add_dependency(triggerbot_check);                                            \
+                                                                                                                                                                                                  \
+                group->new_checkbox(XORSTR("Backtrack"), settings_weapon_group.triggerbot.backtrack.enabled)->add_dependency(triggerbot_check);                                                   \
+                group->new_slider(XORSTR("Backtracking max time"), settings_weapon_group.triggerbot.backtrack.time, 0, 200, XORSTR("{}ms"))->add_dependencies(triggerbot_check, backtrack_check); \
+                                                                                                                                                                                                  \
+                group->add_dependency(group_name##_dependency);                                                                                                                                   \
+            }
 
-			if (const auto group = legit_tab->new_group("General")) {
-				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->enabled)
-					->add_key_bind(legitbot_settings->hotkey);
-
-				group->new_select(XORSTR("Flickbot"), legitbot_settings->flick_bot.enabled, { XORSTR("Disabled"), XORSTR("Normal"), XORSTR("Silent") });
-				group->new_slider(XORSTR("Field of view"), legitbot_settings->flick_bot.fov, 0.1f, 180.0f, XORSTR("{:.1f}°"));
-				group->new_slider(XORSTR("Hitchance"), legitbot_settings->flick_bot.hit_chance, 0, 100, XORSTR("{}%"));
-
-				group->new_checkbox("Aim assist", legitbot_settings->assist.enabled);
-				group->new_slider(XORSTR("Field of view"), legitbot_settings->assist.fov, 0.1f, 180.0f, XORSTR("{:.1f}°"));
-				group->new_slider(XORSTR("Strength"), legitbot_settings->assist.strength, 0.1f, 1.f, XORSTR("{:.1f}"));
-
-				group->new_checkbox("Backtracking", legitbot_settings->backtrack.enabled);
-				group->new_slider(XORSTR("Field of view"), legitbot_settings->backtrack.fov, 0.1f, 180.0f, XORSTR("{:.1f}°"));
-				group->new_slider(XORSTR("Max time"), legitbot_settings->backtrack.time, 0, 200, XORSTR("{}ms"));
-			}
-
-			if (const auto group = legit_tab->new_group("Aim options")) {
-				group->new_slider(XORSTR("Speed"), legitbot_settings->speed, 0.0f, 100.0f, XORSTR("{:.1f}"));
-				group->new_slider(XORSTR("Speed exponent"), legitbot_settings->speed_exponent, 1.0f, 2.5f, XORSTR("{:.1f}"));
-				group->new_slider(XORSTR("RCS X"), legitbot_settings->rcs_x, 0.0f, 100.0f, XORSTR("{:.1f}"));
-				group->new_slider(XORSTR("RCS Y"), legitbot_settings->rcs_y, 0.0f, 100.0f, XORSTR("{:.1f}"));
-
-				if (group->new_checkbox(XORSTR("Adaptive"), legitbot_settings->smoothing.enabled)) {
-					group->new_slider(XORSTR("Smoothing Samples"), legitbot_settings->smoothing.samples, 2, 28, XORSTR("{}"));
-					group->new_slider(XORSTR("Smoothing Factor"), legitbot_settings->smoothing.factor, 0.1f, 2.0f, XORSTR("{}"));
-				}
-			}
-
-			if (const auto group = legit_tab->new_group("Filters")) {
-				group->new_checkbox(XORSTR("Target invisible"), legitbot_settings->check_visible);
-				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->check_team);
-				group->new_checkbox(XORSTR("Smoke check"), legitbot_settings->check_smoked);
-				group->new_checkbox(XORSTR("Flash check"), legitbot_settings->check_flashed);
-			}
-
-			if (const auto group = legit_tab->new_group("Standalone RCS")) {
-				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->rcs.enabled);
-				group->new_slider(XORSTR("X"), legitbot_settings->rcs.x, 0.0f, 100.0f, XORSTR("{:.1f}"));
-				group->new_slider(XORSTR("Y"), legitbot_settings->rcs.y, 0.0f, 100.0f, XORSTR("{:.1f}"));
-			}
-
-			if (const auto group = legit_tab->new_group("Triggerbot")) {
-				group->new_checkbox(XORSTR("Enabled"), legitbot_settings->triggerbot.enabled)
-					->add_key_bind(legitbot_settings->triggerbot.hotkey);
-
-				group->new_checkbox(XORSTR("Target teammates"), legitbot_settings->triggerbot.check_team);
-				group->new_checkbox(XORSTR("Smoke check"), legitbot_settings->triggerbot.check_smoked);
-				group->new_checkbox(XORSTR("Flash check"), legitbot_settings->triggerbot.check_flashed);
-				group->new_slider(XORSTR("Hitchance"), legitbot_settings->triggerbot.hit_chance, 0, 100, "{}");
-				group->new_slider(XORSTR("Delay"), legitbot_settings->triggerbot.delay, 0, 1000, XORSTR("{}ms"));
-
-				if (group->new_checkbox(XORSTR("Backtrack"), legitbot_settings->triggerbot.backtrack.enabled))
-					group->new_slider(XORSTR("Backtracking max time"), legitbot_settings->triggerbot.backtrack.time, 0, 200, XORSTR("{}ms"));
-			}
+			WEAPON_GROUP_UI(global, settings.lbot_global, 0);
+			WEAPON_GROUP_UI(pistols, settings.lbot_pistols, 1);
+			WEAPON_GROUP_UI(hpistols, settings.lbot_hpistols, 2);
+			WEAPON_GROUP_UI(rifles, settings.lbot_rifles, 3);
+			WEAPON_GROUP_UI(awp, settings.lbot_awp, 4);
+			WEAPON_GROUP_UI(scout, settings.lbot_scout, 5);
+			WEAPON_GROUP_UI(auto, settings.lbot_auto, 6);
+			WEAPON_GROUP_UI(other, settings.lbot_other, 7);
 		}
 
 		if (const auto rage_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_SKULL, XORSTR("Rage"))) {
@@ -193,27 +217,31 @@ void ui::init() {
 				group->new_checkbox(XORSTR("Headspot"), settings.visuals.player.head_spot);
 				group->new_checkbox(XORSTR("Barrel"), settings.visuals.player.barrel);
 				group->new_checkbox(XORSTR("Glow"), settings.visuals.player.glow);
-				if (group->new_checkbox(XORSTR("Outside of FOV"), settings.visuals.player.outside_fov)) {
-					group->new_slider(XORSTR("Radius"), settings.visuals.player.outside_fov_radius, 0.f, 2.0f, XORSTR("{:.1f}"));
-					group->new_slider(XORSTR("Size"), settings.visuals.player.outside_fov_size, 0, 30, XORSTR("{}"));
-				}
 
+				group->new_checkbox(XORSTR("Outside of FOV"), settings.visuals.player.outside_fov);
+				group->new_slider(XORSTR("Radius"), settings.visuals.player.outside_fov_radius, 0.f, 2.0f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.player.outside_fov);
+				group->new_slider(XORSTR("Size"), settings.visuals.player.outside_fov_size, 0, 30, XORSTR("{}"))->add_dependency(settings.visuals.player.outside_fov);
 			}
 
 			if (const auto group = players_tab->new_group(XORSTR("Model"))) {
-				group->new_checkbox(XORSTR("Player"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Player (behind walls)"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Render chams in smoke"), settings.miscellaneous.movement.bunny_hop);
-				group->new_checkbox(XORSTR("Visualize backtrack"), settings.miscellaneous.movement.bunny_hop);
+				group->new_checkbox(XORSTR("Player"), settings.visuals.player.chams.visible);
+				group->new_checkbox(XORSTR("Player (behind walls)"), settings.visuals.player.chams.invisible);
+				group->new_checkbox(XORSTR("Render chams in smoke"), settings.visuals.player.chams.smoke);
+				group->new_checkbox(XORSTR("Visualize backtrack"), settings.visuals.player.chams.backtrack);
 			}
 		}
 
-		const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, XORSTR("Weapons"));
+		if (const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, XORSTR("Weapons"))) {
+			if (const auto group = weapons_tab->new_group(XORSTR("Main"))) {
+
+			}
+		}
 
 		if (const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, XORSTR("World"))) {
 			if (const auto group = world_tab->new_group(XORSTR("Main"))) {
-				// nightmode
-				// fullbright
+				group->new_checkbox(XORSTR("Nightmode"), settings.visuals.world.nightmode);
+				group->new_checkbox(XORSTR("Fullbright"), settings.visuals.world.fullbright);
+
 				// weather (rain, snow & wtv else we can do)
 				group->new_select("Skybox", settings.visuals.world.skybox, { XORSTR("Default"), XORSTR("Tibet"), XORSTR("Baggage"), XORSTR("Monastery"), XORSTR("Italy"),
 					XORSTR("Aztec"), XORSTR("Vertigo"), XORSTR("Daylight"), XORSTR("Daylight 2"), XORSTR("Clouds"), XORSTR("Clouds 2"), XORSTR("Gray"),
@@ -232,10 +260,10 @@ void ui::init() {
 			}
 
 			if (const auto group = world_tab->new_group(XORSTR("Fog"))) {
-				// enable fog
-				// start dist
-				// end dist
-				// densisty
+				
+				group->new_checkbox(XORSTR("Enabled"), settings.visuals.world.fog);
+				
+				
 			}
 		}
 
@@ -252,10 +280,10 @@ void ui::init() {
 				group->new_checkbox(XORSTR("Kill effect"), settings.visuals.local.kill_effect);
 
 				if (group->new_checkbox(XORSTR("Viewmodel offset"), settings.visuals.local.viewmodel_offset)) {
-					group->new_slider(XORSTR("X"), settings.visuals.local.viewmodel_offset_x, -10.f, 10.f, XORSTR("{:.1f}°"));
-					group->new_slider(XORSTR("Y"), settings.visuals.local.viewmodel_offset_y, -10.f, 10.f, XORSTR("{:.1f}°"));
-					group->new_slider(XORSTR("Z"), settings.visuals.local.viewmodel_offset_z, -10.f, 10.f, XORSTR("{:.1f}°"));
-					group->new_slider(XORSTR("R"), settings.visuals.local.viewmodel_offset_r, 0.f, 360.f, XORSTR("{:.1f}°"));
+					group->new_slider(XORSTR("X"), settings.visuals.local.viewmodel_offset_x, -10.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.viewmodel_offset);
+					group->new_slider(XORSTR("Y"), settings.visuals.local.viewmodel_offset_y, -10.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.viewmodel_offset);
+					group->new_slider(XORSTR("Z"), settings.visuals.local.viewmodel_offset_z, -10.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.viewmodel_offset);
+					group->new_slider(XORSTR("R"), settings.visuals.local.viewmodel_offset_r, 0.f, 360.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.viewmodel_offset);
 				}
 			}
 
@@ -283,19 +311,18 @@ void ui::init() {
 
 				group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)
 					->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
-					
+
 				group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)
 					->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
 
-				if (group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)) {
-					group->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
+				group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)
+					->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
-					group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"));
-					group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"));
-					group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch);
-					group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement);
-					group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse);
-				}
+				group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch)->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
+				group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement)->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
+				group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse)->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
+				group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
+				group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
 
 				group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)
 					->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);

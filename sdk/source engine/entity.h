@@ -299,6 +299,8 @@ public:
 	bool is_visible(c_player* local, const vector_t& src, const vector_t& dst);
 	bool is_visible(c_player* local, const vector_t& src);
 	bool is_reloading();
+	bool is_smoked();
+	bool has_bomb();
 };
 
 class c_economy_item : public c_entity

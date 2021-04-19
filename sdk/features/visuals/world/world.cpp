@@ -1,3 +1,5 @@
+#include "world.h"
+
 #include <algorithm>
 #include <cstdint>
 #include <unordered_map>
@@ -12,7 +14,7 @@
 #include "../../engine/security/xorstr.h"
 #include "../../engine/logging/logging.h"
 
-namespace features::visuals::indicators {
+namespace features::visuals::world {
 
 	void indicators() {
 
@@ -54,5 +56,32 @@ namespace features::visuals::indicators {
 			render::draw_text(position, { 255, 255, 255, 220 }, bind.data(), FONT_VERDANA_24);
 			offset += measure.y + 8.0f;
 		}
+	}
+
+	void fog() {
+		static const auto fog_override   = interfaces::convar_system->find_convar(XORSTR("fog_override"));
+		static const auto fog_start      = interfaces::convar_system->find_convar(XORSTR("fog_start"));
+		static const auto fog_end        = interfaces::convar_system->find_convar(XORSTR("fog_end"));
+		static const auto fog_maxdensity = interfaces::convar_system->find_convar(XORSTR("fog_maxdensity"));
+		static const auto fog_color      = interfaces::convar_system->find_convar(XORSTR("fog_color"));
+
+		const auto& misc_fog_enable = settings.visuals.world.fog;
+		const auto& misc_fog_length = settings.visuals.world.fog_length;
+		const auto& misc_fog_color  = settings.visuals.world.fog_color;
+
+		static bool    old_enable;
+		static int     old_length;
+		static color_t old_color;
+
+		//if (misc_fog_enable != old_enable || misc_fog_length != old_length || misc_fog_color != old_color) {
+		//	fog_override->set_value(misc_fog_enable);
+		//	fog_start->set_value(0);
+		//	fog_end->set_value(misc_fog_length);
+		//	fog_maxdensity->set_value(misc_fog_color.a / 255.f);
+		//	fog_color->set_value(misc_fog_color);
+		//	old_enable = misc_fog_enable;
+		//	old_length = misc_fog_length;
+		//	old_color = misc_fog_color;
+		//}
 	}
 }

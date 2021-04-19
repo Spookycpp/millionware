@@ -61,7 +61,8 @@
     <ClCompile Include="features\fake ping\fake_ping.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
     <ClCompile Include="features\visuals\players\esp.cpp" />
-    <ClCompile Include="features\visuals\world\indicators.cpp" />
+    <ClCompile Include="hooks\override_config.cpp" />
+    <ClCompile Include="features\visuals\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -151,7 +152,8 @@
     <ClInclude Include="source engine\effects.h" />
     <ClInclude Include="source engine\game_events.h" />
     <ClInclude Include="features\visuals\players\esp.h" />
-    <ClInclude Include="features\visuals\world\indicators.h" />
     <ClInclude Include="source engine\localize.h" />
+    <ClInclude Include="source engine\material_system_config.h" />
+    <ClInclude Include="features\visuals\world\world.h" />
   </ItemGroup>
 </Project>

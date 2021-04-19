@@ -7,6 +7,7 @@
 
 #include "entity.h"
 #include <vector>
+#include "../core/cheat/cheat.h"
 
 c_entity *entity_handle_t::get() const
 {
@@ -245,6 +246,17 @@ bool c_player::is_reloading() {
 	}
 
 	return false;
+}
+
+bool c_player::is_smoked() {
+	return util::line_goes_through_smoke(cheat::local_player->get_eye_pos(), this->get_eye_pos());
+}
+
+bool c_player::has_bomb() {
+	using has_bomb_t = bool(__thiscall*)(void*);
+	static has_bomb_t has_bomb = (has_bomb_t)patterns::has_bomb;
+
+	return has_bomb(this);
 }
 
 bool c_player::is_valid(const bool check_alive) {

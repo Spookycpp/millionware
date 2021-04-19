@@ -98,6 +98,9 @@ void c_group::layout(layout_item &overlay, layout_item &parent)
 
 	for (const auto child : children_)
 	{
+		if (!child->meets_dependencies())
+			continue;
+
 		child->layout(overlay, content_inner);
 	}
 }
@@ -122,6 +125,9 @@ void c_group::render()
 	for (const auto child : children_)
 	{
 		if (ui::get_blocking() != nullptr && ui::get_blocking() == child)
+			continue;
+
+		if (!child->meets_dependencies())
 			continue;
 
 		child->render();

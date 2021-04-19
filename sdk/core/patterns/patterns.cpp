@@ -167,5 +167,8 @@ bool patterns::init()
 	if ((get_sequence_activity = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 53 8B 5D 08 56 8B F1 83"))) == 0u)
 		return false;
 
+	if ((has_bomb = get_pattern(XORSTR("client.dll"), XORSTR("56 8B F1 85 F6 74 31"))) == 0u)
+		return false;
+
 	return true;
 }

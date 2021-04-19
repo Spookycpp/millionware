@@ -8,6 +8,8 @@
 #include "../source engine/color.h"
 #include "../thirdparty/layout/layout.h"
 
+using dependency_fn = std::function<bool(const std::shared_ptr<const class c_element>&)>;
+
 template <typename T>
 inline T scale_value(T value, T in_min, T in_max, T out_min, T out_max)
 {
@@ -42,6 +44,7 @@ class c_key_bind;
 class c_element : public std::enable_shared_from_this<c_element>
 {
 	std::vector<std::shared_ptr<c_element>> inline_children_;
+	std::vector<dependency_fn> m_dependencies;
 
 	layout_item root_row_;
 
@@ -59,4 +62,14 @@ public:
 
 	std::shared_ptr<c_element> add_color_picker(color_t &value, bool show_alpha_bar = true);
 	std::shared_ptr<c_element> add_key_bind(int &value, bool allow_keyboard = true, bool allow_mouse = true);
+
+	bool meets_dependencies() const;
+
+	void add_dependency(const dependency_fn& dependency);
+	void add_dependency(std::reference_wrapper<bool> dependency);
+	
+	template <typename... T>
+	void add_dependencies(const T& ... dependencies) {
+		(add_dependency(dependencies), ...);
+	}
 };

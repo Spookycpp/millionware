@@ -36,6 +36,9 @@ void c_element::layout_inline(layout_item &overlay)
 {
 	for (const auto child : inline_children_)
 	{
+		if (!child->meets_dependencies())
+			continue;
+
 		child->layout(overlay, root_row_);
 	}
 }
@@ -56,4 +59,23 @@ std::shared_ptr<c_element> c_element::add_key_bind(int &value, bool allow_keyboa
 	inline_children_.push_back(key_bind);
 
 	return shared_from_this();
+}
+
+bool c_element::meets_dependencies() const {
+	const auto shared_this = shared_from_this();
+
+	for (const auto dependency : m_dependencies) {
+		if (!dependency(shared_this))
+			return false;
+	}
+
+	return true;
+}
+
+void c_element::add_dependency(const dependency_fn& dependency) {
+	m_dependencies.push_back(dependency);
+}
+
+void c_element::add_dependency(std::reference_wrapper<bool> dependency) {
+	add_dependency([dependency](const auto elem) { return dependency; } );
 }

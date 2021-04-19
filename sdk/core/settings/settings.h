@@ -123,25 +123,26 @@ struct settings_t {
 			int   outside_fov_size = 25;
 
 			struct {
-				int   material = 0;
-				float reflectivity = 0.0f;
-				float luminance = 0.0f;
-				bool  render_in_smoke = false;
-				bool  visualize_backtrack = false;
-				bool  visualize_all_records = false;
+				bool visible   = false;
+				bool invisible = false;
+				bool smoke     = false;
+				bool backtrack = false;
 			} chams;
 		} player;
 
 		struct {
-			int   skybox = 0;
-			bool  night_mode = false;
-			float night_mode_intensity = 0.075f;
-			int   weapon = 0;
-			bool  grenade = false;
-			bool  bomb = false;
-			bool  defusal_kit = false;
-			bool  chicken = false;
-			bool  remove_fog = false;
+			int     skybox = 0;
+			bool    nightmode  = false;
+			bool    fullbright = false;
+			bool    fog = false;
+			int     fog_length = 0;
+			color_t fog_color = { 255, 255, 255 };
+			int     weapon = 0;
+			bool    grenade = false;
+			bool    bomb = false;
+			bool    defusal_kit = false;
+			bool    chicken = false;
+			bool    remove_fog = false;
 		} world;
 
 		struct {

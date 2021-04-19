@@ -194,7 +194,7 @@
     <ClCompile Include="features\movement\engine prediction\engine_prediction.cpp" />
     <ClCompile Include="features\movement\movement.cpp" />
     <ClCompile Include="features\visuals\players\esp.cpp" />
-    <ClCompile Include="features\visuals\world\indicators.cpp" />
+    <ClCompile Include="features\visuals\world\world.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\do_post_screen_effects.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
@@ -209,6 +209,7 @@
     <ClCompile Include="hooks\level_shutdown_pre_entity.cpp" />
     <ClCompile Include="hooks\list_leaves_in_box.cpp" />
     <ClCompile Include="hooks\lock_cursor.cpp" />
+    <ClCompile Include="hooks\override_config.cpp" />
     <ClCompile Include="hooks\override_mouse_input.cpp" />
     <ClCompile Include="hooks\override_view.cpp" />
     <ClCompile Include="hooks\paint_traverse.cpp" />
@@ -262,7 +263,7 @@
     <ClInclude Include="features\movement\engine prediction\engine_prediction.h" />
     <ClInclude Include="features\movement\movement.h" />
     <ClInclude Include="features\visuals\players\esp.h" />
-    <ClInclude Include="features\visuals\world\indicators.h" />
+    <ClInclude Include="features\visuals\world\world.h" />
     <ClInclude Include="resources\cerebri_sans_medium_ttf.h" />
     <ClInclude Include="resources\cerebri_sans_regular_ttf.h" />
     <ClInclude Include="resources\csgo_icons.h" />
@@ -294,6 +295,7 @@
     <ClInclude Include="source engine\material.h" />
     <ClInclude Include="source engine\material_handle.h" />
     <ClInclude Include="source engine\material_system.h" />
+    <ClInclude Include="source engine\material_system_config.h" />
     <ClInclude Include="source engine\matrix.h" />
     <ClInclude Include="source engine\model_info.h" />
     <ClInclude Include="source engine\model_render.h" />

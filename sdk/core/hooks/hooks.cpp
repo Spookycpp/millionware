@@ -50,6 +50,7 @@ bool hooks::init()
 	level_shutdown_pre_entity_original = create_hook((uintptr_t) interfaces::client_dll, 7, &level_shutdown_pre_entity);
 	list_leaves_in_box_original = create_hook((uintptr_t) bsp_tree_query, 6, &list_leaves_in_box);
 	lock_cursor_original = create_hook((uintptr_t) interfaces::surface, 67, &lock_cursor);
+	override_config_original = create_hook((uintptr_t) interfaces::material_system, 21, &override_config);
 	override_mouse_input_original = create_hook((uintptr_t) interfaces::client_mode, 23, &override_mouse_input);
 	override_view_original = create_hook((uintptr_t) interfaces::client_mode, 18, &override_view);
 	send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t)patterns::send_datagram, (uintptr_t)&send_datagram)); // holy

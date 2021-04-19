@@ -58,6 +58,9 @@ void c_tab::layout(int index, layout_item &overlay, layout_item &sidebar, layout
 
 		for (const auto child : children_)
 		{
+			if (!child->meets_dependencies())
+				continue;
+
 			child->layout(overlay, flip ? second_row : first_row);
 			child->get_item().set_margins(0.0f, 0.0f, 0.0f, 16.0f);
 
@@ -84,6 +87,9 @@ void c_tab::render()
 	{
 		for (const auto child : children_)
 		{
+			if (!child->meets_dependencies())
+				continue;
+
 			child->render();
 		}
 	}
