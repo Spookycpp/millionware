@@ -72,7 +72,7 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
     if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) 
         return;
 
-    if (!cheat::local_player->is_alive())
+    if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
         return;
 
     if (cheat::local_player->get_velocity().z > 0)

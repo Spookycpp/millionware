@@ -73,15 +73,15 @@ namespace features::visuals::world {
 		static int     old_length;
 		static color_t old_color;
 
-		//if (misc_fog_enable != old_enable || misc_fog_length != old_length || misc_fog_color != old_color) {
-		//	fog_override->set_value(misc_fog_enable);
-		//	fog_start->set_value(0);
-		//	fog_end->set_value(misc_fog_length);
-		//	fog_maxdensity->set_value(misc_fog_color.a / 255.f);
-		//	fog_color->set_value(misc_fog_color);
-		//	old_enable = misc_fog_enable;
-		//	old_length = misc_fog_length;
-		//	old_color = misc_fog_color;
-		//}
+		if (misc_fog_enable != old_enable || misc_fog_length != old_length || misc_fog_color != old_color) {
+			fog_override->set_value(misc_fog_enable);
+			fog_start->set_value(0);
+			fog_end->set_value(misc_fog_length);
+			fog_maxdensity->set_value(misc_fog_color.a / 255.f);
+			fog_color->set_value(misc_fog_color);
+			old_enable = misc_fog_enable;
+			old_length = misc_fog_length;
+			old_color = misc_fog_color;
+		}
 	}
 }

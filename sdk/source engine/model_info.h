@@ -9,26 +9,25 @@
 
 struct c_model
 {
-	uintptr_t handle;
-
+	void* handle;
 	char name[255];
 };
 
 struct c_model_render_info {
 	vector_t origin;
 	vector_t angles;
-	uintptr_t pad[0x4];
-	uintptr_t renderable;
-	c_model *model;
-	matrix3x4_t *model_to_world;
-	matrix3x4_t *lighting_offset;
-	vector_t *lighting_origin;
+	char pad[0x4];
+	void* renderable;
+	const c_model* model;
+	const matrix3x4_t* model_to_world;
+	const matrix3x4_t* lighting_offset;
+	const vector_t* lighting_origin;
 	int flags;
 	int entity_index;
 	int skin;
 	int body;
 	int hitboxset;
-	short instance;
+	unsigned short instance;
 };
 
 class c_model_info {

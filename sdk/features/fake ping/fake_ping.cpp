@@ -42,7 +42,7 @@ namespace features::fake_ping {
 		if (!settings.miscellaneous.fake_ping.enabled)
 			return;
 		
-		if (!cheat::local_player->is_alive()) 
+		if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) 
 			return;	
 
 		const float cur_time = interfaces::global_vars->current_time;

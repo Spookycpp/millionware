@@ -2,5 +2,6 @@
 
 namespace features::visuals::world {
 	void indicators();
+	void nightmode();
 	void fog();
 }

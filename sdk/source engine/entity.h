@@ -296,6 +296,7 @@ public:
 	bool can_shoot(class c_weapon* weapon);
 	bool is_valid(bool check_alive = true);
 	bool is_alive();
+	bool is_enemy();
 	bool is_visible(c_player* local, const vector_t& src, const vector_t& dst);
 	bool is_visible(c_player* local, const vector_t& src);
 	bool is_reloading();

@@ -2,12 +2,15 @@
 #define NOMINMAX
 #endif
 
-#include "../core/interfaces/interfaces.h"
-#include "../engine/math/math.h"
-
 #include "entity.h"
-#include <vector>
+
 #include "../core/cheat/cheat.h"
+#include "../core/interfaces/interfaces.h"
+
+#include "../engine/math/math.h"
+#include "../engine/security/xorstr.h"
+
+#include <vector>
 
 c_entity *entity_handle_t::get() const
 {
@@ -160,6 +163,23 @@ bool c_player::can_shoot(c_weapon* weapon) {
 
 bool c_player::is_alive() {
 	return this->get_life_state() == LIFE_STATE_ALIVE;
+}
+
+bool c_player::is_enemy() {
+	if (!this)
+		return false;
+
+	c_entity* player = (c_entity*)this;
+
+	const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
+
+	if (!mp_teammates_are_enemies)
+		return player->get_team_num() != cheat::local_player->get_team_num();
+
+	if (mp_teammates_are_enemies->get_int())
+		return this != cheat::local_player;
+
+	return player->get_team_num() != cheat::local_player->get_team_num();
 }
 
 bool c_player::is_visible(c_player* local, const vector_t& src, const vector_t& dst) {

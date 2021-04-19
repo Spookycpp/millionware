@@ -123,8 +123,11 @@ struct settings_t {
 			int   outside_fov_size = 25;
 
 			struct {
+				int  material  = 0;
 				bool visible   = false;
+				color_t visible_color = { 255, 102, 0 };
 				bool invisible = false;
+				color_t invisible_color = { 222, 7, 208 };
 				bool smoke     = false;
 				bool backtrack = false;
 			} chams;
@@ -254,25 +257,6 @@ struct settings_t {
 			int   wait_ticks = 3;
 		} rapid_lag;
 	} miscellaneous;
-
-	struct {
-		struct {
-			float team[4] = { 0.16f, 0.49f, 0.8f, 1.0f };
-			float team_visible[4] = { 0.16f, 0.8f, 0.61f, 1.0f };
-			float enemy[4] = { 0.8f, 0.78f, 0.16f, 1.0f };
-			float enemy_visible[4] = { 0.8f, 0.16f, 0.16f, 1.0f };
-
-			float chams_team[4] = { 0.16f, 0.49f, 0.8f, 1.0f };
-			float chams_team_visible[4] = { 0.16f, 0.8f, 0.61f, 1.0f };
-			float chams_enemy[4] = { 0.8f, 0.78f, 0.16f, 1.0f };
-			float chams_enemy_visible[4] = { 0.8f, 0.16f, 0.16f, 1.0f };
-
-			float glow_team[4] = { 0.44f, 0.6f, 0.86f, 0.6f };
-			float glow_team_visible[4] = { 0.44f, 0.6f, 0.86f, 0.6f };
-			float glow_enemy[4] = { 0.87f, 0.69f, 0.34f, 0.6f };
-			float glow_enemy_visible[4] = { 0.87f, 0.69f, 0.34f, 0.6f };
-		} player;
-	} color;
 };
 
 extern settings_t              settings;
