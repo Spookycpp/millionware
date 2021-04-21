@@ -135,9 +135,9 @@ void c_key_bind::render()
 					set_new_value(VK_RBUTTON);
 				else if (input::is_mouse_clicked(MOUSE_MIDDLE))
 					set_new_value(VK_MBUTTON);
-				else if (input::is_key_pressed(VK_XBUTTON1))
+				else if (input::is_mouse_clicked(MOUSE_SIDE1))
 					set_new_value(VK_XBUTTON1);
-				else if (input::is_key_pressed(VK_XBUTTON2))
+				else if (input::is_mouse_clicked(MOUSE_SIDE2))
 					set_new_value(VK_XBUTTON2);
 			}
 
@@ -145,7 +145,7 @@ void c_key_bind::render()
 			{
 				for (int i = 0; i < 250; i++)
 				{
-					if (!input::is_key_pressed(i))
+					if (!input::is_key_pressed(i) || input::get_key_press_length(i) > 0.5f)
 						continue;
 
 					set_new_value(i);

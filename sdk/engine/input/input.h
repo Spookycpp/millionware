@@ -9,6 +9,8 @@ enum e_mouse_button
 	MOUSE_LEFT,
 	MOUSE_RIGHT,
 	MOUSE_MIDDLE,
+	MOUSE_SIDE1,
+	MOUSE_SIDE2,
 };
 
 enum e_mouse_cursor
@@ -47,4 +49,7 @@ namespace input
 	bool is_key_pressed(int key, bool repeat = true);
 	bool is_key_down(int key);
 	bool is_key_released(int key);
+
+	float get_key_press_length(int key);
+	float get_mouse_click_length(int key);
 }

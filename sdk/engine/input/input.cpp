@@ -15,7 +15,7 @@ static HWND target_window_handle;
 static long __stdcall window_proc_callback(HWND window_handle, unsigned message, unsigned wparam, long lparam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(window_handle, message, wparam, lparam))
-		return 1;
+		return 0;
 
 	if (ui::is_active())
 	{
@@ -26,7 +26,7 @@ static long __stdcall window_proc_callback(HWND window_handle, unsigned message,
 			|| message == WM_XBUTTONDOWN || message == WM_XBUTTONUP || message == WM_XBUTTONDBLCLK;
 
 		if (should_discard)
-			return 1;
+			return 0;
 	}
 
 	return CallWindowProcA((WNDPROC) original_window_proc_callback, window_handle, message, wparam, lparam);
@@ -130,4 +130,14 @@ bool input::is_key_down(int key)
 bool input::is_key_released(int key)
 {
 	return ImGui::IsKeyReleased(key);
+}
+
+float input::get_key_press_length(int key)
+{
+	return ImGui::GetIO().KeysDownDuration[key];
+}
+
+float input::get_mouse_click_length(int key)
+{
+	return ImGui::GetIO().MouseDownDuration[key];
 }
