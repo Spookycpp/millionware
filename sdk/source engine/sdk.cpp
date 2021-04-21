@@ -60,6 +60,11 @@ void c_player::set_abs_angles(const vector_t& angle) {
 	return fn(this, angle);
 }
 
+void c_player::set_absolute_origin(const vector_t& new_origin) {
+	static auto set_abs_origin = reinterpret_cast<void(__thiscall*)(c_player*, const vector_t&)>(patterns::set_absolute_origin);
+	set_abs_origin(this, new_origin);
+}
+
 vector_t c_player::get_eye_pos() const {
 	return get_vec_origin() + get_view_offset();
 }

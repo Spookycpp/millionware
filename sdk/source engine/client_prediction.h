@@ -15,7 +15,34 @@ public:
 };
 
 struct movedata_t {
-	char data[184];
+	bool bFirstRunOfFunctions : 1;
+	bool bGameCodeMovedPlayer : 1;
+	bool bNoAirControl : 1;
+	std::uintptr_t    hPlayerHandle;
+	int nImpulseCommand;
+	vector_t angViewAngles;
+	vector_t angAbsViewAngles;
+	int m_buttons;
+	int m_old_buttons;
+	float m_fmove;
+	float m_smove;
+	float flUpMove;
+	float flMaxSpeed;
+	float flClientMaxSpeed;
+	vector_t vecVelocity;
+	vector_t vecTrailingVelocity;
+	float flTrailingVelocityTime;
+	vector_t vecAngles;
+	vector_t vecOldAngles;
+	float flOutStepHeight;
+	vector_t vecOutWishVel;
+	vector_t vecOutJumpVel;
+	vector_t vecConstraintCenter;
+	float flConstraintRadius;
+	float flConstraintWidth;
+	float flConstraintSpeedFactor;
+	bool bConstraintPastRadius;
+	vector_t vecAbsOrigin;
 };
 
 class c_game_movement {

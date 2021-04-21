@@ -170,5 +170,8 @@ bool patterns::init()
 	if ((has_bomb = get_pattern(XORSTR("client.dll"), XORSTR("56 8B F1 85 F6 74 31"))) == 0u)
 		return false;
 
+	if ((set_absolute_origin = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D 08"))) == 0u)
+		return false;
+
 	return true;
 }

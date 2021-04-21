@@ -1,20 +1,36 @@
 #pragma once
 
+#include "engine prediction/engine_prediction.h"
+
 #include "../../source engine/client_dll.h"
 #include "../../source engine/entity.h"
 #include "../../source engine/input.h"
 #include "../../source engine/weapon_info.h"
 
 namespace features::movement {
-	inline vector_t old_vel   = 0.f;
-	inline vector_t unpredicted_velocity = { 0.f, 0.f, 0.f };
-	inline bool	stop_movement = false;
-	inline bool is_edge_bugging;
-	inline float next_possible_eb = 0.f;
+
+    namespace edgebug_container {
+        inline bool predicted_successful = false;
+        inline bool should_duck = false;
+        inline bool prediction_failed = false;
+        inline int mouse_offset = 0;
+        inline int prediction_timestamp = 0;
+        inline int prediction_ticks = 0;
+
+        namespace prediction {
+            inline uint32_t flags;
+            inline float fall_velocity;
+            inline vector_t origin;
+            inline vector_t absolute_origin;
+            inline movedata_t movement_data = {};
+            inline entity_handle_t ground_ent;
+        };
+    };
 
 	void pre_prediction(c_user_cmd* user_cmd);
 	void post_prediction(c_user_cmd* user_cmd, int pre_flags, int post_flags);
 
+    void predict_edgebug(c_user_cmd* user_cmd);
 	void edgebug_assist(c_user_cmd* user_cmd);
 	void fast_walk(c_user_cmd* user_cmd);
 	void slide_walk(c_user_cmd* user_cmd);

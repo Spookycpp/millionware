@@ -184,6 +184,10 @@ struct entity_handle_t
 {
 	uintptr_t handle;
 
+	constexpr entity_handle_t() : handle(0xFFFFFFFF) 
+	{
+	}
+
 	constexpr entity_handle_t(unsigned long handle) : handle(handle)
 	{
 	}
@@ -252,6 +256,7 @@ public:
 	DECLARE_NETVAR(bool, has_helmet, "DT_CSPlayer", "m_bHasHelmet");
 	DECLARE_NETVAR(bool, is_scoped, "DT_CSPlayer", "m_bIsScoped");
 	DECLARE_NETVAR(bool, is_defusing, "DT_CSPlayer", "m_bIsDefusing");
+	DECLARE_NETVAR(float, fall_velocity, "DT_Local", "m_flFallVelocity");
 	DECLARE_NETVAR(bool, has_heavy_armor, "DT_CSPlayer", "m_bHasHeavyArmor");
 	DECLARE_NETVAR(float, flash_duration, "DT_CSPlayer", "m_flFlashDuration");
 	DECLARE_NETVAR(float, flash_alpha, "DT_CSPlayer", "m_flFlashMaxAlpha");
@@ -282,6 +287,7 @@ public:
 	CUtlVector<matrix3x4_t>& get_cached_bone_data();
 
 	void set_abs_angles(const vector_t& angle);
+	void set_absolute_origin(const vector_t& new_origin);
 
 	vector_t get_eye_pos( ) const;
 	vector_t extrapolate_position(const vector_t& pos);

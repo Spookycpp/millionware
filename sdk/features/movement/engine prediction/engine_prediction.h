@@ -17,4 +17,8 @@ namespace engine_prediction {
 	void start_prediction(c_user_cmd* user_cmd);
 	void store(c_user_cmd* user_cmd);
 	void end_prediction(c_user_cmd* user_cmd);
+
+	void create_edgebug_entry(c_user_cmd* user_cmd);
+	void apply_edgebug_data(c_user_cmd* user_cmd);
+	void apply_edgebug_flags();
 }

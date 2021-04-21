@@ -4,6 +4,8 @@
 
 #include "../../../source engine/client_prediction.h"
 
+#include "../movement.h"
+
 inline c_move_helper* move_helper = nullptr;
 
 void engine_prediction::init() {
@@ -57,4 +59,34 @@ void engine_prediction::end_prediction(c_user_cmd* user_cmd) {
 
 	interfaces::global_vars->current_time = engine_prediction::old_curtime;
 	interfaces::global_vars->frame_time = engine_prediction::old_frametime;
+}
+
+void engine_prediction::create_edgebug_entry(c_user_cmd* user_cmd) {
+	// credits: clarity.tk
+
+	features::movement::edgebug_container::prediction::fall_velocity   = cheat::local_player->get_fall_velocity();
+	features::movement::edgebug_container::prediction::flags		   = cheat::local_player->get_flags();
+	features::movement::edgebug_container::prediction::origin		   = cheat::local_player->get_vec_origin();
+	features::movement::edgebug_container::prediction::absolute_origin = cheat::local_player->get_abs_origin();
+	features::movement::edgebug_container::prediction::ground_ent	   = cheat::local_player->get_ground_entity();
+	interfaces::prediction->setup_move(cheat::local_player, user_cmd, move_helper, &features::movement::edgebug_container::prediction::movement_data);
+}
+
+void engine_prediction::apply_edgebug_data(c_user_cmd* user_cmd) {
+	// credits: clarity.tk
+
+	interfaces::prediction->finish_move(cheat::local_player, move_helper, &features::movement::edgebug_container::prediction::movement_data);
+	features::movement::edgebug_container::prediction::flags |= 2;
+	features::movement::edgebug_container::prediction::movement_data.m_buttons |= 4;
+	cheat::local_player->get_flags()		 = features::movement::edgebug_container::prediction::flags;
+	cheat::local_player->get_fall_velocity() = features::movement::edgebug_container::prediction::fall_velocity;
+	cheat::local_player->set_absolute_origin(features::movement::edgebug_container::prediction::absolute_origin);
+	cheat::local_player->get_vec_origin()	 = features::movement::edgebug_container::prediction::origin;
+	cheat::local_player->get_ground_entity() = features::movement::edgebug_container::prediction::ground_ent;
+}
+
+void engine_prediction::apply_edgebug_flags() {
+	// credits: clarity.tk
+
+	cheat::local_player->get_flags() = features::movement::edgebug_container::prediction::flags;
 }

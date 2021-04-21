@@ -62,75 +62,113 @@ void features::movement::post_prediction(c_user_cmd* user_cmd, int pre_flags, in
     }
 }
 
-void features::movement::edgebug_assist(c_user_cmd* user_cmd) { // aiden
-    // we are going to try and do this without pasting
+void features::movement::predict_edgebug(c_user_cmd* user_cmd) {
+    // credits: clarity.tk
+    
+    vector_t unpredicted_velocity = cheat::local_player->get_velocity();
 
-    c_user_cmd* backupCmd = user_cmd;
-    static auto backupLocal = cheat::local_player;
-    bool shouldDuck = false;
+    if ((int)roundf(cheat::local_player->get_velocity().z) == 0.0 || (cheat::unpredicted_flags & ENTITY_FLAG_ONGROUND) != 0) {
+        features::movement::edgebug_container::predicted_successful = 0;
+        features::movement::edgebug_container::prediction_failed = 1;
+    }
+    else if (unpredicted_velocity.z < -6.0
+             && cheat::local_player->get_velocity().z > unpredicted_velocity.z
+             && cheat::local_player->get_velocity().z < -6.0
+             && (cheat::local_player->get_flags() & 1) == 0
+             && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP
+             && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
+        const auto previous_velocity = cheat::local_player->get_velocity().z;
 
-    if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) 
-        return;
-
-    if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
-        return;
-
-    if (cheat::local_player->get_velocity().z > 0)
-        return;
-
-    vector_t vel;
-
-    for (int i = 0; i <= settings.miscellaneous.movement.edge_bug_radius; i++) {
         engine_prediction::start_prediction(user_cmd);
-        cheat::b_predicting = true;
-        backupCmd = user_cmd;
-        backupLocal = cheat::local_player;
+        engine_prediction::end_prediction(user_cmd);
 
-        vel = backupLocal->get_velocity();
+        static auto sv_gravity = interfaces::convar_system->find_convar(XORSTR("sv_gravity"));
+        const float gravity_velocity_constant = roundf((-sv_gravity->get_float()) * interfaces::global_vars->interval_per_tick + previous_velocity);
 
-        if (!(backupLocal->get_flags() & ENTITY_FLAG_ONGROUND) && backupLocal->get_move_type() != MOVE_TYPE_NOCLIP) {
-            if (vel.z < 1.f && old_vel.z + 0.5 < vel.z) {
-                if (i != 0) {
-                    if (i < 7)
-                        shouldDuck = true;
-                    cheat::stop_movement = true;
-                    logging::info("predicted edgebug on tick");
-                }
-                break;
+        if (gravity_velocity_constant == roundf(cheat::local_player->get_velocity().z)) {
+            features::movement::edgebug_container::predicted_successful = 1;
+            features::movement::edgebug_container::prediction_failed = 0;
+        }
+        else {
+            features::movement::edgebug_container::predicted_successful = 0;
+            features::movement::edgebug_container::prediction_failed = 1;
+        }
+    }
+}
+
+void features::movement::edgebug_assist(c_user_cmd* user_cmd) {
+
+    vector_t unpredicted_velocity = cheat::local_player->get_velocity();
+
+    if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
+        return;
+
+    if (!features::movement::edgebug_container::predicted_successful) {
+
+        features::movement::edgebug_container::should_duck = 0;
+
+        for (auto prediction_ticks_ran = 0; prediction_ticks_ran < 2; ++prediction_ticks_ran) {
+
+            if (prediction_ticks_ran == 1) {
+                features::movement::edgebug_container::should_duck = 1;
+                engine_prediction::apply_edgebug_data(user_cmd);
             }
+
+            if (!prediction_ticks_ran)
+                engine_prediction::apply_edgebug_flags();
+
+            for (auto radius_checked = 1; radius_checked <= settings.miscellaneous.movement.edge_bug_radius; ++radius_checked) {
+
+                if (prediction_ticks_ran == 1) {
+                    engine_prediction::start_prediction(user_cmd);
+                    engine_prediction::end_prediction(user_cmd);
+                }
+
+                if ((cheat::unpredicted_flags & 1) != 0 || unpredicted_velocity.z > 0.0) {
+                    features::movement::edgebug_container::predicted_successful = 0;
+                    break;
+                }
+
+                predict_edgebug(user_cmd);
+
+                if (features::movement::edgebug_container::predicted_successful) {
+                    features::movement::edgebug_container::prediction_ticks = radius_checked;
+                    features::movement::edgebug_container::prediction_timestamp = interfaces::global_vars->tick_count;
+                    features::movement::edgebug_container::mouse_offset = abs(user_cmd->mouse_dx);
+                    break;
+                }
+
+                if (features::movement::edgebug_container::prediction_failed) {
+                    features::movement::edgebug_container::prediction_failed = 0;
+                    break;
+                }
+
+                if (!prediction_ticks_ran) {
+                    engine_prediction::start_prediction(user_cmd);
+                    engine_prediction::end_prediction(user_cmd);
+                }
+            }            
+
+            if (features::movement::edgebug_container::predicted_successful)
+                break;
         }
-        old_vel = vel;
     }
 
-    engine_prediction::end_prediction(user_cmd);
-    cheat::b_predicting = false;
+    if (features::movement::edgebug_container::predicted_successful) {
 
-    if (cheat::stop_movement) {
-        if (settings.miscellaneous.movement.edge_bug_movement) {
-        user_cmd->side_move = 0;
-        user_cmd->forward_move = 0;
+        if (interfaces::global_vars->tick_count < features::movement::edgebug_container::prediction_ticks + features::movement::edgebug_container::prediction_timestamp) {
+            user_cmd->forward_move = 0.0;
+            user_cmd->side_move    = 0.0;
+
+            if (features::movement::edgebug_container::should_duck)
+                user_cmd->buttons |= BUTTON_IN_DUCK;
+        }
+
+        else {
+            features::movement::edgebug_container::predicted_successful = 0;
+            features::movement::edgebug_container::should_duck = 0;
         }
     }
-
-    vector_t curVel = cheat::local_player->get_velocity();
-
-    // wow this if statement is so fucking ugly
-
-    if (cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND) {
-        cheat::stop_movement = false;
-        shouldDuck = false;
-    }
-    if (std::floor(old_vel.z) < -7 && (cheat::local_player->get_velocity().z / old_vel.z) <= 0.7) {
-        if (shouldDuck && settings.miscellaneous.movement.edge_bug_crouch) {
-            cheat::stop_movement = false;
-            shouldDuck = false;
-            user_cmd->buttons |= BUTTON_IN_DUCK;
-            logging::info("pog");
-        }
-    }
-
-    next_possible_eb = interfaces::global_vars->current_time;
-    unpredicted_velocity = curVel;
 }
 
 void features::movement::fast_walk(c_user_cmd* user_cmd) {
