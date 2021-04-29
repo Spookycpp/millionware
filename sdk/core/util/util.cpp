@@ -87,6 +87,15 @@ void util::set_random_seed(const int seed) {
 	random_seed_fn(seed);
 }
 
+void util::set_skybox(const char* name) {
+	// get load_named_sky func address
+	static auto load_named_sky_addr = patterns::load_named_sky;
+	static auto load_named_sky_fn = reinterpret_cast<void(__fastcall*)(const char*)>(load_named_sky_addr);
+
+	// set it.
+	load_named_sky_fn(name);
+}
+
 void util::on_frame_stage_notify(const e_client_frame_stage frame_stage) {
 	if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_START)
 		return;

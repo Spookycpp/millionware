@@ -4,6 +4,7 @@
 
 #include "../features/lagcompensation/lagcompensation.h"
 #include "../features/miscellaneous/miscellaneous.h"
+#include "../features/visuals/world/world.h"
 
 void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx, e_client_frame_stage frame_stage)
 {
@@ -12,7 +13,9 @@ void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx,
 
 	features::miscellaneous::on_frame_stage_notify(frame_stage);
 	features::lag_compensation::on_frame_stage_notify(frame_stage);
+
 	util::on_frame_stage_notify(frame_stage);
+	
 
 	frame_stage_notify_original(ecx, edx, frame_stage);
 }

@@ -121,6 +121,9 @@ void features::visuals::esp::frame() {
 		draw_ammo(entity_box, player);
 		draw_weapon(entity_box, player);
 		draw_flags(entity_box, player);
+		draw_skeleton(player);
+		draw_headspot(player);
+		draw_barrel(player);
 	}
 }
 
@@ -147,8 +150,8 @@ void features::visuals::esp::draw_name(const bounding_box_t& entity_box, c_playe
 	if (!interfaces::engine_client->get_player_info(player->get_networkable()->index(), info))
 		return;
 
-	const auto text_size = render::measure_text(info.name, FONT_VERDANA_12);
-	render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y }, { 255, 255, 255, 255 }, info.name, FONT_VERDANA_12);
+	const auto text_size = render::measure_text(info.name, FONT_TAHOMA_12);
+	render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y }, { 255, 255, 255, 255 }, info.name, FONT_TAHOMA_12);
 }
 
 void features::visuals::esp::draw_health(const bounding_box_t& entity_box, c_player* player) {
@@ -266,11 +269,11 @@ void features::visuals::esp::draw_weapon(const bounding_box_t& entity_box, c_pla
 	for (auto i = 0; i < localized_name_length; i++)
 		localized_name_buffer[i] = std::toupper(localized_name_buffer[i]);
 
-	const auto localized_name_size = render::measure_text(localized_name_buffer, FONT_SMALL_TEXT);
+	const auto localized_name_size = render::measure_text(localized_name_buffer, FONT_TAHOMA_12);
 
 	render::draw_text(
 		{ entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] },
-		{ 255, 255, 255, 210 }, localized_name_buffer, FONT_SMALL_TEXT);
+		{ 255, 255, 255, 225 }, localized_name_buffer, FONT_TAHOMA_12);
 
 	m_bottom_offset[player->get_networkable()->index()] += localized_name_size.y;
 }
@@ -306,6 +309,113 @@ void features::visuals::esp::draw_flags(const bounding_box_t& entity_box, c_play
 
 	if (player->is_smoked())
 		draw_flag(XORSTR("SMOKED"), { 255, 255, 255 });
+}
+
+void features::visuals::esp::draw_skeleton(c_player* player) {
+
+	if (!settings.visuals.player.skeleton)
+		return;
+
+	studio_hdr_t* studio_hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
+
+	if (!studio_hdr)
+		return;
+
+	std::array< matrix3x4_t, 128 > matrices = {};
+
+	if (!player->get_renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time))
+		return;
+
+	for (int i = 0; i < studio_hdr->bones_count; ++i) {
+		studio_bone_t* bone = studio_hdr->get_bone(i);
+
+		if (!bone || !(bone->flags & 0x100) || bone->parent == -1)
+			continue;
+
+		vector_t child, parent;
+		point_t  child_screen, parent_screen;
+
+		math::matrix_position(matrices.at(i), child);
+		math::matrix_position(matrices.at(bone->parent), parent);
+
+		// this is to fix the neck glitch
+		static const int chest_bone_number = 6;
+		vector_t chest_bone, upper_chest_bone;
+
+		math::matrix_position(matrices.at(chest_bone_number + 1), upper_chest_bone);
+		math::matrix_position(matrices.at(chest_bone_number), chest_bone);
+
+		vector_t upper_direction = upper_chest_bone - chest_bone;
+		vector_t breast_bone = chest_bone + upper_direction / 2.0f;
+
+		vector_t child_delta = child - breast_bone;
+		vector_t parent_delta = parent - breast_bone;
+
+		if (parent_delta.length() < 9 && child_delta.length() < 9)
+			parent = breast_bone;
+
+		if (i == chest_bone_number - 1) 
+			child = breast_bone;
+
+		if (abs(child_delta.z) < 5 && (parent_delta.length() < 5 && child_delta.length() < 5) || i == chest_bone_number) 
+			continue;
+
+		if (!math::world_to_screen(child, child_screen) ||
+			!math::world_to_screen(parent, parent_screen)) {
+			continue;
+		}
+
+		render::draw_line(child_screen, parent_screen, { 255, 255, 255 });
+	}
+}
+
+void features::visuals::esp::draw_headspot(c_player* player) {
+
+	if (!settings.visuals.player.head_spot)
+		return;
+
+	point_t screen;
+
+	if (!math::world_to_screen(player->get_hitbox_pos(HEAD), screen))
+		return;
+
+	render::fill_circle(screen, 2.f, { 255, 255, 255 });
+}
+
+void features::visuals::esp::draw_barrel(c_player* player) {
+
+	if (!settings.visuals.player.barrel)
+		return;
+
+	const auto weapon = (c_weapon*)player->get_active_weapon_handle().get();
+
+	if (!weapon)
+		return;
+
+	const auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
+
+	if (!weapon_info)
+		return;
+
+	const vector_t eye_angles = player->get_eye_angles();
+
+	vector_t f;
+	math::angle_to_vector(eye_angles, f);
+	f *= weapon_info->range;
+
+	const vector_t src = player->get_hitbox_pos(HEAD);
+	const vector_t dst = src + f;
+
+	c_trace_filter filter;
+	filter.skip = player;
+
+	trace_t tr;
+	interfaces::trace->trace_ray(ray_t{ src, dst }, MASK_SHOT, &filter, &tr);
+
+	const float interval_per_tick = interfaces::global_vars->interval_per_tick;
+
+	interfaces::debug_overlay->add_line(tr.start_pos, tr.end_pos, { 255, 255, 255 }, false, interval_per_tick);
+	interfaces::debug_overlay->add_swept_box(tr.end_pos, tr.end_pos, -.9f, .9f, eye_angles, { 255, 255, 255 }, interval_per_tick);
 }
 
 void features::visuals::esp::update_dormant_pos(int index, const vector_t& position) {

@@ -179,7 +179,6 @@ public:
 	char pad[4];
 };
 
-
 struct entity_handle_t
 {
 	uintptr_t handle;

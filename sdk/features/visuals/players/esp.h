@@ -20,6 +20,10 @@ namespace features::visuals::esp
 	void draw_weapon(const bounding_box_t& entity_box, c_player* player);
 	void draw_flags(const bounding_box_t& entity_box, c_player* player);
 
+	void draw_skeleton(c_player* player);
+	void draw_headspot(c_player* player);
+	void draw_barrel(c_player* player);
+
 	void update_dormant_pos(int index, const vector_t &position);
 	void update_predicted_money(int index, int money);
 }

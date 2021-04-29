@@ -14,6 +14,7 @@
 
 #include "../features/movement/movement.h"
 #include "../features/movement/engine prediction/engine_prediction.h"
+#include "../features/visuals/world/world.h"
 
 static std::once_flag prediction_init;
 
@@ -44,6 +45,8 @@ bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float fram
 	features::fake_ping::on_create_move();
 
 	features::miscellaneous::rank_reveal(user_cmd);
+
+	features::visuals::world::nightmode();
 
 	features::movement::pre_prediction(user_cmd);
 	const auto pre_flags = cheat::local_player->get_flags();
