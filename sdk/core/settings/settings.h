@@ -6,6 +6,7 @@ struct settings_t {
 	struct {
 		color_t accent_color = { 255, 0, 245, 255 };
 		bool weapon_groups	 = false;
+		int  sound_fx_volume = 100;
 	} global;
 
 	struct legitbot_t {
@@ -177,8 +178,11 @@ struct settings_t {
 	} visuals;
 
 	struct {
+		bool  player_privacy = false;
 		bool  auto_pistol = false;
 		bool  rank_reveal = false;
+		bool  money_reveal = false;
+		bool  preserve_killfeed = false;
 		bool  auto_accept = false;
 		bool  unlock_inventory = false;
 		bool  ragdoll_push = false;

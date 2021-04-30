@@ -20,6 +20,11 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
 		}
 	}
 
+	if ((strcmp(sound_entry, XORSTR("Deathcam.Review_Start")) == 0) || (strcmp(sound_entry, XORSTR("Deathcam.Review_Victory")) == 0))
+        cheat::in_deathcam = true;
+    else if (strcmp(sound_entry, XORSTR("Deathcam.Review_End")) == 0)
+        cheat::in_deathcam = false;
+
 	// theres most certainly a better way to do this, no?
 	if (entity_index == interfaces::engine_client->get_local_player()) {
 		if (strstr(sample_name, XORSTR("land")) && cheat::b_predicting) {

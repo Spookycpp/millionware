@@ -8,6 +8,7 @@
 #include "../../engine/security/xorstr.h"
 #include "../../engine/math/math.h"
 
+
 #include "../../features/miscellaneous/miscellaneous.h"
 
 float TICK_INTERVAL() {
@@ -101,6 +102,34 @@ void util::on_frame_stage_notify(const e_client_frame_stage frame_stage) {
 		return;
 
 	features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
+}
+
+void util::play_sound(const char* file_path, int volume) {
+
+	if (volume == -1)
+		volume = settings.global.sound_fx_volume;
+
+	char buffer[256] = {};
+	sprintf_s(buffer, XORSTR("playvol \"%s\" \"%s\""), file_path, std::to_string(static_cast<float>(volume) / 100.0f).c_str());
+
+	interfaces::engine_client->execute_command(buffer);
+}
+
+c_player_resource* util::get_player_resource() {
+	for (int i = 65; i < interfaces::entity_list->get_highest_ent_index(); ++i) {
+		auto ent = (c_entity*)interfaces::entity_list->get_entity(i);
+
+		if (!ent)
+			continue;
+
+		const auto cc = ent->get_networkable()->get_client_class();
+
+		if (cc && cc->class_id == CCSPlayerResource) {
+			return reinterpret_cast<c_player_resource*>(ent);
+		}
+	}
+
+	return nullptr;
 }
 
 std::optional<vector_t> util::get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius) {

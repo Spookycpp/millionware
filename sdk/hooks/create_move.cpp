@@ -21,7 +21,7 @@ static std::once_flag prediction_init;
 bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float frame_time, c_user_cmd* user_cmd) {
 	std::call_once(prediction_init, engine_prediction::init);
 
-	if (!user_cmd || !user_cmd->command_number)
+	if (!user_cmd || !user_cmd->command_number || cheat::in_deathcam)
 		return create_move_original(ecx, edx, frame_time, user_cmd);
 
 	features::fake_ping::on_create_move();
@@ -46,8 +46,7 @@ bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float fram
 
 	features::miscellaneous::rank_reveal(user_cmd);
 
-	features::visuals::world::nightmode();
-
+	// this is disgusting rework this at some point please.
 	features::movement::pre_prediction(user_cmd);
 	const auto pre_flags = cheat::local_player->get_flags();
 	engine_prediction::start_prediction(user_cmd);
@@ -55,7 +54,7 @@ bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float fram
 	const auto post_flags = cheat::local_player->get_flags();
 	features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
-	features::movement::edgebug_assist(user_cmd);
+	//features::movement::edgebug_assist(user_cmd);
 
 	return create_move_original(ecx, edx, frame_time, user_cmd);
 }

@@ -63,6 +63,8 @@
     <ClCompile Include="features\visuals\players\esp.cpp" />
     <ClCompile Include="hooks\override_config.cpp" />
     <ClCompile Include="features\visuals\world\world.cpp" />
+    <ClCompile Include="features\game events\game_events.cpp" />
+    <ClCompile Include="features\game events\event_listener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -155,5 +157,6 @@
     <ClInclude Include="source engine\localize.h" />
     <ClInclude Include="source engine\material_system_config.h" />
     <ClInclude Include="features\visuals\world\world.h" />
+    <ClInclude Include="features\game events\game_events.h" />
   </ItemGroup>
 </Project>

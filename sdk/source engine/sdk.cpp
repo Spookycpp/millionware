@@ -6,6 +6,7 @@
 
 #include "../core/cheat/cheat.h"
 #include "../core/interfaces/interfaces.h"
+#include "../core/util/util.h"
 
 #include "../engine/math/math.h"
 #include "../engine/security/xorstr.h"

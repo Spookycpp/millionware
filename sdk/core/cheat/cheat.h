@@ -13,4 +13,5 @@ namespace cheat
 	inline bool b_predicting;
 	inline bool landed = false;
 	inline bool stop_movement;
+	inline bool in_deathcam = false;
 }

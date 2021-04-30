@@ -78,7 +78,8 @@ static bool get_bounding_box(const entity_esp_t& entity_info, c_entity* entity, 
 }
 
 void features::visuals::esp::frame() {
-	if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+
+    if (!cheat::local_player || cheat::in_deathcam || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
 		return;
 
 	for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {
@@ -316,7 +317,7 @@ void features::visuals::esp::draw_skeleton(c_player* player) {
 	if (!settings.visuals.player.skeleton)
 		return;
 
-	studio_hdr_t* studio_hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
+	const auto studio_hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
 
 	if (!studio_hdr)
 		return;

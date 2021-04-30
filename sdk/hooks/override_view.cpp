@@ -2,6 +2,7 @@
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 #include "../core/settings/settings.h"
+#include "../core/util/util.h"
 
 #include "../features/miscellaneous/miscellaneous.h"
 

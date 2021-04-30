@@ -3,6 +3,7 @@
 #include "../../core/util/util.h"
 
 #include "../../source engine/client_dll.h"
+#include "../../source engine/entity.h"
 #include "../../source engine/vector.h"
 
 #include <optional>
@@ -29,6 +30,9 @@ namespace util {
 	void set_random_seed(const int seed);
 	void set_skybox(const char* name);
 	void on_frame_stage_notify(e_client_frame_stage frame_stage);
+	void play_sound(const char* file_path, int volume = -1);
+
+	c_player_resource* get_player_resource();
 
 	std::optional< vector_t > get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius);
 	std::string sanitize_string(const std::string& str);

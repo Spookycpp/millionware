@@ -74,8 +74,12 @@ bool interfaces::init()
 	if ((debug_overlay = (c_debug_overlay *) get_interface(XORSTR("engine.dll"), XORSTR("VDebugOverlay004"))) == nullptr)
 		return false;	
 	
-	if ((game_events = (c_game_event*) get_interface(XORSTR("engine.dll"), XORSTR("GAMEEVENTSMANAGER002"))) == nullptr)
+	if ((game_events = (c_game_event_manager2*)get_interface(XORSTR("engine.dll"), XORSTR("GAMEEVENTSMANAGER002"))) == nullptr) {
 		return false;
+	}
+	else {
+		_event_listener = std::make_unique< c_event_listener >();
+	}
 
 	if ((game_event_manager = (c_game_event_manager*) get_interface(XORSTR("engine.dll"), XORSTR("GAMEEVENTSMANAGER002"))) == nullptr)
 		return false;

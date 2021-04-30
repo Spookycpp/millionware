@@ -2,6 +2,8 @@
 
 //@TODO: declare vfuncs instead of virtuals.
 
+#include <string>
+
 #include "macros.h"
 
 #define EVENT_DEBUG_ID_INIT 42
@@ -9,6 +11,11 @@
 
 class bf_write;
 class bf_read;
+
+struct item_purchase_data_t {
+	int         user_id;
+	std::string item;
+};
 
 class c_game_event {
 public:

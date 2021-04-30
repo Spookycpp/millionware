@@ -13,6 +13,7 @@ void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx,
 
 	features::miscellaneous::on_frame_stage_notify(frame_stage);
 	features::lag_compensation::on_frame_stage_notify(frame_stage);
+	features::visuals::world::on_frame_stage_notify(frame_stage);
 
 	util::on_frame_stage_notify(frame_stage);
 	

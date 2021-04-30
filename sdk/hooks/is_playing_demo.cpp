@@ -3,13 +3,14 @@
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 #include "../core/patterns/patterns.h"
+#include "../core/settings/settings.h"
 
 bool __fastcall hooks::is_playing_demo(c_engine_client *ecx, uintptr_t edx)
 {
 	if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
 		return is_playing_demo_original(ecx, edx);
 
-	if (false /* !config::get< bool >( CRC( "visuals, other, money reveal" ) ) */)
+	if (!settings.miscellaneous.money_reveal)
 		return is_playing_demo_original(ecx, edx);
 
 	const auto return_address = (uintptr_t) _ReturnAddress();

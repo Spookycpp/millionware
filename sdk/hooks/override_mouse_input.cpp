@@ -1,6 +1,7 @@
 #include "../core/cheat/cheat.h"
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
+#include "../core/util/util.h"
 #include "../core/settings/settings.h"
 
 #include "../engine/input/input.h"

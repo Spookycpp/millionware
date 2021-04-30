@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../core/patterns/patterns.h"
-#include "../core/util/util.h"
 
 #include <cstdint>
 
@@ -451,4 +450,22 @@ public:
 	DECLARE_NETVAR(bool, pin_pulled, "DT_BaseCSGrenade", "m_bPinPulled");
 	DECLARE_NETVAR(float, throw_time, "DT_BaseCSGrenade", "m_fThrowTime");
 	DECLARE_NETVAR(float, throw_strength, "DT_BaseCSGrenade", "m_flThrowStrength");
+};
+
+class c_player_resource {
+public:
+	bool is_c4_carrier(int index) {
+		const static auto offset = netvars::get(CRC_CT("DT_CSPlayerResource:m_iPlayerC4"));
+
+		return index == *(int*)((uintptr_t)this + offset);
+	}
+
+	int get_ping(int index) {
+		const static auto offset = netvars::get(CRC_CT("DT_CSPlayerResource:m_iPing"));
+
+		return *(int*)((uintptr_t)this + offset + index * 4);
+	}
+
+	DECLARE_NETVAR(vector_t, bomb_site_center_a, "DT_CSPlayerResource", "m_bombsiteCenterA");
+	DECLARE_NETVAR(vector_t, bomb_site_center_b, "DT_CSPlayerResource", "m_bombsiteCenterB");
 };

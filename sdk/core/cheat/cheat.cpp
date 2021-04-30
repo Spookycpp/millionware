@@ -1,5 +1,4 @@
-#include <windows.h>
-
+#include "cheat.h"
 #include "../../engine/input/input.h"
 #include "../../engine/logging/logging.h"
 #include "../../engine/render/render.h"
@@ -11,52 +10,50 @@
 #include "../netvars/netvars.h"
 #include "../patterns/patterns.h"
 #include "../scripting/scripting.h"
-#include "cheat.h"
+#include <windows.h>
 
-bool cheat::init()
-{
-	if (!patterns::init())
-		return false;
+bool cheat::init() {
+    if (!patterns::init())
+        return false;
 
-	if (!interfaces::init())
-		return false;
+    if (!interfaces::init())
+        return false;
 
-	netvars::init();
+    netvars::init();
 
-	const auto device = (IDirect3DDevice9 *) patterns::get_d3d9_device();
+    const auto device = (IDirect3DDevice9 *) patterns::get_d3d9_device();
 
-	D3DDEVICE_CREATION_PARAMETERS creation_params;
+    D3DDEVICE_CREATION_PARAMETERS creation_params;
 
-	device->GetCreationParameters(&creation_params);
+    device->GetCreationParameters(&creation_params);
 
-	render::init(creation_params.hFocusWindow, device);
+    render::init(creation_params.hFocusWindow, device);
 
-	input::init(creation_params.hFocusWindow);
+    input::init(creation_params.hFocusWindow);
 
-	ui::init();
+    ui::init();
 
-	features::hit_chance::initialize();
-	
-	if (!hooks::init())
-		return false;
+    features::hit_chance::initialize();
 
-	logging::info(XORSTR("successfully initialized"));
+    if (!hooks::init())
+        return false;
 
-	return true;
+    logging::info(XORSTR("successfully initialized"));
+
+    return true;
 }
 
-bool cheat::undo()
-{
-	if (!hooks::undo())
-		return false;
+bool cheat::undo() {
+    if (!hooks::undo())
+        return false;
 
-	Sleep(1000);
+    Sleep(1000);
 
-	render::undo();
+    render::undo();
 
-	input::undo();
+    input::undo();
 
-	logging::info(XORSTR("successfully uninitialized"));
+    logging::info(XORSTR("successfully uninitialized"));
 
-	return true;
+    return true;
 }
