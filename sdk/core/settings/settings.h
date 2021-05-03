@@ -161,14 +161,15 @@ struct settings_t {
 			bool viewmodel_offset = false;
 			bool disable_post_processing = false;
 			bool disable_panorama_blur   = false;
-			bool indicators				 = false;
+			int indicators = 0;
+            bool velocity_takeoff		 = false;
 			bool jb_indicator			 = false;
 			bool eb_indicator			 = false;
 			bool ej_indicator			 = false;
 			bool mj_indicator			 = false;
 			int  flash_alpha  = 100;
 			float aspect_ratio = 0.f;
-			float override_fov = 90.0f;
+			int   override_fov = 90;
 			float viewmodel_offset_x = 0.f;
 			float viewmodel_offset_y = 0.f;
 			float viewmodel_offset_z = 0.f;

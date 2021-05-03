@@ -8,23 +8,23 @@
 
 #include "../../engine/hash/hash.h"
 #include "../../engine/input/input.h"
-#include "../../engine/security/xorstr.h"
 #include "../../engine/logging/logging.h"
 #include "../../engine/math/math.h"
+#include "../../engine/security/xorstr.h"
 
-void features::movement::pre_prediction(c_user_cmd* user_cmd) {
+void features::movement::pre_prediction(c_user_cmd *user_cmd) {
 
-	if (settings.miscellaneous.movement.no_duck_cooldown) {
-		user_cmd->buttons |= BUTTON_IN_BULLRUSH;
-	}
+    if (settings.miscellaneous.movement.no_duck_cooldown) {
+        user_cmd->buttons |= BUTTON_IN_BULLRUSH;
+    }
 
-	if (settings.miscellaneous.movement.bunny_hop) {
-		if (cheat::local_player->get_move_type() == MOVE_TYPE_LADDER || input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey))
-			return;
+    if (settings.miscellaneous.movement.bunny_hop) {
+        if (cheat::local_player->get_move_type() == MOVE_TYPE_LADDER || input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey))
+            return;
 
-		if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND))
-			user_cmd->buttons &= ~BUTTON_IN_JUMP;
-	}
+        if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND))
+            user_cmd->buttons &= ~BUTTON_IN_JUMP;
+    }
 
     if (settings.miscellaneous.movement.air_duck) {
         if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND))
@@ -37,24 +37,24 @@ void features::movement::pre_prediction(c_user_cmd* user_cmd) {
     slide_walk(user_cmd);
 }
 
-void features::movement::post_prediction(c_user_cmd* user_cmd, int pre_flags, int post_flags) {
+void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags) {
 
-	if (settings.miscellaneous.movement.jump_bug && input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey)) {
-		cheat::b_predicting = true;
+    if (settings.miscellaneous.movement.jump_bug && input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey)) {
+        cheat::b_predicting = true;
 
-		if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND) {
-			user_cmd->buttons |= BUTTON_IN_DUCK;
-		}
-		
-		if (post_flags & ENTITY_FLAG_ONGROUND) {
-			user_cmd->buttons &= ~BUTTON_IN_JUMP;
-		}
-	}
+        if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND) {
+            user_cmd->buttons |= BUTTON_IN_DUCK;
+        }
 
-	if (settings.miscellaneous.movement.edge_bug && input::is_key_down(settings.miscellaneous.movement.edge_bug_hotkey)) {
-		if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND)
-			user_cmd->buttons |= BUTTON_IN_DUCK;
-	}
+        if (post_flags & ENTITY_FLAG_ONGROUND) {
+            user_cmd->buttons &= ~BUTTON_IN_JUMP;
+        }
+    }
+
+    if (settings.miscellaneous.movement.edge_bug && input::is_key_down(settings.miscellaneous.movement.edge_bug_hotkey)) {
+        if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND)
+            user_cmd->buttons |= BUTTON_IN_DUCK;
+    }
 
     if (settings.miscellaneous.movement.edge_jump && input::is_key_down(settings.miscellaneous.movement.edge_jump_hotkey)) {
         if (pre_flags & ENTITY_FLAG_ONGROUND && !(post_flags & ENTITY_FLAG_ONGROUND))
@@ -62,21 +62,17 @@ void features::movement::post_prediction(c_user_cmd* user_cmd, int pre_flags, in
     }
 }
 
-void features::movement::predict_edgebug(c_user_cmd* user_cmd) {
+void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
     // credits: clarity.tk
-    
+
     vector_t unpredicted_velocity = cheat::local_player->get_velocity();
 
-    if ((int)roundf(cheat::local_player->get_velocity().z) == 0.0 || (cheat::unpredicted_flags & ENTITY_FLAG_ONGROUND) != 0) {
+    if ((int) roundf(cheat::local_player->get_velocity().z) == 0.0 || (cheat::unpredicted_flags & ENTITY_FLAG_ONGROUND) != 0) {
         features::movement::edgebug_container::predicted_successful = 0;
         features::movement::edgebug_container::prediction_failed = 1;
     }
-    else if (unpredicted_velocity.z < -6.0
-             && cheat::local_player->get_velocity().z > unpredicted_velocity.z
-             && cheat::local_player->get_velocity().z < -6.0
-             && (cheat::local_player->get_flags() & 1) == 0
-             && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP
-             && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
+    else if (unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > unpredicted_velocity.z && cheat::local_player->get_velocity().z < -6.0 &&
+             (cheat::local_player->get_flags() & 1) == 0 && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
         const auto previous_velocity = cheat::local_player->get_velocity().z;
 
         engine_prediction::start_prediction(user_cmd);
@@ -96,7 +92,7 @@ void features::movement::predict_edgebug(c_user_cmd* user_cmd) {
     }
 }
 
-void features::movement::edgebug_assist(c_user_cmd* user_cmd) {
+void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
 
     vector_t unpredicted_velocity = cheat::local_player->get_velocity();
 
@@ -147,7 +143,7 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) {
                     engine_prediction::start_prediction(user_cmd);
                     engine_prediction::end_prediction(user_cmd);
                 }
-            }            
+            }
 
             if (features::movement::edgebug_container::predicted_successful)
                 break;
@@ -158,7 +154,7 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) {
 
         if (interfaces::global_vars->tick_count < features::movement::edgebug_container::prediction_ticks + features::movement::edgebug_container::prediction_timestamp) {
             user_cmd->forward_move = 0.0;
-            user_cmd->side_move    = 0.0;
+            user_cmd->side_move = 0.0;
 
             if (features::movement::edgebug_container::should_duck)
                 user_cmd->buttons |= BUTTON_IN_DUCK;
@@ -171,21 +167,21 @@ void features::movement::edgebug_assist(c_user_cmd* user_cmd) {
     }
 }
 
-void features::movement::fast_walk(c_user_cmd* user_cmd) {
+void features::movement::fast_walk(c_user_cmd *user_cmd) {
 
-    if (!settings.miscellaneous.movement.fast_walk) 
-        return;    
+    if (!settings.miscellaneous.movement.fast_walk)
+        return;
 
     if (!input::is_key_down(settings.miscellaneous.movement.fast_walk_hotkey))
-        return;    
+        return;
 
-    if (user_cmd->buttons & BUTTON_IN_SPEED) 
+    if (user_cmd->buttons & BUTTON_IN_SPEED)
         user_cmd->buttons &= ~BUTTON_IN_SPEED;
-    
-    const vector_t vel = cheat::local_player->get_velocity();
-    const float  speed = vel.length_2d();
 
-    if (speed < 126.0f) 
+    const vector_t vel = cheat::local_player->get_velocity();
+    const float speed = vel.length_2d();
+
+    if (speed < 126.0f)
         return;
 
     static auto sv_accelerate = interfaces::convar_system->find_convar(XORSTR("sv_accelerate"));
@@ -216,7 +212,7 @@ void features::movement::fast_walk(c_user_cmd* user_cmd) {
     user_cmd->side_move = inv_dir.y * wish_speed;
 }
 
-void features::movement::slide_walk(c_user_cmd* user_cmd) {
+void features::movement::slide_walk(c_user_cmd *user_cmd) {
     user_cmd->buttons &= ~BUTTON_IN_MOVE_RIGHT;
     user_cmd->buttons &= ~BUTTON_IN_MOVE_LEFT;
     user_cmd->buttons &= ~BUTTON_IN_LEFT;

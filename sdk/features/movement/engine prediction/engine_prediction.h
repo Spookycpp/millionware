@@ -6,19 +6,19 @@
 #include <functional>
 
 namespace engine_prediction {
-	inline float old_curtime, old_frametime;
-	inline int old_tickbase;
-	inline bool old_in_prediction, old_is_first_time_predicted;
+    inline float old_curtime, old_frametime;
+    inline int old_tickbase;
+    inline bool old_in_prediction, old_is_first_time_predicted;
 
-	inline int correct_tickbase;
-	inline c_user_cmd* last_command;
+    inline int correct_tickbase;
+    inline c_user_cmd *last_command;
 
-	void init();
-	void start_prediction(c_user_cmd* user_cmd);
-	void store(c_user_cmd* user_cmd);
-	void end_prediction(c_user_cmd* user_cmd);
+    void init();
+    void start_prediction(c_user_cmd *user_cmd);
+    void store(c_user_cmd *user_cmd);
+    void end_prediction(c_user_cmd *user_cmd);
 
-	void create_edgebug_entry(c_user_cmd* user_cmd);
-	void apply_edgebug_data(c_user_cmd* user_cmd);
-	void apply_edgebug_flags();
-}
+    void create_edgebug_entry(c_user_cmd *user_cmd);
+    void apply_edgebug_data(c_user_cmd *user_cmd);
+    void apply_edgebug_flags();
+} // namespace engine_prediction

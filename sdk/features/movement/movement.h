@@ -24,15 +24,15 @@ namespace features::movement {
             inline vector_t absolute_origin;
             inline movedata_t movement_data = {};
             inline entity_handle_t ground_ent;
-        };
-    };
+        }; // namespace prediction
+    };     // namespace edgebug_container
 
-	void pre_prediction(c_user_cmd* user_cmd);
-	void post_prediction(c_user_cmd* user_cmd, int pre_flags, int post_flags);
+    void pre_prediction(c_user_cmd *user_cmd);
+    void post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags);
 
-    void predict_edgebug(c_user_cmd* user_cmd);
-	void edgebug_assist(c_user_cmd* user_cmd);
-	void fast_walk(c_user_cmd* user_cmd);
-	void slide_walk(c_user_cmd* user_cmd);
-	void strafe_optimizer(c_user_cmd* user_cmd);
-}
+    void predict_edgebug(c_user_cmd *user_cmd);
+    void edgebug_assist(c_user_cmd *user_cmd);
+    void fast_walk(c_user_cmd *user_cmd);
+    void slide_walk(c_user_cmd *user_cmd);
+    void strafe_optimizer(c_user_cmd *user_cmd);
+} // namespace features::movement

@@ -260,6 +260,7 @@ public:
 	DECLARE_NETVAR(float, flash_alpha, "DT_CSPlayer", "m_flFlashMaxAlpha");
 	DECLARE_NETVAR(float, lower_body_yaw, "DT_CSPlayer", "m_flLowerBodyYawTarget");
 	DECLARE_NETVAR(float, health_shot_boost_time, "DT_CSPlayer", "m_flHealthShotBoostExpirationTime");
+    DECLARE_NETVAR(float, next_attack, "DT_BCCLocalPlayerExclusive", "m_flNextAttack");
 	DECLARE_NETVAR(int, shots_fired, "DT_CSLocalPlayerExclusive", "m_iShotsFired");
 	DECLARE_NETVAR(int, armor, "DT_CSPlayer", "m_ArmorValue");
 	DECLARE_NETVAR(int, health, "DT_BasePlayer", "m_iHealth");
@@ -327,7 +328,6 @@ public:
 	DECLARE_NETVAR(float, next_primary_attack, "DT_LocalActiveWeaponData", "m_flNextPrimaryAttack");
 	DECLARE_NETVAR(float, next_secondary_attack, "DT_LocalActiveWeaponData", "m_flNextSecondaryAttack");
 	DECLARE_NETVAR(float, ready_time, "DT_WeaponCSBase", "m_flPostponeFireReadyTime");
-	DECLARE_NETVAR(float, next_attack, "DT_BCCLocalPlayerExclusive", "m_flNextAttack");
 	DECLARE_NETVAR(float, recoil_index, "DT_WeaponCSBase", "m_flRecoilIndex");
 	DECLARE_NETVAR(int, ammo1, "DT_BaseCombatWeapon", "m_iClip1");
 	DECLARE_NETVAR(int, ammo2, "DT_BaseCombatWeapon", "m_iClip2");

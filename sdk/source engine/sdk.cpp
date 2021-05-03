@@ -138,9 +138,8 @@ bool c_player::is_flashed() {
 bool c_player::can_shoot() {
 	const auto weapon = (c_weapon*)get_active_weapon_handle().get();
 
-	if (!weapon) {
+	if (!weapon) 
 		return false;
-	}
 
 	return can_shoot(weapon);
 }
@@ -148,21 +147,17 @@ bool c_player::can_shoot() {
 bool c_player::can_shoot(c_weapon* weapon) {
 	const float server_time = float(this->get_tick_base()) * interfaces::global_vars->interval_per_tick;
 
-	if (weapon->get_next_attack() > server_time) {
+	if (this->get_next_attack() > server_time)
 		return false;
-	}
 
-	if ((weapon->get_item_definition_index() == WEAPON_FAMAS || weapon->get_item_definition_index() == WEAPON_GLOCK) && weapon->get_is_burst_mode() && weapon->get_burst_shots_remaining() > 0) {
+	if ((weapon->get_item_definition_index() == WEAPON_FAMAS || weapon->get_item_definition_index() == WEAPON_GLOCK) && weapon->get_is_burst_mode() && weapon->get_burst_shots_remaining() > 0)
 		return false;
-	}
 
-	if (weapon->get_next_primary_attack() > server_time) {
+	if (weapon->get_next_primary_attack() > server_time)
 		return false;
-	}
 
-	if (weapon->get_item_definition_index() == WEAPON_REVOLVER && weapon->get_ready_time() > server_time) {
+	if (weapon->get_item_definition_index() == WEAPON_REVOLVER && weapon->get_ready_time() > server_time)
 		return false;
-	}
 
 	return true;
 }
@@ -191,9 +186,8 @@ bool c_player::is_enemy() {
 bool c_player::is_visible(c_player* local, const vector_t& src, const vector_t& dst) {
 	c_trace_filter filter;
 
-	if (local) {
+	if (local)
 		filter.skip = local;
-	}
 
 	trace_t tr;
 	interfaces::trace->trace_ray({ src, dst }, MASK_SHOT, &filter, &tr);
@@ -206,21 +200,18 @@ bool c_player::is_visible(c_player* local, const vector_t& src) {
 
 	matrix3x4_t matrices[128];
 
-	if (!get_renderable()->setup_bones(matrices, 128, 0x100, interfaces::global_vars->current_time)) {
+	if (!get_renderable()->setup_bones(matrices, 128, 0x100, interfaces::global_vars->current_time))
 		return false;
-	}
 
 	const auto model = this->get_renderable()->get_model();
 
-	if (!model) {
+	if (!model)
 		return false;
-	}
 
 	const auto studio_hdr = interfaces::model_info->get_studio_model(model);
 
-	if (!studio_hdr) {
+	if (!studio_hdr)
 		return false;
-	}
 
 	static std::vector< int > hitboxes = {
 		HEAD,
@@ -233,9 +224,8 @@ bool c_player::is_visible(c_player* local, const vector_t& src) {
 	for (const auto& it : hitboxes) {
 		const auto bbox = studio_hdr->get_hitbox(it, 0);
 
-		if (!bbox) {
+		if (!bbox)
 			continue;
-		}
 
 		const matrix3x4_t& matrix = matrices[bbox->bone];
 		const float modifier = bbox->radius != -1.0f ? bbox->radius : 0.0f;
@@ -247,9 +237,8 @@ bool c_player::is_visible(c_player* local, const vector_t& src) {
 
 		c_trace_filter filter;
 
-		if (local) {
+		if (local)
 			filter.skip = local;
-		}
 
 		trace_t tr;
 		interfaces::trace->trace_ray({ src, dst }, MASK_SHOT, &filter, &tr);
@@ -265,6 +254,7 @@ bool c_player::is_visible(c_player* local, const vector_t& src) {
 
 bool c_player::is_reloading() {
 	const auto& reload_layer = animation_overlay().Element(1);
+
 	if (reload_layer.owner) {
 		const int activity = sequence_activity(reload_layer.sequence);
 
@@ -286,9 +276,8 @@ bool c_player::has_bomb() {
 }
 
 bool c_player::is_valid(const bool check_alive) {
-	if (!this || this->get_networkable()->is_dormant() || !this->is_player()) {
+	if (!this || this->get_networkable()->is_dormant() || !this->is_player())
 		return false;
-	}
 
 	return check_alive ? this->is_alive() : !this->is_alive();
 }

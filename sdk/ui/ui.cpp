@@ -263,7 +263,7 @@ void ui::init() {
         if (const auto view_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_EYE, XORSTR("View"))) {
 
             if (const auto group = view_tab->new_group(XORSTR("Local"))) {
-                group->new_slider(XORSTR("Field of view"), settings.visuals.local.override_fov, 50.f, 130.f, XORSTR("{:.1f}°"));
+                group->new_slider(XORSTR("Field of view"), settings.visuals.local.override_fov, 50, 130, XORSTR("{}°"));
                 group->new_slider(XORSTR("Aspect ratio"), settings.visuals.local.aspect_ratio, 0.f, 5.f, XORSTR("{:.1f}%"));
                 group->new_slider(XORSTR("Flash alpha"), settings.visuals.local.flash_alpha, 0, 100, XORSTR("{}%"));
                 group->new_checkbox(XORSTR("Recoil crosshair"), settings.visuals.local.recoil_crosshair);
@@ -297,7 +297,10 @@ void ui::init() {
         if (const auto main_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_TOOLS, XORSTR("Main"))) {
 
             if (const auto group = main_tab->new_group(XORSTR("Movement"))) {
-                group->new_checkbox(XORSTR("Indicators"), settings.visuals.local.indicators);
+                //group->new_checkbox(XORSTR("Indicators"), settings.visuals.local.indicators);
+
+                group->new_select(XORSTR("Indicators"), settings.visuals.local.indicators,
+                    { XORSTR("Velocity"), XORSTR("Takeoff velocity"), XORSTR("Jumpbug"), XORSTR("Edgebug"), XORSTR("Edgebug assist"), XORSTR("Edge jump"), XORSTR("Fast walk") }, true );
 
                 group->new_checkbox(XORSTR("Bunnyhop"), settings.miscellaneous.movement.bunny_hop);
                 group->new_checkbox(XORSTR("Infinite duck"), settings.miscellaneous.movement.no_duck_cooldown);
@@ -325,6 +328,7 @@ void ui::init() {
             }
 
             if (const auto group = main_tab->new_group(XORSTR("Other"))) {
+                group->new_checkbox(XORSTR("Fake latency"), settings.miscellaneous.fake_ping.enabled);
                 group->new_checkbox(XORSTR("Player privacy"), settings.miscellaneous.player_privacy);
                 group->new_checkbox(XORSTR("Auto pistol"), settings.miscellaneous.auto_pistol);
                 group->new_checkbox(XORSTR("Log weapon purchases"), settings.miscellaneous.buy_log);

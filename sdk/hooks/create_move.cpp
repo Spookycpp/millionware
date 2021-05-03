@@ -19,10 +19,16 @@
 static std::once_flag prediction_init;
 
 bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float frame_time, c_user_cmd* user_cmd) {
-	std::call_once(prediction_init, engine_prediction::init);
+
+	const auto result = create_move_original(ecx, edx, frame_time, user_cmd);
 
 	if (!user_cmd || !user_cmd->command_number || cheat::in_deathcam)
-		return create_move_original(ecx, edx, frame_time, user_cmd);
+        return result;
+
+	if (result)
+        interfaces::engine_client->set_view_angles(user_cmd->view_angles);
+
+	std::call_once(prediction_init, engine_prediction::init);
 
 	features::fake_ping::on_create_move();
 
@@ -56,5 +62,5 @@ bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float fram
 
 	//features::movement::edgebug_assist(user_cmd);
 
-	return create_move_original(ecx, edx, frame_time, user_cmd);
+	return false;
 }
