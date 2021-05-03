@@ -7,7 +7,7 @@ class c_client_class;
 class c_client_mode;
 class c_entity;
 
-enum class e_client_frame_stage {
+enum e_client_frame_stage {
 	FRAME_STAGE_UNDEFINED = -1,
 	FRAME_STAGE_START,
 	FRAME_STAGE_NET_UPDATE_START,

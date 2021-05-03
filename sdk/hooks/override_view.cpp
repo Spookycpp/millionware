@@ -11,7 +11,7 @@ int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setu
 	if (!view_setup)
 		return override_view_original(ecx, edx, view_setup);
 
-	if (util::run_frame() && view_setup) 
+	if (view_setup) 
 		features::miscellaneous::on_override_view(view_setup);
 
 	if (interfaces::engine_client->is_in_game()) {

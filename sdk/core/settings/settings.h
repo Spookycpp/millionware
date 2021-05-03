@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "../../source engine/color.h"
 
 struct settings_t {
@@ -126,9 +128,9 @@ struct settings_t {
 			struct {
 				int  material  = 0;
 				bool visible   = false;
-				color_t visible_color = { 255, 102, 0 };
+				color_t visible_color = { 255, 102, 0, 255 };
 				bool invisible = false;
-				color_t invisible_color = { 222, 7, 208 };
+				color_t invisible_color = { 222, 7, 208, 255 };
 				bool smoke     = false;
 				bool backtrack = false;
 			} chams;
@@ -192,8 +194,11 @@ struct settings_t {
 		bool  bomb_log = false;
 		bool  bomb_log_sounds = false;
 		bool  report_player_on_death = false;
+		bool  vote_reveal = false;
 		int   hit_sound = 0;
-		int   kill_sound = 0;
+        int kill_sound = 0;
+		std::string hit_sound_custom;
+		std::string kill_sound_custom;
 
 		struct {
 			bool  enabled = false;

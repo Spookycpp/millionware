@@ -8,6 +8,7 @@
 
 #include <optional>
 #include <string>
+#include <random>
 
 extern int   TIME_TO_TICKS(float dt);
 extern float TICKS_TO_TIME(int tick);
@@ -27,6 +28,7 @@ namespace util {
 	bool line_goes_through_smoke(const vector_t& src, const vector_t& dst);
 	bool intersects_hitbox(const vector_t eye_pos, const vector_t end_pos, const vector_t min, const vector_t max, const float radius);
 
+	void force_full_update();
 	void set_random_seed(const int seed);
 	void set_skybox(const char* name);
 	void on_frame_stage_notify(e_client_frame_stage frame_stage);
@@ -36,4 +38,12 @@ namespace util {
 
 	std::optional< vector_t > get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius);
 	std::string sanitize_string(const std::string& str);
+
+	template <typename type> type get_random_float_range(const type &min, const type &max) {
+        std::random_device rd;
+        std::mt19937 e2(rd());
+        std::uniform_real_distribution<type> distribution(min, max);
+
+        return distribution(e2);
+    }
 }

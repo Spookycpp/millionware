@@ -1,16 +1,27 @@
 #include "cheat.h"
+
 #include "../../engine/input/input.h"
 #include "../../engine/logging/logging.h"
 #include "../../engine/render/render.h"
 #include "../../engine/security/xorstr.h"
+
+#include "../../features/miscellaneous/miscellaneous.h"
 #include "../../features/hitchance/hitchance.h"
+
 #include "../../ui/ui.h"
+
 #include "../hooks/hooks.h"
+
 #include "../interfaces/interfaces.h"
+
 #include "../netvars/netvars.h"
+
 #include "../patterns/patterns.h"
+
 #include "../scripting/scripting.h"
+
 #include <windows.h>
+#include "../util/util.h"
 
 bool cheat::init() {
     if (!patterns::init())
@@ -44,6 +55,11 @@ bool cheat::init() {
 }
 
 bool cheat::undo() {
+
+    // feature reverts & stabilization
+    util::set_skybox(0);
+    util::force_full_update();
+
     if (!hooks::undo())
         return false;
 

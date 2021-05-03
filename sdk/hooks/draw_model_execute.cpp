@@ -38,8 +38,6 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
     const auto& invisible_color = settings.visuals.player.chams.invisible_color;
 
     if (entity == nullptr || !entity->is_enemy()) {
-        interfaces::model_render->force_material_override(nullptr);
-
         draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
 
         return;
@@ -59,6 +57,9 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
         interfaces::model_render->force_material_override(material);
 
         draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+
+        if (!settings.visuals.player.chams.visible)
+            interfaces::model_render->force_material_override(nullptr);
     }
 
     if (settings.visuals.player.chams.visible) {

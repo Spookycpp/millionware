@@ -118,6 +118,18 @@ struct vector_t
 	inline float length_sqr() const {
 		return x * x + y * y + z * z;
 	}
+
+	inline float normalize_in_place() {
+        vector_t &v = *this;
+
+        const float radius = 1.0f / (this->length() + FLT_EPSILON);
+
+        v.x *= radius;
+        v.y *= radius;
+        v.z *= radius;
+
+        return 1;
+    }
 };
 
 static inline point_t operator+(const point_t &lhs, float rhs) { return { lhs.x + rhs, lhs.y + rhs }; }

@@ -208,11 +208,11 @@ namespace features::legitbot {
             return false;
 
         if (settings.global.weapon_groups) {
-            if (weapon->is_pistol()) {
-                settings_lbot = &settings.lbot_pistols;
-            }
-            else if (weapon->is_heavy_pistol()) {
+            if (weapon->is_heavy_pistol()) {
                 settings_lbot = &settings.lbot_hpistols;
+            }
+            else if (weapon->is_pistol()) {
+                settings_lbot = &settings.lbot_pistols;
             }
             else if (weapon->is_rifle()) {
                 settings_lbot = &settings.lbot_rifles;

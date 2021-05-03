@@ -68,7 +68,7 @@ static bool get_bounding_box(const entity_esp_t &entity_info, c_entity *entity, 
 
 void features::visuals::esp::frame() {
 
-    if (!cheat::local_player || cheat::in_deathcam || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+    if (!cheat::local_player || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
         return;
 
     for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {

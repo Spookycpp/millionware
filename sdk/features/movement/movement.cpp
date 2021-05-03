@@ -61,7 +61,7 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
             user_cmd->buttons |= BUTTON_IN_JUMP;
     }
 }
-
+/*
 void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
     // credits: clarity.tk
 
@@ -166,7 +166,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
         }
     }
 }
-
+*/
 void features::movement::fast_walk(c_user_cmd *user_cmd) {
 
     if (!settings.miscellaneous.movement.fast_walk)

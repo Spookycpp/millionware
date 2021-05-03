@@ -9,7 +9,27 @@
 #include "../../engine/security/xorstr.h"
 
 namespace features::game_events {
-    void on_player_hurt(c_game_event *game_event) {}
+    void on_player_hurt(c_game_event *game_event) {
+        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("userid")));
+        const auto user = (c_player*)interfaces::entity_list->get_entity(user_id);
+
+        if (!user)
+            return;
+
+        const int attacker_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("attacker")));
+        const auto attacker = (c_player *) interfaces::entity_list->get_entity(attacker_id);
+
+        if (!attacker)
+            return;
+
+        if (user != attacker && attacker == cheat::local_player) {
+            switch (settings.miscellaneous.hit_sound) {
+            case 1: util::play_sound(XORSTR("survival\\money_collect_05.wav")); break;
+            case 2: util::play_sound(XORSTR("buttons\\arena_switch_press_02.wav")); break;
+            default: break;
+            }
+        }
+    }
 
     void on_item_purchase(const item_purchase_data_t &purchase_data) {
 
@@ -95,7 +115,24 @@ namespace features::game_events {
         }
     }
 
-    void on_vote_cast(c_game_event *game_event) {}
+    void on_vote_cast(c_game_event *game_event) {
+
+        if (!settings.miscellaneous.vote_reveal)
+            return;
+
+        const int ent_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("entityid")));
+        const auto ent = (c_player*)interfaces::entity_list->get_entity(ent_id);
+
+        if (!ent)
+            return;
+
+        player_info_t info;
+
+        if (!interfaces::engine_client->get_player_info(ent->get_networkable()->index(), info))
+            return;
+
+        logging::info("{} voted {}", info.name, game_event->get_int(XORSTR("vote_option")) == 0 ? XORSTR("yes") : XORSTR("no"));
+    }
 
     void on_player_death(c_game_event *game_event) {
         const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("userid")));
@@ -116,14 +153,9 @@ namespace features::game_events {
             }
 
             switch (settings.miscellaneous.kill_sound) {
-            case 1:
-                util::play_sound(XORSTR("buttons\\arena_switch_press_02.wav"));
-                break;
-            case 2:
-                util::play_sound(XORSTR("physics\\metal\\paintcan_impact_hard3.wav"));
-                break;
-            default:
-                break;
+            case 1: util::play_sound(XORSTR("survival\\money_collect_05.wav")); break;
+            case 2: util::play_sound(XORSTR("buttons\\arena_switch_press_02.wav")); break;
+            default: break;
             }
         }
 

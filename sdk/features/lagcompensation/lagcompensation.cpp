@@ -11,6 +11,7 @@
 #include "../../engine/math/math.h"
 
 #include <algorithm>
+#include "../movement/engine prediction/engine_prediction.h"
 
 namespace features::lag_compensation {
     std::array<std::deque<render_record_t>, 65> records = {};
@@ -108,9 +109,8 @@ namespace features::lag_compensation {
             if (it->origin.dist(ent->get_vec_origin()) < 1.0f)
                 return false;
 
-            // if (engine_prediction::is_breaking_lc(ent->get_index())) {
-            //	return false;
-            //}
+            if (features::engine_prediction::is_breaking_lc(ent->get_networkable()->index()))
+            	return false;
 
             const auto next_record = it + 1;
 

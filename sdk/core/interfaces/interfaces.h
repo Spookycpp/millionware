@@ -30,6 +30,7 @@ namespace interfaces
 {
 	inline c_base_client_dll	 *client_dll;
 	inline c_game_movement		 *game_movement;
+	inline c_move_helper		 *move_helper;
 	inline c_entity_list		 *entity_list;
 	inline c_effects			 *effects;
 	inline c_engine_sound		 *engine_sound;

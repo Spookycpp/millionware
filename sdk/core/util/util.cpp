@@ -10,6 +10,9 @@
 
 
 #include "../../features/miscellaneous/miscellaneous.h"
+#include "../../engine/logging/logging.h"
+
+static bool force_update = false;
 
 float TICK_INTERVAL() {
 	return interfaces::global_vars->interval_per_tick;
@@ -77,6 +80,24 @@ bool util::intersects_hitbox(const vector_t eye_pos, const vector_t end_pos, con
 	return math::dist_segment_to_segment(eye_pos, end_pos, min, max).length() < radius;
 }
 
+void util::force_full_update() {
+	static float update_time = 0.f;
+	static bool  should_update = false;
+
+	if (force_update) {
+		update_time = interfaces::global_vars->current_time + .1f;
+		should_update = true;
+		force_update = false;
+    }
+
+	if (should_update && interfaces::global_vars->current_time > update_time && interfaces::client_state->delta_tick != -1) {
+        logging::info("Forcing game update");
+        interfaces::client_state->delta_tick = -1;
+
+        should_update = false;
+    }
+}
+
 void util::set_random_seed(const int seed) {
 
 	using  random_seed_t = int(__cdecl*)(int);
@@ -89,12 +110,7 @@ void util::set_random_seed(const int seed) {
 }
 
 void util::set_skybox(const char* name) {
-	// get load_named_sky func address
-	static auto load_named_sky_addr = patterns::load_named_sky;
-	static auto load_named_sky_fn = reinterpret_cast<void(__fastcall*)(const char*)>(load_named_sky_addr);
-
-	// set it.
-	load_named_sky_fn(name);
+    features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
 }
 
 void util::on_frame_stage_notify(const e_client_frame_stage frame_stage) {

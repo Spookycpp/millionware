@@ -8,7 +8,7 @@
 
 int __fastcall hooks::send_datagram(c_net_channel* ecx, uintptr_t* edx, void* buffer) {
 
-	if (buffer || !interfaces::engine_client->is_in_game() || !util::run_frame())
+	if (buffer || !interfaces::engine_client->is_in_game())
 		return send_datagram_original(ecx, edx, buffer);
 	
 	if (interfaces::client_state->delta_tick <= 0) 

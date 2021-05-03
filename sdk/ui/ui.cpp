@@ -148,7 +148,7 @@ void ui::init() {
                     group->add_dependency(group_dependency);
                 }
                 if (const auto group = legit_tab->new_group("Filters")) {
-                    group->new_checkbox(XORSTR("Target invisible"), group_settings->check_visible);
+                    group->new_checkbox(XORSTR("Ignore visible check"), group_settings->check_visible);
                     group->new_checkbox(XORSTR("Target teammates"), group_settings->check_team);
                     group->new_checkbox(XORSTR("Smoke check"), group_settings->check_smoked);
                     group->new_checkbox(XORSTR("Flash check"), group_settings->check_flashed);
@@ -226,8 +226,8 @@ void ui::init() {
 
             if (const auto group = players_tab->new_group(XORSTR("Model"))) {
                 group->new_select("Material", settings.visuals.player.chams.material, {XORSTR("Textured"), XORSTR("Flat")});
-                group->new_checkbox(XORSTR("Player"), settings.visuals.player.chams.visible)->add_color_picker(settings.visuals.player.chams.visible_color);
-                group->new_checkbox(XORSTR("Player (behind walls)"), settings.visuals.player.chams.invisible)->add_color_picker(settings.visuals.player.chams.invisible_color);
+                group->new_checkbox(XORSTR("Player"), settings.visuals.player.chams.visible)->add_color_picker(settings.visuals.player.chams.visible_color, false);
+                group->new_checkbox(XORSTR("Player (behind walls)"), settings.visuals.player.chams.invisible)->add_color_picker(settings.visuals.player.chams.invisible_color, false);
                 group->new_checkbox(XORSTR("Visualize backtrack"), settings.visuals.player.chams.backtrack);
             }
         }
@@ -253,6 +253,7 @@ void ui::init() {
             }
 
             if (const auto group = world_tab->new_group(XORSTR("Other"))) {
+                group->new_checkbox(XORSTR("Damage log"), settings.visuals.player.damage_logs);
                 group->new_checkbox(XORSTR("Purchase log"), settings.miscellaneous.buy_log);
                 group->new_checkbox(XORSTR("Rank reveal"), settings.miscellaneous.rank_reveal);
                 group->new_checkbox(XORSTR("Money reveal"), settings.miscellaneous.money_reveal);
@@ -336,7 +337,18 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Log bomb plants"), settings.miscellaneous.bomb_log);
                 group->new_checkbox(XORSTR("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)->add_dependency(settings.miscellaneous.bomb_log);
 
+                group->new_checkbox(XORSTR("Vote revealer"), settings.miscellaneous.vote_reveal);
+
                 group->new_checkbox(XORSTR("Report player on death"), settings.miscellaneous.report_player_on_death);
+
+                const auto custom_hit_sound_dependency = [](const auto _) { return settings.miscellaneous.hit_sound == 3; };
+                const auto custom_kill_sound_dependency = [](const auto _) { return settings.miscellaneous.kill_sound == 3; };
+
+                group->new_select(XORSTR("Hit sound"), settings.miscellaneous.hit_sound, {XORSTR("None"), XORSTR("Money"), XORSTR("Arena switch press"), XORSTR("Custom")});
+                group->new_text_input(XORSTR("Input"), settings.miscellaneous.hit_sound_custom, false)->add_dependency(custom_hit_sound_dependency);
+
+                group->new_select(XORSTR("Kill sound"), settings.miscellaneous.kill_sound, {XORSTR("None"), XORSTR("Money"), XORSTR("Arena switch press"), XORSTR("Custom")});
+                group->new_text_input(XORSTR("Input"), settings.miscellaneous.hit_sound_custom, false)->add_dependency(custom_kill_sound_dependency);
             }
         }
 

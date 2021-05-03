@@ -188,6 +188,7 @@
     <ClCompile Include="features\assistance\legitbot.cpp" />
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
     <ClCompile Include="features\fake ping\fake_ping.cpp" />
+    <ClCompile Include="features\game events\damage logs\damage_logs.cpp" />
     <ClCompile Include="features\game events\event_listener.cpp" />
     <ClCompile Include="features\game events\game_events.cpp" />
     <ClCompile Include="features\hitchance\hitchance.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="features\assistance\legitbot.h" />
     <ClInclude Include="features\assistance\triggerbot\triggerbot.h" />
     <ClInclude Include="features\fake ping\fake_ping.h" />
+    <ClInclude Include="features\game events\damage logs\damage_logs.h" />
     <ClInclude Include="features\game events\game_events.h" />
     <ClInclude Include="features\hitchance\hitchance.h" />
     <ClInclude Include="features\lagcompensation\lagcompensation.h" />

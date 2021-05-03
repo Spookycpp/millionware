@@ -2,6 +2,7 @@
 
 #include "../core/patterns/patterns.h"
 
+#include <array>
 #include <cstdint>
 
 #include "client_class.h"
@@ -104,6 +105,47 @@ enum e_item_definition_index
 	WEAPON_GLOVE_SPECIALIST = 5034,
 	WEAPON_GLOVE_HYDRA = 5035
 };
+
+struct animation_layer_t {
+    char pad_0x8[0x8];
+    uint32_t unk1;
+    uint32_t unk2;
+    uint32_t unk3;
+    uint32_t order;          // 0x0014
+    uint32_t sequence;       // 0x0018
+    float prev_cycle;        // 0x001C
+    float weight;            // 0x0020
+    float weight_delta_rate; // 0x0024
+    float playback_rate;     // 0x0028
+    float cycle;             // 0x2C
+    void *player;            // 0x30
+    char pad_0x4[0x4];
+};
+
+struct animation_data_t {
+    std::array<animation_layer_t, 13> anim_layers;
+    std::array<animation_layer_t, 13> last_layers;
+    std::array<float, 24> pose_params;
+    std::array<matrix3x4_t, 128> bones;
+    int activity;
+    float sim_time;
+    float last_sim_time;
+    vector_t last_interp_origin;
+    float fraction;
+    vector_t interp_origin;
+    vector_t last_origin;
+    vector_t last_velocity;
+    vector_t anim_velocity;
+    bool valid;
+    float last_duck;
+    int prev_flags;
+    int anim_flags;
+    float adjust_rate;
+    float adjust_cycle;
+    bool is_stopping;
+    float last_anim_time;
+};
+
 
 enum e_life_state
 {
@@ -246,6 +288,8 @@ public:
 	DECLARE_NETVAR_OFFSET(matrix3x4_t, transformation_matrix, "DT_BaseEntity", "m_CollisionGroup", -48);
 };
 
+inline std::array<animation_data_t, 65> _anim_data_records;
+
 class c_player : public c_entity
 {
 public:
@@ -274,11 +318,15 @@ public:
 	DECLARE_NETVAR(vector_t, aim_punch_angle, "DT_Local", "m_aimPunchAngle");
 	DECLARE_NETVAR(vector_t, velocity, "DT_LocalPlayerExclusive", "m_vecVelocity[0]");
 	DECLARE_NETVAR(vector_t, view_offset, "DT_LocalPlayerExclusive", "m_vecViewOffset[0]");
+    DECLARE_NETVAR(vector_t, mins, "DT_BaseEntity", "m_vecMins");
+    DECLARE_NETVAR(vector_t, maxs, "DT_BaseEntity", "m_vecMaxs");
 	DECLARE_NETVAR(entity_handle_t, observer_target, "DT_BasePlayer", "m_hObserverTarget");
 	DECLARE_NETVAR(entity_handle_t, active_weapon_handle, "DT_BaseCombatCharacter", "m_hActiveWeapon");
 	DECLARE_NETVAR(entity_handle_t, view_model_handle, "DT_BasePlayer", "m_hViewModel[0]");
 	DECLARE_NETVAR(entity_handle_t, ground_entity, "DT_BasePlayer", "m_hGroundEntity");
 
+	DECLARE_NETVAR_OFFSET(float, surface_friction, "DT_CSPlayer", "m_vecLadderNormal", -4);
+	DECLARE_NETVAR_OFFSET(float, gravity, "DT_CSPlayer", "m_iTeamNum", -14);
 	DECLARE_NETVAR_OFFSET(int, old_simulation_time, "DT_BaseEntity", "m_flSimulationTime", 4);
 	DECLARE_NETVAR_OFFSET(int, move_type, "DT_BaseEntity", "m_nRenderMode", 1);
 	
@@ -307,6 +355,10 @@ public:
 	bool is_reloading();
 	bool is_smoked();
 	bool has_bomb();
+
+	auto &get_anim_data() {
+        return _anim_data_records[this->get_networkable()->index()];
+    }
 };
 
 class c_economy_item : public c_entity

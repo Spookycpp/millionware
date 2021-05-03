@@ -154,5 +154,11 @@ bool interfaces::init()
 		return false;
 	}
 
+	if ((move_helper = (c_move_helper *) patterns::get_move_helper()) == nullptr) {
+        logging::error(XORSTR("failed to find move helper pattern"));
+
+        return false;
+    }
+
 	return true;
 }

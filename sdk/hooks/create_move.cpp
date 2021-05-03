@@ -16,24 +16,26 @@
 #include "../features/movement/engine prediction/engine_prediction.h"
 #include "../features/visuals/world/world.h"
 
-static std::once_flag prediction_init;
-
 bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float frame_time, c_user_cmd* user_cmd) {
 
 	const auto result = create_move_original(ecx, edx, frame_time, user_cmd);
 
-	if (!user_cmd || !user_cmd->command_number || cheat::in_deathcam)
+	if (!user_cmd || !user_cmd->command_number || !user_cmd->tick_count)
         return result;
 
 	if (result)
         interfaces::engine_client->set_view_angles(user_cmd->view_angles);
 
-	std::call_once(prediction_init, engine_prediction::init);
-
 	features::fake_ping::on_create_move();
 
-	if (util::run_frame() && cheat::local_player->is_alive()) {
+	if (cheat::local_player->is_alive()) {
 		features::legitbot::sample_angle_data(user_cmd->view_angles);
+
+		features::movement::pre_prediction(user_cmd);
+        const auto pre_flags = cheat::local_player->get_flags();
+		features::engine_prediction::on_create_move(user_cmd);
+        const auto post_flags = features::engine_prediction::get_predicted_flags();
+        features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
 		c_weapon* local_weapon = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
 
@@ -48,17 +50,7 @@ bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float fram
 		}
 	}
 
-	features::fake_ping::on_create_move();
-
 	features::miscellaneous::rank_reveal(user_cmd);
-
-	// this is disgusting rework this at some point please.
-	features::movement::pre_prediction(user_cmd);
-	const auto pre_flags = cheat::local_player->get_flags();
-	engine_prediction::start_prediction(user_cmd);
-	engine_prediction::end_prediction(user_cmd);
-	const auto post_flags = cheat::local_player->get_flags();
-	features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
 	//features::movement::edgebug_assist(user_cmd);
 

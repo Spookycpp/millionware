@@ -21,8 +21,12 @@ uintptr_t create_hook(uintptr_t from, uintptr_t to) {
     return original;
 }
 
+static uintptr_t *get_vtable(uintptr_t instance) {
+    return *(uintptr_t **) instance;
+}
+
 template <typename F> F create_hook(uintptr_t instance, int index, F to) {
-    const auto vtable = *(uintptr_t **) instance;
+    const auto vtable = get_vtable(instance);
 
     return (F) create_hook(vtable[index], (uintptr_t) to);
 }
@@ -56,6 +60,8 @@ bool hooks::init() {
     paint_traverse_original = create_hook((uintptr_t) interfaces::panel, 42, &paint_traverse);
 
     present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);
+
+    cheat::run_command = get_vfunc<uintptr_t>(interfaces::prediction, 19);
 
 #define INIT_HOOK(h, n)                                                                                                                                                                                \
     if (h == 0) {                                                                                                                                                                                      \
