@@ -204,8 +204,8 @@ void c_color_picker::render()
 	{
 		render::push_clip(root_pos, root_size);
 
-		render::draw_image(root_pos, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
-		render::draw_image({ root_pos.x + 18.0f, root_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
+		//render::draw_image(root_pos, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
+		//render::draw_image({ root_pos.x + 18.0f, root_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
 
 		render::pop_clip();
 	}
@@ -285,15 +285,15 @@ void c_color_picker::render()
 
 			render::push_clip(alpha_bar_pos, alpha_bar_size);
 
-			for (auto i = 0;; i++)
-			{
-				const auto offset = i * 18.0f;
-
-				render::draw_image({ alpha_bar_pos.x + offset, alpha_bar_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY);
-
-				if (offset > alpha_bar_size.x)
-					break;
-			}
+			//for (auto i = 0;; i++)
+			//{
+			//	const auto offset = i * 18.0f;
+			//
+			//	render::draw_image({ alpha_bar_pos.x + offset, alpha_bar_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY);
+			//
+			//	if (offset > alpha_bar_size.x)
+			//		break;
+			//}
 
 			render::pop_clip();
 
