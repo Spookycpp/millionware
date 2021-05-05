@@ -80,60 +80,20 @@ class c_game_movement {
 
 class c_prediction {
   public:
-    virtual ~c_prediction(void) = 0;
-    virtual void initialize(void) = 0;
-    virtual void shutdown(void) = 0;
-
-  public:
-    virtual void update(int startframe, bool validframe, int incoming_acknowledged, int outgoing_command);
-    virtual void pre_entity_packet_recieved(int commands_acknowledged, int current_world_update_packet);
-    virtual void post_entity_packet_recieved(void);
-    virtual void post_network_data_recieved(int commands_acknowledged);
-    virtual void on_recieve_uncompressed_packed(void);
-    virtual void get_view_origin(vector_t &org);
-    virtual void set_view_origin(vector_t &org);
-    virtual void get_view_angles(vector_t &ang);
-    virtual void set_view_angles(vector_t &ang);
-    virtual void get_local_view_angles(vector_t &ang);
-    virtual void set_local_view_angles(vector_t &ang);
-    virtual bool in_prediction(void) const;
-    virtual bool is_first_time_predicted(void) const;
-    virtual int get_last_acknowledged_cmd_number(void) const;
-    virtual int get_incoming_packet_number(void) const;
-    virtual void check_moving_ground(void *player, double frametime);
-    virtual void run_command(void *player, void *user_cmd, c_move_helper *moveHelper);
-    virtual void setup_move(void *player, void *user_cmd, c_move_helper *helper, movedata_t *movement);
-    virtual void finish_move(void *player, void *user_cmd, movedata_t *movement);
-    virtual void set_ideal_pitch(int slot, void *player, const vector_t &origin, const vector_t &angles, const vector_t &viewheight);
-    virtual void check_error(int slot, void *player, int commands_acknowledged);
-
-  public:
-    virtual void _update(int nSlot, bool received_new_world_update, bool validframe, int incoming_acknowledged, int outgoing_command);
-    bool perform_prediction(int slot, void *local_player, bool received_new_world_update, int incoming_acknowledged, int outgoing_command);
-    void shift_intermediate_data_forward(int slot, int slots_to_remove, int previous_last_slot);
-    void restore_entity_to_predicted_frame(int slot, int predicted_frame);
-    int first_command_to_execute(int slot, bool received_new_world_update, int incoming_acknowledged, int outgoing_command);
-    void dump_entity(void *ent, int commands_acknowledged);
-    void shutdown_predictables(void);
-    void reinit_predictables(void);
-    void remove_stale_predicted_entities(int slot, int last_command_packet);
-    void restore_original_ent_state(int slot);
-    void run_simulation(int current_command, float curtime, c_user_cmd *user_cmd, void *local_player);
-    void untouch(int slot);
-    void store_prediction_results(int slot, int predicted_frame);
-    bool should_dump_entity(void *ent);
-    void smooth_view_on_moving_platform(void *player, vector_t &offset);
-    void reset_simulation_tick();
-    void show_prediction_list_entry(int list_row, int show_list, void *ent, int &totalsize, int &totalsize_intermediate);
-    void finish_prediction_list(int list_row, int show_list, int totalsize, int totalsize_intermediate);
-    void check_predict_convar();
+    DECLARE_VFUNC(3, update(int start_frame, bool is_frame_valid, int inc_ack, int out_cmd), void(__thiscall *)(void *, int, bool, int, int))(start_frame, is_frame_valid, inc_ack, out_cmd);
+    DECLARE_VFUNC(12, get_local_view_angles(vector_t &angles), void(__thiscall *)(void *, vector_t &))(angles);
+    DECLARE_VFUNC(13, set_local_view_angles(const vector_t &angles), void(__thiscall *)(void *, const vector_t &))(angles);
+    DECLARE_VFUNC(18, check_moving_ground(c_entity *entity, double frame_time), void(__thiscall *)(void *, c_entity *, double))(entity, frame_time);
+    DECLARE_VFUNC(20, setup_move(c_entity *entity, c_user_cmd *user_cmd, c_move_helper *move_helper, movedata_t *move_data),
+                  void(__thiscall *)(void *, c_entity *, c_user_cmd *, c_move_helper *, movedata_t *))
+    (entity, user_cmd, move_helper, move_data);
+    DECLARE_VFUNC(21, finish_move(c_entity *entity, c_user_cmd *user_cmd, movedata_t *move_data), void(__thiscall *)(void *, c_entity *, c_user_cmd *, movedata_t *))(entity, user_cmd, move_data);
 
     // values:
-
-    char pad0[8];
-    bool m_in_prediction;
-    char pad1[1];
-    bool m_engine_paused;
-    char pad2[13];
-    bool m_is_first_time_predicted;
+    char pad00[8];                // 0x0000
+    bool m_bInPrediction;         // 0x0008
+    char pad01[1];                // 0x0009
+    bool m_bEnginePaused;         // 0x000A
+    char pad02[13];               // 0x000B
+    bool m_bIsFirstTimePredicted; // 0x0018
 };

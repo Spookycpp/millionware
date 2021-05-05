@@ -210,10 +210,13 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Bounding box"), settings.visuals.player.bounding_box);
                 group->new_checkbox(XORSTR("Name"), settings.visuals.player.player_name);
                 group->new_checkbox(XORSTR("Health"), settings.visuals.player.health);
-                group->new_checkbox(XORSTR("Armor"), settings.visuals.player.armor);
                 group->new_checkbox(XORSTR("Weapon"), settings.visuals.player.weapon_text);
                 group->new_checkbox(XORSTR("Ammo"), settings.visuals.player.ammo);
-                group->new_checkbox(XORSTR("Flags"), settings.visuals.player.flags);
+                group->new_checkbox(XORSTR("Armor"), settings.visuals.player.armor);
+
+                group->new_select("Flags", settings.visuals.player.flags,
+                                  {XORSTR("Armor"), XORSTR("Scoped"), XORSTR("Reloading"), XORSTR("Flashed"), XORSTR("Bomb"), XORSTR("Defusing"), XORSTR("Smoked"), XORSTR("Flash kill")}, true);
+
                 group->new_checkbox(XORSTR("Skeleton"), settings.visuals.player.skeleton);
                 group->new_checkbox(XORSTR("Headspot"), settings.visuals.player.head_spot);
                 group->new_checkbox(XORSTR("Barrel"), settings.visuals.player.barrel);

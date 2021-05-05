@@ -542,6 +542,7 @@ namespace features::engine_prediction {
         user_cmd->buttons &= ~(BUTTON_IN_BACK | BUTTON_IN_FORWARD | BUTTON_IN_MOVE_LEFT | BUTTON_IN_MOVE_RIGHT);
 
         movedata_t move_data = {};
+        memset(&move_data, 0, sizeof(movedata_t));
 
         c_entity *local_ent = cheat::local_player;
 
@@ -606,6 +607,40 @@ namespace features::engine_prediction {
 
     player_data_t get_player_data(const int ent_idx) {
         return players[ent_idx];
+    }
+
+    void create_edgebug_entry(c_user_cmd* user_cmd) {
+        /* credits: clarity.tk */
+
+        features::movement::edgebug_container::prediction::fall_velocity = cheat::local_player->get_fall_velocity();
+        features::movement::edgebug_container::prediction::flags = cheat::local_player->get_flags();
+        features::movement::edgebug_container::prediction::origin = cheat::local_player->get_vec_origin();
+        features::movement::edgebug_container::prediction::absolute_origin = cheat::local_player->get_abs_origin();
+        features::movement::edgebug_container::prediction::ground_ent = cheat::local_player->get_ground_entity();
+        memset(&features::movement::edgebug_container::prediction::movement_data, 0, sizeof(movedata_t));
+
+        interfaces::move_helper->set_host(cheat::local_player);
+        interfaces::prediction->setup_move(cheat::local_player, user_cmd, interfaces::move_helper, &features::movement::edgebug_container::prediction::movement_data);
+    }
+
+    void apply_edgebug_data(c_user_cmd *user_cmd) {
+        /* credits: clarity.tk */
+
+        interfaces::prediction->finish_move(cheat::local_player, user_cmd, &features::movement::edgebug_container::prediction::movement_data);
+        interfaces::move_helper->set_host(nullptr);
+        features::movement::edgebug_container::prediction::flags |= 2;
+        features::movement::edgebug_container::prediction::movement_data.m_nButtons |= 4;
+        cheat::local_player->get_flags() = features::movement::edgebug_container::prediction::flags;
+        cheat::local_player->get_fall_velocity() = features::movement::edgebug_container::prediction::fall_velocity;
+        cheat::local_player->set_absolute_origin(features::movement::edgebug_container::prediction::absolute_origin);
+        cheat::local_player->get_vec_origin() = features::movement::edgebug_container::prediction::origin;
+        cheat::local_player->get_ground_entity() = features::movement::edgebug_container::prediction::ground_ent;
+    }
+
+    void apply_edgebug_flags() {
+        /* credits: clarity.tk */
+
+        cheat::local_player->get_flags() = features::movement::edgebug_container::prediction::flags;
     }
 
 } // namespace features::engine_prediction

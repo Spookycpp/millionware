@@ -270,9 +270,6 @@ void features::visuals::esp::draw_weapon(const bounding_box_t &entity_box, c_pla
 
 void features::visuals::esp::draw_flags(const bounding_box_t &entity_box, c_player *player) {
 
-    if (!settings.visuals.player.flags)
-        return;
-
     auto draw_flag = [flag_offset = 0.0f, &entity_box, player](const char *flag_text, const color_t &flag_color) mutable {
         const auto flag_text_size = render::measure_text(flag_text, FONT_SMALL_TEXT);
 
@@ -281,23 +278,29 @@ void features::visuals::esp::draw_flags(const bounding_box_t &entity_box, c_play
         flag_offset += flag_text_size.y;
     };
 
-    if (player->get_armor() > 0)
+    if (settings.visuals.player.flags & (1 << 0))
         draw_flag(player->get_has_helmet() ? XORSTR("HK") : XORSTR("K"), {255, 255, 255});
 
-    if (player->get_is_scoped())
+    if (settings.visuals.player.flags & (1 << 1) && player->get_is_scoped())
         draw_flag(XORSTR("SCOPED"), {0, 150, 255});
 
-    if (player->is_reloading())
+    if (settings.visuals.player.flags & (1 << 2) && player->is_reloading())
         draw_flag(XORSTR("RELOADING"), {2, 106, 198});
 
-    if (player->is_flashed())
+    if (settings.visuals.player.flags & (1 << 3) && player->is_flashed())
         draw_flag(XORSTR("FLASHED"), {255, 255, 255});
 
-    if (player->has_bomb())
-        draw_flag(XORSTR("BOMB"), {255, 100, 0});
+    if (settings.visuals.player.flags & (1 << 4) && player->has_bomb())
+        draw_flag(XORSTR("BOMB"), {255, 0, 0});
+       
+    if (settings.visuals.player.flags & (1 << 5) && player->get_is_defusing())
+        draw_flag(XORSTR("DEFUSING"), {255, 100, 0});
 
-    if (player->is_smoked())
+    if (settings.visuals.player.flags & (1 << 6) && player->is_smoked())
         draw_flag(XORSTR("SMOKED"), {255, 255, 255});
+
+    if (settings.visuals.player.flags & (1 << 7) && player->get_health() == 1)
+        draw_flag(XORSTR("FLASH KILL"), {125, 255, 248});
 }
 
 void features::visuals::esp::draw_skeleton(c_player *player) {

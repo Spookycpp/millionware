@@ -3,10 +3,11 @@
 #include "../../../core/interfaces/interfaces.h"
 #include "../../../source engine/input.h"
 
-#include <functional>
 #include <deque>
+#include <functional>
 
 namespace features::engine_prediction {
+
     struct player_data_t {
         struct lag_velocity_record_t {
             vector_t velocity;
@@ -49,7 +50,7 @@ namespace features::engine_prediction {
     void friction(c_player *, vector_t &);
     void air_move(vector_t &, vector_t &, vector_t &);
     void air_accelerate(vector_t &, const vector_t &, float);
-    //void walk_move(c_player *, vector_t &, vector_t &);
+    // void walk_move(c_player *, vector_t &, vector_t &);
     bool categorize_position(c_player *, vector_t &, vector_t &);
     void check_velocity(c_player *, vector_t &, vector_t &);
     void try_player_move(c_player *, vector_t &, vector_t &);
@@ -61,4 +62,8 @@ namespace features::engine_prediction {
     void trace_player_bbox(c_player *, const vector_t &start, const vector_t &end, trace_t *tr);
     void try_touch_ground(c_player *, const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs, trace_t *tr);
     void try_touch_ground_in_quadrants(c_player *, const vector_t &start, const vector_t &end, trace_t *tr);
-} // namespace engine_prediction
+
+    void create_edgebug_entry(c_user_cmd *user_cmd);
+    void apply_edgebug_data(c_user_cmd *user_cmd);
+    void apply_edgebug_flags();
+} // namespace features::engine_prediction

@@ -110,7 +110,6 @@ struct settings_t {
 			bool  skeleton = false;
 			bool  head_spot = false;
 			bool  barrel = false;
-			bool  flags = false;
 			bool  money = false;
 			bool  kevlar = false;
 			bool  helmet = false;
@@ -124,6 +123,7 @@ struct settings_t {
 			bool  outside_fov = false;
 			float outside_fov_radius = 0.75f;
 			int   outside_fov_size = 25;
+			int	  flags = 0;
 
 			struct {
 				int  material  = 0;

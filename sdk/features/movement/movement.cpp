@@ -61,7 +61,7 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
             user_cmd->buttons |= BUTTON_IN_JUMP;
     }
 }
-/*
+
 void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
     // credits: clarity.tk
 
@@ -75,8 +75,7 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
              (cheat::local_player->get_flags() & 1) == 0 && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
         const auto previous_velocity = cheat::local_player->get_velocity().z;
 
-        engine_prediction::start_prediction(user_cmd);
-        engine_prediction::end_prediction(user_cmd);
+        engine_prediction::run_command(user_cmd);
 
         static auto sv_gravity = interfaces::convar_system->find_convar(XORSTR("sv_gravity"));
         const float gravity_velocity_constant = roundf((-sv_gravity->get_float()) * interfaces::global_vars->interval_per_tick + previous_velocity);
@@ -116,8 +115,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
             for (auto radius_checked = 1; radius_checked <= settings.miscellaneous.movement.edge_bug_radius; ++radius_checked) {
 
                 if (prediction_ticks_ran == 1) {
-                    engine_prediction::start_prediction(user_cmd);
-                    engine_prediction::end_prediction(user_cmd);
+                    engine_prediction::run_command(user_cmd);
                 }
 
                 if ((cheat::unpredicted_flags & 1) != 0 || unpredicted_velocity.z > 0.0) {
@@ -140,8 +138,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
                 }
 
                 if (!prediction_ticks_ran) {
-                    engine_prediction::start_prediction(user_cmd);
-                    engine_prediction::end_prediction(user_cmd);
+                    engine_prediction::run_command(user_cmd);
                 }
             }
 
@@ -166,7 +163,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
         }
     }
 }
-*/
+
 void features::movement::fast_walk(c_user_cmd *user_cmd) {
 
     if (!settings.miscellaneous.movement.fast_walk)

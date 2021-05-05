@@ -37,6 +37,8 @@ bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float fram
         const auto post_flags = features::engine_prediction::get_predicted_flags();
         features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
+		features::movement::edgebug_assist(user_cmd);
+
 		c_weapon* local_weapon = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
 
 		if (local_weapon) {
@@ -51,8 +53,6 @@ bool __fastcall hooks::create_move(c_client_mode* ecx, uintptr_t edx, float fram
 	}
 
 	features::miscellaneous::rank_reveal(user_cmd);
-
-	//features::movement::edgebug_assist(user_cmd);
 
 	return false;
 }
