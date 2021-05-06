@@ -8,23 +8,24 @@
 #include "../../source engine/client_prediction.h"
 #include "../../source engine/cvar.h"
 #include "../../source engine/debug_overlay.h"
+#include "../../source engine/effects.h"
 #include "../../source engine/engine_client.h"
 #include "../../source engine/engine_sound.h"
 #include "../../source engine/entity.h"
-#include "../../source engine/effects.h"
-#include "../../source engine/input.h"
-#include "../../source engine/model_info.h"
-#include "../../source engine/model_render.h"
-#include "../../source engine/material_system.h"
 #include "../../source engine/game_events.h"
 #include "../../source engine/game_events_manager.h"
+#include "../../source engine/game_types.h"
 #include "../../source engine/globals.h"
+#include "../../source engine/input.h"
+#include "../../source engine/localize.h"
+#include "../../source engine/material_system.h"
+#include "../../source engine/model_info.h"
+#include "../../source engine/model_render.h"
 #include "../../source engine/panorama.h"
 #include "../../source engine/recv_props.h"
 #include "../../source engine/trace.h"
 #include "../../source engine/vgui.h"
 #include "../../source engine/weapon_system.h"
-#include "../../source engine/localize.h"
 
 namespace interfaces
 {
@@ -40,6 +41,7 @@ namespace interfaces
 	inline c_input_system		 *input_system;
 	inline c_game_event_manager	 *game_event_manager;
 	inline c_game_event_manager2 *game_events;
+	inline c_game_types			 *game_types;
 	inline c_panorama_engine	 *panorama;
 	inline c_model_info			 *model_info;
 	inline c_model_render		 *model_render;

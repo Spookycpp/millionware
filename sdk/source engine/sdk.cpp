@@ -117,6 +117,15 @@ float c_player::get_flash_time() {
 	return *reinterpret_cast<float*>(uintptr_t(this) + patterns::get_flash_time());
 }
 
+int c_player::max_health() {
+
+	// dangerzone check
+	if (interfaces::game_types->get_current_game_type() == GAME_TYPE_FREEFORALL) 
+		return 120;
+
+    return 100;
+}
+
 int c_player::sequence_activity(int sequence) {
 	const auto model = this->get_renderable()->get_model();
 	if (!model) {
@@ -171,6 +180,10 @@ bool c_player::is_enemy() {
 		return false;
 
 	c_entity* player = (c_entity*)this;
+	
+	// dangerzone check
+    if (interfaces::game_types->get_current_game_type() == GAME_TYPE_FREEFORALL)
+        return this->get_survival_team() != cheat::local_player->get_survival_team();
 
 	const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
 

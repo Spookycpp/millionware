@@ -149,7 +149,7 @@ void features::visuals::esp::draw_health(const bounding_box_t &entity_box, c_pla
     if (!settings.visuals.player.health)
         return;
 
-    const auto clamped_health = std::clamp(player->get_health(), 0, 100);
+    const auto clamped_health = std::clamp(player->get_health(), 0, player->max_health());
     const auto bar_size = std::clamp((clamped_health * entity_box.height) / 100.0f, 0.0f, entity_box.height);
     const auto red = std::min((510 * (100 - clamped_health)) / 100, 255);
     const auto green = std::min((510 * clamped_health) / 100, 255);

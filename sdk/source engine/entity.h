@@ -313,6 +313,7 @@ public:
 	DECLARE_NETVAR(int, hitbox_set, "DT_BaseAnimating", "m_nHitboxSet");
 	DECLARE_NETVAR(int, money, "DT_CSPlayer", "m_iAccount");
 	DECLARE_NETVAR(int, observer_mode, "DT_BasePlayer", "m_iObserverMode");
+    DECLARE_NETVAR(int, survival_team, "DT_BasePlayer", "m_nSurvivalTeam");
 	DECLARE_NETVAR(vector_t, eye_angles, "DT_CSPlayer", "m_angEyeAngles[0]");
 	DECLARE_NETVAR(vector_t, punch_angle, "DT_Local", "m_viewPunchAngle");
 	DECLARE_NETVAR(vector_t, aim_punch_angle, "DT_Local", "m_aimPunchAngle");
@@ -342,6 +343,7 @@ public:
 
 	float get_flash_time();
 
+	int max_health();
 	int sequence_activity(int sequence);
 
 	bool is_flashed();

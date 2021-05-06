@@ -81,6 +81,9 @@ bool interfaces::init()
 		_event_listener = std::make_unique< c_event_listener >();
 	}
 
+	if ((game_types = (c_game_types*) get_interface(XORSTR("matchmaking.dll"), XORSTR("VENGINE_GAMETYPES_VERSION002"))) == nullptr)
+		return false;
+
 	if ((game_event_manager = (c_game_event_manager*) get_interface(XORSTR("engine.dll"), XORSTR("GAMEEVENTSMANAGER002"))) == nullptr)
 		return false;
 
