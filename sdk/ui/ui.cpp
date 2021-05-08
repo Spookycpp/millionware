@@ -207,18 +207,18 @@ void ui::init() {
     if (const auto visual_category = main_window->new_category(XORSTR("Visualizations"))) {
         if (const auto players_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_USER, XORSTR("Players"))) {
             if (const auto group = players_tab->new_group(XORSTR("Player ESP"))) {
-                group->new_checkbox(XORSTR("Bounding box"), settings.visuals.player.bounding_box);
-                group->new_checkbox(XORSTR("Name"), settings.visuals.player.player_name);
+                group->new_checkbox(XORSTR("Bounding box"), settings.visuals.player.bounding_box)->add_color_picker(settings.visuals.player.bounding_box_color);
+                group->new_checkbox(XORSTR("Name"), settings.visuals.player.player_name)->add_color_picker(settings.visuals.player.player_name_color);
                 group->new_checkbox(XORSTR("Health"), settings.visuals.player.health);
-                group->new_checkbox(XORSTR("Weapon"), settings.visuals.player.weapon_text);
-                group->new_checkbox(XORSTR("Ammo"), settings.visuals.player.ammo);
+                group->new_checkbox(XORSTR("Weapon"), settings.visuals.player.weapon);
+                group->new_checkbox(XORSTR("Ammo"), settings.visuals.player.ammo)->add_color_picker(settings.visuals.player.ammo_color);
                 group->new_checkbox(XORSTR("Armor"), settings.visuals.player.armor);
 
                 group->new_select("Flags", settings.visuals.player.flags,
                                   {XORSTR("Armor"), XORSTR("Scoped"), XORSTR("Reloading"), XORSTR("Flashed"), XORSTR("Bomb"), XORSTR("Defusing"), XORSTR("Smoked"), XORSTR("Flash kill")}, true);
 
-                group->new_checkbox(XORSTR("Skeleton"), settings.visuals.player.skeleton);
-                group->new_checkbox(XORSTR("Headspot"), settings.visuals.player.head_spot);
+                group->new_checkbox(XORSTR("Skeleton"), settings.visuals.player.skeleton)->add_color_picker(settings.visuals.player.skeleton_color);
+                group->new_checkbox(XORSTR("Headspot"), settings.visuals.player.head_spot)->add_color_picker(settings.visuals.player.head_spot_color);
                 group->new_checkbox(XORSTR("Barrel"), settings.visuals.player.barrel);
                 group->new_checkbox(XORSTR("Glow"), settings.visuals.player.glow);
 

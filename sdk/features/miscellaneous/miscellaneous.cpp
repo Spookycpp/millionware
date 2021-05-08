@@ -22,17 +22,17 @@ namespace features::miscellaneous {
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
 
         switch (frame_stage) {
-        case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
-            panorama_blur();
-            post_processing();
+            case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
+                panorama_blur();
+                post_processing();
 
-            force_crosshair();
-            recoil_crosshair();
-            flash_alpha();
+                force_crosshair();
+                recoil_crosshair();
+                flash_alpha();
 
-            ragdoll_float();
-            ragdoll_push();
-        }
+                ragdoll_float();
+                ragdoll_push();
+            }
         }
     }
 
@@ -342,26 +342,22 @@ namespace features::miscellaneous {
     }
 
     void foot_fx() {
+
         if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
             return;
 
         if (interfaces::engine_client->is_in_game() && !interfaces::engine_client->is_connected())
             return;
 
+        // clang-format off
         switch (settings.visuals.local.feet_fx) {
-        case 0:
-            break;
-        case 1:
-            interfaces::effects->sparks(cheat::local_player->get_vec_origin());
-            break;
-        case 2:
-            interfaces::effects->dust(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.5f, 1.f,
-                                      cheat::local_player->get_velocity().length_2d() / 250.f);
-            break;
-        case 3:
-            interfaces::effects->energy_splash(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.2f, true);
-            break;
+        case 0: break;
+        case 1: interfaces::effects->sparks(cheat::local_player->get_vec_origin()); break;
+        case 2: interfaces::effects->dust(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.5f, 1.f, cheat::local_player->get_velocity().length_2d() / 250.f); break;
+        case 3: interfaces::effects->energy_splash(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.2f, true); break;
         }
+        // clang-format om
+
     }
 
     void foot_trail() {
@@ -380,8 +376,8 @@ namespace features::miscellaneous {
 
         auto p = **reinterpret_cast<c_convar***>(interfaces::convar_system + 0x34);
         for (auto c = p->next; c != nullptr; c = c->next) {
-            c->flags &= ~(CVAR_DEVELOPMENT_ONLY);
-            c->flags &= ~(CVAR_HIDDEN); 
+            c->flags &= ~CVAR_DEVELOPMENT_ONLY;
+            c->flags &= ~CVAR_HIDDEN; 
         }
     }
 

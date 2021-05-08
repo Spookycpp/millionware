@@ -96,34 +96,37 @@ struct settings_t {
 		struct {
 			int   activation_type = 0;
 			int   hotkey = 0;
-			bool  draw_visible = false;
-			bool  draw_teammates = false;
-			bool  damage_logs = false;
 			bool  engine_radar = false;
+
 			bool  bounding_box = false;
+            color_t bounding_box_color = {255, 255, 255};
+
 			bool  player_name = false;
+            color_t player_name_color = {255, 255, 255};
+
 			bool  health = false;
-			bool  armor = false;
-			bool  weapon_text = false;
-			bool  weapon_icon = false;
+
+			bool  weapon = false;
+
 			bool  ammo = false;
+            color_t ammo_color = {87, 230, 225};
+
+			bool  armor = false;
+            int	  flags = 0;
+
 			bool  skeleton = false;
+            color_t skeleton_color = {255, 255, 255};
+
 			bool  head_spot = false;
+            color_t head_spot_color = {255, 255, 255};
+
 			bool  barrel = false;
-			bool  money = false;
-			bool  kevlar = false;
-			bool  helmet = false;
-			bool  flashed = false;
-			bool  smoked = false;
-			bool  ping = false;
-			bool  c4_carrier = false;
-			bool  footsteps = false;
-			bool  visualize_backtrack = false;
+
 			bool  glow = false;
+            bool  damage_logs = false;
 			bool  outside_fov = false;
 			float outside_fov_radius = 0.75f;
 			int   outside_fov_size = 25;
-			int	  flags = 0;
 
 			struct {
 				int  material  = 0;
