@@ -60,7 +60,7 @@ namespace features::damage_logs {
                 return XORSTR("gear");
             }
 
-            return XORSTR("u missed dat nigga fr");
+            return XORSTR("unknown");
         };
 
         logging::info("hurt {} in the {} for {} damage | {} health remaining", info.name, hit_group_to_str(data.hit_group), data.dmg_health, data.health);

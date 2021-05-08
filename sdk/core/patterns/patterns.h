@@ -31,6 +31,7 @@ namespace patterns
 	inline uintptr_t has_bomb;
 	inline uintptr_t set_absolute_origin;
 	inline uintptr_t report_player;
+	inline uintptr_t write_user_command;
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
@@ -55,6 +56,7 @@ namespace patterns
 	PATTERN_GET(has_bomb, has_bomb);
 	PATTERN_GET(set_absolute_origin, set_absolute_origin);
     PATTERN_GET(report_player, report_player);
+    PATTERN_GET(write_user_command, write_user_command);
 
 	bool init();
 }

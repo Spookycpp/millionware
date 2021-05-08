@@ -119,15 +119,15 @@ void ui::init() {
                     const auto backtrack_check = [group_settings](const auto _) { return group_settings->backtrack.enabled; };
 
                     group->new_checkbox(XORSTR("Enabled"), group_settings->enabled)->add_key_bind(group_settings->hotkey);
-                    group->new_select(XORSTR("Flickbot"), group_settings->flick_bot.enabled, {XORSTR("Disabled"), XORSTR("Normal"), XORSTR("Silent")})->add_dependency(enabled_check);
+                    group->new_select(XORSTR("Flickbot"), group_settings->flick_bot.enabled, {XORSTR("Disabled"), XORSTR("Normal"), XORSTR("Silent")});
                     group->new_slider(XORSTR("Field of view"), group_settings->flick_bot.fov, 0.1f, 180.0f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, flick_bot_check);
                     group->new_slider(XORSTR("Hitchance"), group_settings->flick_bot.hit_chance, 0, 100, XORSTR("{}%"))->add_dependencies(enabled_check, flick_bot_check);
 
-                    group->new_checkbox("Aim assist", group_settings->assist.enabled)->add_dependency(enabled_check);
-                    group->new_slider(XORSTR("Field of view"), group_settings->assist.fov, 0.1f, 180.0f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, aim_assist_check);
+                    group->new_checkbox("Aim assist", group_settings->assist.enabled);
+                    group->new_slider(XORSTR("Field of view"), group_settings->assist.fov, 0.1f, 5.f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, aim_assist_check);
                     group->new_slider(XORSTR("Strength"), group_settings->assist.strength, 0.1f, 1.f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, aim_assist_check);
 
-                    group->new_checkbox("Backtracking", group_settings->backtrack.enabled)->add_dependency(enabled_check);
+                    group->new_checkbox("Backtracking", group_settings->backtrack.enabled);
                     group->new_slider(XORSTR("Field of view"), group_settings->backtrack.fov, 0.1f, 180.0f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, backtrack_check);
                     group->new_slider(XORSTR("Max time"), group_settings->backtrack.time, 0, 200, XORSTR("{}ms"))->add_dependencies(enabled_check, backtrack_check);
 
@@ -315,9 +315,6 @@ void ui::init() {
 
                 group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
-                group->new_checkbox(XORSTR("Crouch on edgebug"), settings.miscellaneous.movement.edge_bug_crouch)->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
-                group->new_checkbox(XORSTR("Stop movement"), settings.miscellaneous.movement.edge_bug_movement)->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
-                group->new_checkbox(XORSTR("Stop mouse"), settings.miscellaneous.movement.edge_bug_mouse)->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
                 group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
                 group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"))
                     ->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
@@ -352,6 +349,8 @@ void ui::init() {
 
                 group->new_select(XORSTR("Kill sound"), settings.miscellaneous.kill_sound, {XORSTR("None"), XORSTR("Money"), XORSTR("Arena switch press"), XORSTR("Custom")});
                 group->new_text_input(XORSTR("Input"), settings.miscellaneous.hit_sound_custom, false)->add_dependency(custom_kill_sound_dependency);
+                
+                group->new_button(XORSTR("Unlock hidden convars"), features::miscellaneous::unlock_hidden_convars);
             }
         }
 

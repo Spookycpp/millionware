@@ -595,6 +595,8 @@ namespace features::engine_prediction {
         user_cmd->side_move = backup_side_move;
         user_cmd->buttons = backup_buttons;
 
+        // reset move
+        interfaces::game_movement->reset();
     }
 
     int get_predicted_flags() {

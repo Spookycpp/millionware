@@ -19,6 +19,7 @@ namespace features::miscellaneous {
 
     // override view
     void override_fov(view_setup_t *view_setup);
+    void thirdperson(view_setup_t *view_setup);
 
     // visual
     void post_processing();
@@ -31,5 +32,6 @@ namespace features::miscellaneous {
     void skybox_changer(int skybox);
     void foot_fx();
     void foot_trail();
+    void unlock_hidden_convars();
     void viewmodel_offset();
 } // namespace features::miscellaneous

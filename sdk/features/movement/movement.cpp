@@ -34,7 +34,6 @@ void features::movement::pre_prediction(c_user_cmd *user_cmd) {
     // putting these here because the code
     // is quite ugly and not really appealing
     fast_walk(user_cmd);
-    slide_walk(user_cmd);
 }
 
 void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags) {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -218,6 +218,7 @@
     <ClCompile Include="hooks\paint_traverse.cpp" />
     <ClCompile Include="hooks\present.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
+    <ClCompile Include="hooks\write_user_cmd_delta_to_buffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="core\cheat\cheat.cpp" />
     <ClCompile Include="core\exports\exports.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="source engine\entity.h" />
     <ClInclude Include="source engine\game_events.h" />
     <ClInclude Include="source engine\game_events_manager.h" />
+    <ClInclude Include="source engine\game_types.h" />
     <ClInclude Include="source engine\globals.h" />
     <ClInclude Include="source engine\input.h" />
     <ClInclude Include="source engine\leaf_system.h" />

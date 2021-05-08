@@ -177,6 +177,14 @@ struct settings_t {
 			float viewmodel_offset_z = 0.f;
 			float viewmodel_offset_r = 0.f; 
 			int feet_fx = 0;
+
+			struct {
+                bool enabled = false;
+                bool first_person_on_nade = false;
+                int hotkey = 0;
+                float distance = 80.0f;
+            } third_person;
+
 		} local;
 	} visuals;
 
@@ -187,6 +195,7 @@ struct settings_t {
 		bool  money_reveal = false;
 		bool  preserve_killfeed = false;
 		bool  auto_accept = false;
+		bool  unlock_hidden_convars = false;
 		bool  unlock_inventory = false;
 		bool  ragdoll_push = false;
 		bool  ragdoll_float = false;
@@ -201,12 +210,6 @@ struct settings_t {
 		std::string kill_sound_custom;
 
 		struct {
-			bool  enabled = false;
-			int   hotkey = 0;
-			float distance = 80.0f;
-		} third_person;
-
-		struct {
 			bool  bunny_hop = false;
 			bool  jump_bug = false;
 			int   jump_bug_hotkey = 0;
@@ -216,9 +219,6 @@ struct settings_t {
 			int	  edge_jump_hotkey = 0;
 
 			bool  edge_bug_assist = false;
-			bool  edge_bug_crouch = false;
-			bool  edge_bug_mouse = false;
-			bool  edge_bug_movement = false;
 			int   edge_bug_assist_hotkey = 0;
 			int   edge_bug_radius = 0;
 			float edgebug_rage_amount = 0.f;

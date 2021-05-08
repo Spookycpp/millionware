@@ -176,5 +176,8 @@ bool patterns::init()
 	if ((report_player = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 83 EC 28 8B 4D 08"))) == 0u)
 		return false;
 
+	if ((write_user_command = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 51 53 56 8B D9 8B 0D"))) == 0u)
+		return false;
+
 	return true;
 }

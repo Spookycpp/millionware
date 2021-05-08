@@ -14,4 +14,5 @@ namespace cheat
 	inline bool landed = false;
 	inline bool stop_movement;
 	inline uintptr_t run_command;
+    inline int tick_base_shift;
 }

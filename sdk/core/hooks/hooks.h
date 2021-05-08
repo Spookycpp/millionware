@@ -37,6 +37,8 @@ namespace hooks {
 	int __fastcall override_view(c_client_mode* ecx, uintptr_t edx, view_setup_t* view_setup);
 	int __fastcall send_datagram(c_net_channel*, uintptr_t*, void*);
 	void __fastcall paint_traverse(c_vgui_panel* ecx, uintptr_t edx, int panel_id, bool force_repaint, bool allow_force);
+    bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
+
 	long __stdcall present(IDirect3DDevice9* device, RECT* source_rect, RECT* dest_rect, HWND dest_window_override, RGNDATA* dirty_region);
 
 	inline decltype(&create_move) create_move_original;
@@ -58,5 +60,7 @@ namespace hooks {
 	inline decltype(&override_view) override_view_original;
 	inline decltype(&send_datagram) send_datagram_original;
 	inline decltype(&paint_traverse) paint_traverse_original;
+    inline decltype(&write_user_cmd_delta_to_buffer) write_user_cmd_delta_to_buffer_original;
+
 	inline decltype(&present) present_original;
 }

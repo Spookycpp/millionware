@@ -298,13 +298,13 @@ public:
 	DECLARE_NETVAR(bool, has_helmet, "DT_CSPlayer", "m_bHasHelmet");
 	DECLARE_NETVAR(bool, is_scoped, "DT_CSPlayer", "m_bIsScoped");
 	DECLARE_NETVAR(bool, is_defusing, "DT_CSPlayer", "m_bIsDefusing");
-	DECLARE_NETVAR(float, fall_velocity, "DT_Local", "m_flFallVelocity");
 	DECLARE_NETVAR(bool, has_heavy_armor, "DT_CSPlayer", "m_bHasHeavyArmor");
 	DECLARE_NETVAR(float, flash_duration, "DT_CSPlayer", "m_flFlashDuration");
 	DECLARE_NETVAR(float, flash_alpha, "DT_CSPlayer", "m_flFlashMaxAlpha");
 	DECLARE_NETVAR(float, lower_body_yaw, "DT_CSPlayer", "m_flLowerBodyYawTarget");
 	DECLARE_NETVAR(float, health_shot_boost_time, "DT_CSPlayer", "m_flHealthShotBoostExpirationTime");
     DECLARE_NETVAR(float, next_attack, "DT_BCCLocalPlayerExclusive", "m_flNextAttack");
+    DECLARE_NETVAR(float, fall_velocity, "DT_Local", "m_flFallVelocity");
 	DECLARE_NETVAR(int, shots_fired, "DT_CSLocalPlayerExclusive", "m_iShotsFired");
 	DECLARE_NETVAR(int, armor, "DT_CSPlayer", "m_ArmorValue");
 	DECLARE_NETVAR(int, health, "DT_BasePlayer", "m_iHealth");
