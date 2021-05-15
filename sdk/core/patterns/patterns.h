@@ -32,6 +32,26 @@ namespace patterns
 	inline uintptr_t set_absolute_origin;
 	inline uintptr_t report_player;
 	inline uintptr_t write_user_command;
+    inline uintptr_t create_econ_item;
+    inline uintptr_t item_schema;
+    inline uintptr_t custom_name;
+    inline uintptr_t custom_description;
+    inline uintptr_t attribute_value;
+    inline uintptr_t update_equipped_state;
+    inline uintptr_t soc_data;
+    inline uintptr_t static_data;
+    inline uintptr_t econ_item_view;
+    inline uintptr_t kit_parser_data_1;
+    inline uintptr_t kit_parser_data_2;
+    inline uintptr_t equip_item_in_loadout;
+    inline uintptr_t find_or_create_reference_econ_item;
+    inline uintptr_t clear_inventory_images;
+    inline uintptr_t remove_item;
+    inline uintptr_t base_type_cache;
+    inline uintptr_t create_base_type_cache;
+    inline uintptr_t gc_client_system;
+    inline uintptr_t inventory_item_by_item_id;
+    inline uintptr_t add_econ_item;
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
@@ -57,6 +77,26 @@ namespace patterns
 	PATTERN_GET(set_absolute_origin, set_absolute_origin);
     PATTERN_GET(report_player, report_player);
     PATTERN_GET(write_user_command, write_user_command);
+    PATTERN_GET(create_econ_item, *(uintptr_t*)(create_econ_item + 3u));
+    PATTERN_GET(item_schema, item_schema);
+    PATTERN_GET(custom_name, custom_name);
+    PATTERN_GET(custom_description, custom_description);
+    PATTERN_GET(attribute_value, attribute_value);
+    PATTERN_GET(update_equipped_state, update_equipped_state);
+    PATTERN_GET(soc_data, soc_data);
+    PATTERN_GET(static_data, static_data);
+    PATTERN_GET(econ_item_view, econ_item_view);
+    PATTERN_GET(kit_parser_data_1, kit_parser_data_1);
+    PATTERN_GET(kit_parser_data_2, kit_parser_data_2);
+    PATTERN_GET(equip_item_in_loadout, equip_item_in_loadout);
+    PATTERN_GET(find_or_create_reference_econ_item, find_or_create_reference_econ_item);
+    PATTERN_GET(clear_inventory_images, clear_inventory_images);
+    PATTERN_GET(remove_item, remove_item);
+    PATTERN_GET(base_type_cache, base_type_cache);
+    PATTERN_GET(create_base_type_cache, create_base_type_cache);
+    PATTERN_GET(gc_client_system, gc_client_system);
+    PATTERN_GET(inventory_item_by_item_id, inventory_item_by_item_id);
+    PATTERN_GET(add_econ_item, add_econ_item);
 
 	bool init();
 }

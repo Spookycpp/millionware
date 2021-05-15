@@ -7,6 +7,7 @@
 
 #include "../../features/miscellaneous/miscellaneous.h"
 #include "../../features/hitchance/hitchance.h"
+#include "../../features/visuals/world/world.h"
 
 #include "../../ui/ui.h"
 
@@ -22,6 +23,7 @@
 
 #include <windows.h>
 #include "../util/util.h"
+#include "../settings/settings.h"
 
 bool cheat::init() {
     if (!patterns::init())
@@ -56,12 +58,11 @@ bool cheat::init() {
 
 bool cheat::undo() {
 
-    // feature reverts & stabilization
-    util::set_skybox(0);
-    util::force_full_update();
-
     if (!hooks::undo())
         return false;
+
+    // feature reverts & stabilization
+    util::undo();
 
     Sleep(1000);
 

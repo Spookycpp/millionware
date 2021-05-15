@@ -1,114 +1,114 @@
 #pragma once
 #include <cassert>
 
-inline int UtlMemory_CalcNewAllocationCount(int nAllocationCount, int nGrowSize, int nNewSize, int nBytesItem) {
-	if (nGrowSize) {
-		nAllocationCount = ((1 + ((nNewSize - 1) / nGrowSize)) * nGrowSize);
+inline int UtlMemory_CalcNewAllocationCount(int allocation_count, int grow_size, int new_size, int bytes_item) {
+	if (grow_size) {
+		allocation_count = ((1 + ((new_size - 1) / grow_size)) * grow_size);
 	}
 	else {
-		if (!nAllocationCount) {
+		if (!allocation_count) {
 			// Compute an allocation which is at least as big as a cache line...
-			nAllocationCount = (31 + nBytesItem) / nBytesItem;
+			allocation_count = (31 + bytes_item) / bytes_item;
 		}
 
-		while (nAllocationCount < nNewSize) {
-			nAllocationCount *= 2;
+		while (allocation_count < new_size) {
+			allocation_count *= 2;
 		}
 	}
 
-	return nAllocationCount;
+	return allocation_count;
 }
 
 template< class T, class I = int >
 class CUtlMemory {
 public:
-	bool IsIdxValid(I i) const {
+	bool is_idx_valid(I i) const {
 		long x = i;
-		return (x >= 0) && (x < m_nAllocationCount);
+		return (x >= 0) && (x < allocation_amount);
 	}
 
 	T& operator[](I i);
 	const T& operator[](I i) const;
 
 	T* Base() {
-		return m_pMemory;
+		return memory;
 	}
 
-	int NumAllocated() const {
-		return m_nAllocationCount;
+	int number_allocation() const {
+		return allocation_amount;
 	}
 
-	void Grow(int num) {
+	void grow(int num) {
 		assert(num > 0);
 
-		auto oldAllocationCount = m_nAllocationCount;
-		// Make sure we have at least numallocated + num allocations.
-		// Use the grow rules specified for this memory (in m_nGrowSize)
-		int nAllocationRequested = m_nAllocationCount + num;
+		auto old_allocation_amount = allocation_amount;
+		// Make sure we have at least number_allocation + num allocations.
+		// Use the grow rules specified for this memory (in grow_size)
+		int allocation_requested = allocation_amount + num;
 
-		int nNewAllocationCount = UtlMemory_CalcNewAllocationCount(m_nAllocationCount, m_nGrowSize, nAllocationRequested, sizeof(T));
+		int new_allocation_count = UtlMemory_CalcNewAllocationCount(allocation_amount, grow_size, allocation_requested, sizeof(T));
 
-		// if m_nAllocationRequested wraps index type I, recalculate
-		if ((int)(I)nNewAllocationCount < nAllocationRequested) {
-			if ((int)(I)nNewAllocationCount == 0 && (int)(I)(nNewAllocationCount - 1) >= nAllocationRequested) {
-				--nNewAllocationCount; // deal w/ the common case of m_nAllocationCount == MAX_USHORT + 1
+		// if m_allocation_requested wraps index type I, recalculate
+		if ((int)(I)new_allocation_count < allocation_requested) {
+			if ((int)(I)new_allocation_count == 0 && (int)(I)(new_allocation_count - 1) >= allocation_requested) {
+				--new_allocation_count; // deal w/ the common case of allocation_amount == MAX_USHORT + 1
 			}
 			else {
-				if ((int)(I)nAllocationRequested != nAllocationRequested) {
+				if ((int)(I)allocation_requested != allocation_requested) {
 					// we've been asked to grow memory to a size s.t. the index type can't address the requested amount of memory
 					assert(0);
 					return;
 				}
-				while ((int)(I)nNewAllocationCount < nAllocationRequested) {
-					nNewAllocationCount = (nNewAllocationCount + nAllocationRequested) / 2;
+				while ((int)(I)new_allocation_count < allocation_requested) {
+					new_allocation_count = (new_allocation_count + allocation_requested) / 2;
 				}
 			}
 		}
 
-		m_nAllocationCount = nNewAllocationCount;
+		allocation_amount = new_allocation_count;
 
-		if (m_pMemory) {
-			auto ptr = new uint8_t[m_nAllocationCount * sizeof(T)];
+		if (memory) {
+			auto ptr = new uint8_t[allocation_amount * sizeof(T)];
 
-			memcpy(ptr, m_pMemory, oldAllocationCount * sizeof(T));
-			m_pMemory = (T*)ptr;
+			memcpy(ptr, memory, old_allocation_amount * sizeof(T));
+			memory = (T*)ptr;
 		}
 		else {
-			m_pMemory = (T*)new uint8_t[m_nAllocationCount * sizeof(T)];
+			memory = (T*)new uint8_t[allocation_amount * sizeof(T)];
 		}
 	}
 
 protected:
-	T* m_pMemory;
-	int m_nAllocationCount;
-	int m_nGrowSize;
+	T* memory;
+	int allocation_amount;
+	int grow_size;
 };
 
 template< class T, class I >
 T& CUtlMemory< T, I >::operator[](I i) {
-	assert(IsIdxValid(i));
-	return m_pMemory[i];
+	assert(is_idx_valid(i));
+	return memory[i];
 }
 
 template< class T, class I >
 const T& CUtlMemory< T, I >::operator[](I i) const {
-	assert(IsIdxValid(i));
-	return m_pMemory[i];
+	assert(is_idx_valid(i));
+	return memory[i];
 }
 
 template< class T >
-void Destruct(T* pMemory) {
-	pMemory->~T();
+void destruct(T* memory) {
+	memory->~T();
 }
 
 template< class T >
-T* Construct(T* pMemory) {
-	return ::new(pMemory) T;
+T* construct(T* memory) {
+	return ::new(memory) T;
 }
 
 template< class T >
-T* CopyConstruct(T* pMemory, T const& src) {
-	return ::new(pMemory) T(src);
+T* copy_construct(T* memory, T const& src) {
+	return ::new(memory) T(src);
 }
 
 template< class T, class A = CUtlMemory< T > >
@@ -121,150 +121,150 @@ public:
 	T& operator[](int i);
 	const T& operator[](int i) const;
 
-	T& Element(int i) {
-		return m_Memory[i];
+	T& element(int i) {
+		return memory[i];
 	}
 
-	const T& Element(int i) const {
+	const T& element(int i) const {
 		assert(is_valid_index(i));
-		return m_Memory[i];
+		return memory[i];
 	}
 
 	T* get_elements() {
-		return m_pElements;
+		return elements;
 	}
 
-	T* Base() {
-		return m_Memory.Base();
+	T* base() {
+		return memory.base();
 	}
 
 	int count() const {
-		return m_Size;
+		return size;
 	}
 
 	void clear() {
-		for (int i = m_Size; --i >= 0; ) {
-			Destruct(&Element(i));
+		for (int i = size; --i >= 0; ) {
+			destruct(&element(i));
 		}
 
-		m_Size = 0;
+		size = 0;
 	}
 
 	bool is_valid_index(int i) const {
-		return (i >= 0) && (i < m_Size);
+		return (i >= 0) && (i < size);
 	}
 
-	void ShiftElementsRight(int elem, int num = 1) {
-		assert(is_valid_index(elem) || (m_Size == 0) || (num == 0));
-		int numToMove = m_Size - elem - num;
-		if ((numToMove > 0) && (num > 0))
-			memmove(&Element(elem + num), &Element(elem), numToMove * sizeof(T));
-	}
+	void shift_elements_right(int elem, int num = 1) {
+        assert(is_valid_index(elem) || (size == 0) || (num == 0));
+        int number_to_move = size - elem - num;
+        if ((number_to_move > 0) && (num > 0))
+            memmove(&element(elem + num), &element(elem), number_to_move * sizeof(T));
+    }
 
-	void ShiftElementsLeft(int elem, int num = 1) {
-		assert(is_valid_index(elem) || (m_Size == 0) || (num == 0));
-		int numToMove = m_Size - elem - num;
-		if ((numToMove > 0) && (num > 0))
-			memmove(&Element(elem), &Element(elem + num), numToMove * sizeof(T));
-	}
+	void shift_elements_left(int elem, int num = 1) {
+        assert(is_valid_index(elem) || (size == 0) || (num == 0));
+        int number_to_move = size - elem - num;
+        if ((number_to_move > 0) && (num > 0))
+            memmove(&element(elem), &element(elem + num), number_to_move * sizeof(T));
+    }
 
-	void GrowVector(int num = 1) {
-		if (m_Size + num > m_Memory.NumAllocated()) {
-			m_Memory.Grow(m_Size + num - m_Memory.NumAllocated());
+	void grow_vector(int num = 1) {
+		if (size + num > memory.number_allocation()) {
+			memory.grow(size + num - memory.number_allocation());
 		}
 
-		m_Size += num;
+		size += num;
 	}
 
-	int InsertBefore(int elem) {
+	int insert_before(int elem) {
 		// Can insert at the end
 		assert((elem == count()) || is_valid_index(elem));
 
-		GrowVector();
-		ShiftElementsRight(elem);
-		Construct(&Element(elem));
+		grow_vector();
+		shift_elements_right(elem);
+		construct(&element(elem));
 		return elem;
 	}
 
-	int AddToHead() {
-		return InsertBefore(0);
+	int add_to_head() {
+        return insert_before(0);
 	}
 
-	int AddToTail() {
-		return InsertBefore(m_Size);
+	int add_to_tail() {
+        return insert_before(size);
 	}
 
-	int InsertBefore(int elem, const T& src) {
+	int insert_before(int elem, const T &src) {
 		// Can't insert something that's in the list... reallocation may hose us
-		assert((Base() == NULL) || (&src < Base()) || (&src >= (Base() + count())));
+		assert((base() == NULL) || (&src < base()) || (&src >= (base() + count())));
 
 		// Can insert at the end
 		assert((elem == count()) || is_valid_index(elem));
 
-		GrowVector();
-		ShiftElementsRight(elem);
-		CopyConstruct(&Element(elem), src);
+		grow_vector();
+		shift_elements_right(elem);
+		copy_construct(&element(elem), src);
 		return elem;
 	}
 
 	int AddToTail(const T& src) {
 		// Can't insert something that's in the list... reallocation may hose us
-		return InsertBefore(m_Size, src);
+		return InsertBefore(size, src);
 	}
 
 	int Find(const T& src) const {
 		for (int i = 0; i < count(); ++i) {
-			if (Element(i) == src)
+			if (element(i) == src)
 				return i;
 		}
 		return -1;
 	}
 
-	void Remove(int elem) {
-		Destruct(&Element(elem));
-		ShiftElementsLeft(elem);
-		--m_Size;
+	void remove(int elem) {
+		destruct(&element(elem));
+		shift_elements_right(elem);
+		--size;
 	}
 
-	bool FindAndRemove(const T& src) {
+	bool find_and_remove(const T& src) {
 		int elem = Find(src);
 		if (elem != -1) {
-			Remove(elem);
+			remove(elem);
 			return true;
 		}
 		return false;
 	}
 
 	iterator begin() {
-		return Base();
+		return base();
 	}
 
 	const_iterator begin() const {
-		return Base();
+		return base();
 	}
 
 	iterator end() {
-		return Base() + count();
+		return base() + count();
 	}
 
 	const_iterator end() const {
-		return Base() + count();
+		return base() + count();
 	}
 
 protected:
-	CAllocator m_Memory;
-	int m_Size;
-	T* m_pElements;
+	CAllocator memory;
+	int size;
+	T* elements;
 };
 
 template< typename T, class A >
 T& CUtlVector< T, A >::operator[](int i) {
-	assert(i < m_Size);
-	return m_Memory[i];
+	assert(i < size);
+	return memory[i];
 }
 
 template< typename T, class A >
 const T& CUtlVector< T, A >::operator[](int i) const {
-	assert(i < m_Size);
-	return m_Memory[i];
+	assert(i < size);
+	return memory[i];
 }

@@ -192,6 +192,9 @@
     <ClCompile Include="features\game events\event_listener.cpp" />
     <ClCompile Include="features\game events\game_events.cpp" />
     <ClCompile Include="features\hitchance\hitchance.cpp" />
+    <ClCompile Include="features\inventory changer\item_definitions.cpp" />
+    <ClCompile Include="features\inventory changer\kit_parser.cpp" />
+    <ClCompile Include="features\inventory changer\skin_changer.cpp" />
     <ClCompile Include="features\lagcompensation\lagcompensation.cpp" />
     <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
     <ClCompile Include="features\movement\engine prediction\engine_prediction.cpp" />
@@ -264,6 +267,9 @@
     <ClInclude Include="features\game events\damage logs\damage_logs.h" />
     <ClInclude Include="features\game events\game_events.h" />
     <ClInclude Include="features\hitchance\hitchance.h" />
+    <ClInclude Include="features\inventory changer\item_definitions.h" />
+    <ClInclude Include="features\inventory changer\kit_parser.h" />
+    <ClInclude Include="features\inventory changer\skin_changer.h" />
     <ClInclude Include="features\lagcompensation\lagcompensation.h" />
     <ClInclude Include="features\miscellaneous\miscellaneous.h" />
     <ClInclude Include="features\movement\engine prediction\engine_prediction.h" />
@@ -287,6 +293,7 @@
     <ClInclude Include="source engine\color.h" />
     <ClInclude Include="source engine\cvar.h" />
     <ClInclude Include="source engine\debug_overlay.h" />
+    <ClInclude Include="source engine\econ_item.h" />
     <ClInclude Include="source engine\effects.h" />
     <ClInclude Include="source engine\engine_client.h" />
     <ClInclude Include="source engine\engine_sound.h" />
@@ -307,6 +314,7 @@
     <ClInclude Include="source engine\model_info.h" />
     <ClInclude Include="source engine\model_render.h" />
     <ClInclude Include="source engine\network_channel.h" />
+    <ClInclude Include="source engine\player_inventory.h" />
     <ClInclude Include="source engine\recv_props.h" />
     <ClInclude Include="source engine\panorama.h" />
     <ClInclude Include="source engine\studio.h" />

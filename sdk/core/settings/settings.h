@@ -3,6 +3,8 @@
 #include <string>
 
 #include "../../source engine/color.h"
+#include "../../features/inventory changer/item_definitions.h"
+#include "../../features/inventory changer/kit_parser.h"
 
 struct settings_t {
 	struct {
@@ -272,6 +274,106 @@ struct settings_t {
 			int   wait_ticks = 3;
 		} rapid_lag;
 	} miscellaneous;
+};
+
+struct sticker_t {
+    template <sync_type_t sync_type> void update() {
+        do_sync<sync_type>(kit_parser::sticker_kits, kit_vector_index, kit, &kit_parser::paint_kit_t::id);
+    }
+
+    int kit = 0;
+    int kit_vector_index = 0;
+    float wear = 0.0f;
+    float scale = 1.0f;
+    float rotation = 0.0f;
+};
+
+struct inventory_item_t {
+    template <sync_type_t sync_type> void update() {
+        const std::vector<kit_parser::paint_kit_t> *kit_names;
+        const std::vector<item_definitions::item_name_t> *item_names;
+
+        switch (type) {
+        case 0:
+            kit_names = &kit_parser::skin_kits;
+            item_names = &item_definitions::weapon_names;
+            break;
+        case 1:
+            kit_names = &kit_parser::skin_kits;
+            item_names = &item_definitions::knife_names;
+            break;
+        case 2:
+            kit_names = &kit_parser::glove_kits;
+            item_names = &item_definitions::glove_names;
+            break;
+        default:
+            return;
+        }
+
+        do_sync<sync_type>(*item_names, definition_vector_idx, definition, &item_definitions::item_name_t::id);
+
+        do_sync<sync_type>(*kit_names, paint_kit_vector_idx, paint_kit, &kit_parser::paint_kit_t::id);
+
+        do_sync<sync_type>(item_definitions::quality_names, quality_vector_idx, quality, &item_definitions::quality_name_t::id);
+
+        do_sync<sync_type>(item_definitions::rarity_names, rarity_vector_idx, rarity, &item_definitions::rarity_name_t::id);
+
+        if (type == 0) {
+            for (auto &sticker : stickers) {
+                sticker.update<sync_type>();
+            }
+        }
+    }
+
+    void update_title() {
+        if (paint_kit_vector_idx > 0) {
+            title.clear();
+
+            switch (type) {
+            case 0:
+                title += item_definitions::weapon_names.at(definition_vector_idx).name;
+                title += " | ";
+                title += kit_parser::skin_kits.at(paint_kit_vector_idx).name;
+                break;
+            case 1:
+                title += item_definitions::knife_names.at(definition_vector_idx).name;
+                title += " | ";
+                title += kit_parser::skin_kits.at(paint_kit_vector_idx).name;
+                break;
+            case 2:
+                title += item_definitions::glove_names.at(definition_vector_idx).name;
+                title += " | ";
+                title += kit_parser::glove_kits.at(paint_kit_vector_idx).name;
+                break;
+            default:
+                break;
+            }
+
+            if (strlen(custom_name) != 0) {
+                title += " (" + std::string(custom_name) + ")";
+            }
+        }
+        else {
+            title = XORSTR("Unassigned");
+        }
+    }
+
+    int auto_equip = 0;
+    std::string title = XORSTR("Unassigned");
+    int type = 0;
+    int definition = 0;
+    int definition_vector_idx = 0;
+    int paint_kit = 0;
+    int paint_kit_vector_idx = 0;
+    int quality = 0;
+    int quality_vector_idx = 0;
+    int rarity = 0;
+    int rarity_vector_idx = 0;
+    int seed = 0;
+    int stat_trak = 0;
+    float wear = 0.0f;
+    char custom_name[32] = "";
+    std::array<sticker_t, 5> stickers;
 };
 
 extern settings_t              settings;

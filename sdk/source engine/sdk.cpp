@@ -2,6 +2,8 @@
 #define NOMINMAX
 #endif
 
+#define INVALID_EHANDLE_INDEX 0xFFFFFFFF
+
 #include "entity.h"
 
 #include "../core/cheat/cheat.h"
@@ -266,7 +268,7 @@ bool c_player::is_visible(c_player* local, const vector_t& src) {
 }
 
 bool c_player::is_reloading() {
-	const auto& reload_layer = animation_overlay().Element(1);
+	const auto& reload_layer = animation_overlay().element(1);
 
 	if (reload_layer.owner) {
 		const int activity = sequence_activity(reload_layer.sequence);

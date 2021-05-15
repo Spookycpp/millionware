@@ -67,6 +67,9 @@
     <ClCompile Include="features\game events\event_listener.cpp" />
     <ClCompile Include="features\game events\damage logs\damage_logs.cpp" />
     <ClCompile Include="hooks\write_user_cmd_delta_to_buffer.cpp" />
+    <ClCompile Include="features\inventory changer\skin_changer.cpp" />
+    <ClCompile Include="features\inventory changer\item_definitions.cpp" />
+    <ClCompile Include="features\inventory changer\kit_parser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -162,5 +165,10 @@
     <ClInclude Include="features\game events\game_events.h" />
     <ClInclude Include="features\game events\damage logs\damage_logs.h" />
     <ClInclude Include="source engine\game_types.h" />
+    <ClInclude Include="features\inventory changer\skin_changer.h" />
+    <ClInclude Include="source engine\econ_item.h" />
+    <ClInclude Include="features\inventory changer\item_definitions.h" />
+    <ClInclude Include="features\inventory changer\kit_parser.h" />
+    <ClInclude Include="source engine\player_inventory.h" />
   </ItemGroup>
 </Project>

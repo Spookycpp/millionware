@@ -46,4 +46,6 @@ namespace util {
 
         return distribution(e2);
     }
+
+	void undo();
 }

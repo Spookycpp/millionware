@@ -6,12 +6,15 @@
 #include <cstdint>
 
 #include "client_class.h"
+#include "econ_item.h"
 #include "macros.h"
 #include "model_info.h"
 #include "util_vector.h"
 #include "vector.h"
 #include "weapon_system.h"
 #include "matrix.h"
+
+#define INVALID_EHANDLE_INDEX 0xFFFFFFFF
 
 enum e_item_definition_index
 {
@@ -95,15 +98,15 @@ enum e_item_definition_index
 	WEAPON_KNIFE_STILETTO = 522,
 	WEAPON_KNIFE_WIDOWMAKER = 523,
 	WEAPON_KNIFE_SKELETON = 525,
-	WEAPON_GLOVE_STUDDED_BLOODHOUND = 5027,
-	WEAPON_GLOVE_T_SIDE = 5028,
-	WEAPON_GLOVE_CT_SIDE = 5029,
-	WEAPON_GLOVE_SPORTY = 5030,
-	WEAPON_GLOVE_SLICK = 5031,
-	WEAPON_GLOVE_LEATHER_WRAP = 5032,
-	WEAPON_GLOVE_MOTORCYCLE = 5033,
-	WEAPON_GLOVE_SPECIALIST = 5034,
-	WEAPON_GLOVE_HYDRA = 5035
+	GLOVE_STUDDED_BLOODHOUND = 5027,
+	GLOVE_T_SIDE = 5028,
+	GLOVE_CT_SIDE = 5029,
+	GLOVE_SPORTY = 5030,
+	GLOVE_SLICK = 5031,
+	GLOVE_LEATHER_WRAP = 5032,
+	GLOVE_MOTORCYCLE = 5033,
+	GLOVE_SPECIALIST = 5034,
+	GLOVE_HYDRA = 5035
 };
 
 struct animation_layer_t {
@@ -325,6 +328,8 @@ public:
 	DECLARE_NETVAR(entity_handle_t, active_weapon_handle, "DT_BaseCombatCharacter", "m_hActiveWeapon");
 	DECLARE_NETVAR(entity_handle_t, view_model_handle, "DT_BasePlayer", "m_hViewModel[0]");
 	DECLARE_NETVAR(entity_handle_t, ground_entity, "DT_BasePlayer", "m_hGroundEntity");
+	DECLARE_NETVAR(entity_handle_t, my_weapons, "DT_BasePlayer", "m_hMyWeapons");
+	DECLARE_NETVAR(entity_handle_t, my_wearables, "DT_BasePlayer", "m_hMyWearables");
 
 	DECLARE_NETVAR_OFFSET(float, surface_friction, "DT_CSPlayer", "m_vecLadderNormal", -4);
 	DECLARE_NETVAR_OFFSET(float, gravity, "DT_CSPlayer", "m_iTeamNum", -14);
@@ -368,11 +373,28 @@ class c_economy_item : public c_entity
 public:
 	DECLARE_NETVAR(short, item_definition_index, "DT_ScriptCreatedItem", "m_iItemDefinitionIndex");
 	DECLARE_NETVAR(bool, is_initialized, "DT_ScriptCreatedItem", "m_bInitialized");
-	DECLARE_NETVAR(int, entity_level, "DT_ScriptCreatedItem", "m_iEntityLevel");
+    DECLARE_NETVAR(int, entity_level, "DT_ScriptCreatedItem", "m_iEntityLevel");
 	DECLARE_NETVAR(int, account_id, "DT_ScriptCreatedItem", "m_iAccountID");
 	DECLARE_NETVAR(int, item_id_low, "DT_ScriptCreatedItem", "m_iItemIDLow");
 	DECLARE_NETVAR(int, item_id_high, "DT_ScriptCreatedItem", "m_iItemIDHigh");
 	DECLARE_NETVAR(int, entity_quality, "DT_ScriptCreatedItem", "m_iEntityQuality");
+    DECLARE_NETVAR(int, original_owner_xuid_low, "DT_BaseAttributableItem", "m_OriginalOwnerXuidLow");
+    DECLARE_NETVAR(int, original_owner_xuid_high, "DT_BaseAttributableItem", "m_OriginalOwnerXuidHigh");
+
+	c_econ_item_view *get_econ_item_view() {
+
+        static auto address = patterns::get_econ_item_view;
+
+        if (!address)
+            return nullptr;
+
+        static auto get_econ_item_view_fn = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *)>(*reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
+
+        if (!get_econ_item_view_fn)
+            return nullptr;
+
+        return get_econ_item_view_fn(this);
+    }
 };
 
 class c_weapon : public c_economy_item

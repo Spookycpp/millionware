@@ -35,4 +35,5 @@ public:
 	DECLARE_VFUNC(43, get_bsp_tree_query(), c_spatial_query* (__thiscall*)(void*))();
 	DECLARE_VFUNC(78, get_net_channel_info(), c_net_channel_info* (__thiscall*)(void*))();
 	DECLARE_VFUNC(108, execute_command(const char* command), void(__thiscall*)(void*, const char*)) (command);
+    DECLARE_VFUNC(104, get_engine_build_number(), int(__thiscall *)(void *))()
 };

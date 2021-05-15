@@ -170,7 +170,7 @@ bool patterns::init()
 	if ((has_bomb = get_pattern(XORSTR("client.dll"), XORSTR("56 8B F1 85 F6 74 31"))) == 0u)
 		return false;
 
-	if ((set_absolute_origin = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D 08"))) == 0u)
+	if ((set_absolute_origin = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ???? 8B 7D 08"))) == 0u)
 		return false;
 
 	if ((report_player = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 83 EC 28 8B 4D 08"))) == 0u)
@@ -178,6 +178,66 @@ bool patterns::init()
 
 	if ((write_user_command = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 51 53 56 8B D9 8B 0D"))) == 0u)
 		return false;
+
+	if ((create_econ_item = get_pattern(XORSTR("client.dll"), XORSTR("C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4"))) == 0u)
+		return false;
+
+    if ((item_schema = get_pattern(XORSTR("client.dll"), XORSTR("A1 ???? 85 C0 75 53"))) == 0u)
+        return false;
+	
+	if ((custom_name = get_pattern(XORSTR("client.dll"), XORSTR("E8 ???? 8B 46 78 C1 E8 0A A8 01 74 13 8B 46 34"))) == 0u)
+        return false;
+
+	if ((custom_description = get_pattern(XORSTR("client.dll"), XORSTR("E8 ???? 33 DB 39 5E 3C 7E 5E"))) == 0u)
+        return false;
+
+	if ((attribute_value = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 83 EC 3C 53 8B 5D 08 56 57 6A 00"))) == 0u)
+        return false;
+
+    if ((update_equipped_state = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 8B 45 08 8B D0 C1 EA 10"))) == 0u)
+        return false;
+	
+	if ((soc_data = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F0 83 EC 18 56 8B F1 57 8B 86"))) == 0u)
+        return false;
+
+	if ((static_data = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 51 53 8B D9 8B ????? 56 57 8B ????? 85 FF 74 16"))) == 0u)
+        return false;
+
+	if ((econ_item_view = get_pattern(XORSTR("client.dll"), XORSTR("E8 ???? 89 44 24 54"))) == 0u)
+        return false;
+
+	if ((kit_parser_data_1 = get_pattern(XORSTR("client.dll"), XORSTR("E8 ???? FF 76 0C 8D 48 04 E8"))) == 0u)
+        return false;
+	
+	if ((kit_parser_data_2 = get_pattern(XORSTR("client.dll"), XORSTR("53 8D 48 04 E8 ???? 8B 4D 10"))) == 0u)
+        return false;
+		
+	if ((equip_item_in_loadout = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 83 EC 24 83 3D ????? 53 56 57 8B F9"))) == 0u)
+        return false;
+
+	if ((find_or_create_reference_econ_item = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 51 8B 55 0C 53 56"))) == 0u)
+        return false;
+		
+	if ((clear_inventory_images = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 81 EC ???? 80 3D ????? 56 0F 85 ????"))) == 0u)
+        return false;
+		
+	if ((remove_item = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 51 53 56 57 FF 75 0C 8B F1"))) == 0u)
+        return false;
+
+	if ((base_type_cache = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 83 EC 1C 0F 10 45 08"))) == 0u)
+        return false;
+
+	if ((create_base_type_cache = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 51 53 56 8B D9 8D 45 08"))) == 0u)
+        return false;
+	
+	if ((gc_client_system = get_pattern(XORSTR("client.dll"), XORSTR("8B 0D ???? 6A 00 83 EC 10"))) == 0u)
+        return false;
+
+	if ((inventory_item_by_item_id = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 8B 55 08 83 EC 10 8B C2"))) == 0u)
+        return false;
+		
+	if ((add_econ_item = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 A1 ???? 83 EC 14 53 56 57 8B F9 8B 08"))) == 0u)
+        return false;
 
 	return true;
 }

@@ -8,6 +8,7 @@
 #include "../../engine/security/xorstr.h"
 #include "../../engine/math/math.h"
 
+#include "../../source engine/cvar.h"
 
 #include "../../features/miscellaneous/miscellaneous.h"
 #include "../../engine/logging/logging.h"
@@ -29,9 +30,8 @@ float TICKS_TO_TIME(const int tick) {
 float util::get_total_latency() {
 	c_net_channel_info* nci = interfaces::engine_client->get_net_channel_info();
 
-	if (!nci) {
+	if (!nci)
 		return 0.0f;
-	}
 
 	return nci->get_latency(FLOW_OUTGOING) + nci->get_latency(FLOW_INCOMING);
 }
@@ -195,4 +195,18 @@ std::string util::sanitize_string(const std::string& str) {
 	}
 
 	return ret;
+}
+
+void util::undo() {
+
+	features::miscellaneous::skybox_changer(0);
+
+	cheat::local_player->get_flash_alpha() = 255.0f;
+
+	interfaces::convar_system->find_convar(XORSTR("weapon_debug_spread_show"))->set_value(0);
+	interfaces::convar_system->find_convar(XORSTR("cl_crosshair_recoil"))->set_value(0);
+	interfaces::convar_system->find_convar(XORSTR("mat_postprocess_enable"))->set_value(1);
+	interfaces::convar_system->find_convar(XORSTR("@panorama_disable_blur"))->set_value(0);
+	interfaces::convar_system->find_convar(XORSTR("phys_pushscale"))->set_value(1);
+	interfaces::convar_system->find_convar(XORSTR("cl_ragdoll_gravity"))->set_value(600);
 }

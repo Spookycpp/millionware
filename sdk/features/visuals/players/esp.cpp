@@ -213,7 +213,7 @@ void features::visuals::esp::draw_ammo(const bounding_box_t &entity_box, c_playe
         return;
 
     const auto player_index = player->get_networkable()->index();
-    const auto reload_layer = &player->animation_overlay().Element(1);
+    const auto reload_layer = &player->animation_overlay().element(1);
     const auto box_multiplier = player->is_reloading() ? reload_layer->cycle : (weapon->get_ammo1() / (float) weapon_data->max_clip_ammo);
     const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
