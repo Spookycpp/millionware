@@ -209,4 +209,6 @@ void util::undo() {
 	interfaces::convar_system->find_convar(XORSTR("@panorama_disable_blur"))->set_value(0);
 	interfaces::convar_system->find_convar(XORSTR("phys_pushscale"))->set_value(1);
 	interfaces::convar_system->find_convar(XORSTR("cl_ragdoll_gravity"))->set_value(600);
+
+	interfaces::engine_client->execute_command(XORSTR("clear"));
 }

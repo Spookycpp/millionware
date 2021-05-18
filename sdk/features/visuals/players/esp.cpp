@@ -140,8 +140,12 @@ void features::visuals::esp::draw_name(const bounding_box_t &entity_box, c_playe
     if (!interfaces::engine_client->get_player_info(player->get_networkable()->index(), info))
         return;
 
-    const auto text_size = render::measure_text(info.name, FONT_VERDANA_12);
-    render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y}, settings.visuals.player.player_name_color, info.name, FONT_VERDANA_12);
+    std::string player_name = info.name;
+    std::transform(player_name.begin(), player_name.end(), player_name.begin(), std::tolower);
+    const char *c_player_name = player_name.c_str();
+
+    const auto text_size = render::measure_text(c_player_name, FONT_TAHOMA_11);
+    render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y}, settings.visuals.player.player_name_color, c_player_name, FONT_TAHOMA_11);
 }
 
 void features::visuals::esp::draw_health(const bounding_box_t &entity_box, c_player *player) {
@@ -258,12 +262,13 @@ void features::visuals::esp::draw_weapon(const bounding_box_t &entity_box, c_pla
     const auto localized_name_length = WideCharToMultiByte(CP_UTF8, 0, localized_name, wcslen(localized_name), localized_name_buffer, sizeof(localized_name_buffer), nullptr, nullptr);
 
     for (auto i = 0; i < localized_name_length; i++)
-        localized_name_buffer[i] = std::toupper(localized_name_buffer[i]);
+        localized_name_buffer[i] = std::tolower(localized_name_buffer[i]);
 
-    const auto localized_name_size = render::measure_text(localized_name_buffer, FONT_TAHOMA_12);
+    const auto localized_name_size = render::measure_text(localized_name_buffer, FONT_TAHOMA_11);
+
 
     render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()]},
-                      {255, 255, 255, 255}, localized_name_buffer, FONT_TAHOMA_12);
+                      {255, 255, 255, 255}, localized_name_buffer, FONT_TAHOMA_11);
 
     m_bottom_offset[player->get_networkable()->index()] += localized_name_size.y;
 }
@@ -273,7 +278,7 @@ void features::visuals::esp::draw_flags(const bounding_box_t &entity_box, c_play
     auto draw_flag = [flag_offset = 0.0f, &entity_box, player](const char *flag_text, const color_t &flag_color) mutable {
         const auto flag_text_size = render::measure_text(flag_text, FONT_SMALL_TEXT);
 
-        render::draw_text({entity_box.x + entity_box.width + 2.0f, entity_box.y - 1.0f + flag_offset}, flag_color, flag_text, FONT_SMALL_TEXT);
+        render::draw_text({entity_box.x + entity_box.width + 2.0f, entity_box.y - 1.0f + flag_offset}, flag_color, flag_text, FONT_TAHOMA_11);
 
         flag_offset += flag_text_size.y;
     };

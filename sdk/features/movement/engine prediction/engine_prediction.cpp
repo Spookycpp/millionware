@@ -544,8 +544,6 @@ namespace features::engine_prediction {
         movedata_t move_data = {};
         memset(&move_data, 0, sizeof(movedata_t));
 
-        c_entity *local_ent = cheat::local_player;
-
         // backup data
         const int old_buttons = user_cmd->buttons;
         const float old_current_time = interfaces::global_vars->current_time;
@@ -564,16 +562,16 @@ namespace features::engine_prediction {
         **reinterpret_cast<uintptr_t **>(cheat::run_command + 0x54) = uintptr_t(cheat::local_player); // prediction player
         
         // start prediction
-        interfaces::move_helper->set_host(local_ent);
-        interfaces::game_movement->start_track_prediction_errors(local_ent);
+        interfaces::move_helper->set_host(cheat::local_player);
+        interfaces::game_movement->start_track_prediction_errors(cheat::local_player);
 
         // run prediction
-        interfaces::prediction->setup_move(local_ent, user_cmd, interfaces::move_helper, &move_data);
-        interfaces::game_movement->process_movement(local_ent, &move_data);
-        interfaces::prediction->finish_move(local_ent, user_cmd, &move_data);
+        interfaces::prediction->setup_move(cheat::local_player, user_cmd, interfaces::move_helper, &move_data);
+        interfaces::game_movement->process_movement(cheat::local_player, &move_data);
+        interfaces::prediction->finish_move(cheat::local_player, user_cmd, &move_data);
 
         // finish prediction
-        interfaces::game_movement->finish_track_prediction_errors(local_ent);
+        interfaces::game_movement->finish_track_prediction_errors(cheat::local_player);
         interfaces::move_helper->set_host(nullptr);
 
         **reinterpret_cast<uintptr_t **>(cheat::run_command + 0x3E) = 0xffffffff;
