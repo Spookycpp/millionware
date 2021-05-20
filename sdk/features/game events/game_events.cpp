@@ -131,7 +131,9 @@ namespace features::game_events {
         if (!interfaces::engine_client->get_player_info(ent->get_networkable()->index(), info))
             return;
 
-        logging::info("{} voted {}", info.name, game_event->get_int(XORSTR("vote_option")) == 0 ? XORSTR("yes") : XORSTR("no"));
+        static const char *options[] = {"yes", "no", "wtf", "help", "stop"};
+
+        logging::info("{} voted {}", info.name, options[game_event->get_int(XORSTR("vote_option"))]);
     }
 
     void on_player_death(c_game_event *game_event) {

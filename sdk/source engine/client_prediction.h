@@ -80,14 +80,32 @@ class c_game_movement {
 
 class c_prediction {
   public:
-    DECLARE_VFUNC(3, update(int start_frame, bool is_frame_valid, int inc_ack, int out_cmd), void(__thiscall *)(void *, int, bool, int, int))(start_frame, is_frame_valid, inc_ack, out_cmd);
-    DECLARE_VFUNC(12, get_local_view_angles(vector_t &angles), void(__thiscall *)(void *, vector_t &))(angles);
-    DECLARE_VFUNC(13, set_local_view_angles(const vector_t &angles), void(__thiscall *)(void *, const vector_t &))(angles);
-    DECLARE_VFUNC(18, check_moving_ground(c_entity *entity, double frame_time), void(__thiscall *)(void *, c_entity *, double))(entity, frame_time);
-    DECLARE_VFUNC(20, setup_move(c_entity *entity, c_user_cmd *user_cmd, c_move_helper *move_helper, movedata_t *move_data),
-                  void(__thiscall *)(void *, c_entity *, c_user_cmd *, c_move_helper *, movedata_t *))
-    (entity, user_cmd, move_helper, move_data);
-    DECLARE_VFUNC(21, finish_move(c_entity *entity, c_user_cmd *user_cmd, movedata_t *move_data), void(__thiscall *)(void *, c_entity *, c_user_cmd *, movedata_t *))(entity, user_cmd, move_data);
+    virtual ~c_prediction(void) = 0;
+    virtual void initialize(void) = 0;
+    virtual void shutdown(void) = 0;
+
+  public:
+    virtual void update(int startframe, bool validframe, int incoming_acknowledged, int outgoing_command);
+    virtual void pre_entity_packet_recieved(int commands_acknowledged, int current_world_update_packet);
+    virtual void post_entity_packet_recieved(void);
+    virtual void post_network_data_recieved(int commands_acknowledged);
+    virtual void on_recieve_uncompressed_packed(void);
+    virtual void get_view_origin(vector_t &org);
+    virtual void set_view_origin(vector_t &org);
+    virtual void get_view_angles(vector_t &ang);
+    virtual void set_view_angles(vector_t &ang);
+    virtual void get_local_view_angles(vector_t &ang);
+    virtual void set_local_view_angles(vector_t &ang);
+    virtual bool in_prediction(void) const;
+    virtual bool is_first_time_predicted(void) const;
+    virtual int get_last_acknowledged_cmd_number(void) const;
+    virtual int get_incoming_packet_number(void) const;
+    virtual void check_moving_ground(void *player, double frametime);
+    virtual void run_command(void *player, void *cmd, c_move_helper *moveHelper);
+    virtual void setup_move(void *player, void *cmd, c_move_helper *helper, movedata_t *movement);
+    virtual void finish_move(void *player, void *cmd, movedata_t *movement);
+    virtual void set_ideal_pitch(int slot, void *player, const vector_t &origin, const vector_t &angles, const vector_t &viewheight);
+    virtual void check_error(int slot, void *player, int commands_acknowledged);
 
     // values:
     char pad00[8];                // 0x0000

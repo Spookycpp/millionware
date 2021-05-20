@@ -130,6 +130,9 @@ namespace features::visuals::world {
             // modulate props materials.
             else if (strncmp(material->get_group_name(), XORSTR("StaticProp textures"), 19) == 0)
                 material->set_color(prop_darkness, prop_darkness, prop_darkness);
+
+            //@todo: hook the convar
+            interfaces::convar_system->find_convar(XORSTR("cl_csm_enabled"))->set_value(0);
         }
     }
 } // namespace features::visuals::world

@@ -253,7 +253,7 @@ class c_econ_item_definition {
         return std::string( name );
     }*/
 
-    //@note: add keyvalues later
+    //@todo: add keyvalues later
     //KeyValues *get_raw_definition() {
     //    using original_fn = KeyValues *(__thiscall *) (void *);
     //    return util::get_method<original_fn>(this, 10)(this);

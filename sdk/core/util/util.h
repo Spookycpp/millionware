@@ -34,6 +34,8 @@ namespace util {
 	void on_frame_stage_notify(e_client_frame_stage frame_stage);
 	void play_sound(const char* file_path, int volume = -1);
 
+	point_t screen_transform(const vector_t &world);
+
 	c_player_resource* get_player_resource();
 
 	std::optional< vector_t > get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius);

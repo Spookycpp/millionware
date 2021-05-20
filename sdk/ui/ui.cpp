@@ -272,7 +272,7 @@ void ui::init() {
                 group->new_slider(XORSTR("Flash alpha"), settings.visuals.local.flash_alpha, 0, 100, XORSTR("{}%"));
                 group->new_checkbox(XORSTR("Recoil crosshair"), settings.visuals.local.recoil_crosshair);
                 group->new_checkbox(XORSTR("Sniper crosshair"), settings.visuals.local.sniper_crosshair);
-                group->new_checkbox(XORSTR("Grenade prediction"), settings.visuals.local.grenade_prediction);
+                group->new_checkbox(XORSTR("Grenade prediction"), settings.visuals.local.grenade_prediction)->add_color_picker(settings.visuals.local.grenade_prediction_color);
                 group->new_checkbox(XORSTR("Spectator list"), settings.visuals.local.spectator_list);
                 group->new_checkbox(XORSTR("Kill effect"), settings.visuals.local.kill_effect);
 
@@ -301,7 +301,6 @@ void ui::init() {
         if (const auto main_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_TOOLS, XORSTR("Main"))) {
 
             if (const auto group = main_tab->new_group(XORSTR("Movement"))) {
-                //group->new_checkbox(XORSTR("Indicators"), settings.visuals.local.indicators);
 
                 group->new_select(XORSTR("Indicators"), settings.visuals.local.indicators,
                     { XORSTR("Velocity"), XORSTR("Takeoff velocity"), XORSTR("Jumpbug"), XORSTR("Edgebug"), XORSTR("Edgebug assist"), XORSTR("Edge jump"), XORSTR("Fast walk") }, true );
@@ -316,8 +315,9 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
                 group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
-                group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"))
-                    ->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
+                group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
+
+                group->new_checkbox(XORSTR("Mini jump"), settings.miscellaneous.movement.mini_jump)->add_key_bind(settings.miscellaneous.movement.mini_jump_hotkey);
 
                 group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);
 

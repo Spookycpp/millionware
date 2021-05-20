@@ -31,9 +31,21 @@ void features::movement::pre_prediction(c_user_cmd *user_cmd) {
             user_cmd->buttons |= BUTTON_IN_DUCK;
     }
 
+    if (settings.miscellaneous.movement.mini_jump) {
+
+        if (cheat::local_player->get_move_type() == MOVE_TYPE_LADDER || !input::is_key_down(settings.miscellaneous.movement.mini_jump_hotkey))
+            return;
+
+        logging::info(XORSTR("im not acoustic"));
+
+        if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND))
+            user_cmd->buttons |= BUTTON_IN_DUCK;
+    }
+
     // putting these here because the code
     // is quite ugly and not really appealing
     fast_walk(user_cmd);
+    edgebug_assist(user_cmd);
 }
 
 void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags) {
@@ -62,19 +74,17 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
 }
 
 void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
-    // credits: clarity.tk
-
-    vector_t unpredicted_velocity = cheat::local_player->get_velocity();
-
     if ((int) roundf(cheat::local_player->get_velocity().z) == 0.0 || (cheat::unpredicted_flags & ENTITY_FLAG_ONGROUND) != 0) {
         features::movement::edgebug_container::predicted_successful = 0;
         features::movement::edgebug_container::prediction_failed = 1;
     }
-    else if (unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > unpredicted_velocity.z && cheat::local_player->get_velocity().z < -6.0 &&
-             (cheat::local_player->get_flags() & 1) == 0 && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
+    else if (cheat::unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > cheat::unpredicted_velocity.z &&
+             cheat::local_player->get_velocity().z < -6.0 && (cheat::local_player->get_flags() & 1) == 0 &&
+             cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
         const auto previous_velocity = cheat::local_player->get_velocity().z;
 
-        engine_prediction::run_command(user_cmd);
+        engine_prediction::start_prediction();
+        engine_prediction::end_prediction();
 
         static auto sv_gravity = interfaces::convar_system->find_convar(XORSTR("sv_gravity"));
         const float gravity_velocity_constant = roundf((-sv_gravity->get_float()) * interfaces::global_vars->interval_per_tick + previous_velocity);
@@ -91,8 +101,7 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
 }
 
 void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
-
-    vector_t unpredicted_velocity = cheat::local_player->get_velocity();
+    const auto &move_eb_radius = settings.miscellaneous.movement.edge_bug_radius;
 
     if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
         return;
@@ -111,13 +120,14 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
             if (!prediction_ticks_ran)
                 engine_prediction::apply_edgebug_flags();
 
-            for (auto radius_checked = 1; radius_checked <= settings.miscellaneous.movement.edge_bug_radius; ++radius_checked) {
+            for (auto radius_checked = 1; radius_checked <= move_eb_radius; ++radius_checked) {
 
                 if (prediction_ticks_ran == 1) {
-                    engine_prediction::run_command(user_cmd);
+                    engine_prediction::start_prediction();
+                    engine_prediction::end_prediction();
                 }
 
-                if ((cheat::unpredicted_flags & 1) != 0 || unpredicted_velocity.z > 0.0) {
+                if ((cheat::unpredicted_flags & 1) != 0 || cheat::unpredicted_velocity.z > 0.0) {
                     features::movement::edgebug_container::predicted_successful = 0;
                     break;
                 }
@@ -137,8 +147,10 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
                 }
 
                 if (!prediction_ticks_ran) {
-                    engine_prediction::run_command(user_cmd);
+                    engine_prediction::start_prediction();
+                    engine_prediction::end_prediction();
                 }
+
             }
 
             if (features::movement::edgebug_container::predicted_successful)
@@ -148,14 +160,14 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
 
     if (features::movement::edgebug_container::predicted_successful) {
 
-        if (interfaces::global_vars->tick_count < features::movement::edgebug_container::prediction_ticks + features::movement::edgebug_container::prediction_timestamp) {
+        if (interfaces::global_vars->tick_count <
+            features::movement::edgebug_container::prediction_ticks + features::movement::edgebug_container::prediction_timestamp) {
             user_cmd->forward_move = 0.0;
             user_cmd->side_move = 0.0;
 
             if (features::movement::edgebug_container::should_duck)
                 user_cmd->buttons |= BUTTON_IN_DUCK;
         }
-
         else {
             features::movement::edgebug_container::predicted_successful = 0;
             features::movement::edgebug_container::should_duck = 0;

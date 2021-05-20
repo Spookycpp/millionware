@@ -12,6 +12,7 @@
 
 #include "../../features/miscellaneous/miscellaneous.h"
 #include "../../engine/logging/logging.h"
+#include "../../engine/render/render.h"
 
 static bool force_update = false;
 
@@ -28,6 +29,7 @@ float TICKS_TO_TIME(const int tick) {
 }
 
 float util::get_total_latency() {
+
 	c_net_channel_info* nci = interfaces::engine_client->get_net_channel_info();
 
 	if (!nci)
@@ -37,6 +39,7 @@ float util::get_total_latency() {
 }
 
 float util::get_lerp_time() {
+
 	static auto cl_interpolate  = interfaces::convar_system->find_convar(XORSTR("cl_interpolate"));
 	static auto cl_interp	    = interfaces::convar_system->find_convar(XORSTR("cl_interp"));
 	static auto cl_updaterate   = interfaces::convar_system->find_convar(XORSTR("cl_updaterate"));
@@ -52,6 +55,7 @@ float util::get_lerp_time() {
 }
 
 float util::get_random_float(const float min, const float max) {
+
 	using  random_float_t = float(*)(float, float);
 	static random_float_t random_float_fn = (random_float_t)GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("RandomFloat"));
 
@@ -81,6 +85,7 @@ bool util::intersects_hitbox(const vector_t eye_pos, const vector_t end_pos, con
 }
 
 void util::force_full_update() {
+
 	static float update_time = 0.f;
 	static bool  should_update = false;
 
@@ -114,6 +119,7 @@ void util::set_skybox(const char* name) {
 }
 
 void util::on_frame_stage_notify(const e_client_frame_stage frame_stage) {
+
 	if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_START)
 		return;
 
@@ -131,7 +137,42 @@ void util::play_sound(const char* file_path, int volume) {
 	interfaces::engine_client->execute_command(buffer);
 }
 
+point_t util::screen_transform(const vector_t &world) {
+
+    const auto screen_transform = [&](const vector_t &in, point_t &out) -> bool {
+        const static auto &matrix = *(matrix4x4_t *) patterns::get_view_matrix();
+
+        out.x = matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3];
+        out.y = matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3];
+
+        const auto w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
+
+        if (w < 0.001f) {
+            return true;
+        }
+
+        const auto inv = 1.0f / w;
+        out.x *= inv;
+        out.y *= inv;
+
+        return true;
+    };
+
+    point_t screen;
+
+    if (!screen_transform(world, screen)) 
+        return {};
+
+    const auto screen_size = render::get_screen_size();
+
+    screen.x = screen_size.x * 0.5f + screen.x * screen_size.x * 0.5f;
+    screen.y = screen_size.y * 0.5f - screen.y * screen_size.y * 0.5f;
+
+    return screen;
+}
+
 c_player_resource* util::get_player_resource() {
+
 	for (int i = 65; i < interfaces::entity_list->get_highest_ent_index(); ++i) {
 		auto ent = (c_entity*)interfaces::entity_list->get_entity(i);
 
@@ -149,6 +190,7 @@ c_player_resource* util::get_player_resource() {
 }
 
 std::optional<vector_t> util::get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius) {
+
 	const auto sphere_ray_intersection = [start, end, radius](auto&& center) -> std::optional< vector_t > {
 		auto direction = end - start;
 		direction /= direction.length();
@@ -182,6 +224,7 @@ std::optional<vector_t> util::get_intersection(const vector_t& start, const vect
 }
 
 std::string util::sanitize_string(const std::string& str) {
+
 	std::string ret = str;
 
 	for (auto& it : ret) {
@@ -199,16 +242,17 @@ std::string util::sanitize_string(const std::string& str) {
 
 void util::undo() {
 
-	features::miscellaneous::skybox_changer(0);
-
-	cheat::local_player->get_flash_alpha() = 255.0f;
-
 	interfaces::convar_system->find_convar(XORSTR("weapon_debug_spread_show"))->set_value(0);
 	interfaces::convar_system->find_convar(XORSTR("cl_crosshair_recoil"))->set_value(0);
 	interfaces::convar_system->find_convar(XORSTR("mat_postprocess_enable"))->set_value(1);
 	interfaces::convar_system->find_convar(XORSTR("@panorama_disable_blur"))->set_value(0);
 	interfaces::convar_system->find_convar(XORSTR("phys_pushscale"))->set_value(1);
 	interfaces::convar_system->find_convar(XORSTR("cl_ragdoll_gravity"))->set_value(600);
+
+	if (interfaces::engine_client->is_in_game()) {
+		cheat::local_player->get_flash_alpha() = 255.0f;
+        features::miscellaneous::skybox_changer(0);
+    }
 
 	interfaces::engine_client->execute_command(XORSTR("clear"));
 }

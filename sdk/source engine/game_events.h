@@ -1,6 +1,6 @@
 #pragma once
 
-//@TODO: declare vfuncs instead of virtuals.
+//@todo: declare vfuncs instead of virtuals.
 
 #include <string>
 

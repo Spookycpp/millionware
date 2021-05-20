@@ -109,8 +109,8 @@ namespace features::lag_compensation {
             if (it->origin.dist(ent->get_vec_origin()) < 1.0f)
                 return false;
 
-            if (features::engine_prediction::is_breaking_lc(ent->get_networkable()->index()))
-            	return false;
+            //if (features::engine_prediction::is_breaking_lc(ent->get_networkable()->index()))
+            //	return false;
 
             const auto next_record = it + 1;
 

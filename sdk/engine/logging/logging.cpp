@@ -68,7 +68,7 @@ void logging::print(int severity, const std::string &message)
 		break;
 
 	case SEVERITY_INFO:
-		con_color_msg({ 10, 190, 250, 255 }, XORSTR("[millionware] "));
+        con_color_msg({ 222, 102, 122, 255}, XORSTR("[millionware] "));
 		break;
 
 	case SEVERITY_WARNING:

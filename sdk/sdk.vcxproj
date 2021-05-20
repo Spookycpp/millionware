@@ -199,6 +199,7 @@
     <ClCompile Include="features\miscellaneous\miscellaneous.cpp" />
     <ClCompile Include="features\movement\engine prediction\engine_prediction.cpp" />
     <ClCompile Include="features\movement\movement.cpp" />
+    <ClCompile Include="features\nade prediction\nade_prediction.cpp" />
     <ClCompile Include="features\visuals\players\esp.cpp" />
     <ClCompile Include="features\visuals\world\world.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="features\miscellaneous\miscellaneous.h" />
     <ClInclude Include="features\movement\engine prediction\engine_prediction.h" />
     <ClInclude Include="features\movement\movement.h" />
+    <ClInclude Include="features\nade prediction\nade_prediction.h" />
     <ClInclude Include="features\visuals\players\esp.h" />
     <ClInclude Include="features\visuals\world\world.h" />
     <ClInclude Include="resources\cerebri_sans_medium_ttf.h" />

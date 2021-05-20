@@ -169,7 +169,7 @@ void render::init(HWND window, IDirect3DDevice9 *device)
 	fonts[FONT_VERDANA_12] = create_from_system(io, XORSTR("Verdana"), 13.0f);
 	fonts[FONT_VERDANA_24] = create_from_system(io, XORSTR("Verdana"), 25.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
     fonts[FONT_TAHOMA_11] = create_from_system(io, XORSTR("Tahoma"), 12.f, ImGuiFreeTypeBuilderFlags_MonoHinting);
-	fonts[FONT_TAHOMA_12] = create_from_system(io, XORSTR("Tahoma"), 13.f);
+	fonts[FONT_TAHOMA_12] = create_from_system(io, XORSTR("Tahoma"), 13.f, ImGuiFreeTypeBuilderFlags_Bold);
 	//fonts[FONT_SMALL_TEXT] = create_from_system(io, XORSTR("Small Fonts"), 10.f, ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome);
 	fonts[FONT_SMALL_TEXT] = create_from_system(io, XORSTR("Verdana"), 10.f, ImGuiFreeTypeBuilderFlags_Monochrome);
 	fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);

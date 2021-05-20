@@ -520,8 +520,7 @@ public:
 	}
 };
 
-class c_base_grenade : public c_entity
-{
+class c_base_grenade : public c_weapon {
 public:
 	DECLARE_NETVAR(bool, pin_pulled, "DT_BaseCSGrenade", "m_bPinPulled");
 	DECLARE_NETVAR(float, throw_time, "DT_BaseCSGrenade", "m_fThrowTime");

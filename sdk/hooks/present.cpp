@@ -6,6 +6,7 @@
 #include "../features/visuals/players/esp.h"
 #include "../features/visuals/world/world.h"
 #include "../ui/ui.h"
+#include "../features/nade prediction/nade_prediction.h"
 
 static int active_tab = 0;
 
@@ -15,6 +16,8 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
     features::visuals::esp::frame();
 
     features::visuals::world::indicators();
+
+    features::nade_prediction::on_paint_traverse();
 
     ui::frame();
 

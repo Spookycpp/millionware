@@ -164,6 +164,7 @@ struct settings_t {
 			bool penetration_crosshair = false;
 			bool sniper_crosshair = false;
 			bool grenade_prediction = false;
+            color_t grenade_prediction_color = {222, 102, 122};
 			bool spectator_list = false;
 			bool kill_effect = false;
 			bool viewmodel_offset = false;
@@ -217,6 +218,8 @@ struct settings_t {
 
 		struct {
 			bool  bunny_hop = false;
+			bool  mini_jump = false;
+			int   mini_jump_hotkey = 0;
 			bool  jump_bug = false;
 			int   jump_bug_hotkey = 0;
 			bool  edge_bug = false;
