@@ -22,7 +22,7 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
 	}
 
 	// theres most certainly a better way to do this, no?
-    if (entity_index == cheat::local_player->get_networkable()->index()) {
+    if (entity_index == interfaces::engine_client->get_local_player()) {
         if (strstr(sample_name, XORSTR("land")) && cheat::b_predicting || input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) {
 			cheat::b_predicting = false;
 			cheat::landed = true;

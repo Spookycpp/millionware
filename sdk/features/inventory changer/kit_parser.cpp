@@ -82,7 +82,7 @@ void kit_parser::initialize_kits() {
 
     //static auto usc2_to_utf8_fn = pe::get_export<int (*)(const wchar_t *ucs2, char *utf8, int length)>(pe::get_module(XORSTR("vstdlib.dll")), XORSTR("V_UCS2ToUTF8"));
 
-    static auto address = patterns::get_kit_parser_data_1;
+    static auto address = patterns::get_kit_parser_data_1();
 
     if (!address) {
         logging::info(XORSTR("Failed to get kit parser data (1)"));
@@ -131,7 +131,7 @@ void kit_parser::initialize_kits() {
     }
 
     {
-        address = patterns::get_kit_parser_data_2;
+        address = patterns::get_kit_parser_data_2();
 
         if (!address) {
             logging::info(XORSTR("Failed to get kit parser data (2)"));

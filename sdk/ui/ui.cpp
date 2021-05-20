@@ -1,4 +1,4 @@
-﻿#include "ui.h"
+#include "ui.h"
 
 #include "../resources/csgo_icons.h"
 #include "../resources/font_awesome.h"

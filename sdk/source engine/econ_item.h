@@ -38,7 +38,7 @@ class c_econ_item;
 
 inline c_econ_item *create_econ_item() {
 
-	static auto address = patterns::get_create_econ_item;
+	static auto address = patterns::get_create_econ_item();
 
     if (!address)
         return nullptr;
@@ -53,7 +53,7 @@ inline c_econ_item *create_econ_item() {
 
 inline uintptr_t get_item_schema() {
 
-    static auto address = patterns::get_item_schema;
+    static auto address = patterns::get_item_schema();
 
     if (!address) 
         return 0;
@@ -148,7 +148,7 @@ class c_econ_item {
 
     void set_custom_name(const char *name) {
 
-        static auto address = patterns::get_custom_name;
+        static auto address = patterns::get_custom_name();
 
         if (!address)
             return;
@@ -163,7 +163,7 @@ class c_econ_item {
 
     void set_custom_description(const char *name) {
 
-        static auto address = patterns::get_custom_description;
+        static auto address = patterns::get_custom_description();
 
         if (!address)
             return;
@@ -181,7 +181,7 @@ class c_econ_item {
         const auto v15 = reinterpret_cast<uint32_t *>(get_item_schema());
         const auto v16 = *reinterpret_cast<uint32_t *>(v15[72] + 4 * index);
 
-        static auto set_dynamic_attribute_value_addr = patterns::get_attribute_value;
+        static auto set_dynamic_attribute_value_addr = patterns::get_attribute_value();
         static auto set_dynamic_attribute_value_fn = reinterpret_cast<int(__thiscall *)(c_econ_item *, uint32_t, void *)>(set_dynamic_attribute_value_addr);
 
         if (!set_dynamic_attribute_value_fn)
@@ -192,7 +192,7 @@ class c_econ_item {
 
     void update_equipped_state(const uint32_t state) {
 
-        static auto update_equipped_state_addr = patterns::get_update_equipped_state;
+        static auto update_equipped_state_addr = patterns::get_update_equipped_state();
         static auto update_equipped_state_fn = reinterpret_cast<int(__thiscall *)(c_econ_item *, uint32_t)>(update_equipped_state_addr);
 
         if (!update_equipped_state_fn)
@@ -329,7 +329,7 @@ class c_econ_item_view {
 
     c_econ_item *get_soc_data() {
 
-        static auto get_soc_data_addr = patterns::get_soc_data;
+        static auto get_soc_data_addr = patterns::get_soc_data();
         static auto get_soc_data_fn = reinterpret_cast<c_econ_item *(__thiscall *) (c_econ_item_view *)>(get_soc_data_addr);
 
         if (!get_soc_data_fn)
@@ -340,7 +340,7 @@ class c_econ_item_view {
 
     c_econ_item_definition *get_static_data() {
 
-        static auto get_static_data_addr = patterns::get_static_data;
+        static auto get_static_data_addr = patterns::get_static_data();
         static auto get_static_data_fn = reinterpret_cast<c_econ_item_definition *(__thiscall *) (void *)>(get_static_data_addr);
 
         if (!get_static_data_fn)

@@ -383,7 +383,7 @@ public:
 
 	c_econ_item_view *get_econ_item_view() {
 
-        static auto address = patterns::get_econ_item_view;
+        static auto address = patterns::get_econ_item_view();
 
         if (!address)
             return nullptr;
