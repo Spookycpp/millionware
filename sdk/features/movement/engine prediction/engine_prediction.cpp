@@ -10,6 +10,7 @@
 #include "../../../core/util/util.h"
 #include "../../../engine/math/math.h"
 #include "../../../core/settings/settings.h"
+#include "../../../engine/input/input.h"
 
 namespace features::engine_prediction {
 
@@ -43,8 +44,7 @@ namespace features::engine_prediction {
         interfaces::move_helper->set_host(cheat::local_player);
         interfaces::prediction->setup_move(cheat::local_player, cheat::user_cmd, interfaces::move_helper, &data);
 
-        /* credits: clarity.tk */
-        if (settings.miscellaneous.movement.edge_bug_assist_hotkey) {
+        if (input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) {
             if (features::movement::edgebug_container::should_duck)
                 data.m_nButtons |= 4u;
                 data.m_nButtons &= ~0x200u;
@@ -68,7 +68,7 @@ namespace features::engine_prediction {
 
     void engine_prediction::store() {
         cheat::unpredicted_flags    = cheat::local_player->get_flags();
-        cheat::unpredicted_curtime = interfaces::global_vars->current_time;
+        cheat::unpredicted_curtime  = interfaces::global_vars->current_time;
         cheat::unpredicted_velocity = cheat::local_player->get_velocity();
     }
 

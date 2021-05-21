@@ -1,7 +1,3 @@
-#ifndef _DEBUG
-#error "you're in release mode dumbass"
-#endif
-
 #include <filesystem>
 #include <windows.h>
 

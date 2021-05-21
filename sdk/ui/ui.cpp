@@ -107,12 +107,12 @@ void ui::init() {
                 if (const auto group = legit_tab->new_group("Prerequisites")) {
                     group->new_slider(XORSTR("Field of view"), group_settings->fov, 0.0f, 180.0f, "{:.1f}");
                     group->new_slider(XORSTR("Start bullets"), group_settings->start_bullets, 0, 10, "{}");
-                    group->new_select("Hitbox method", group_settings->hitbox_method, {XORSTR("Static"), XORSTR("Nearest")});
-                    group->new_select("Target hitbox", group_settings->hitbox, {XORSTR("Head"), XORSTR("Neck"), XORSTR("Upper chest"), XORSTR("Lower chest"), XORSTR("Stomach")});
+                    group->new_select(XORSTR("Hitbox method"), group_settings->hitbox_method, {XORSTR("Static"), XORSTR("Nearest")});
+                    group->new_select(XORSTR("Target hitbox"), group_settings->hitbox, {XORSTR("Head"), XORSTR("Neck"), XORSTR("Upper chest"), XORSTR("Lower chest"), XORSTR("Stomach")});
                     group->new_checkbox(XORSTR("Target backtrack"), group_settings->target_backtrack);
                     group->add_dependency(group_dependency);
                 }
-                if (const auto group = legit_tab->new_group("General")) {
+                if (const auto group = legit_tab->new_group(XORSTR("General"))) {
                     const auto enabled_check = [group_settings](const auto _) { return group_settings->enabled; };
                     const auto flick_bot_check = [group_settings](const auto _) { return group_settings->flick_bot.enabled > 0; };
                     const auto aim_assist_check = [group_settings](const auto _) { return group_settings->assist.enabled; };
@@ -123,7 +123,7 @@ void ui::init() {
                     group->new_slider(XORSTR("Field of view"), group_settings->flick_bot.fov, 0.1f, 180.0f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, flick_bot_check);
                     group->new_slider(XORSTR("Hitchance"), group_settings->flick_bot.hit_chance, 0, 100, XORSTR("{}%"))->add_dependencies(enabled_check, flick_bot_check);
 
-                    group->new_checkbox("Aim assist", group_settings->assist.enabled);
+                    group->new_checkbox(XORSTR("Aim assist"), group_settings->assist.enabled);
                     group->new_slider(XORSTR("Field of view"), group_settings->assist.fov, 0.1f, 5.f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, aim_assist_check);
                     group->new_slider(XORSTR("Strength"), group_settings->assist.strength, 0.1f, 1.f, XORSTR("{:.1f}"))->add_dependencies(enabled_check, aim_assist_check);
 
@@ -133,7 +133,7 @@ void ui::init() {
 
                     group->add_dependency(group_dependency);
                 }
-                if (const auto group = legit_tab->new_group("Aim options")) {
+                if (const auto group = legit_tab->new_group(XORSTR("Aim options"))) {
                     const auto smoothing_check = [group_settings](const auto _) { return group_settings->smoothing.enabled; };
 
                     group->new_slider(XORSTR("Speed"), group_settings->speed, 0.0f, 100.0f, XORSTR("{:.1f}"));
@@ -147,7 +147,7 @@ void ui::init() {
 
                     group->add_dependency(group_dependency);
                 }
-                if (const auto group = legit_tab->new_group("Filters")) {
+                if (const auto group = legit_tab->new_group(XORSTR("Filters"))) {
                     group->new_checkbox(XORSTR("Ignore visible check"), group_settings->check_visible);
                     group->new_checkbox(XORSTR("Target teammates"), group_settings->check_team);
                     group->new_checkbox(XORSTR("Smoke check"), group_settings->check_smoked);
@@ -155,7 +155,7 @@ void ui::init() {
 
                     group->add_dependency(group_dependency);
                 }
-                if (const auto group = legit_tab->new_group("Standalone RCS")) {
+                if (const auto group = legit_tab->new_group(XORSTR("Standalone RCS"))) {
                     const auto rcs_check = [group_settings](const auto _) { return group_settings->rcs.enabled; };
 
                     group->new_checkbox(XORSTR("Enabled"), group_settings->rcs.enabled);
@@ -164,7 +164,7 @@ void ui::init() {
 
                     group->add_dependency(group_dependency);
                 }
-                if (const auto group = legit_tab->new_group("Triggerbot")) {
+                if (const auto group = legit_tab->new_group(XORSTR("Triggerbot"))) {
                     const auto triggerbot_check = [group_settings](const auto _) { return group_settings->triggerbot.enabled; };
                     const auto backtrack_check = [group_settings](const auto _) { return group_settings->triggerbot.backtrack.enabled; };
 
@@ -214,7 +214,7 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Ammo"), settings.visuals.player.ammo)->add_color_picker(settings.visuals.player.ammo_color);
                 group->new_checkbox(XORSTR("Armor"), settings.visuals.player.armor);
 
-                group->new_select("Flags", settings.visuals.player.flags,
+                group->new_select(XORSTR("Flags"), settings.visuals.player.flags,
                                   {XORSTR("Armor"), XORSTR("Scoped"), XORSTR("Reloading"), XORSTR("Flashed"), XORSTR("Bomb"), XORSTR("Defusing"), XORSTR("Smoked"), XORSTR("Flash kill")}, true);
 
                 group->new_checkbox(XORSTR("Skeleton"), settings.visuals.player.skeleton)->add_color_picker(settings.visuals.player.skeleton_color);
@@ -228,7 +228,7 @@ void ui::init() {
             }
 
             if (const auto group = players_tab->new_group(XORSTR("Model"))) {
-                group->new_select("Material", settings.visuals.player.chams.material, {XORSTR("Textured"), XORSTR("Flat")});
+                group->new_select(XORSTR("Material"), settings.visuals.player.chams.material, {XORSTR("Textured"), XORSTR("Flat")});
                 group->new_checkbox(XORSTR("Player"), settings.visuals.player.chams.visible)->add_color_picker(settings.visuals.player.chams.visible_color, false);
                 group->new_checkbox(XORSTR("Player (behind walls)"), settings.visuals.player.chams.invisible)->add_color_picker(settings.visuals.player.chams.invisible_color, false);
                 group->new_checkbox(XORSTR("Visualize backtrack"), settings.visuals.player.chams.backtrack);
@@ -247,7 +247,7 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Fullbright"), settings.visuals.world.fullbright);
 
                 // weather (rain, snow & wtv else we can do)
-                group->new_select("Skybox", settings.visuals.world.skybox,
+                group->new_select(XORSTR("Skybox"), settings.visuals.world.skybox,
                                   {XORSTR("Default"),     XORSTR("Tibet"),  XORSTR("Baggage"),  XORSTR("Monastery"),  XORSTR("Italy"), XORSTR("Aztec"),  XORSTR("Vertigo"),     XORSTR("Daylight"),
                                    XORSTR("Daylight 2"),  XORSTR("Clouds"), XORSTR("Clouds 2"), XORSTR("Gray"),       XORSTR("Clear"), XORSTR("Canals"), XORSTR("Cobblestone"), XORSTR("Assault"),
                                    XORSTR("Clouds Dark"), XORSTR("Night"),  XORSTR("Night 2"),  XORSTR("Night Flat"), XORSTR("Dusty"), XORSTR("Rainy"),  XORSTR("Custom")});
@@ -284,7 +284,7 @@ void ui::init() {
                 }
             }
 
-            if (const auto group = view_tab->new_group("Local removals")) {
+            if (const auto group = view_tab->new_group(XORSTR("Local removals"))) {
                 group->new_checkbox(XORSTR("Disable post processing"), settings.visuals.local.disable_post_processing);
                 group->new_checkbox(XORSTR("Disable panorama blur"), settings.visuals.local.disable_panorama_blur);
             }
@@ -358,7 +358,7 @@ void ui::init() {
             if (const auto group = presets_tab->new_group(XORSTR("YADA"))) {
                 static bool test;
                 // add raw text.
-                group->new_checkbox("niggers", test)->add_color_picker(ui::get_accent_color(), false);
+                group->new_checkbox(XORSTR("niggers"), test)->add_color_picker(ui::get_accent_color(), false);
             }
 
             if (const auto group = presets_tab->new_group(XORSTR("BADA"))) {

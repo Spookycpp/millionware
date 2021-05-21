@@ -117,19 +117,64 @@ bool input::is_mouse_released(int key)
 	return ImGui::IsMouseReleased(key);
 }
 
-bool input::is_key_pressed(int key, bool repeat)
-{
-	return ImGui::IsKeyPressed(key, repeat);
+bool input::is_key_pressed(int key, bool repeat) {
+    if (key > 0x06)
+        return ImGui::IsKeyPressed(key, repeat);
+
+    switch (key) {
+    case VK_LBUTTON:
+        return is_mouse_clicked(MOUSE_LEFT, repeat);
+    case VK_MBUTTON:
+        return is_mouse_clicked(MOUSE_MIDDLE, repeat);
+    case VK_RBUTTON:
+        return is_mouse_clicked(MOUSE_RIGHT, repeat);
+    case VK_XBUTTON1:
+        return is_mouse_clicked(MOUSE_SIDE1, repeat);
+    case VK_XBUTTON2:
+        return is_mouse_clicked(MOUSE_SIDE2, repeat);
+    }
+
+    return false;
 }
 
-bool input::is_key_down(int key)
-{
-	return ImGui::IsKeyDown(key);
+bool input::is_key_down(int key) {
+    if (key > 0x06)
+        return ImGui::IsKeyDown(key);
+
+    switch (key) {
+    case VK_LBUTTON:
+        return is_mouse_down(MOUSE_LEFT);
+    case VK_MBUTTON:
+        return is_mouse_down(MOUSE_MIDDLE);
+    case VK_RBUTTON:
+        return is_mouse_down(MOUSE_RIGHT);
+    case VK_XBUTTON1:
+        return is_mouse_down(MOUSE_SIDE1);
+    case VK_XBUTTON2:
+        return is_mouse_down(MOUSE_SIDE2);
+    }
+
+    return false;
 }
 
-bool input::is_key_released(int key)
-{
-	return ImGui::IsKeyReleased(key);
+bool input::is_key_released(int key) {
+    if (key > 0x06)
+        return ImGui::IsKeyReleased(key);
+
+    switch (key) {
+    case VK_LBUTTON:
+        return is_mouse_released(MOUSE_LEFT);
+    case VK_MBUTTON:
+        return is_mouse_released(MOUSE_MIDDLE);
+    case VK_RBUTTON:
+        return is_mouse_released(MOUSE_RIGHT);
+    case VK_XBUTTON1:
+        return is_mouse_released(MOUSE_SIDE1);
+    case VK_XBUTTON2:
+        return is_mouse_released(MOUSE_SIDE2);
+    }
+
+    return false;
 }
 
 float input::get_key_press_length(int key)
