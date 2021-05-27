@@ -9,23 +9,21 @@
 
 namespace features::movement {
 
-    namespace edgebug_container {
-        inline bool predicted_successful = false;
-        inline bool should_duck = false;
-        inline bool prediction_failed = false;
-        inline int mouse_offset = 0;
-        inline int prediction_timestamp = 0;
-        inline int prediction_ticks = 0;
+    // eb container
+    inline bool predicted_successful = false;
+    inline bool should_duck = false;
+    inline bool prediction_failed = false;
+    inline int mouse_offset = 0;
+    inline int prediction_timestamp = 0;
+    inline int prediction_ticks = 0;
 
-        namespace prediction {
-            inline uint32_t flags;
-            inline float fall_velocity;
-            inline vector_t origin;
-            inline vector_t absolute_origin;
-            inline movedata_t movement_data = {};
-            inline entity_handle_t ground_ent;
-        }; // namespace prediction
-    };     // namespace edgebug_container
+    // prediction container
+    inline uint32_t flags;
+    inline float fall_velocity;
+    inline vector_t origin;
+    inline vector_t absolute_origin;
+    inline movedata_t movement_data = {};
+    inline entity_handle_t ground_ent;
 
     void pre_prediction(c_user_cmd *user_cmd);
     void post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags);

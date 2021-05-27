@@ -7,7 +7,7 @@ namespace features::visuals::world {
     void on_frame_stage_notify(e_client_frame_stage frame_stage);
 
     void indicators();
-    void velocity_indicator();
+    void spotify();
 
     void nightmode();
 } // namespace features::visuals::world

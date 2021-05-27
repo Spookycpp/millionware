@@ -1,5 +1,11 @@
 #include "world.h"
 
+#include <cstdio>
+#include <string>
+#include <windows.h>
+
+#include <tlhelp32.h>
+#include <psapi.h>
 #include <algorithm>
 #include <cstdint>
 #include <unordered_map>
@@ -18,9 +24,9 @@ namespace features::visuals::world {
 
     void on_frame_stage_notify(e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
-                nightmode();
-            }
+        case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
+            nightmode();
+        }
         }
     }
 
@@ -78,17 +84,99 @@ namespace features::visuals::world {
         if (settings.visuals.local.indicators & (1 << 2) && settings.miscellaneous.movement.jump_bug && input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey))
             draw_indicator(XORSTR("jb"), {255, 255, 255, 220});
 
-        if (settings.visuals.local.indicators & (1 << 3) && settings.miscellaneous.movement.edge_bug && input::is_key_down(settings.miscellaneous.movement.edge_bug_hotkey))
-            draw_indicator(XORSTR("eb"), {255, 255, 255, 220});
-
         if (settings.visuals.local.indicators & (1 << 4) && settings.miscellaneous.movement.edge_bug_assist && input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
-            draw_indicator(XORSTR("eba"), {255, 255, 255, 220});
+            draw_indicator(XORSTR("eb"), {255, 255, 255, 220});
 
         if (settings.visuals.local.indicators & (1 << 5) && settings.miscellaneous.movement.edge_jump && input::is_key_down(settings.miscellaneous.movement.edge_jump_hotkey))
             draw_indicator(XORSTR("ej"), {255, 255, 255, 220});
 
         if (settings.visuals.local.indicators & (1 << 6) && settings.miscellaneous.movement.fast_walk && input::is_key_down(settings.miscellaneous.movement.fast_walk_hotkey))
             draw_indicator(XORSTR("fw"), {255, 255, 255, 220});
+    }
+
+    void spotify() {
+        static HWND spotify_window = nullptr;
+        static float last_hwnd_time = 0.f;
+        static std::string song_name = XORSTR("");
+
+        wchar_t window_name[128];
+
+        if ((!spotify_window || spotify_window == INVALID_HANDLE_VALUE) && last_hwnd_time < interfaces::global_vars->real_time + 2.f) {
+
+            for (auto window = GetTopWindow(nullptr); spotify_window == nullptr && window != nullptr; window = GetWindow(window, GW_HWNDNEXT)) {
+
+                last_hwnd_time = interfaces::global_vars->real_time;
+
+                if (!IsWindowVisible(window))
+                    continue;
+
+                const auto title_length = GetWindowTextLengthA(window);
+
+                if (title_length < 7)
+                    continue;
+
+                DWORD pid;
+
+                GetWindowThreadProcessId(window, &pid);
+
+                const auto handle = OpenProcess(PROCESS_QUERY_INFORMATION, false, pid);
+
+                if (!handle)
+                    continue;
+
+                char module_name_buffer[MAX_PATH];
+
+                if (GetModuleFileNameExA(handle, 0, module_name_buffer, MAX_PATH)) {
+                    if (strstr(module_name_buffer, "Spotify") != nullptr)
+                        spotify_window = window;
+                }
+
+                CloseHandle(handle);
+            }
+        }
+        else {
+            if (GetWindowTextW(spotify_window, window_name, sizeof(window_name) / sizeof(wchar_t))) {
+                const auto title_size = wcslen(window_name);
+
+                if (title_size >= 7 && wcsstr(window_name, L" - ") != nullptr) {
+                    if (title_size != song_name.size()) {
+                        const auto size_needed = WideCharToMultiByte(CP_UTF8, 0, window_name, title_size, nullptr, 0, nullptr, nullptr);
+
+                        song_name.resize(size_needed);
+
+                        WideCharToMultiByte(CP_UTF8, 0, window_name, title_size, &song_name[0], size_needed, nullptr, nullptr);
+                        std::transform(song_name.begin(), song_name.end(), song_name.begin(), std::tolower);
+                    }
+                }
+                else {
+                    song_name.clear();
+                }
+            }
+            else {
+                spotify_window = nullptr;
+
+                song_name.clear();
+            }
+        }
+
+        const auto screen_size = render::get_screen_size();
+
+        if (song_name.empty()) {
+            const auto text = XORSTR("paused / stopped");
+            const auto text_size = render::measure_text(text, FONT_VERDANA_12);
+            const auto text_pos = point_t{screen_size.x - text_size.x - 16, 16};
+
+            render::draw_text(text_pos - 1, {0, 0, 0, 255}, text, FONT_VERDANA_12);
+            render::draw_text(text_pos, {255, 255, 255, 255}, text, FONT_VERDANA_12);
+        }
+        else {
+            const auto song_text = fmt::format(XORSTR("now playing: {}"), song_name);
+            const auto text_size = render::measure_text(song_text.c_str(), FONT_VERDANA_12);
+            const auto text_pos = point_t{screen_size.x - text_size.x - 16, 16};
+
+            render::draw_text(text_pos - 1, {0, 0, 0, 255}, song_text.c_str(), FONT_VERDANA_12);
+            render::draw_text(text_pos, {255, 255, 255, 255}, song_text.c_str(), FONT_VERDANA_12);
+        }
     }
 
     void nightmode() {

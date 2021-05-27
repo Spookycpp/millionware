@@ -16,24 +16,12 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
 	if (!strcmp(sample_name, XORSTR("UIPanorama.popup_accept_match_beep"))) {
 		features::miscellaneous::auto_accept();
 
-		if (strstr(sample_name, XORSTR("competitive_accept_beep"))) {
-			volume = 0.0f;
-		}
+		if (strstr(sample_name, XORSTR("competitive_accept_beep")))
+			volume = 0.f;
 	}
 
-	// theres most certainly a better way to do this, no?
-    if (entity_index == interfaces::engine_client->get_local_player()) {
-        if (strstr(sample_name, XORSTR("land")) && cheat::b_predicting || input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) {
-			cheat::b_predicting = false;
-			cheat::landed = true;
-			return;
-		}
-
-		if (strstr(sample_name, XORSTR("suit")) && cheat::landed) {
-			cheat::landed = false;
-			return;
-		}
-	}
+	if (cheat::b_predicting)
+		volume = 0.f;
 	
 	emit_sound_original(ecx, edx, filter, entity_index, channel, sound_entry, sound_entry_hash, sample_name, volume, attenuation, seed, flags, pitch,
 		origin, direction, utl_vec_origins, update_positions, sound_time, speaker_entity, fds);

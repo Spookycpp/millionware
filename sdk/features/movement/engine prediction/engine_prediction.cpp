@@ -45,7 +45,7 @@ namespace features::engine_prediction {
         interfaces::prediction->setup_move(cheat::local_player, cheat::user_cmd, interfaces::move_helper, &data);
 
         if (input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) {
-            if (features::movement::edgebug_container::should_duck)
+            if (features::movement::should_duck)
                 data.m_nButtons |= 4u;
                 data.m_nButtons &= ~0x200u;
                 data.m_flForwardMove = 0;
@@ -73,29 +73,29 @@ namespace features::engine_prediction {
     }
 
     void create_edgebug_entry(c_user_cmd* user_cmd) {
-        features::movement::edgebug_container::prediction::fall_velocity = cheat::local_player->get_fall_velocity();
-        features::movement::edgebug_container::prediction::flags = cheat::local_player->get_flags();
-        features::movement::edgebug_container::prediction::origin = cheat::local_player->get_vec_origin();
-        features::movement::edgebug_container::prediction::absolute_origin = cheat::local_player->get_abs_origin();
-        features::movement::edgebug_container::prediction::ground_ent = cheat::local_player->get_ground_entity();
-        interfaces::prediction->setup_move(cheat::local_player, user_cmd, interfaces::move_helper, &features::movement::edgebug_container::prediction::movement_data);
+        features::movement::fall_velocity = cheat::local_player->get_fall_velocity();
+        features::movement::flags = cheat::local_player->get_flags();
+        features::movement::origin = cheat::local_player->get_vec_origin();
+        features::movement::absolute_origin = cheat::local_player->get_abs_origin();
+        features::movement::ground_ent = cheat::local_player->get_ground_entity();
+        interfaces::prediction->setup_move(cheat::local_player, user_cmd, interfaces::move_helper, &features::movement::movement_data);
 
     }
 
     void apply_edgebug_data(c_user_cmd *user_cmd) {
-        interfaces::prediction->finish_move(cheat::local_player, interfaces::move_helper, &features::movement::edgebug_container::prediction::movement_data);
-        features::movement::edgebug_container::prediction::flags |= 2;
-        features::movement::edgebug_container::prediction::movement_data.m_nButtons |= 4;
-        cheat::local_player->get_flags() = features::movement::edgebug_container::prediction::flags;
-        cheat::local_player->get_fall_velocity() = features::movement::edgebug_container::prediction::fall_velocity;
-        cheat::local_player->set_absolute_origin(features::movement::edgebug_container::prediction::absolute_origin);
-        cheat::local_player->get_vec_origin() = features::movement::edgebug_container::prediction::origin;
-        cheat::local_player->get_ground_entity() = features::movement::edgebug_container::prediction::ground_ent;
+        interfaces::prediction->finish_move(cheat::local_player, interfaces::move_helper, &features::movement::movement_data);
+        features::movement::flags |= 2;
+        features::movement::movement_data.m_nButtons |= 4;
+        cheat::local_player->get_flags() = features::movement::flags;
+        cheat::local_player->get_fall_velocity() = features::movement::fall_velocity;
+        cheat::local_player->set_absolute_origin(features::movement::absolute_origin);
+        cheat::local_player->get_vec_origin() = features::movement::origin;
+        cheat::local_player->get_ground_entity() = features::movement::ground_ent;
     }
 
     void apply_edgebug_flags() {
 
-        cheat::local_player->get_flags() = features::movement::edgebug_container::prediction::flags;
+        cheat::local_player->get_flags() = features::movement::flags;
     }
 
     void end_prediction() {

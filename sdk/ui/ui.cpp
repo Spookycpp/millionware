@@ -310,9 +310,9 @@ void ui::init() {
 
                 group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
 
-                group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
+                //group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
 
-                group->new_checkbox(XORSTR("Edgebug assist"), settings.miscellaneous.movement.edge_bug_assist)->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
+                group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug_assist)->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
 
                 group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
                 group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
