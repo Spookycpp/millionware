@@ -120,11 +120,12 @@ void c_key_bind::render()
 
 			ui::set_blocking(nullptr);
 		};
-
-		if (input::is_key_pressed(VK_ESCAPE) || (input::is_in_bounds(root_pos, root_pos + root_size) && input::is_mouse_clicked(MOUSE_LEFT)))
-		{
-			ui::set_blocking(nullptr);
-		}
+		if (input::is_key_pressed(VK_ESCAPE)) {
+            set_new_value(0);
+        }
+        else if (!input::is_in_bounds(root_pos, root_pos + root_size) && input::is_mouse_clicked(MOUSE_LEFT)) {
+            ui::set_blocking(nullptr);
+        }
 		else
 		{
 			if (allow_mouse_)
