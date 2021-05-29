@@ -338,12 +338,12 @@ void render::draw_line(const point_t &start, const point_t &end, const color_t &
 
 void render::draw_rect(const point_t &position, const point_t &size, const color_t &color, float rounding, int corners)
 {
-	draw_list->AddRect({ position.x, position.y }, { position.x + size.x, position.y + size.y }, IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
+    draw_list->AddRect({floor(position.x), floor(position.y)}, {floor(position.x + size.x), floor(position.y + size.y)}, IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
 }
 
 void render::fill_rect(const point_t &position, const point_t &size, const color_t &color, float rounding, int corners)
 {
-	draw_list->AddRectFilled({ position.x, position.y }, { position.x + size.x, position.y + size.y }, IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
+    draw_list->AddRectFilled({floor(position.x), floor(position.y)}, {floor(position.x + size.x), floor(position.y + size.y)}, IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
 }
 
 void render::gradient_h(const point_t &position, const point_t &size, const color_t &color_start, const color_t &color_end)
