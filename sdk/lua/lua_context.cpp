@@ -58,18 +58,18 @@ void lua_internal::context::setup_tables() {
             const char *event_name = luaL_checklstring(l, -2, &len);
 
 			// ensure this callback hasn't already been registered
-			/*if (const auto it = std::ranges::find_if(_callbacks, [func_name](const callback& cb) {
-				return cb.m_name == func_name;
-			}); it != _callbacks.end()) {
+			/*if (const auto it = std::ranges::find_if(callbacks, [func_name](const callback& cb) {
+				return cb.name == func_name;
+			}); it != callbacks.end()) {
 				return 0;
 			}*/
 
 			const callback cb(l, event_name);
 			
 			// save function ref to push back onto the stack later
-			cb.m_ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
+			cb.ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
 			
-			_callbacks.push_back(cb);
+			callbacks.push_back(cb);
 		}))
 		.addFunction("remove_callback", std::function([this]() {
 			size_t len;
@@ -79,10 +79,10 @@ void lua_internal::context::setup_tables() {
 
 			// TODO: FINISH THIS, need to figure out a unique identifier for each callback
 			// compare name, unref, and erase
-            _callbacks.erase(std::ranges::remove_if(_callbacks, [this, event_name](const callback &cb) {
+            callbacks.erase(std::ranges::remove_if(callbacks, [this, event_name](const callback &cb) {
 			    // luaL_unref()
 				return false;
-			}).begin(), _callbacks.end());
+			}).begin(), callbacks.end());
 		}))
 	    .addFunction("register_event_callback", std::function([this]() {
 			size_t len;
@@ -101,9 +101,9 @@ void lua_internal::context::setup_tables() {
             const callback cb(l, event_name, true);
 
 			// save function ref to push back onto the stack later
-            cb.m_ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
+            cb.ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
 
-			_callbacks.push_back(cb);
+			callbacks.push_back(cb);
 		}))
 	.endNamespace();
 
@@ -132,10 +132,10 @@ void lua_internal::context::ffi(const bool state) const {
 }
 
 bool lua_internal::context::load(const std::string& path) {
-	_path = path;
+    script_path = path;
 	new_state();
 
-	if (luaL_loadfile(l, path.c_str())) {
+	if (luaL_loadfile(l, script_path.c_str())) {
         logging::error(std::string(lua_tostring(l, -1)));
 		lua_pop(l, 1);
 		return false;
@@ -155,26 +155,10 @@ bool lua_internal::context::run() const {
 }
 
 void lua_internal::context::exit() {
-    _callbacks.clear();
-    _exiting = true;
-}
-
-bool lua_internal::context::exiting() const {
-    return _exiting;
-}
-
-std::vector<lua_internal::callback> lua_internal::context::callbacks() const {
-	return _callbacks;
-}
-
-void lua_internal::context::add_callback(const callback &cb) {
-    _callbacks.push_back(cb);
-}
-
-std::string lua_internal::context::path() const {
-	return _path;
+    callbacks.clear();
+    exiting = true;
 }
 
 std::string lua_internal::context::filename() const {
-    return std::filesystem::path(_path).stem().string();
+    return std::filesystem::path(script_path).stem().string();
 }

@@ -47,7 +47,7 @@ namespace lua_internal::tables::client {
 
         const callback cb(l, event_name, true);
 
-        cb.m_ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
+        cb.ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
 
         if (event_exists)
         logging::info("exists");*/

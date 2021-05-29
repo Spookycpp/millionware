@@ -7,12 +7,11 @@ namespace lua_internal {
 	private:
 	public:
 		lua_State* l;
-		luabridge::LuaRef m_ref;
+		luabridge::LuaRef ref;
 
-		std::string m_name;
-        bool m_is_game_event;
+		std::string name;
+        bool is_game_event;
 
 		callback(lua_State *l, std::string name, bool is_game_event = false);
-        void dump_stack() const;
 	};
 }

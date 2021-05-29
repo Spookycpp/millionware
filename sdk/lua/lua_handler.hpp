@@ -3,28 +3,40 @@
 #include "lua_internal.hpp"
 
 #include "lua_context.hpp"
-#include "lua_script.hpp"
 
 namespace lua_internal {
 	class handler {
 	private:
-		std::vector<std::unique_ptr<script>> _scripts;
+        class script {
+          public:
+            context ctx;
+
+            std::string _path;
+            bool loaded;
+
+          public:
+            script(const std::string &script_path) : loaded(false) {
+                _path = script_path;
+                loaded = ctx.load(_path);
+            }
+
+            std::string filename() const {
+                return std::filesystem::path(_path).stem().string();
+            }
+        };
+
+	private:
+		std::vector<std::unique_ptr<script>> scripts;
 
 	public:
-		void add_script(const std::string& path) {
-			_scripts.push_back(std::make_unique<script>(path));
-		}
-
-		void add_script(const std::vector<std::string>& paths) {
-			for (auto& it : paths) {
-				_scripts.push_back(std::make_unique<script>(it));
-			}
-		}
+        void add_script(const std::string &path);
+        void add_script(const std::vector<std::string> &paths);
 
 		std::vector<context> loaded();
         void unload(const std::string &name);
         void unload();
-        std::vector<lua_internal::callback> events(const std::string &name);
+
+        std::vector<callback> events(const std::string &name);
         std::vector<callback> events();
     };
 }

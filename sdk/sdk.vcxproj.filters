@@ -71,6 +71,10 @@
     <ClCompile Include="features\inventory changer\item_definitions.cpp" />
     <ClCompile Include="features\inventory changer\kit_parser.cpp" />
     <ClCompile Include="features\nade prediction\nade_prediction.cpp" />
+    <ClCompile Include="lua\lua_game.cpp" />
+    <ClCompile Include="lua\lua_callback.cpp" />
+    <ClCompile Include="lua\lua_context.cpp" />
+    <ClCompile Include="lua\lua_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -172,5 +176,19 @@
     <ClInclude Include="features\inventory changer\kit_parser.h" />
     <ClInclude Include="source engine\player_inventory.h" />
     <ClInclude Include="features\nade prediction\nade_prediction.h" />
+    <ClInclude Include="lua\lua_internal.hpp" />
+    <ClInclude Include="lua\lua_game.hpp" />
+    <ClInclude Include="lua\lua_callback.hpp" />
+    <ClInclude Include="lua\lua_context.hpp" />
+    <ClInclude Include="lua\lua_handler.hpp" />
+    <ClInclude Include="lua\tables\lua_client.hpp" />
+    <ClInclude Include="lua\tables\lua_cvar.hpp" />
+    <ClInclude Include="lua\tables\lua_draw.hpp" />
+    <ClInclude Include="lua\tables\lua_entity.hpp" />
+    <ClInclude Include="lua\types\lua_color.hpp" />
+    <ClInclude Include="lua\types\lua_vec2d.hpp" />
+    <ClInclude Include="lua\types\lua_vec3d.hpp" />
+    <ClInclude Include="thirdparty\nanosvg\nanosvg.h" />
+    <ClInclude Include="thirdparty\nanosvg\nanosvgrast.h" />
   </ItemGroup>
 </Project>

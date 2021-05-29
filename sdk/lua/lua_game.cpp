@@ -114,15 +114,15 @@ void lua::callbacks::run_events(c_game_event *game_event) {
     EnterCriticalSection(&mutex.critical_section);
     try {
         for (auto &it : handler.events()) {
-            if (!it.m_is_game_event) {
+            if (!it.is_game_event) {
                 continue;
             }
 
-            if (strcmp(game_event->get_name(), it.m_name.c_str()) == 0) {
-                lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.m_ref[1]);
+            if (strcmp(game_event->get_name(), it.name.c_str()) == 0) {
+                lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
                 
                 // create new table for event data
-                it.m_ref[2] = luabridge::newTable(it.l);
+                it.ref[2] = luabridge::newTable(it.l);
 
                 for (const auto &[key_name, type] : keys) {
                     if (game_event->is_empty(key_name)) {
@@ -132,19 +132,19 @@ void lua::callbacks::run_events(c_game_event *game_event) {
 
                     switch (type) {
                         // integer, byte
-                        case 1: it.m_ref[key_name] = game_event->get_int(key_name); break;
+                        case 1: it.ref[key_name] = game_event->get_int(key_name); break;
                         // float
-                        case 2: it.m_ref[key_name] = game_event->get_float(key_name); break;
+                        case 2: it.ref[key_name] = game_event->get_float(key_name); break;
                         // bool
-                        case 3: it.m_ref[key_name] = game_event->get_bool(key_name); break;
+                        case 3: it.ref[key_name] = game_event->get_bool(key_name); break;
                         // string
-                        case 4: it.m_ref[key_name] = game_event->get_string(key_name); break;
+                        case 4: it.ref[key_name] = game_event->get_string(key_name); break;
                         default: break;
                     }
                 }
 
                 // push to stack
-                it.m_ref.push();
+                it.ref.push();
 
                 // call the lua function
                 /*luabridge::LuaException::*/ lua_pcall(it.l, 1, 0, 0);
@@ -166,14 +166,14 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
     try {
         for (auto &it : handler.events("run_command")) {
             // push reference to lua func back onto the stack
-            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.m_ref[1]);
+            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
             
             // create new table for user_cmd data
-            it.m_ref[2] = luabridge::newTable(it.l);
-            it.m_ref["command_number"] = cmd->command_number;
+            it.ref[2] = luabridge::newTable(it.l);
+            it.ref["command_number"] = cmd->command_number;
 
             // push to stack
-            it.m_ref.push();
+            it.ref.push();
 
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
@@ -195,24 +195,24 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
 
         for (auto &it : handler.events("override_view")) {
             // push reference to lua func back onto the stack
-            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.m_ref[1]);
+            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
             // create new table for user_cmd data
-            it.m_ref[2] = luabridge::newTable(it.l);
-            it.m_ref["x"] = view_setup->x;
-            it.m_ref["y"] = view_setup->y;
+            it.ref[2] = luabridge::newTable(it.l);
+            it.ref["x"] = view_setup->x;
+            it.ref["y"] = view_setup->y;
             // TODO: missing z
-            it.m_ref["fov"] = view_setup->fov;
+            it.ref["fov"] = view_setup->fov;
 
             // push to stack
-            it.m_ref.push();
+            it.ref.push();
 
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
 
-            view_setup->x = it.m_ref["x"];
-            view_setup->y = it.m_ref["y"];
-            view_setup->fov = it.m_ref["fov"];
+            view_setup->x = it.ref["x"];
+            view_setup->y = it.ref["y"];
+            view_setup->fov = it.ref["fov"];
         }
     }
     catch (luabridge::LuaException &ex) {
@@ -230,7 +230,7 @@ void lua::callbacks::draw() {
     try {
         for (auto &it : handler.events("draw")) {
             // push reference to lua func back onto the stack
-            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.m_ref[1]);
+            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 0, 0, 0);

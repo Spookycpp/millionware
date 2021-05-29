@@ -227,7 +227,6 @@
     <ClCompile Include="lua\lua_callback.cpp" />
     <ClCompile Include="lua\lua_context.cpp" />
     <ClCompile Include="lua\lua_handler.cpp" />
-    <ClCompile Include="lua\lua_script.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="core\cheat\cheat.cpp" />
     <ClCompile Include="core\exports\exports.cpp" />
@@ -288,7 +287,6 @@
     <ClInclude Include="lua\lua_callback.hpp" />
     <ClInclude Include="lua\lua_context.hpp" />
     <ClInclude Include="lua\lua_handler.hpp" />
-    <ClInclude Include="lua\lua_script.hpp" />
     <ClInclude Include="lua\tables\lua_client.hpp" />
     <ClInclude Include="lua\tables\lua_cvar.hpp" />
     <ClInclude Include="lua\tables\lua_draw.hpp" />
