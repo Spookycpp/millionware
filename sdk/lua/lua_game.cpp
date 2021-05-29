@@ -7,10 +7,8 @@ bool lua::init() {
         handler.add_script(lua_internal::get_script_paths());
     }
     catch (std::filesystem::filesystem_error &e) {
-        // std::cout << e.code().value();
-
         if (e.code() == std::errc::no_such_file_or_directory) {
-            std::filesystem::create_directory(lua_internal::default_script_path);
+            std::filesystem::create_directories(lua_internal::default_script_path);
             return false;
         }
     }
