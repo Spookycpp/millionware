@@ -37,21 +37,6 @@ namespace lua_internal::tables::client {
         size_t len;
         return patterns::get_pattern(luaL_checklstring(l, 1, &len), luaL_checklstring(l, 2, &len));
     }
-
-    inline void register_event_callback(lua_State *l) {
-        /*size_t len;
-
-        const char *event_name = luaL_checklstring(l, -2, &len);
-
-        const bool event_exists = interfaces::_event_listener->exists();
-
-        const callback cb(l, event_name, true);
-
-        cb.ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
-
-        if (event_exists)
-        logging::info("exists");*/
-    }
 }
 
 inline void lua_internal::context::lua_client() {
