@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string_view>
 
 #define PATTERN_GET(p, a) inline auto get_##p() { return p == 0u ? 0u : (a); }
 
@@ -98,5 +99,6 @@ namespace patterns
     PATTERN_GET(inventory_item_by_item_id, inventory_item_by_item_id);
     PATTERN_GET(add_econ_item, add_econ_item);
 
-	bool init();
+	uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
+    bool init();
 }

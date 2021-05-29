@@ -8,6 +8,8 @@
 #include "../ui/ui.h"
 #include "../features/nade prediction/nade_prediction.h"
 
+#include "../lua/lua_game.hpp"
+
 static int active_tab = 0;
 
 long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region) {
@@ -21,6 +23,8 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
     features::nade_prediction::on_paint_traverse();
 
     ui::frame();
+
+    lua::callbacks::draw();
 
     render::finish();
 

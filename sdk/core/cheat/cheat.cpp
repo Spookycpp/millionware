@@ -20,6 +20,7 @@
 #include "../patterns/patterns.h"
 
 #include "../scripting/scripting.h"
+#include "../../lua/lua_game.hpp"
 
 #include <windows.h>
 #include "../util/util.h"
@@ -50,6 +51,8 @@ bool cheat::init() {
 
     if (!hooks::init())
         return false;
+
+    lua::init();
 
     logging::info(XORSTR("successfully initialized"));
 

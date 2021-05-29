@@ -93,6 +93,9 @@ class c_event_listener : public c_game_event_listener2 {
         on_fired_game_event(game_event);
     }
 
+    bool exists(const char *listener);
+    bool add(const char *listener);
+
     int get_event_debug_id() override {
         return EVENT_DEBUG_ID_INIT;
     }

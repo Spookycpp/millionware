@@ -93,7 +93,7 @@ uint32_t get_pattern_internal(std::string_view module_name, std::string_view pat
 #endif
 }
 
-inline uint32_t get_pattern(std::string_view module_name, std::string_view pattern)
+uint32_t patterns::get_pattern(std::string_view module_name, std::string_view pattern)
 {
 	const auto result = get_pattern_internal(module_name, pattern);
 

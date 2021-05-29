@@ -5,12 +5,12 @@
 
 #include "../../../source engine/client_prediction.h"
 
-#include <array>
-#include "../../../engine/security/xorstr.h"
-#include "../../../core/util/util.h"
-#include "../../../engine/math/math.h"
 #include "../../../core/settings/settings.h"
+#include "../../../core/util/util.h"
 #include "../../../engine/input/input.h"
+#include "../../../engine/math/math.h"
+#include "../../../engine/security/xorstr.h"
+#include <array>
 
 namespace features::engine_prediction {
 
@@ -47,12 +47,12 @@ namespace features::engine_prediction {
         if (input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey)) {
             if (features::movement::should_duck)
                 data.m_nButtons |= 4u;
-                data.m_nButtons &= ~0x200u;
-                data.m_flForwardMove = 0;
-                data.m_flSideMove = 0;
-                data.m_nButtons &= ~0x400u;
-                data.m_nButtons &= ~8u;
-                data.m_nButtons &= ~0x10u;
+            data.m_nButtons &= ~0x200u;
+            data.m_flForwardMove = 0;
+            data.m_flSideMove = 0;
+            data.m_nButtons &= ~0x400u;
+            data.m_nButtons &= ~8u;
+            data.m_nButtons &= ~0x10u;
         }
 
         interfaces::game_movement->process_movement(cheat::local_player, &data);
@@ -67,19 +67,18 @@ namespace features::engine_prediction {
     }
 
     void engine_prediction::store() {
-        cheat::unpredicted_flags    = cheat::local_player->get_flags();
-        cheat::unpredicted_curtime  = interfaces::global_vars->current_time;
+        cheat::unpredicted_flags = cheat::local_player->get_flags();
+        cheat::unpredicted_curtime = interfaces::global_vars->current_time;
         cheat::unpredicted_velocity = cheat::local_player->get_velocity();
     }
 
-    void create_edgebug_entry(c_user_cmd* user_cmd) {
+    void create_edgebug_entry(c_user_cmd *user_cmd) {
         features::movement::fall_velocity = cheat::local_player->get_fall_velocity();
         features::movement::flags = cheat::local_player->get_flags();
         features::movement::origin = cheat::local_player->get_vec_origin();
         features::movement::absolute_origin = cheat::local_player->get_abs_origin();
         features::movement::ground_ent = cheat::local_player->get_ground_entity();
         interfaces::prediction->setup_move(cheat::local_player, user_cmd, interfaces::move_helper, &features::movement::movement_data);
-
     }
 
     void apply_edgebug_data(c_user_cmd *user_cmd) {

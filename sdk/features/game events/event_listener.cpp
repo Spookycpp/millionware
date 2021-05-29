@@ -6,6 +6,8 @@
 #include "../../engine/logging/logging.h"
 #include "../../engine/security/xorstr.h"
 
+#include "../../lua/lua_game.hpp"
+
 // for game event list: https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_Events
 // this also has list of the parameters used
 
@@ -63,4 +65,14 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
     else if (std::strncmp(game_event->get_name(), XORSTR("vote_cast"), 10) == 0) {
         features::game_events::on_vote_cast(game_event);
     }
+
+    lua::callbacks::run_events(game_event);
+}
+
+bool c_event_listener::exists(const char *listener) {
+    return interfaces::game_events->find_listener(this, listener);
+}
+
+bool c_event_listener::add(const char *listener) {
+    return interfaces::game_events->add_listener(this, listener, false);
 }

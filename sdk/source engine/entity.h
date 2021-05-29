@@ -289,6 +289,11 @@ public:
 	DECLARE_NETVAR(entity_handle_t, owner_handle, "DT_BaseEntity", "m_hOwnerEntity");
 
 	DECLARE_NETVAR_OFFSET(matrix3x4_t, transformation_matrix, "DT_BaseEntity", "m_CollisionGroup", -48);
+
+	template <typename T>
+    T &get(const uintptr_t offset) {
+        return *reinterpret_cast<T *>(reinterpret_cast<uintptr_t>(this) + offset);
+    }
 };
 
 inline std::array<animation_data_t, 65> _anim_data_records;

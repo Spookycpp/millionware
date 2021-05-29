@@ -100,7 +100,7 @@
     <ClCompile>
       <WarningLevel>Level2</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>6387</DisableSpecificWarnings>
@@ -118,7 +118,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>6387</DisableSpecificWarnings>
@@ -223,6 +223,11 @@
     <ClCompile Include="hooks\present.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
     <ClCompile Include="hooks\write_user_cmd_delta_to_buffer.cpp" />
+    <ClCompile Include="lua\lua_game.cpp" />
+    <ClCompile Include="lua\lua_callback.cpp" />
+    <ClCompile Include="lua\lua_context.cpp" />
+    <ClCompile Include="lua\lua_handler.cpp" />
+    <ClCompile Include="lua\lua_script.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="core\cheat\cheat.cpp" />
     <ClCompile Include="core\exports\exports.cpp" />
@@ -278,6 +283,19 @@
     <ClInclude Include="features\nade prediction\nade_prediction.h" />
     <ClInclude Include="features\visuals\players\esp.h" />
     <ClInclude Include="features\visuals\world\world.h" />
+    <ClInclude Include="lua\lua_internal.hpp" />
+    <ClInclude Include="lua\lua_game.hpp" />
+    <ClInclude Include="lua\lua_callback.hpp" />
+    <ClInclude Include="lua\lua_context.hpp" />
+    <ClInclude Include="lua\lua_handler.hpp" />
+    <ClInclude Include="lua\lua_script.hpp" />
+    <ClInclude Include="lua\tables\lua_client.hpp" />
+    <ClInclude Include="lua\tables\lua_cvar.hpp" />
+    <ClInclude Include="lua\tables\lua_draw.hpp" />
+    <ClInclude Include="lua\tables\lua_entity.hpp" />
+    <ClInclude Include="lua\types\lua_color.hpp" />
+    <ClInclude Include="lua\types\lua_vec2d.hpp" />
+    <ClInclude Include="lua\types\lua_vec3d.hpp" />
     <ClInclude Include="resources\cerebri_sans_medium_ttf.h" />
     <ClInclude Include="resources\cerebri_sans_regular_ttf.h" />
     <ClInclude Include="resources\csgo_icons.h" />
@@ -333,6 +351,8 @@
     <ClInclude Include="gui\checkbox\checkbox.h" />
     <ClInclude Include="gui\color_picker\color_picker.h" />
     <ClInclude Include="gui\group\group.h" />
+    <ClInclude Include="thirdparty\nanosvg\nanosvg.h" />
+    <ClInclude Include="thirdparty\nanosvg\nanosvgrast.h" />
     <ClInclude Include="ui\ui.h" />
     <ClInclude Include="gui\key_bind\key_bind.h" />
     <ClInclude Include="gui\select\select.h" />

@@ -11,6 +11,8 @@
 
 #include "../features/miscellaneous/miscellaneous.h"
 
+#include "../lua/lua_game.hpp"
+
 static bool is_menu_active = true;
 static bool new_blocking = false;
 
@@ -192,13 +194,13 @@ void ui::init() {
             make_weapon_group_ui(7, &settings.lbot_other);
         }
 
-        if (const auto rage_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_SKULL, XORSTR("Rage"))) {
+        if (const auto rage_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_SKULL, XORSTR("Its a placeholder XD"))) {
             if (const auto group = rage_tab->new_group(XORSTR("Aimbot"))) {
                 // group->new_text(XORSTR("trolled nigger");
             }
         }
 
-        if (const auto anti_aim_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_REDO, XORSTR("Anti-aim"))) {
+        if (const auto anti_aim_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_REDO, XORSTR("ANOTHER PLACEHOLDER"))) {
             if (const auto group = anti_aim_tab->new_group(XORSTR("Angles"))) {
             }
         }
@@ -354,6 +356,17 @@ void ui::init() {
             }
         }
 
+        if (const auto scripts_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_FILE_CODE, XORSTR("Lua"))) {
+            if (const auto group = scripts_tab->new_group(XORSTR("A"))) {
+            }
+
+            if (const auto group = scripts_tab->new_group(XORSTR("Lua"))) {
+                group->new_button(XORSTR("Reload active scripts"), lua::reload);
+            }
+        }
+
+        const auto inventory_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_WALLET, XORSTR("Inventory"));
+
         if (const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, XORSTR("Settings"))) {
             if (const auto group = presets_tab->new_group(XORSTR("YADA"))) {
                 static bool test;
@@ -366,16 +379,6 @@ void ui::init() {
 
             set_active_tab(presets_tab);
         }
-
-        if (const auto scripts_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_FILE_CODE, XORSTR("Scripts"))) {
-            if (const auto group = scripts_tab->new_group(XORSTR("A"))) {
-            }
-
-            if (const auto group = scripts_tab->new_group(XORSTR("B"))) {
-            }
-        }
-
-        const auto inventory_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_WALLET, XORSTR("Inventory"));
     }
 }
 

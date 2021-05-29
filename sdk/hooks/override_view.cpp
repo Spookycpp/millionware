@@ -5,6 +5,7 @@
 #include "../core/util/util.h"
 
 #include "../features/miscellaneous/miscellaneous.h"
+#include "../lua/lua_game.hpp"
 
 int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setup_t *view_setup)
 {
@@ -26,6 +27,8 @@ int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setu
 			view_model->set_abs_angles(eye_angles);
 		}
 	}
+
+	lua::callbacks::override_view(view_setup);
 
 	return override_view_original(ecx, edx, view_setup);
 }

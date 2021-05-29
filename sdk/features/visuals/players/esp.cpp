@@ -4,14 +4,14 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include "../../core/cheat/cheat.h"
-#include "../../core/interfaces/interfaces.h"
-#include "../../core/settings/settings.h"
-#include "../../engine/input/input.h"
-#include "../../engine/logging/logging.h"
-#include "../../engine/math/math.h"
-#include "../../engine/render/render.h"
-#include "../../engine/security/xorstr.h"
+#include "../../../core/cheat/cheat.h"
+#include "../../../core/interfaces/interfaces.h"
+#include "../../../core/settings/settings.h"
+#include "../../../engine/input/input.h"
+#include "../../../engine/logging/logging.h"
+#include "../../../engine/math/math.h"
+#include "../../../engine/render/render.h"
+#include "../../../engine/security/xorstr.h"
 #include "esp.h"
 
 // cringe but ye

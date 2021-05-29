@@ -17,6 +17,8 @@
 #include "../features/nade prediction/nade_prediction.h"
 #include "../features/visuals/world/world.h"
 
+#include "../lua/lua_game.hpp"
+
 bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float frame_time, c_user_cmd *user_cmd) {
 
     const auto result = create_move_original(ecx, edx, frame_time, user_cmd);
@@ -30,6 +32,8 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     cheat::user_cmd = user_cmd;
 
     features::fake_ping::on_create_move();
+
+    lua::callbacks::run_command(user_cmd);
 
     if (cheat::local_player->is_alive()) {
         features::legitbot::sample_angle_data(user_cmd->view_angles);
