@@ -76,7 +76,7 @@ void c_checkbox::render()
 	render::fill_rect(box_pos, box_size, ui::get_accent_color().adjust_alpha((int) (toggle_animation_ * 255.0f)), 4.0f);
 	render::draw_rect(box_pos - 1.0f, box_size + 2.0f, { 51, 51, 51 }, 4.0f);
 
-	checkmark_animation_ = handle_animation(checkmark_animation_, ui::get_accent_color().luminance() >= 0.5f ? 0.0f : 1.0f);
+	checkmark_animation_ = handle_animation(checkmark_animation_, ui::get_accent_color().luminance() >= 0.5f ? 0.2f : 1.0f);
 
 	const auto checkmark_color = color_t((int) (checkmark_animation_ * 255.0f), (int) (toggle_animation_ * 255.0f));
 

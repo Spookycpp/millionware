@@ -34,7 +34,7 @@ void c_color_picker::layout(layout_item &overlay, layout_item &parent)
 	root_ = parent
 		.new_item(LAY_TOP | LAY_RIGHT)
 		.margins(4.0f, 0.0f, 0.0f, 0.0f)
-		.size(26.0f, 18.0f);
+		.size(24.0f, 16.0f);
 
 	if (ui::get_blocking() == shared_from_this())
 	{
@@ -204,13 +204,13 @@ void c_color_picker::render()
 	{
 		render::push_clip(root_pos, root_size);
 
-		//render::draw_image(root_pos, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
-		//render::draw_image({ root_pos.x + 18.0f, root_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 4.0f);
+		render::draw_image(root_pos, { 16.0f, 16.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 2.0f, CORNER_TOP_LEFT | CORNER_BOTTOM_LEFT);
+        render::draw_image({root_pos.x + 16.0f, root_pos.y}, {16.0f, 16.0f}, {255, 255, 255}, TEXTURE_TRANSPARENCY, 2.0f, CORNER_TOP_RIGHT | CORNER_BOTTOM_RIGHT);
 
 		render::pop_clip();
 	}
 
-	render::fill_rect(root_pos, root_size, value_.get(), 4.0f);
+	render::fill_rect(root_pos, root_size, value_.get(), 2.0f);
 
 	render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 3.0f);
 	render::draw_rect(root_pos - 1.0f, root_size + 2.0f, { 51, 51, 51 }, 4.0f);
@@ -221,8 +221,8 @@ void c_color_picker::render()
 		render::set_layer(7);
 
 		const auto [overlay_pos, overlay_size] = rect_to_xywh(overlay_container_.get_rect());
-		const auto [color_box_pos, color_box_size] = rect_to_xywh(overlay_color_box_.get_rect());
-		const auto [hue_bar_pos, hue_bar_size] = rect_to_xywh(overlay_hue_bar_.get_rect());
+        const auto [color_box_pos, color_box_size] = rect_to_xywh(overlay_color_box_.get_rect());
+        const auto [hue_bar_pos, hue_bar_size] = rect_to_xywh(overlay_hue_bar_.get_rect());
 
 		render::fill_rect(overlay_pos, overlay_size, { 19, 19, 19 }, 4.0f);
 		render::draw_rect(overlay_pos - 1.0f, overlay_size + 2.0f, { 51, 51, 51 }, 4.0f);
@@ -285,15 +285,15 @@ void c_color_picker::render()
 
 			render::push_clip(alpha_bar_pos, alpha_bar_size);
 
-			//for (auto i = 0;; i++)
-			//{
-			//	const auto offset = i * 18.0f;
-			//
-			//	render::draw_image({ alpha_bar_pos.x + offset, alpha_bar_pos.y }, { 18.0f, 18.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY);
-			//
-			//	if (offset > alpha_bar_size.x)
-			//		break;
-			//}
+			for (auto i = 0;; i++)
+			{
+                const auto offset = i * 16.0f;
+			
+				render::draw_image({ alpha_bar_pos.x + offset, alpha_bar_pos.y }, { 16.0f, 16.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY);
+			
+				if (offset > alpha_bar_size.x)
+					break;
+			}
 
 			render::pop_clip();
 

@@ -72,7 +72,7 @@ void c_category::layout(const layout_item &root, layout_item &overlay, layout_it
 			scroll_root_ = root_
 				.new_item(LAY_RIGHT | LAY_VFILL, LAY_ROW | LAY_START)
 				.margins(0.0f, 4.0f, 4.0f, 4.0f)
-				.size(4.0f, 0.0f);
+				.size(5.0f, 0.0f);
 
 			scroll_bar_ = scroll_root_
 				.new_item(LAY_TOP | LAY_HFILL, LAY_ROW | LAY_START)
