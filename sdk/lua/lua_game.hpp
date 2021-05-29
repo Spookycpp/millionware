@@ -18,6 +18,7 @@ namespace lua {
     void reload();
 
     namespace callbacks {
+        void startup();
         void run_events(c_game_event *game_event);
         void run_command(c_user_cmd *cmd);
         void override_view(view_setup_t *view_setup);

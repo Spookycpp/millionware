@@ -56,7 +56,7 @@ void lua_internal::handler::unload() {
 	scripts.clear();
 }
 
-auto lua_internal::handler::events() -> std::vector<lua_internal::callback> {
+std::vector<lua_internal::callback> lua_internal::handler::events() {
 	std::vector<callback> ret;
 
 	for (auto& it : loaded()) {
@@ -72,7 +72,7 @@ auto lua_internal::handler::events() -> std::vector<lua_internal::callback> {
 	return ret;
 }
 
-auto lua_internal::handler::events(const std::string &name) -> std::vector<lua_internal::callback> {
+std::vector<lua_internal::callback> lua_internal::handler::events(const std::string &name) {
     std::vector<callback> ret;
 
     for (auto &it : loaded()) {

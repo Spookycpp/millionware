@@ -10,7 +10,7 @@ bool lua::init() {
         // std::cout << e.code().value();
 
         if (e.code() == std::errc::no_such_file_or_directory) {
-            std::filesystem::create_directory("scripts");
+            std::filesystem::create_directory(lua_internal::default_script_path);
             return false;
         }
     }
@@ -30,12 +30,36 @@ bool lua::init() {
         mutex.initialized = true;
     }
 
+    // only ran on successful script execution
+    callbacks::startup();
+
     return true;
 }
 
 void lua::reload() {
     handler.unload();
     init();
+}
+
+void lua::callbacks::startup() {
+    if (!mutex.initialized) {
+        return;
+    }
+
+    EnterCriticalSection(&mutex.critical_section);
+    try {
+        for (auto &it : handler.events(XORSTR("startup"))) {
+            // push reference to lua func back onto the stack
+            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
+
+            // call the lua function
+            lua_pcall(it.l, 0, 0, 0);
+        }
+    }
+    catch (luabridge::LuaException &ex) {
+        logging::error(ex.what());
+    }
+    LeaveCriticalSection(&mutex.critical_section);
 }
 
 void lua::callbacks::run_events(c_game_event *game_event) {
