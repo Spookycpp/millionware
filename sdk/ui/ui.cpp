@@ -258,11 +258,11 @@ void ui::init() {
             }
 
             if (const auto group = world_tab->new_group(XORSTR("Other"))) {
+                group->new_checkbox(XORSTR("Rank reveal"), settings.miscellaneous.rank_reveal);
+                group->new_checkbox(XORSTR("Preseve killfeed"), settings.miscellaneous.preserve_killfeed);
                 group->new_checkbox(XORSTR("Damage log"), settings.visuals.player.damage_logs);
                 group->new_checkbox(XORSTR("Purchase log"), settings.miscellaneous.buy_log);
-                group->new_checkbox(XORSTR("Rank reveal"), settings.miscellaneous.rank_reveal);
                 group->new_checkbox(XORSTR("Money reveal"), settings.miscellaneous.money_reveal);
-                group->new_checkbox(XORSTR("Preseve killfeed"), settings.miscellaneous.preserve_killfeed);
             }
         }
 
@@ -331,6 +331,7 @@ void ui::init() {
             }
 
             if (const auto group = main_tab->new_group(XORSTR("Other"))) {
+                group->new_checkbox(XORSTR("Clan tag"), settings.miscellaneous.clantag);
                 group->new_checkbox(XORSTR("Fake latency"), settings.miscellaneous.fake_ping.enabled);
                 group->new_checkbox(XORSTR("Player privacy"), settings.miscellaneous.player_privacy);
                 group->new_checkbox(XORSTR("Auto pistol"), settings.miscellaneous.auto_pistol);
@@ -352,6 +353,7 @@ void ui::init() {
                 group->new_select(XORSTR("Kill sound"), settings.miscellaneous.kill_sound, {XORSTR("None"), XORSTR("Money"), XORSTR("Arena switch press"), XORSTR("Custom")});
                 group->new_text_input(XORSTR("Input"), settings.miscellaneous.hit_sound_custom, false)->add_dependency(custom_kill_sound_dependency);
                 
+                group->new_button(XORSTR("Name spam"), features::miscellaneous::name_spam);
                 group->new_button(XORSTR("Unlock hidden convars"), features::miscellaneous::unlock_hidden_convars);
             }
         }

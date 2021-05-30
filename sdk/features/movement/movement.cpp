@@ -59,6 +59,8 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
         if (post_flags & ENTITY_FLAG_ONGROUND) {
             user_cmd->buttons &= ~BUTTON_IN_JUMP;
         }
+
+        cheat::b_predicting = false;
     }
 
     if (settings.miscellaneous.movement.edge_bug && input::is_key_down(settings.miscellaneous.movement.edge_bug_hotkey)) {

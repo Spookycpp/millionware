@@ -39,7 +39,7 @@ struct settings_t {
 
 		struct {
 			bool  enabled = false;
-			float fov = 10.0f;
+			float fov = 5.0f;
 			float strength = 0.3f;
 		} assist;
 
@@ -198,6 +198,7 @@ struct settings_t {
 	struct {
 		bool  player_privacy = false;
 		bool  auto_pistol = false;
+		bool  clantag = false;
 		bool  rank_reveal = false;
 		bool  money_reveal = false;
 		bool  preserve_killfeed = false;

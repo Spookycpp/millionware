@@ -18,7 +18,7 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
     features::visuals::esp::frame();
 
     features::visuals::world::indicators();
-    features::visuals::world::spotify();
+    //features::visuals::world::spotify();
 
     features::nade_prediction::on_paint_traverse();
 

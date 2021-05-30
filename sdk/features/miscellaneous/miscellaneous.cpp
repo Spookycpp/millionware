@@ -12,15 +12,14 @@
 namespace features::miscellaneous {
 
     void on_create_move(c_user_cmd *user_cmd, c_weapon *weapon) {
-
         auto_pistol(user_cmd);
+        clantag();
         foot_fx();
         foot_trail();
         viewmodel_offset();
     }
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
-
         switch (frame_stage) {
             case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
                 panorama_blur();
@@ -41,7 +40,6 @@ namespace features::miscellaneous {
     }
 
     void auto_pistol(c_user_cmd *user_cmd) {
-
         if (!settings.miscellaneous.auto_pistol)
             return;
 
@@ -70,7 +68,7 @@ namespace features::miscellaneous {
         if (!settings.miscellaneous.auto_accept)
             return;
 
-        const auto set_local_player_ready_fn = reinterpret_cast<bool(__stdcall *)(const char *)>(patterns::accept_match);
+        const auto set_local_player_ready_fn = reinterpret_cast<bool(__stdcall *)(const char *)>(patterns::get_accept_match());
 
         set_local_player_ready_fn(XORSTR(""));
     }
@@ -91,133 +89,22 @@ namespace features::miscellaneous {
             view_setup->fov = (float) settings.visuals.local.override_fov;
     }
 
-    /*
-    void thirdperson(view_setup_t *view_setup) { // pandora.gg - michal
-
-        // for whatever reason overrideview gets called from the main menu.
-        if (!cheat::local_player || !interfaces::engine_client->is_in_game())
+    void clantag() { //@todo: make this have a prefix, make it scroll, give it some optional usages & maybe make ability to set a custom tag? probably not.
+        if (!interfaces::engine_client->is_in_game())
             return;
 
-        // define the initial value our third person animation shall start at
-        const constexpr const static const float const initial_starting_value_of_third_person_animation = static_cast<float>(0.25);
+        static auto set_tag_fn = reinterpret_cast<int(__fastcall *)(const char *, const char *)>(patterns::get_set_clantag());
 
-        // camera animation.
-        static float trace_fraction = initial_starting_value_of_third_person_animation;
+        const auto should_set_tag = settings.miscellaneous.clantag;
 
-        // no need to do thirdperson
-        if (!settings.visuals.local.third_person.enabled) {
-            trace_fraction = initial_starting_value_of_third_person_animation;
-            return;
-        }
-
-        // reset this before doing anything
-        g_Misc.thirdperson_transparency = 1.f;
-
-        // check if we have a local player and he is alive.
-        if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
-
-            const auto weapon = (c_weapon *) cheat::local_player->get_active_weapon_handle().get();
-
-            if (!weapon)
-                return;
-
-            auto weapon_data = weapon ? interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index()) : nullptr;;
-
-            if (!weapon_data)
-                return;
-
-            if (weapon_data->type == WEAPON_TYPE_GRENADE) {
-                g_Misc.thirdperson_transparency = 0.45f;
-
-                if (settings.visuals.local.third_person.first_person_on_nade) {
-                    interfaces::input->camera_in_third_person = false;
-                    trace_fraction = initial_starting_value_of_third_person_animation;
-                    return;
-                }
-            }
-        }
-
-        bool bDummyThirdperson = g_Vars.misc.third_person_bind.enabled;
-
-        if (g_Vars.misc.first_person_dead && cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
-            bDummyThirdperson = true;
-
-        if (!bDummyThirdperson)
-            trace_fraction = initial_starting_value_of_third_person_animation;
-
-        // camera should be in thirdperson.
-        if (bDummyThirdperson) {
-
-            // if alive and not in thirdperson already switch to thirdperson.
-            if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
-                if (!interfaces::input->camera_in_third_person)
-                    interfaces::input->camera_in_third_person = true;
-            }
-
-            // if dead and spectating in firstperson switch to thirdperson.
-            else {
-                if (cheat::local_player->get_observer_mode() == 4) {
-
-                    // if in thirdperson, switch to firstperson.
-                    // we need to disable thirdperson to spectate properly.
-                    if (interfaces::input->camera_in_third_person)
-                        interfaces::input->camera_in_third_person = false;
-
-                    cheat::local_player->get_observer_mode() = 5;
-                }
-            }
-        }
-
-        // camera should be in firstperson.
-        else if (interfaces::input->camera_in_third_person) {
-            trace_fraction = initial_starting_value_of_third_person_animation;
-            interfaces::input->camera_in_third_person = false;
-        }
-
-        // if after all of this we are still in thirdperson.
-        if (interfaces::input->camera_in_third_person && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
-            // get camera angles.
-            QAngle offset;
-            interfaces::engine_client->get_view_angles(offset);
-
-            // get our viewangle's forward directional vector.
-            vector_t forward;
-            math::angle_to_vector(offset, forward);
-
-            // setup thirdperson distance
-            offset.z = interfaces::convar_system->find_convar(XORSTR("cam_idealdist"))->get_float();
-
-            // fix camera position when fakeducking
-            // const vector_t vecDuckOffset = (g_Vars.misc.fakeduck && g_Vars.misc.fakeduck_bind.enabled) ? interfaces::game_movement->player_view_offset(false) :
-            // cheat::local_player->m_vecViewOffset();
-
-            // start pos.
-            const vector_t origin = cheat::local_player->get_abs_origin();
-
-            // setup trace filter and trace.
-            c_trace_filter_world_and_props_only filter;
-            c_game_trace tr;
-
-            interfaces::trace->trace_ray(ray_t(origin, origin - (forward * offset.z), {-16.f, -16.f, -16.f}, {16.f, 16.f, 16.f}), MASK_NPCWORLDSTATIC, (c_trace_filter *) &filter, &tr);
-
-            // adapt distance to travel time.
-            trace_fraction = GUI::Approach(trace_fraction, tr.fraction, interfaces::global_vars->frame_time * 16.f);
-
-            // clamp to current fraction, to avoid any visual artifacts
-            trace_fraction = std::clamp(trace_fraction, 0.f, tr.fraction);
-
-            // override camera angles.
-            interfaces::input->camera_offset = {offset.x, offset.y, offset.z * trace_fraction};
-
-            // fix local player blinking on servers with sv_cheats set to 0
-            cheat::local_player->UpdateVisibilityAllEntities();
-        }
+        if (should_set_tag)
+            set_tag_fn(XORSTR("millionware"), XORSTR("millionware"));
+        else
+            set_tag_fn(XORSTR(""), XORSTR(""));
     }
-    */
 
     void post_processing() {
-
-        if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+        if (!interfaces::engine_client->is_in_game())
             return;
 
         const static auto post_processing = interfaces::convar_system->find_convar(XORSTR("mat_postprocess_enable"));
@@ -283,6 +170,22 @@ namespace features::miscellaneous {
         }
     }
 
+    void name_spam() {
+        if (!interfaces::engine_client->is_in_game())
+            return;
+
+        static auto name = interfaces::convar_system->find_convar(XORSTR("name"));
+
+        name->callbacks.clear();
+
+        char buffer[129];
+
+        memset(buffer, 0, 129);
+        memset(buffer, '$', 128);
+
+        name->set_value(buffer);
+    }
+
     void skybox_changer(const int skybox) {
         if (!interfaces::engine_client->is_in_game())
             return;
@@ -342,7 +245,6 @@ namespace features::miscellaneous {
     }
 
     void foot_fx() {
-
         if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
             return;
 
@@ -361,16 +263,16 @@ namespace features::miscellaneous {
     }
 
     void foot_trail() {
-
         if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
             return;
 
         if (interfaces::engine_client->is_in_game() && !interfaces::engine_client->is_connected())
             return;
+
+        //@todo: finish
     }
 
     void unlock_hidden_convars() {
-
         if (!interfaces::convar_system)
             return;
 
@@ -382,7 +284,6 @@ namespace features::miscellaneous {
     }
 
     void viewmodel_offset() {
-
         // hash
         static float last_hash = 0.f;
 

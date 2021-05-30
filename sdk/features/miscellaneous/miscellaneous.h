@@ -22,6 +22,7 @@ namespace features::miscellaneous {
     void thirdperson(view_setup_t *view_setup);
 
     // visual
+    void clantag();
     void post_processing();
     void panorama_blur();
     void force_crosshair();
@@ -29,6 +30,7 @@ namespace features::miscellaneous {
     void recoil_crosshair();
     void ragdoll_push();
     void ragdoll_float();
+    void name_spam();
     void skybox_changer(int skybox);
     void foot_fx();
     void foot_trail();
