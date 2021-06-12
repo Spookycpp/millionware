@@ -157,6 +157,7 @@ struct settings_t {
 			bool    defusal_kit = false;
 			bool    chicken = false;
 			bool    remove_fog = false;
+			bool	weather = false;
 		} world;
 
 		struct {
@@ -184,6 +185,10 @@ struct settings_t {
 			float viewmodel_offset_z = 0.f;
 			float viewmodel_offset_r = 0.f; 
 			int feet_fx = 0;
+			bool foot_trail = false;
+            color_t trail_color = {255, 255, 255}; //@todo: change this to real color
+			float trail_time = 2.5f;
+			float trail_size = 2.5f;
 
 			struct {
                 bool enabled = false;

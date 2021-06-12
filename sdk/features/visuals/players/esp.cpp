@@ -357,9 +357,8 @@ void features::visuals::esp::draw_skeleton(c_player *player) {
         if (abs(child_delta.z) < 5 && (parent_delta.length() < 5 && child_delta.length() < 5) || i == chest_bone_number)
             continue;
 
-        if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen)) {
+        if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen))
             continue;
-        }
 
         render::draw_line(child_screen, parent_screen, settings.visuals.player.skeleton_color);
     }

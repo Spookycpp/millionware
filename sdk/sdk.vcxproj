@@ -201,6 +201,7 @@
     <ClCompile Include="features\movement\movement.cpp" />
     <ClCompile Include="features\nade prediction\nade_prediction.cpp" />
     <ClCompile Include="features\visuals\players\esp.cpp" />
+    <ClCompile Include="features\visuals\world\weather.cpp" />
     <ClCompile Include="features\visuals\world\world.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\do_post_screen_effects.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="features\movement\movement.h" />
     <ClInclude Include="features\nade prediction\nade_prediction.h" />
     <ClInclude Include="features\visuals\players\esp.h" />
+    <ClInclude Include="features\visuals\world\weather.h" />
     <ClInclude Include="features\visuals\world\world.h" />
     <ClInclude Include="lua\lua_internal.hpp" />
     <ClInclude Include="lua\lua_game.hpp" />
@@ -335,6 +337,7 @@
     <ClInclude Include="source engine\player_inventory.h" />
     <ClInclude Include="source engine\recv_props.h" />
     <ClInclude Include="source engine\panorama.h" />
+    <ClInclude Include="source engine\render_beams.h" />
     <ClInclude Include="source engine\studio.h" />
     <ClInclude Include="source engine\trace.h" />
     <ClInclude Include="source engine\util_vector.h" />

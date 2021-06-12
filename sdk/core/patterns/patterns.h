@@ -53,6 +53,8 @@ namespace patterns
     inline uintptr_t gc_client_system;
     inline uintptr_t inventory_item_by_item_id;
     inline uintptr_t add_econ_item;
+    inline uintptr_t render_beams;
+    inline uintptr_t client_precipitation;
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
@@ -98,6 +100,8 @@ namespace patterns
     PATTERN_GET(gc_client_system, gc_client_system);
     PATTERN_GET(inventory_item_by_item_id, inventory_item_by_item_id);
     PATTERN_GET(add_econ_item, add_econ_item);
+    PATTERN_GET(render_beams, *(uintptr_t *) (render_beams + 1u));
+    PATTERN_GET(client_precipitation, client_precipitation);
 
 	uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();

@@ -43,11 +43,9 @@ namespace features::miscellaneous {
         if (!settings.miscellaneous.auto_pistol)
             return;
 
-        // if local player is null or not alive, exit out.
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
             return;
 
-        // grabbing weapon entity & weapon information.
         const auto weapon = (c_weapon *) cheat::local_player->get_active_weapon_handle().get();
         const auto info = weapon ? interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index()) : nullptr;
 
@@ -89,18 +87,42 @@ namespace features::miscellaneous {
             view_setup->fov = (float) settings.visuals.local.override_fov;
     }
 
-    void clantag() { //@todo: make this have a prefix, make it scroll, give it some optional usages & maybe make ability to set a custom tag? probably not.
+    void clantag() {
         if (!interfaces::engine_client->is_in_game())
             return;
 
-        static auto set_tag_fn = reinterpret_cast<int(__fastcall *)(const char *, const char *)>(patterns::get_set_clantag());
+        auto set_clantag = [&](std::string tag) { // fps enhancer
+            static auto set_tag_fn = reinterpret_cast<int(__fastcall *)(const char *, const char *)>(patterns::get_set_clantag());
 
-        const auto should_set_tag = settings.miscellaneous.clantag;
+            set_tag_fn(tag.c_str(), XORSTR("millionware"));
+        };
 
-        if (should_set_tag)
-            set_tag_fn(XORSTR("millionware"), XORSTR("millionware"));
-        else
-            set_tag_fn(XORSTR(""), XORSTR(""));
+        if (!interfaces::engine_client->get_net_channel_info())
+            return;
+
+        static bool clear_tag = false;
+        static int tick_count = 0;
+
+        int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+
+        if (!settings.miscellaneous.clantag && clear_tag) {
+            if (interfaces::global_vars->tick_count % 99 == 2) {
+                set_clantag(XORSTR(""));
+                clear_tag = false;
+            }
+        }
+        else if (settings.miscellaneous.clantag && server_time != tick_count) {
+            static std::string clantag = XORSTR("millionware ");
+            std::rotate(clantag.begin(), clantag.begin() + 1, clantag.end());
+            std::string prefix = XORSTR("$ ");
+            prefix.append(clantag);
+
+            set_clantag(prefix);
+            tick_count = server_time;
+        }
+
+        if (!settings.miscellaneous.clantag)
+            clear_tag = true;
     }
 
     void post_processing() {
@@ -258,8 +280,7 @@ namespace features::miscellaneous {
         case 2: interfaces::effects->dust(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.5f, 1.f, cheat::local_player->get_velocity().length_2d() / 250.f); break;
         case 3: interfaces::effects->energy_splash(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.2f, true); break;
         }
-        // clang-format om
-
+        // clang-format on
     }
 
     void foot_trail() {
@@ -269,68 +290,101 @@ namespace features::miscellaneous {
         if (interfaces::engine_client->is_in_game() && !interfaces::engine_client->is_connected())
             return;
 
-        //@todo: finish
+        static bool jump_failed = false;
+        static int tick, ignoreticks = 1, old_velocity;
+        static vector_t old_origin;
+
+        if (!settings.visuals.local.foot_trail) {
+            old_origin = cheat::local_player->get_vec_origin();
+            return;
+        }
+
+        if (!tick) {
+            beam_info_t beam_info;
+            beam_info.m_ntype = 0;
+            beam_info.m_pszmodelname = XORSTR("sprites/purplelaser1.vmt");
+            beam_info.m_nmodelindex = interfaces::model_info->get_model_index(XORSTR("sprites/purplelaser1.vmt"));
+            beam_info.m_flhaloscale = 0.0;
+            beam_info.m_fllife = settings.visuals.local.trail_time;
+            beam_info.m_flwidth = settings.visuals.local.trail_size;
+            beam_info.m_flendwidth = settings.visuals.local.trail_size;
+            beam_info.m_flfadelength = 0.0;
+            beam_info.m_flamplitude = 2.0;
+            beam_info.m_flspeed = 0.5;
+            beam_info.m_flbrightness = 255.f;
+            beam_info.m_nstartframe = 0;
+            beam_info.m_flframerate = 0;
+
+            beam_info.m_flred = settings.visuals.local.trail_color.r;
+            beam_info.m_flgreen = settings.visuals.local.trail_color.g;
+            beam_info.m_flblue = settings.visuals.local.trail_color.b;
+
+            beam_info.m_nsegments = 2;
+            beam_info.m_brenderable = true;
+            beam_info.m_nflags = 0;
+            beam_info.m_vecstart = old_origin;
+            beam_info.m_vecend = cheat::local_player->get_vec_origin();
+
+            auto beam = interfaces::render_beams->create_beam(beam_info);
+            if (beam)
+                interfaces::render_beams->draw_beam(beam);
+
+            old_velocity = cheat::local_player->get_velocity().length_2d();
+        }
     }
 
     void unlock_hidden_convars() {
         if (!interfaces::convar_system)
             return;
 
-        auto p = **reinterpret_cast<c_convar***>(interfaces::convar_system + 0x34);
+        auto p = **reinterpret_cast<c_convar ***>(interfaces::convar_system + 0x34);
         for (auto c = p->next; c != nullptr; c = c->next) {
             c->flags &= ~CVAR_DEVELOPMENT_ONLY;
-            c->flags &= ~CVAR_HIDDEN; 
+            c->flags &= ~CVAR_HIDDEN;
         }
     }
 
     void viewmodel_offset() {
-        // hash
-        static float last_hash = 0.f;
+        static c_convar *viewmodel_offset_x = nullptr;
+        static c_convar *viewmodel_offset_y = nullptr;
+        static c_convar *viewmodel_offset_z = nullptr;
 
-        // grabbing convar
-        static auto viewmodel_offset_x = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_x"));
-        static auto viewmodel_offset_y = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_y"));
-        static auto viewmodel_offset_z = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_z"));
+        static auto last_state = settings.visuals.local.viewmodel_offset;
+        static auto old_x = 0.0f;
+        static auto old_y = 0.0f;
+        static auto old_z = 0.0f;
 
-        // nulling callbacks
-        viewmodel_offset_x->callbacks.clear();
-        viewmodel_offset_y->callbacks.clear();
-        viewmodel_offset_z->callbacks.clear();
+        if (viewmodel_offset_x == nullptr) {
+            viewmodel_offset_x = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_x"));
+            viewmodel_offset_y = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_y"));
+            viewmodel_offset_z = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_z"));
 
-        // finding original values of viewmodel x, y & z
-        static float og_x = 0;
-        static float og_y = 0;
-        static float og_z = 0;
-
-        if (!og_x || !og_y || !og_z) {
-            og_x = viewmodel_offset_x->get_float();
-            og_y = viewmodel_offset_y->get_float();
-            og_z = viewmodel_offset_z->get_float();
+            viewmodel_offset_x->callbacks.clear();
+            viewmodel_offset_y->callbacks.clear();
+            viewmodel_offset_z->callbacks.clear();
         }
 
-        static bool is_disabled = false;
-
-        if (settings.visuals.local.viewmodel_offset) {
-
-            float cur_hash = settings.visuals.local.viewmodel_offset_x + settings.visuals.local.viewmodel_offset_y + settings.visuals.local.viewmodel_offset_z;
-            if (last_hash != cur_hash) {
-
-                // setting viewmodel to the menu element value
-                viewmodel_offset_x->set_value(settings.visuals.local.viewmodel_offset_x);
-                viewmodel_offset_y->set_value(settings.visuals.local.viewmodel_offset_y);
-                viewmodel_offset_z->set_value(settings.visuals.local.viewmodel_offset_z);
-                is_disabled = false;
-                last_hash = cur_hash;
+        if (settings.visuals.local.viewmodel_offset != last_state) {
+            if (settings.visuals.local.viewmodel_offset) {
+                old_x = viewmodel_offset_x->get_float();
+                old_y = viewmodel_offset_y->get_float();
+                old_z = viewmodel_offset_z->get_float();
             }
+            else {
+                viewmodel_offset_x->set_value(old_x);
+                viewmodel_offset_y->set_value(old_y);
+                viewmodel_offset_z->set_value(old_z);
+            }
+
+            last_state = settings.visuals.local.viewmodel_offset;
         }
 
-        else if (!is_disabled) {
-            // restoring original xyz
-            viewmodel_offset_x->set_value(og_x);
-            viewmodel_offset_y->set_value(og_y);
-            viewmodel_offset_z->set_value(og_z);
-            is_disabled = true;
-        }
+        if (!settings.visuals.local.viewmodel_offset)
+            return;
+
+        viewmodel_offset_x->set_value(settings.visuals.local.viewmodel_offset_x);
+        viewmodel_offset_y->set_value(settings.visuals.local.viewmodel_offset_y);
+        viewmodel_offset_z->set_value(settings.visuals.local.viewmodel_offset_z);
     }
 
 } // namespace features::miscellaneous

@@ -106,7 +106,6 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
 }
 
 void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
-    const auto &move_eb_radius = settings.miscellaneous.movement.edge_bug_radius;
 
     if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
         return;
@@ -127,7 +126,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
             if (!prediction_ticks_ran)
                 engine_prediction::apply_edgebug_flags();
 
-            for (auto radius_checked = 1; radius_checked <= move_eb_radius; ++radius_checked) {
+            for (auto radius_checked = 1; radius_checked <= settings.miscellaneous.movement.edge_bug_radius; ++radius_checked) {
 
                 if (prediction_ticks_ran == 1) {
                     engine_prediction::start_prediction();
@@ -171,6 +170,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
             features::movement::prediction_ticks + features::movement::prediction_timestamp) {
             user_cmd->forward_move = 0.0;
             user_cmd->side_move = 0.0;
+
             if (features::movement::should_duck)
                 user_cmd->buttons |= BUTTON_IN_DUCK;
         }

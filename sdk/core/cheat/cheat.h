@@ -19,6 +19,7 @@ namespace cheat
 	inline bool b_predicting;
 	inline bool landed = false;
 	inline bool stop_movement;
+	inline bool created_rain = false;
 	inline uintptr_t run_command;
     inline int tick_base_shift;
 }

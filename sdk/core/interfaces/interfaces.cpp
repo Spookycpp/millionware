@@ -112,8 +112,7 @@ bool interfaces::init()
 		return false;
 	
 	if ((localize = (c_localize*) get_interface(XORSTR("localize.dll"), XORSTR("Localize_001"))) == nullptr)
-		return false;	
-
+		return false;
 
 	if ((d3d9_device = (IDirect3DDevice9 *) patterns::get_d3d9_device()) == nullptr)
 	{
@@ -159,6 +158,12 @@ bool interfaces::init()
 
 	if ((move_helper = (c_move_helper *) patterns::get_move_helper()) == nullptr) {
         logging::error(XORSTR("failed to find move helper pattern"));
+
+        return false;
+    }
+
+	if ((render_beams = (c_view_render_beams *) patterns::get_render_beams()) == nullptr) {
+        logging::error(XORSTR("failed to find render beams pattern"));
 
         return false;
     }

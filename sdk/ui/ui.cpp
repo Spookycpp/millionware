@@ -244,6 +244,7 @@ void ui::init() {
 
         if (const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, XORSTR("World"))) {
             if (const auto group = world_tab->new_group(XORSTR("Main"))) {
+                group->new_checkbox(XORSTR("Rain"), settings.visuals.world.weather);
                 group->new_checkbox(XORSTR("Nightmode"), settings.visuals.world.nightmode)->add_color_picker(settings.visuals.world.nightmode_color);
                 group->new_slider(XORSTR("Intensity"), settings.visuals.world.nightmode_darkness, 0.f, 100.f, XORSTR("{:.0f}%"))->add_dependency(settings.visuals.world.nightmode);
                 group->new_checkbox(XORSTR("Fullbright"), settings.visuals.world.fullbright);
@@ -332,6 +333,7 @@ void ui::init() {
 
             if (const auto group = main_tab->new_group(XORSTR("Other"))) {
                 group->new_checkbox(XORSTR("Clan tag"), settings.miscellaneous.clantag);
+                group->new_checkbox(XORSTR("Auto accept"), settings.miscellaneous.auto_accept);
                 group->new_checkbox(XORSTR("Fake latency"), settings.miscellaneous.fake_ping.enabled);
                 group->new_checkbox(XORSTR("Player privacy"), settings.miscellaneous.player_privacy);
                 group->new_checkbox(XORSTR("Auto pistol"), settings.miscellaneous.auto_pistol);

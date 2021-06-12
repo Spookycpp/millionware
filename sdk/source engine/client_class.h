@@ -10,7 +10,7 @@ class c_client_networkable
 public:
 	DECLARE_VFUNC(1, release(), void(__thiscall *)(void *))();
 	DECLARE_VFUNC(5, on_data_changed(int type), void(__thiscall *)(void *, int))(type);
-	DECLARE_VFUNC(6, re_data_update(int type), void(__thiscall *)(void *, int))(type);
+	DECLARE_VFUNC(6, pre_data_update(int type), void(__thiscall *)(void *, int))(type);
 	DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
 	DECLARE_VFUNC(13, set_destroyed_on_recreate_entities(), void(__thiscall *)(void *))();
 };

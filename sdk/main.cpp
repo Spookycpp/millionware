@@ -8,6 +8,26 @@
 #include "engine/render/render.h"
 #include "engine/security/xorstr.h"
 
+// i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
+// i love chawndi for always being here
+// i love you dylan for showing me what it really means to love someone for who they really are
+// i love you grassii for doing everything you could in spite of not understanding
+// i love you sim for understanding me like noone else before
+// i love you h0pde for being the greatest and most honest friend i ever met
+// i love you hayden for being so light-hearted and cheerful
+// i love you carol for showing me whats it like to care for someone with your life
+
+// im in love with navewindre
+// why is this still here
+// im in love with laine
+
+// fuck you duxe u pasting fucking retard i want to fucking slap your fucking mother so god damn hard for not drowning you at birth you stupid dumb fucking rat bastard im going to literally shut your fucking power off and then make ur fridge run down the street
+
+
+// https://i.imgur.com/xD24aJu.jpg
+
+// this cheats going to have my unironic suicide note in it one day
+
 unsigned long __stdcall initial_thread(void *base_pointer) {
 #ifdef _DEBUG
     logging::init(SEVERITY_DEBUG);
@@ -57,6 +77,7 @@ int __stdcall DllMain(void *base_pointer, unsigned int reason_to_call, void *res
     CreateThread(nullptr, 0, &initial_thread, base_pointer, 0, nullptr);
 #else
     initial_thread(base_pointer);
+
 #endif
 
     return 1;

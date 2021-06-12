@@ -239,5 +239,11 @@ bool patterns::init()
 	if ((add_econ_item = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 E4 F8 A1 ???? 83 EC 14 53 56 57 8B F9 8B 08"))) == 0u)
         return false;
 
+	if ((render_beams = get_pattern(XORSTR("client.dll"), XORSTR("A1 ???? 56 8B F1 B9 ???? FF 50 08"))) == 0u)
+        return false;
+
+	if ((client_precipitation = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 51 53 56 57 8B D9 C6 45 FF 01 33 FF 90 83 3C BD ????? 0F 85 ???? A1 ???? 68 ????"))) == 0u)
+        return false;
+
 	return true;
 }

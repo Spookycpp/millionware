@@ -9,7 +9,7 @@
 #include "../../engine/security/xorstr.h"
 #include "../../engine/math/math.h"
 
-// todo: CLEAN THIS UP
+//@todo: CLEAN THIS UP
 
 inline std::vector<IDirect3DTexture9 *> _textures;
 inline std::vector<render::animated_gif> _gifs;
@@ -176,7 +176,7 @@ namespace lua_internal::tables::draw {
         render::draw_poly_line(points.data(), points.size(), col, static_cast<float>(luaL_checknumber(l, 3)));   
     }
 
-    // todo: redo this
+    //@todo: redo this
     inline size_t load_image(lua_State *l) {
         if (_textures.size() > 500) {
             // bruh stop
@@ -198,7 +198,7 @@ namespace lua_internal::tables::draw {
         return _textures.size() - 1;
     }
 
-    // todo: redo this
+    //@todo: redo this
     inline size_t load_svg(lua_State *l) {
         if (_textures.size() > 500) {
             return _textures.size();
@@ -220,7 +220,7 @@ namespace lua_internal::tables::draw {
         return _textures.size() - 1;
     }
 
-    // todo: redo this
+    //@todo: redo this
     inline size_t load_svg_raw(lua_State *l) {
         if (_textures.size() > 500) {
             return _textures.size();
@@ -244,7 +244,7 @@ namespace lua_internal::tables::draw {
         return _textures.size() - 1;
     }
 
-    // todo: redo this
+    //@todo: redo this
     inline size_t load_gif(lua_State *l) {
         if (_gifs.size() > 500) {
             return _gifs.size();
@@ -260,7 +260,7 @@ namespace lua_internal::tables::draw {
         return _gifs.size() - 1;
     }
 
-    // todo: redo this
+    //@todo: redo this
     inline void image(lua_State *l) {
         if (_textures.empty()) {
             logging::error(XORSTR("no images have been loaded"));
@@ -282,7 +282,7 @@ namespace lua_internal::tables::draw {
             static_cast<float>(luaL_checknumber(l, 4)), CORNER_ALL);
     }
 
-    // todo: redo this
+    //@todo: redo this
     inline void gif(lua_State *l) {
         if (_gifs.empty()) {
             logging::error(XORSTR("no gifs have been loaded"));
@@ -318,7 +318,7 @@ namespace lua_internal::tables::draw {
 inline void lua_internal::context::lua_draw() {
     static bool once = false;
 
-    // todo: seriously redo this
+    //@todo: srsly redo this
     if (!once) {
         _gifs.emplace_back(nullptr, 0);
         _textures.push_back(nullptr);

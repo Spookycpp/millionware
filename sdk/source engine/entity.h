@@ -189,20 +189,38 @@ enum e_player_hitboxes : int {
 };
 
 enum e_bone_mask_t {
-	BONE_USED_MASK = 0x0007FF00,
-	BONE_USED_BY_ANYTHING = 0x0007FF00,
-	BONE_USED_BY_HITBOX = 0x00000100,	// bone (or child) is used by a hit box
-	BONE_USED_BY_ATTACHMENT = 0x00000200,	// bone (or child) is used by an attachment point
-	BONE_USED_BY_VERTEX_MASK = 0x0003FC00,
-	BONE_USED_BY_VERTEX_LOD0 = 0x00000400,	// bone (or child) is used by the toplevel model via skinned vertex
-	BONE_USED_BY_VERTEX_LOD1 = 0x00000800,
-	BONE_USED_BY_VERTEX_LOD2 = 0x00001000,
-	BONE_USED_BY_VERTEX_LOD3 = 0x00002000,
-	BONE_USED_BY_VERTEX_LOD4 = 0x00004000,
-	BONE_USED_BY_VERTEX_LOD5 = 0x00008000,
-	BONE_USED_BY_VERTEX_LOD6 = 0x00010000,
-	BONE_USED_BY_VERTEX_LOD7 = 0x00020000,
-	BONE_USED_BY_BONE_MERGE = 0x00040000	// bone is available for bone merge to occur against it
+    BONE_USED_MASK = 0x0007FF00,
+    BONE_USED_BY_ANYTHING = 0x0007FF00,
+    BONE_USED_BY_HITBOX = 0x00000100,     // bone (or child) is used by a hit box
+    BONE_USED_BY_ATTACHMENT = 0x00000200, // bone (or child) is used by an attachment point
+    BONE_USED_BY_VERTEX_MASK = 0x0003FC00,
+    BONE_USED_BY_VERTEX_LOD0 = 0x00000400, // bone (or child) is used by the toplevel model via skinned vertex
+    BONE_USED_BY_VERTEX_LOD1 = 0x00000800,
+    BONE_USED_BY_VERTEX_LOD2 = 0x00001000,
+    BONE_USED_BY_VERTEX_LOD3 = 0x00002000,
+    BONE_USED_BY_VERTEX_LOD4 = 0x00004000,
+    BONE_USED_BY_VERTEX_LOD5 = 0x00008000,
+    BONE_USED_BY_VERTEX_LOD6 = 0x00010000,
+    BONE_USED_BY_VERTEX_LOD7 = 0x00020000,
+    BONE_USED_BY_BONE_MERGE = 0x00040000 // bone is available for bone merge to occur against it
+};
+
+// How many bits to use to encode an edict.
+#define MAX_EDICT_BITS 11 // # of bits needed to represent max edicts
+// Max # of edicts in a level
+#define MAX_EDICTS (1 << MAX_EDICT_BITS)
+
+// types of precipitation
+enum precipitation_type_t {
+    PRECIPITATION_TYPE_RAIN = 0,
+    PRECIPITATION_TYPE_SNOW,
+    PRECIPITATION_TYPE_ASH,
+    PRECIPITATION_TYPE_SNOWFALL,
+    PRECIPITATION_TYPE_PARTICLERAIN,
+    PRECIPITATION_TYPE_PARTICLEASH,
+    PRECIPITATION_TYPE_PARTICLERAINSTORM,
+    PRECIPITATION_TYPE_PARTICLESNOW,
+    NUM_PRECIPITATION_TYPES
 };
 
 class c_animation_layer {
@@ -254,7 +272,12 @@ public:
 class c_networkable
 {
 public:
+    DECLARE_VFUNC(1, release(), void(__thiscall *)(void *))();
 	DECLARE_VFUNC(2, get_client_class(), c_client_class *(__thiscall *)(void *))();
+    DECLARE_VFUNC(4, on_pre_data_change(int type), void(__thiscall *)(void *, int))(type);
+    DECLARE_VFUNC(5, on_post_data_change(int type), void(__thiscall *)(void *, int))(type);
+    DECLARE_VFUNC(6, pre_data_update(int type), void(__thiscall *)(void *, int))(type);
+    DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
 	DECLARE_VFUNC(9, is_dormant(), bool(__thiscall *)(void *))();
 	DECLARE_VFUNC(10, index(), int(__thiscall *)(void *))();
 };
@@ -280,6 +303,11 @@ public:
 	DECLARE_VFUNC(10, get_abs_origin(), vector_t &(__thiscall *)(void *))();
 	DECLARE_VFUNC(157, is_player(), bool(__thiscall *)(void *))();
 	DECLARE_VFUNC(165, is_weapon(), bool(__thiscall *)(void *))();
+
+	DECLARE_VFUNC(4, on_pre_data_change(int type), void(__thiscall *)(void *, int))(type);
+    DECLARE_VFUNC(5, on_post_data_change(int type), void(__thiscall *)(void *, int))(type);
+    DECLARE_VFUNC(6, pre_data_update(int type), void(__thiscall *)(void *, int))(type);
+    DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
 
 	DECLARE_NETVAR(float, simulation_time, "DT_BaseEntity", "m_flSimulationTime");
 	DECLARE_NETVAR(bool, is_spotted, "DT_BaseEntity", "m_bSpotted");
@@ -548,4 +576,9 @@ public:
 
 	DECLARE_NETVAR(vector_t, bomb_site_center_a, "DT_CSPlayerResource", "m_bombsiteCenterA");
 	DECLARE_NETVAR(vector_t, bomb_site_center_b, "DT_CSPlayerResource", "m_bombsiteCenterB");
+};
+
+class c_precipitation_entity : public c_entity {
+  public:
+    DECLARE_NETVAR(precipitation_type_t, precip_type, "DT_Precipitation", "m_nPrecipType");
 };
