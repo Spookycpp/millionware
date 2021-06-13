@@ -31,9 +31,9 @@ namespace features::visuals::weather {
                     rain_entity->get_networkable()->pre_data_update(0);
                     rain_entity->get_networkable()->on_pre_data_changed(0);
 
-                    rain_entity->get_precip_type() = PRECIPITATION_TYPE_RAIN;
-                    rain_entity->get_collideable()->get_mins() = {-32768.0f, -32768.0f, -32768.0f};
-                    rain_entity->get_collideable()->get_maxs() = {32768.0f, 32768.0f, 32768.0f};
+                    rain_entity->get_precip_type() = precipitation_type_t::PRECIPITATION_TYPE_SNOW;
+                    rain_entity->get_collideable()->get_mins() = {-16384.0f, -16384.0f, -16384.0f};
+                    rain_entity->get_collideable()->get_maxs() = {16384.0f, 16384.0f, 16384.0f};
 
                     rain_entity->get_networkable()->on_data_changed(0);
                     rain_entity->get_networkable()->post_data_update(0);
