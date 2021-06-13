@@ -4,9 +4,6 @@
 
 namespace features::visuals::weather {
 
-    void on_frame_stage_notify(e_client_frame_stage frame_stage);
-
-    void reset_weather();
     void update_weather();
 
 } // namespace features::visuals::weather

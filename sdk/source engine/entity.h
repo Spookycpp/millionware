@@ -274,10 +274,10 @@ class c_networkable
 public:
     DECLARE_VFUNC(1, release(), void(__thiscall *)(void *))();
 	DECLARE_VFUNC(2, get_client_class(), c_client_class *(__thiscall *)(void *))();
-    DECLARE_VFUNC(4, on_pre_data_change(int type), void(__thiscall *)(void *, int))(type);
-    DECLARE_VFUNC(5, on_post_data_change(int type), void(__thiscall *)(void *, int))(type);
-    DECLARE_VFUNC(6, pre_data_update(int type), void(__thiscall *)(void *, int))(type);
-    DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
+	DECLARE_VFUNC(4, on_pre_data_changed(int type), void(__thiscall *)(void *, int))(type);
+	DECLARE_VFUNC(5, on_data_changed(int type), void(__thiscall *)(void *, int))(type);
+	DECLARE_VFUNC(6, pre_data_update(int type), void(__thiscall *)(void *, int))(type);
+	DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
 	DECLARE_VFUNC(9, is_dormant(), bool(__thiscall *)(void *))();
 	DECLARE_VFUNC(10, index(), int(__thiscall *)(void *))();
 };
@@ -580,5 +580,5 @@ public:
 
 class c_precipitation_entity : public c_entity {
   public:
-    DECLARE_NETVAR(precipitation_type_t, precip_type, "DT_Precipitation", "m_nPrecipType");
+    DECLARE_NETVAR(int, precip_type, "DT_Precipitation", "m_nPrecipType");
 };
