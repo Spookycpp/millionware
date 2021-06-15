@@ -3,6 +3,7 @@
 #include "../../engine/pe/pe.h"
 #include "../../engine/security/xorstr.h"
 #include "logging.h"
+#include "../../core/settings/settings.h"
 
 struct valve_color_t
 {
@@ -57,6 +58,8 @@ void logging::print(int severity, const std::string &message)
 		}
 	}
 
+	const auto accent = settings.global.accent_color;
+
 	switch (severity)
 	{
 	case SEVERITY_TRACE:
@@ -68,8 +71,8 @@ void logging::print(int severity, const std::string &message)
 		break;
 
 	case SEVERITY_INFO:
-        con_color_msg({ 222, 102, 122, 255}, XORSTR("[millionware] "));
-		break;
+        con_color_msg({(uint8_t) accent.r, (uint8_t) accent.g, (uint8_t) accent.b, 255}, XORSTR("[millionware] "));
+        break;
 
 	case SEVERITY_WARNING:
 		con_color_msg({ 255, 213, 28, 255 }, XORSTR("[millionware] "));

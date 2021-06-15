@@ -135,8 +135,9 @@ namespace features::visuals::world {
             else if (strncmp(material->get_group_name(), XORSTR("StaticProp textures"), 19) == 0)
                 material->set_color(prop_darkness, prop_darkness, prop_darkness);
 
-            //@todo: hook the convar
-            interfaces::convar_system->find_convar(XORSTR("cl_csm_enabled"))->set_value(0);
+            auto cl_csm_shadows = interfaces::convar_system->find_convar(XORSTR("cl_csm_shadows"));
+            if (cl_csm_shadows->get_int() != 0)
+                cl_csm_shadows->set_value(0);
         }
     }
 } // namespace features::visuals::world

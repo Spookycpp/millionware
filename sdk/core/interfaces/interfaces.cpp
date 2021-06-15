@@ -11,7 +11,7 @@
 
 uint32_t get_interface_internal(std::string_view module_name, std::string_view interface_name)
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	using create_interface_fn = uint32_t(*)(const char *, int *);
 
 	const auto create_interface = (create_interface_fn) pe::get_export(module_name, XORSTR("CreateInterface"));
@@ -20,13 +20,13 @@ uint32_t get_interface_internal(std::string_view module_name, std::string_view i
 		return 0u;
 
 	return create_interface(interface_name.data(), nullptr);
-#else
-	char interface_hash_buffer[80];
-
-	sprintf_s(interface_hash_buffer, XORSTR("%s:%s"), module_name.data(), interface_name.data());
-
-	return exports::get_interface(CRC(interface_hash_buffer));
-#endif
+//#else
+	//char interface_hash_buffer[80];
+	//
+	//sprintf_s(interface_hash_buffer, XORSTR("%s:%s"), module_name.data(), interface_name.data());
+	//
+	//return exports::get_interface(CRC(interface_hash_buffer));
+//#endif
 }
 
 inline uint32_t get_interface(std::string_view module_name, std::string_view interface_name)

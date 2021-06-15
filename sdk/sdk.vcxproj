@@ -178,6 +178,7 @@
     <ClCompile Include="core\scripting\scripting.cpp" />
     <ClCompile Include="core\settings\settings.cpp" />
     <ClCompile Include="core\util\util.cpp" />
+    <ClCompile Include="core\v2 exports\v2 exports.cpp" />
     <ClCompile Include="engine\easing\easing.cpp" />
     <ClCompile Include="engine\input\input.cpp" />
     <ClCompile Include="engine\logging\logging.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="core\scripting\scripting.h" />
     <ClInclude Include="core\settings\settings.h" />
     <ClInclude Include="core\util\util.h" />
+    <ClInclude Include="core\v2 exports\v2 exports.h" />
     <ClInclude Include="engine\easing\easing.h" />
     <ClInclude Include="engine\hash\crc32.h" />
     <ClInclude Include="engine\hash\hash.h" />

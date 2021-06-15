@@ -69,6 +69,8 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         features::movement::slide_walk(user_cmd);
     }
 
+    features::visuals::world::nightmode();
+
     features::miscellaneous::rank_reveal(user_cmd);
 
     math::normalize_angles(user_cmd->view_angles);

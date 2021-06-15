@@ -76,6 +76,7 @@
     <ClCompile Include="lua\lua_context.cpp" />
     <ClCompile Include="lua\lua_handler.cpp" />
     <ClCompile Include="features\visuals\world\weather.cpp" />
+    <ClCompile Include="core\v2 exports\v2 exports.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -193,5 +194,6 @@
     <ClInclude Include="thirdparty\nanosvg\nanosvgrast.h" />
     <ClInclude Include="source engine\render_beams.h" />
     <ClInclude Include="features\visuals\world\weather.h" />
+    <ClInclude Include="core\v2 exports\v2 exports.h" />
   </ItemGroup>
 </Project>

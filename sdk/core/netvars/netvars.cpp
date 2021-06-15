@@ -41,8 +41,8 @@ void dump_netvar_table(c_recv_table *table, int child_offset = 0)
 
 void netvars::init()
 {
-#ifdef _DEBUG
-	netvar_dump.open("./mw_netvars.txt");
+//#ifdef _DEBUG
+	//netvar_dump.open("./mw_netvars.txt");
 
 	const auto client_data = interfaces::client_dll->get_all_classes();
 
@@ -51,13 +51,13 @@ void netvars::init()
 		dump_netvar_table(data->table);
 	}
 
-	netvar_dump.close();
-#else
-	for (auto entry = g_netvar_tables; entry; entry = entry->next)
-	{
-		dump_netvar_table((c_recv_table *) entry->offset);
-	}
-#endif
+	//netvar_dump.close();
+//#else
+	//for (auto entry = g_netvar_tables; entry; entry = entry->next)
+	//{
+	//	dump_netvar_table((c_recv_table *) entry->offset);
+	//}
+//#endif
 }
 
 uint32_t netvars::get(uint32_t hash)

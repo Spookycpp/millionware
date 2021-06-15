@@ -124,13 +124,17 @@ static ImFont *create_from_ttf(ImGuiIO &io, const uint8_t *ttf_data, int ttf_dat
 
 IDirect3DTexture9 *render::create_from_png(uint8_t *png_data, int png_data_size) {
 	int image_width, image_height, channels;
-	
+
+    stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load_thread(false);
+
 	const auto image_data = stbi_load_from_memory(png_data, png_data_size, &image_width, &image_height, &channels, 4);
 
 	if (image_data == nullptr) {
         logging::error(stbi_failure_reason());
         return nullptr;
     }
+
 
 	//stbi_write_png("color.png", image_width, image_height, 4, image_data, image_width * 4);
 
@@ -429,6 +433,9 @@ bool render::animated_gif::load_from_memory(const unsigned char *bytes, int size
 
     int *int_delays = nullptr;
     int comp;
+
+	stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load_thread(false);
 
     m_buffer = stbi_load_gif_from_memory(bytes, size, &int_delays, &width, &height, &m_frame_count, &comp, 4);
     if (!m_buffer || m_frame_count <= 0 || !int_delays) {

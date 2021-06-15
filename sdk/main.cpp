@@ -23,10 +23,14 @@
 
 // fuck you duxe u pasting fucking retard i want to fucking slap your fucking mother so god damn hard for not drowning you at birth you stupid dumb fucking rat bastard im going to literally shut your fucking power off and then make ur fridge run down the street
 
-
 // https://i.imgur.com/xD24aJu.jpg
 
 // this cheats going to have my unironic suicide note in it one day
+
+// if this source gets leaked, this is all of our real notes, this is from no one else this is purely our thoughts and nothing else why would even remotely suspect that we would be lying about such things you are a fake and a lame and a snake and a opp u gonna get smoked on ur own set if you keep talking shit im going to send duxe after you with his pink egirl gaming chair and he'll run u over in his bmw that he somehow bought from pasting a dogshit rust hack that fucking bluescreened my pc 9 times in 1 sitting using that shitty remote desktop bypass as well fucking aids as fuck nigga
+
+// day 1, czapek has drove me insane
+// day 1 pt2, czapek is fail pasting view_matrix
 
 unsigned long __stdcall initial_thread(void *base_pointer) {
 #ifdef _DEBUG

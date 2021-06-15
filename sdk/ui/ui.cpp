@@ -23,10 +23,8 @@ static std::shared_ptr<c_element> blocking_ptr;
 static std::shared_ptr<c_tab> next_active_tab_ptr;
 static std::shared_ptr<c_element> next_blocking_ptr;
 
-static color_t accent_color = {222, 102, 122};
-
 color_t &ui::get_accent_color() {
-    return accent_color;
+    return settings.global.accent_color;
 }
 
 std::shared_ptr<c_tab> ui::get_active_tab() {
@@ -357,6 +355,7 @@ void ui::init() {
                 
                 group->new_button(XORSTR("Name spam"), features::miscellaneous::name_spam);
                 group->new_button(XORSTR("Unlock hidden convars"), features::miscellaneous::unlock_hidden_convars);
+                group->new_text_input("Example text input", text_input_value1);
             }
         }
 

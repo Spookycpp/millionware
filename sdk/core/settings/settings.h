@@ -9,7 +9,7 @@
 
 struct settings_t {
 	struct {
-		color_t accent_color = { 255, 0, 245, 255 };
+        color_t accent_color = {222, 102, 122, 255};
 		bool weapon_groups	 = false;
 		int  sound_fx_volume = 100;
 	} global;

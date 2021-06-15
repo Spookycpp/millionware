@@ -58,7 +58,7 @@ namespace patterns
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
-	PATTERN_GET(view_matrix, (*(uintptr_t *) (view_matrix + 3u)) + 176u);
+	PATTERN_GET(view_matrix, view_matrix);
 	PATTERN_GET(d3d9_device, **(uintptr_t **) (d3d9_device + 1u));
 	PATTERN_GET(set_clantag, set_clantag);
 	PATTERN_GET(client_mode, **(uintptr_t **) (client_mode + 5u));

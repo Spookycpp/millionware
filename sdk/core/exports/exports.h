@@ -34,9 +34,9 @@ struct netvar_table_entry_t : linked_entry_t<netvar_table_entry_t>
 	uint32_t offset = 0;
 };
 
-extern __declspec(dllexport) interface_entry_t *g_interfaces;
-extern __declspec(dllexport) pattern_entry_t *g_patterns;
-extern __declspec(dllexport) netvar_table_entry_t *g_netvar_tables;
+//extern __declspec(dllexport) interface_entry_t *g_interfaces;
+//extern __declspec(dllexport) pattern_entry_t *g_patterns;
+//extern __declspec(dllexport) netvar_table_entry_t *g_netvar_tables;
 
 namespace exports
 {
