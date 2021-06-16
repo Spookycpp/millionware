@@ -29,29 +29,29 @@
 bool cheat::init() {
     if (!patterns::init())
         return false;
-
+    
     if (!interfaces::init())
         return false;
-
+    
     netvars::init();
-
+    
     const auto device = (IDirect3DDevice9 *) patterns::get_d3d9_device();
-
+    
     D3DDEVICE_CREATION_PARAMETERS creation_params;
-
+    
     device->GetCreationParameters(&creation_params);
-
+    
     render::init(creation_params.hFocusWindow, device);
-
+    
     input::init(creation_params.hFocusWindow);
-
+    
     ui::init();
-
+    
     features::hit_chance::initialize();
-
+    
     if (!hooks::init())
         return false;
-
+    
     lua::init();
 
     logging::info(XORSTR("successfully initialized"));

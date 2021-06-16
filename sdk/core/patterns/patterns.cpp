@@ -81,10 +81,12 @@ uint32_t get_pattern_internal(std::string_view module_name, std::string_view pat
 	if (!module_base)
 		return 0u;
 
-	const auto nt_hdrs = pe::get_nt_hdrs(module_name);
+	const auto module_start = pe::get_module(module_name);
+    const auto dos_headers = (IMAGE_DOS_HEADER *) module_start;
+    const auto nt_headers = (IMAGE_NT_HEADERS *) (module_start + dos_headers->e_lfanew);
 
-	return scan_module_for_pattern(module_base, nt_hdrs->OptionalHeader.SizeOfImage, pattern);
-//#else
+	return scan_module_for_pattern(module_base, nt_headers->OptionalHeader.SizeOfImage, pattern);
+    //#else
 //	char pattern_hash_buffer[240];
 //
 //	sprintf_s(pattern_hash_buffer, XORSTR("%s:%s"), module_name.data(), pattern.data());
