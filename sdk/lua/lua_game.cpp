@@ -3,12 +3,19 @@
 #include "../engine/logging/logging.h"
 
 bool lua::init() {
+    // create the main cheat directory and subdirectories for scripts and other stuff
+    // i dont think you can use `std::filesystem::create_directories` to create nested directories
+    // so we have to do it manually like this, fix this if you know a better way AND FUCKING TEST IT PLEASE
+    if (!std::filesystem::exists(XORSTR(".\\mw"))) {
+        std::filesystem::create_directories(XORSTR(".\\mw"));
+        std::filesystem::create_directories(XORSTR(".\\mw\\scripts"));
+    }
+
     try {
         handler.add_script(lua_internal::get_script_paths());
     }
     catch (std::filesystem::filesystem_error &e) {
         if (e.code() == std::errc::no_such_file_or_directory) {
-            std::filesystem::create_directories(lua_internal::default_script_path);
             return false;
         }
     }

@@ -180,8 +180,8 @@ IDirect3DTexture9 *render::rasterize_vector(char *data, const float scale) {
         nsvgDelete(image);
     }
 
-    const float w = image->width * scale;
-    const float h = image->height * scale;
+    const int w = (int) (image->width * scale);
+    const int h = (int) (image->height * scale);
 
     const auto bytes = new unsigned char[w * h * 4];
 

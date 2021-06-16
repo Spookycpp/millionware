@@ -11,6 +11,7 @@
 #define XORSTR(s) XORSTR_(s).crypt_get()
 
 #define XORSTR_FORCEINLINE __forceinline
+#define JM_XORSTR_DISABLE_AVX_INTRINSICS
 #define JM_XORSTR_LOAD_FROM_REG(x) (x)
 
 namespace jm {

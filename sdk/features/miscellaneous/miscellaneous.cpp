@@ -315,9 +315,9 @@ namespace features::miscellaneous {
             beam_info.m_nstartframe = 0;
             beam_info.m_flframerate = 0;
 
-            beam_info.m_flred = settings.visuals.local.trail_color.r;
-            beam_info.m_flgreen = settings.visuals.local.trail_color.g;
-            beam_info.m_flblue = settings.visuals.local.trail_color.b;
+            beam_info.m_flred = (float) settings.visuals.local.trail_color.r / 255.0f;
+            beam_info.m_flgreen = (float) settings.visuals.local.trail_color.g / 255.0f;
+            beam_info.m_flblue = (float) settings.visuals.local.trail_color.b / 255.0f;
 
             beam_info.m_nsegments = 2;
             beam_info.m_brenderable = true;
@@ -329,7 +329,7 @@ namespace features::miscellaneous {
             if (beam)
                 interfaces::render_beams->draw_beam(beam);
 
-            old_velocity = cheat::local_player->get_velocity().length_2d();
+            old_velocity = (int)cheat::local_player->get_velocity().length_2d();
         }
     }
 
