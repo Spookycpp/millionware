@@ -84,6 +84,7 @@ namespace lua_internal::tables::draw {
 
         if (lua_toboolean(l, 5)) {
             render::gradient_h(pos, size, col1, col2);
+            return;
         }
 
         render::gradient_v(pos, size, col1, col2);
