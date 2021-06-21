@@ -5,7 +5,9 @@
 #include "../../core/cheat/cheat.h"
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/settings/settings.h"
+#include "../../core/util/util.h"
 
+#include "../../engine/logging/logging.h"
 #include "../../engine/math/math.h"
 #include "../../engine/security/xorstr.h"
 
@@ -21,17 +23,17 @@ namespace features::miscellaneous {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
-                panorama_blur();
-                post_processing();
+        case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
+            panorama_blur();
+            post_processing();
 
-                force_crosshair();
-                recoil_crosshair();
-                flash_alpha();
+            force_crosshair();
+            recoil_crosshair();
+            flash_alpha();
 
-                ragdoll_float();
-                ragdoll_push();
-            }
+            ragdoll_float();
+            ragdoll_push();
+        }
         }
     }
 
@@ -329,7 +331,32 @@ namespace features::miscellaneous {
             if (beam)
                 interfaces::render_beams->draw_beam(beam);
 
-            old_velocity = (int)cheat::local_player->get_velocity().length_2d();
+            old_velocity = (int) cheat::local_player->get_velocity().length_2d();
+        }
+    }
+
+    static uintptr_t *death_notice = nullptr;
+
+    void preserve_killfeed() {
+        static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_noticies();
+
+        if (!death_notice)
+            death_notice = util::find_hud_element(XORSTR("CCSGO_HudDeathNotice"));
+
+        if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE || !interfaces::engine_client->is_in_game())
+            cheat::should_clear_death_notices = true;
+
+        if (death_notice) {
+            auto local_death_notice = (float *) ((uintptr_t) death_notice + 0x50);
+
+            if (local_death_notice)
+                *local_death_notice = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
+
+            if (cheat::should_clear_death_notices) {
+                cheat::should_clear_death_notices = false;
+
+                clear_notices((uintptr_t) death_notice - 0x14);
+            }
         }
     }
 

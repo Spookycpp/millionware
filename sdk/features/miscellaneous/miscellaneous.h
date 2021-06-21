@@ -34,6 +34,7 @@ namespace features::miscellaneous {
     void skybox_changer(int skybox);
     void foot_fx();
     void foot_trail();
+    void preserve_killfeed();
     void unlock_hidden_convars();
     void viewmodel_offset();
 } // namespace features::miscellaneous

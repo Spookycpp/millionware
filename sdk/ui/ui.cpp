@@ -288,12 +288,17 @@ void ui::init() {
             if (const auto group = view_tab->new_group(XORSTR("Local removals"))) {
                 group->new_checkbox(XORSTR("Disable post processing"), settings.visuals.local.disable_post_processing);
                 group->new_checkbox(XORSTR("Disable panorama blur"), settings.visuals.local.disable_panorama_blur);
+                group->new_checkbox(XORSTR("Remove fog"), settings.visuals.world.remove_fog);
             }
 
             if (const auto group = view_tab->new_group(XORSTR("Model"))) {
                 group->new_checkbox(XORSTR("Ragdoll push"), settings.miscellaneous.ragdoll_push);
                 group->new_checkbox(XORSTR("Ragdoll float"), settings.miscellaneous.ragdoll_float);
                 group->new_select(XORSTR("Feet fx"), settings.visuals.local.feet_fx, {XORSTR("None"), XORSTR("Sparks"), XORSTR("Dust"), XORSTR("Energy splash")});
+
+                group->new_checkbox(XORSTR("Feet trails"), settings.visuals.local.foot_trail)->add_color_picker(settings.visuals.local.trail_color);
+                group->new_slider(XORSTR("Time"), settings.visuals.local.trail_time, 0.f, 10.f, XORSTR("{}"))->add_dependency(settings.visuals.local.foot_trail);
+                group->new_slider(XORSTR("Size"), settings.visuals.local.trail_size, 0.f, 10.f, XORSTR("{}"))->add_dependency(settings.visuals.local.foot_trail);
             }
         }
     }

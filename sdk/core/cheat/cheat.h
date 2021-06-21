@@ -20,6 +20,7 @@ namespace cheat
 	inline bool landed = false;
 	inline bool stop_movement;
 	inline bool created_rain = false;
+	inline bool should_clear_death_notices = false;
 	inline uintptr_t run_command;
     inline int tick_base_shift;
 }

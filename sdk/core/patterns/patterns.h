@@ -55,6 +55,10 @@ namespace patterns
     inline uintptr_t add_econ_item;
     inline uintptr_t render_beams;
     inline uintptr_t client_precipitation;
+    inline uintptr_t clear_death_noticies;
+    inline uintptr_t find_hud_element_addr_1;
+    inline uintptr_t find_hud_element_addr_2;
+    inline uintptr_t enable_world_fog;
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
@@ -102,6 +106,10 @@ namespace patterns
     PATTERN_GET(add_econ_item, add_econ_item);
     PATTERN_GET(render_beams, *(uintptr_t *) (render_beams + 1u));
     PATTERN_GET(client_precipitation, client_precipitation);
+    PATTERN_GET(clear_death_noticies, clear_death_noticies);
+    PATTERN_GET(find_hud_element_addr_1, find_hud_element_addr_1);
+    PATTERN_GET(find_hud_element_addr_2, find_hud_element_addr_2);
+    PATTERN_GET(enable_world_fog, enable_world_fog);
 
 	uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();

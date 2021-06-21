@@ -43,6 +43,7 @@ bool hooks::init() {
     do_post_screen_effects_original = create_hook((uintptr_t) interfaces::client_mode, 44, &do_post_screen_effects);
     draw_model_execute_original = create_hook((uintptr_t) interfaces::model_render, 21, &draw_model_execute);
     emit_sound_original = create_hook((uintptr_t) interfaces::engine_sound, 5, &emit_sound);
+    enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog)); // holy
     fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_event_manager, 9, &fire_event_client_side);
     frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
     get_screen_aspect_ratio_original = create_hook((uintptr_t) interfaces::engine_client, 101, &get_screen_aspect_ratio);
@@ -73,6 +74,7 @@ bool hooks::init() {
     INIT_HOOK(do_post_screen_effects_original, "DoPostScreenEffects");
     INIT_HOOK(draw_model_execute_original, "DrawModelExecute");
     INIT_HOOK(emit_sound_original, "EmitSound");
+    INIT_HOOK(enable_world_fog_original, "EnableWorldFog");
     INIT_HOOK(fire_event_client_side_original, "FireEventClientSide");
     INIT_HOOK(frame_stage_notify_original, "FrameStageNotify");
     INIT_HOOK(get_screen_aspect_ratio_original, "GetScreenAspectRatioOriginal");

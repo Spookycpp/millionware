@@ -38,6 +38,8 @@ namespace util {
 
 	c_player_resource* get_player_resource();
 
+	uintptr_t *find_hud_element(const char *name);
+
 	std::optional< vector_t > get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius);
 	std::string sanitize_string(const std::string& str);
 

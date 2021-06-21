@@ -34,13 +34,9 @@ inline uint32_t get_interface(std::string_view module_name, std::string_view int
 	const auto result = get_interface_internal(module_name, interface_name);
 
 	if (result != 0u)
-	{
-		logging::debug(XORSTR("found interface '{}' in '{}' at 0x{:08x}"), interface_name.data(), module_name.data(), result);
-	}
-	else
-	{
-		logging::error(XORSTR("couldn't find interface '{}' in '{}'"), interface_name.data(), module_name.data());
-	}
+        logging::debug(XORSTR("found interface '{}' in '{}' at 0x{:08x}"), interface_name.data(), module_name.data(), result);
+    else
+        logging::error(XORSTR("couldn't find interface '{}' in '{}'"), interface_name.data(), module_name.data());
 
 	return result;
 }

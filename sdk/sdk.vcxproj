@@ -208,6 +208,7 @@
     <ClCompile Include="hooks\do_post_screen_effects.cpp" />
     <ClCompile Include="hooks\draw_model_execute.cpp" />
     <ClCompile Include="hooks\emit_sound.cpp" />
+    <ClCompile Include="hooks\enable_world_fog.cpp" />
     <ClCompile Include="hooks\fire_event_client_side.cpp" />
     <ClCompile Include="hooks\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\get_player_info.cpp" />

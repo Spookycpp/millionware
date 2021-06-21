@@ -8,14 +8,10 @@
 #include "engine/render/render.h"
 #include "engine/security/xorstr.h"
 
-// i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
-// i love chawndi for always being here
-// i love you dylan for showing me what it really means to love someone for who they really are
-// i love you grassii for doing everything you could in spite of not understanding
-// i love you sim for understanding me like noone else before
-// i love you h0pde for being the greatest and most honest friend i ever met
-// i love you hayden for being so light-hearted and cheerful
-// i love you carol for showing me whats it like to care for someone with your life
+
+
+// i love you bowish for falling for my lie that my girlfriend had died >.<
+// i love you swoopae for giving me the gift of edebug
 
 // im in love with navewindre
 // why is this still here
@@ -28,14 +24,21 @@
 
 // this cheats going to have my unironic suicide note in it one day
 
-// if this source gets leaked, this is all of our real notes, this is from no one else this is purely our thoughts and nothing else why would even remotely suspect that we would be lying about such
+// if this source gets leaked, this is all of our real notes, this is from no one else this is purely our thoughts and nothing else why would u even remotely suspect that we would be lying about such
 // things you are a fake and a lame and a snake and a opp u gonna get smoked on ur own set if you keep talking shit im going to send duxe after you with his pink egirl gaming chair and he'll run u
 // over in his bmw that he somehow bought from pasting a dogshit rust hack that fucking bluescreened my pc 9 times in 1 sitting using that shitty remote desktop bypass as well fucking aids as fuck
+// shoutout daum 4 the cerb bypass tho was fun raging w/o any fkn bans for like a week str8 miss those days ngl
 // nigga
 
-// day 1, czapek has drove me insane
-// day 1 pt2, czapek is fail pasting view_matrix
+// i should be writing this hack but i can't think of anything to do rn i cbf to finish inventory changer man
+// gonna be on a fbi watchlist if this gets out ngl
 
+/* credits: duxe/laine/aiden */
+
+// laines diary don't open.
+// day 1, czapek has drove me insane - day 1 pt2, czapek is fail pasting view_matrix
+// day 2, naz has been driving me insane that nigga makes me wanna throw a toaster into his mothers bathtub
+// day 3, eternity still hasnt made any progress on the loader and is sending me random webm memes instead of answering stuff
 unsigned long __stdcall initial_thread(void *base_pointer) {
 #ifdef _DEBUG
     logging::init(SEVERITY_DEBUG);

@@ -368,6 +368,10 @@ public:
 	DECLARE_NETVAR_OFFSET(float, gravity, "DT_CSPlayer", "m_iTeamNum", -14);
 	DECLARE_NETVAR_OFFSET(int, old_simulation_time, "DT_BaseEntity", "m_flSimulationTime", 4);
 	DECLARE_NETVAR_OFFSET(int, move_type, "DT_BaseEntity", "m_nRenderMode", 1);
+
+    float spawn_time() {
+        return *(float *) ((uintptr_t) this + 0xA370);
+    }
 	
 	CUtlVector<c_animation_layer>& animation_overlay();
 	CUtlVector<matrix3x4_t>& get_cached_bone_data();

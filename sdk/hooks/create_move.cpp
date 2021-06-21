@@ -72,6 +72,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     features::visuals::world::nightmode();
 
     features::miscellaneous::rank_reveal(user_cmd);
+    features::miscellaneous::preserve_killfeed();
 
     math::normalize_angles(user_cmd->view_angles);
     math::clamp_angles(user_cmd->view_angles);

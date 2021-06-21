@@ -189,6 +189,30 @@ c_player_resource* util::get_player_resource() {
 	return nullptr;
 }
 
+uintptr_t *util::find_hud_element(const char *name) {
+    static uintptr_t find_hud_element_addr_1 = patterns::get_find_hud_element_addr_1();
+
+    if (!find_hud_element_addr_1)
+        return nullptr;
+
+    static auto this_ptr = *reinterpret_cast<uintptr_t **>(find_hud_element_addr_1 + 1);
+
+    if (!this_ptr)
+        return nullptr;
+
+    static uintptr_t find_hud_element_addr_2 = patterns::get_find_hud_element_addr_2();
+
+    if (!find_hud_element_addr_2)
+        return nullptr;
+
+    static auto find_hud_element_fn = reinterpret_cast<uint32_t(__thiscall *)(void *, const char *)>(find_hud_element_addr_2);
+
+    if (!find_hud_element_fn)
+        return nullptr;
+
+    return reinterpret_cast<uintptr_t *>(find_hud_element_fn(this_ptr, name));
+}
+
 std::optional<vector_t> util::get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius) {
 
 	const auto sphere_ray_intersection = [start, end, radius](auto&& center) -> std::optional< vector_t > {
