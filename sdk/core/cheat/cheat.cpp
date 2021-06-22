@@ -25,6 +25,7 @@
 #include <windows.h>
 #include "../util/util.h"
 #include "../settings/settings.h"
+#include <discord_rpc.h>
 
 bool cheat::init() {
     if (!patterns::init())
@@ -60,6 +61,9 @@ bool cheat::init() {
 }
 
 bool cheat::undo() {
+
+    Discord_ClearPresence();
+    Discord_Shutdown();
 
     if (!hooks::undo())
         return false;

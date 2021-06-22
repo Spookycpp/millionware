@@ -34,8 +34,6 @@ template <typename F> F create_hook(uintptr_t instance, int index, F to) {
 bool hooks::init() {
     MH_Initialize();
 
-    const auto bsp_tree_query = interfaces::engine_client->get_bsp_tree_query();
-
     if (interfaces::engine_client->is_in_game())
         cheat::local_player = (c_player *) interfaces::entity_list->get_entity(interfaces::engine_client->get_local_player());
 
@@ -43,7 +41,7 @@ bool hooks::init() {
     do_post_screen_effects_original = create_hook((uintptr_t) interfaces::client_mode, 44, &do_post_screen_effects);
     draw_model_execute_original = create_hook((uintptr_t) interfaces::model_render, 21, &draw_model_execute);
     emit_sound_original = create_hook((uintptr_t) interfaces::engine_sound, 5, &emit_sound);
-    enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog)); // holy
+    enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
     fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_event_manager, 9, &fire_event_client_side);
     frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
     get_screen_aspect_ratio_original = create_hook((uintptr_t) interfaces::engine_client, 101, &get_screen_aspect_ratio);
@@ -57,7 +55,7 @@ bool hooks::init() {
     override_config_original = create_hook((uintptr_t) interfaces::material_system, 21, &override_config);
     override_mouse_input_original = create_hook((uintptr_t) interfaces::client_mode, 23, &override_mouse_input);
     override_view_original = create_hook((uintptr_t) interfaces::client_mode, 18, &override_view);
-    send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t) patterns::send_datagram, (uintptr_t) &send_datagram)); // holy
+    send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t) patterns::send_datagram, (uintptr_t) &send_datagram));
     paint_traverse_original = create_hook((uintptr_t) interfaces::panel, 42, &paint_traverse);
 
     present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);

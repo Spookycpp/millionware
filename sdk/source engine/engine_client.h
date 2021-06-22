@@ -5,7 +5,6 @@
 #include "network_channel.h"
 #include "vector.h"
 
-class c_spatial_query;
 class c_network_channel;
 
 struct player_info_t {
@@ -34,7 +33,7 @@ class c_engine_client {
     DECLARE_VFUNC(26, is_in_game(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(27, is_connected(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(37, world_to_screen_matrix(), const matrix4x4_t &(__thiscall *) (void *) )();
-    DECLARE_VFUNC(43, get_bsp_tree_query(), c_spatial_query *(__thiscall *) (void *) )();
+    DECLARE_VFUNC(43, get_bsp_tree_query(), void *(__thiscall *) (void *) )();
     DECLARE_VFUNC(78, get_net_channel_info(), c_net_channel_info *(__thiscall *) (void *) )();
     DECLARE_VFUNC(108, execute_command(const char *command), void(__thiscall *)(void *, const char *))(command);
     DECLARE_VFUNC(104, get_engine_build_number(), int(__thiscall *)(void *))();

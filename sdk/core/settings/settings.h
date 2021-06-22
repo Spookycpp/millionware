@@ -217,8 +217,9 @@ struct settings_t {
 		bool  bomb_log_sounds = false;
 		bool  report_player_on_death = false;
 		bool  vote_reveal = false;
+		bool  discord_rpc = false;
 		int   hit_sound = 0;
-        int kill_sound = 0;
+        int   kill_sound = 0;
 		std::string hit_sound_custom;
 		std::string kill_sound_custom;
 

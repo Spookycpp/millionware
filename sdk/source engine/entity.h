@@ -324,8 +324,6 @@ public:
     }
 };
 
-inline std::array<animation_data_t, 65> _anim_data_records;
-
 class c_player : public c_entity
 {
 public:
@@ -368,10 +366,6 @@ public:
 	DECLARE_NETVAR_OFFSET(float, gravity, "DT_CSPlayer", "m_iTeamNum", -14);
 	DECLARE_NETVAR_OFFSET(int, old_simulation_time, "DT_BaseEntity", "m_flSimulationTime", 4);
 	DECLARE_NETVAR_OFFSET(int, move_type, "DT_BaseEntity", "m_nRenderMode", 1);
-
-    float spawn_time() {
-        return *(float *) ((uintptr_t) this + 0xA370);
-    }
 	
 	CUtlVector<c_animation_layer>& animation_overlay();
 	CUtlVector<matrix3x4_t>& get_cached_bone_data();
@@ -399,10 +393,16 @@ public:
 	bool is_reloading();
 	bool is_smoked();
 	bool has_bomb();
+};
 
-	auto &get_anim_data() {
-        return _anim_data_records[this->get_networkable()->index()];
-    }
+class i_client_unknown {
+  public:
+    DECLARE_VFUNC(6, get_base_entity(), c_entity *(__thiscall *) (i_client_unknown *) )();
+};
+
+class i_client_renderable {
+  public:
+    DECLARE_VFUNC(0, get_i_client_unknown(), i_client_unknown *(__thiscall *) (i_client_renderable *) )();
 };
 
 class c_economy_item : public c_entity

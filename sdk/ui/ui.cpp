@@ -335,6 +335,7 @@ void ui::init() {
             }
 
             if (const auto group = main_tab->new_group(XORSTR("Other"))) {
+                group->new_checkbox(XORSTR("Discord rich presence"), settings.miscellaneous.discord_rpc);
                 group->new_checkbox(XORSTR("Clan tag"), settings.miscellaneous.clantag);
                 group->new_checkbox(XORSTR("Auto accept"), settings.miscellaneous.auto_accept);
                 group->new_checkbox(XORSTR("Fake latency"), settings.miscellaneous.fake_ping.enabled);
