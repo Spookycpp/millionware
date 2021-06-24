@@ -63,7 +63,7 @@ namespace features::damage_logs {
             return XORSTR("unknown");
         };
 
-        logging::info("hurt {} in the {} for {} damage | {} health remaining", info.name, hit_group_to_str(data.hit_group), data.dmg_health, data.health);
+        logging::info(XORSTR("hurt {} in the {} for {} damage | {} health remaining"), info.name, hit_group_to_str(data.hit_group), data.dmg_health, data.health);
     }
 
     std::vector<damage_log_data_t> get_damage_logs() {

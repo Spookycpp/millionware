@@ -54,7 +54,7 @@ namespace features::game_events {
         else if (item.find(XORSTR("item_")) != std::string::npos)
             item.erase(0, 5);
 
-        logging::info("{} purchased {}", info.name, item);
+        logging::info(XORSTR("{} purchased {}"), info.name, item);
     }
 
     void on_begin_plant(c_game_event *game_event) {
@@ -108,7 +108,7 @@ namespace features::game_events {
         else
             bomb_site = XORSTR("B");
 
-        logging::info("{} planting at bombsite {}", info.name, bomb_site);
+        logging::info(XORSTR("{} planting at bombsite {}"), info.name, bomb_site);
 
         if (settings.miscellaneous.bomb_log_sounds) {
             util::play_sound(XORSTR("weapons\\c4\\c4_initiate.wav"));
@@ -133,7 +133,7 @@ namespace features::game_events {
 
         static const char *options[] = {"yes", "no", "wtf", "help", "stop"};
 
-        logging::info("{} voted {}", info.name, options[game_event->get_int(XORSTR("vote_option"))]);
+        logging::info(XORSTR("{} voted {}"), info.name, options[game_event->get_int(XORSTR("vote_option"))]);
     }
 
     void on_player_death(c_game_event *game_event) {
