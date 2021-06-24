@@ -34,6 +34,7 @@ class c_engine_client {
     DECLARE_VFUNC(27, is_connected(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(37, world_to_screen_matrix(), const matrix4x4_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(43, get_bsp_tree_query(), void *(__thiscall *) (void *) )();
+    DECLARE_VFUNC(53, get_map_name(), const char *(__thiscall *) (void *) )();
     DECLARE_VFUNC(78, get_net_channel_info(), c_net_channel_info *(__thiscall *) (void *) )();
     DECLARE_VFUNC(108, execute_command(const char *command), void(__thiscall *)(void *, const char *))(command);
     DECLARE_VFUNC(104, get_engine_build_number(), int(__thiscall *)(void *))();
