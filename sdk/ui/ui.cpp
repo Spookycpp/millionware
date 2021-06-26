@@ -192,14 +192,19 @@ void ui::init() {
             make_weapon_group_ui(7, &settings.lbot_other);
         }
 
-        if (const auto rage_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_SKULL, XORSTR("Its a placeholder XD"))) {
-            if (const auto group = rage_tab->new_group(XORSTR("Aimbot"))) {
-                // group->new_text(XORSTR("trolled nigger");
+        if (const auto rage_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_SKULL, XORSTR("Ragebot"))) {
+            if (const auto group = rage_tab->new_group(XORSTR("Placeholder"))) {
+            }    
+
+            if (const auto group = rage_tab->new_group(XORSTR("Placeholder 2"))) {
             }
         }
 
-        if (const auto anti_aim_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_REDO, XORSTR("ANOTHER PLACEHOLDER"))) {
-            if (const auto group = anti_aim_tab->new_group(XORSTR("Angles"))) {
+        if (const auto anti_aim_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_REDO, XORSTR("Anti-aim"))) {
+            if (const auto group = anti_aim_tab->new_group(XORSTR("Placeholder"))) {
+            }
+
+            if (const auto group = anti_aim_tab->new_group(XORSTR("Placeholder 2"))) {
             }
         }
     }
