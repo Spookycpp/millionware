@@ -50,7 +50,7 @@ bool hooks::init() {
     is_playing_demo_original = create_hook((uintptr_t) interfaces::engine_client, 82, &is_playing_demo);
     level_init_post_entity_original = create_hook((uintptr_t) interfaces::client_dll, 6, &level_init_post_entity);
     level_shutdown_pre_entity_original = create_hook((uintptr_t) interfaces::client_dll, 7, &level_shutdown_pre_entity);
-    list_leaves_in_box_original = create_hook((uintptr_t) bsp_tree_query, 6, &list_leaves_in_box);
+    list_leaves_in_box_original = create_hook((uintptr_t) interfaces::engine_client->get_bsp_tree_query(), 6, &list_leaves_in_box);
     lock_cursor_original = create_hook((uintptr_t) interfaces::surface, 67, &lock_cursor);
     override_config_original = create_hook((uintptr_t) interfaces::material_system, 21, &override_config);
     override_mouse_input_original = create_hook((uintptr_t) interfaces::client_mode, 23, &override_mouse_input);

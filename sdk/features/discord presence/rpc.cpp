@@ -48,6 +48,8 @@ void discord_rpc::update() {
 
     memset(&presence, 0, sizeof(presence));
 
+    presence.largeImageKey = XORSTR("million");
+
     if (!interfaces::engine_client->is_in_game()) {
         presence.state = XORSTR("In main menu");
     }
@@ -62,7 +64,6 @@ void discord_rpc::update() {
     }
 
     // presence.state = interfaces::engine_client->is_in_game() ? XORSTR("In game") : XORSTR("In main menu");
-    presence.largeImageKey = XORSTR("million");
     presence.startTimestamp = inject_timestamp;
     presence.instance = 1;
 

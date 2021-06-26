@@ -31,7 +31,7 @@ namespace hooks {
 	bool __fastcall is_playing_demo(c_engine_client* ecx, uintptr_t edx);
 	void __fastcall level_init_post_entity(c_base_client_dll* ecx, uintptr_t edx);
 	void __fastcall level_shutdown_pre_entity(c_base_client_dll* ecx, uintptr_t edx);
-	int __fastcall list_leaves_in_box(c_spatial_query* ecx, uintptr_t edx, const vector_t& mins, const vector_t& maxs, void* leaves_list, int max_leaves);
+    int __fastcall list_leaves_in_box(uintptr_t ecx, uintptr_t edx, const vector_t &mins, const vector_t &maxs, void *leaves_list, int max_leaves);
 	void __fastcall lock_cursor(c_vgui_surface* ecx, uintptr_t edx);
 	bool __fastcall override_config(uintptr_t, uintptr_t, material_system_config_t*, bool);
 	void __fastcall override_mouse_input(c_client_mode* ecx, uintptr_t edx, float* x, float* y);

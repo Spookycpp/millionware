@@ -2,8 +2,7 @@
 #include "../core/hooks/hooks.h"
 #include "../core/patterns/patterns.h"
 
-int __fastcall hooks::list_leaves_in_box(c_spatial_query *ecx, uintptr_t edx, const vector_t &mins, const vector_t &maxs, void *leaves_list, int max_leaves)
-{
+int __fastcall hooks::list_leaves_in_box(uintptr_t ecx, uintptr_t edx, const vector_t &mins, const vector_t &maxs, void *leaves_list, int max_leaves) {
 	// if ( ( uint32_t ) _ReturnAddress( ) != patterns::get_insert_into_tree_list_leaves_in_box_call( ) )
 	// 	return hook->get_original<decltype( &list_leaves_in_box )>( )( ecx, edx, mins, maxs, leaves_list, max_leaves );
 
