@@ -30,7 +30,6 @@ namespace features::movement {
 
     void predict_edgebug(c_user_cmd *user_cmd);
     void edgebug_assist(c_user_cmd *user_cmd);
-    void fast_walk(c_user_cmd *user_cmd);
     void slide_walk(c_user_cmd *user_cmd);
     void strafe_optimizer(c_user_cmd *user_cmd);
 } // namespace features::movement

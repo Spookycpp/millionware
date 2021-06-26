@@ -225,8 +225,6 @@ struct settings_t {
 
 		struct {
 			bool  bunny_hop = false;
-			bool  mini_jump = false;
-			int   mini_jump_hotkey = 0;
 			bool  jump_bug = false;
 			int   jump_bug_hotkey = 0;
 			bool  edge_bug = false;
@@ -242,8 +240,6 @@ struct settings_t {
 			int   auto_strafe = 0;
 			bool  air_duck = false;
 			bool  no_duck_cooldown = false;
-			bool  fast_walk = false;
-			int   fast_walk_hotkey = 16;
 			bool  slide_walk = false;
 		} movement;
 

@@ -90,9 +90,6 @@ namespace features::visuals::world {
 
         if (settings.visuals.local.indicators & (1 << 5) && settings.miscellaneous.movement.edge_jump && input::is_key_down(settings.miscellaneous.movement.edge_jump_hotkey))
             draw_indicator(XORSTR("ej"), {255, 255, 255, 220});
-
-        if (settings.visuals.local.indicators & (1 << 6) && settings.miscellaneous.movement.fast_walk && input::is_key_down(settings.miscellaneous.movement.fast_walk_hotkey))
-            draw_indicator(XORSTR("fw"), {255, 255, 255, 220});
     }
 
     void nightmode() {

@@ -30,21 +30,6 @@ void features::movement::pre_prediction(c_user_cmd *user_cmd) {
         if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND))
             user_cmd->buttons |= BUTTON_IN_DUCK;
     }
-
-    if (settings.miscellaneous.movement.mini_jump) {
-
-        if (cheat::local_player->get_move_type() == MOVE_TYPE_LADDER || !input::is_key_down(settings.miscellaneous.movement.mini_jump_hotkey))
-            return;
-
-        logging::info(XORSTR("im not acoustic"));
-
-        if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND))
-            user_cmd->buttons |= BUTTON_IN_DUCK;
-    }
-
-    // putting these here because the code
-    // is quite ugly and not really appealing
-    fast_walk(user_cmd);
 }
 
 void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags) {
@@ -183,51 +168,6 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
     cheat::b_predicting = false;
 }
 
-void features::movement::fast_walk(c_user_cmd *user_cmd) {
-
-    if (!settings.miscellaneous.movement.fast_walk)
-        return;
-
-    if (!input::is_key_down(settings.miscellaneous.movement.fast_walk_hotkey))
-        return;
-
-    if (user_cmd->buttons & BUTTON_IN_SPEED)
-        user_cmd->buttons &= ~BUTTON_IN_SPEED;
-
-    const vector_t vel = cheat::local_player->get_velocity();
-    const float speed = vel.length_2d();
-
-    if (speed < 126.0f)
-        return;
-
-    static auto sv_accelerate = interfaces::convar_system->find_convar(XORSTR("sv_accelerate"));
-
-    constexpr float surf_friction = 1.0f;
-
-    const float accel = sv_accelerate->get_float();
-    const float max_accel_speed = accel * interfaces::global_vars->interval_per_tick * speed * surf_friction;
-
-    float wish_speed;
-
-    if (speed - max_accel_speed <= -1.0f) {
-        wish_speed = max_accel_speed / (speed / (accel * interfaces::global_vars->interval_per_tick));
-    }
-    else {
-        wish_speed = max_accel_speed;
-    }
-
-    vector_t inv_dir = math::vector_to_angles(vel * -1.0f);
-    vector_t fix_dumb_error;
-
-    interfaces::engine_client->get_view_angles(fix_dumb_error);
-
-    inv_dir.y = fix_dumb_error.y - inv_dir.y;
-    inv_dir = math::angle_to_vector(inv_dir);
-
-    user_cmd->forward_move = inv_dir.x * wish_speed;
-    user_cmd->side_move = inv_dir.y * wish_speed;
-}
-
 void features::movement::slide_walk(c_user_cmd *user_cmd) {
     user_cmd->buttons &= ~BUTTON_IN_MOVE_RIGHT;
     user_cmd->buttons &= ~BUTTON_IN_MOVE_LEFT;
@@ -272,4 +212,8 @@ void features::movement::slide_walk(c_user_cmd *user_cmd) {
             user_cmd->buttons |= BUTTON_IN_LEFT;
         }
     }
+}
+
+void features::movement::strafe_optimizer(c_user_cmd *user_cmd) {
+
 }

@@ -302,8 +302,8 @@ void ui::init() {
                 group->new_select(XORSTR("Feet fx"), settings.visuals.local.feet_fx, {XORSTR("None"), XORSTR("Sparks"), XORSTR("Dust"), XORSTR("Energy splash")});
 
                 group->new_checkbox(XORSTR("Feet trails"), settings.visuals.local.foot_trail)->add_color_picker(settings.visuals.local.trail_color);
-                group->new_slider(XORSTR("Time"), settings.visuals.local.trail_time, 0.f, 10.f, XORSTR("{}"))->add_dependency(settings.visuals.local.foot_trail);
-                group->new_slider(XORSTR("Size"), settings.visuals.local.trail_size, 0.f, 10.f, XORSTR("{}"))->add_dependency(settings.visuals.local.foot_trail);
+                group->new_slider(XORSTR("Time"), settings.visuals.local.trail_time, 0.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
+                group->new_slider(XORSTR("Size"), settings.visuals.local.trail_size, 0.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
             }
         }
     }
@@ -321,20 +321,13 @@ void ui::init() {
 
                 group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
 
-                //group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug)->add_key_bind(settings.miscellaneous.movement.edge_bug_hotkey);
-
                 group->new_checkbox(XORSTR("Edgebug"), settings.miscellaneous.movement.edge_bug_assist)->add_key_bind(settings.miscellaneous.movement.edge_bug_assist_hotkey);
-
                 group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
                 group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
-
-                group->new_checkbox(XORSTR("Mini jump"), settings.miscellaneous.movement.mini_jump)->add_key_bind(settings.miscellaneous.movement.mini_jump_hotkey);
 
                 group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);
 
                 group->new_checkbox(XORSTR("Air duck"), settings.miscellaneous.movement.air_duck);
-
-                group->new_checkbox(XORSTR("Fast walk"), settings.miscellaneous.movement.fast_walk)->add_key_bind(settings.miscellaneous.movement.fast_walk_hotkey);
 
                 group->new_checkbox(XORSTR("Slide walk"), settings.miscellaneous.movement.slide_walk);
             }
