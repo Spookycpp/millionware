@@ -48,7 +48,9 @@ void discord_rpc::update() {
 
     memset(&presence, 0, sizeof(presence));
 
-    presence.largeImageKey = XORSTR("million");
+    // obscure name because once it's
+    // encrypted by xorstring it goofs
+    presence.largeImageKey = "918242";
 
     if (!interfaces::engine_client->is_in_game()) {
         presence.state = XORSTR("In main menu");
