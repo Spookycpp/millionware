@@ -338,7 +338,7 @@ namespace features::miscellaneous {
     static uintptr_t *death_notice = nullptr;
 
     void preserve_killfeed() {
-        static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_noticies();
+        static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
 
         if (!death_notice)
             death_notice = util::find_hud_element(XORSTR("CCSGO_HudDeathNotice"));

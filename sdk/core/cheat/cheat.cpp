@@ -5,9 +5,11 @@
 #include "../../engine/render/render.h"
 #include "../../engine/security/xorstr.h"
 
-#include "../../features/miscellaneous/miscellaneous.h"
 #include "../../features/hitchance/hitchance.h"
+#include "../../features/miscellaneous/miscellaneous.h"
 #include "../../features/visuals/world/world.h"
+
+#include "../../lua/lua_game.hpp"
 
 #include "../../ui/ui.h"
 
@@ -20,17 +22,18 @@
 #include "../patterns/patterns.h"
 
 #include "../scripting/scripting.h"
-#include "../../lua/lua_game.hpp"
 
-#include <windows.h>
-#include "../util/util.h"
 #include "../settings/settings.h"
+
+#include "../util/util.h"
+
 #include <discord_rpc.h>
+#include <windows.h>
 
 bool cheat::init() {
     if (!patterns::init())
         return false;
-    
+
     if (!interfaces::init())
         return false;
 
@@ -40,26 +43,26 @@ bool cheat::init() {
     // remove the dots & you have the build number
     if (interfaces::engine_client->get_engine_build_number() != 13794)
         return false;
-    
+
     netvars::init();
-    
+
     const auto device = (IDirect3DDevice9 *) patterns::get_d3d9_device();
-    
+
     D3DDEVICE_CREATION_PARAMETERS creation_params;
-    
+
     device->GetCreationParameters(&creation_params);
-    
+
     render::init(creation_params.hFocusWindow, device);
-    
+
     input::init(creation_params.hFocusWindow);
-    
+
     ui::init();
-    
+
     features::hit_chance::initialize();
-    
+
     if (!hooks::init())
         return false;
-    
+
     lua::init();
 
     logging::info(XORSTR("successfully initialized"));

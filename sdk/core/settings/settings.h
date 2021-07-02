@@ -189,6 +189,11 @@ struct settings_t {
             color_t trail_color = {255, 255, 255}; //@todo: change this to real color
 			float trail_time = 2.5f;
 			float trail_size = 2.5f;
+            bool data_graph = false;
+            bool data_graph_info = false;
+            bool data_graph_background = false;
+            color_t data_graph_color = {255, 255, 255};
+            color_t data_graph_bg_color = {27, 27, 27, 210};
 
 			struct {
                 bool enabled = false;

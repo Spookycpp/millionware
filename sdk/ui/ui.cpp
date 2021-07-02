@@ -314,7 +314,7 @@ void ui::init() {
             if (const auto group = main_tab->new_group(XORSTR("Movement"))) {
 
                 group->new_select(XORSTR("Indicators"), settings.visuals.local.indicators,
-                    { XORSTR("Velocity"), XORSTR("Takeoff velocity"), XORSTR("Jumpbug"), XORSTR("Edgebug"), XORSTR("Edgebug assist"), XORSTR("Edge jump"), XORSTR("Fast walk") }, true );
+                    { XORSTR("Velocity"), XORSTR("Takeoff velocity"), XORSTR("Jumpbug"), XORSTR("Edgebug"), XORSTR("Edgebug assist"), XORSTR("Edge jump") }, true );
 
                 group->new_checkbox(XORSTR("Bunnyhop"), settings.miscellaneous.movement.bunny_hop);
                 group->new_checkbox(XORSTR("Infinite duck"), settings.miscellaneous.movement.no_duck_cooldown);

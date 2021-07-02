@@ -8,10 +8,18 @@
 #include "engine/render/render.h"
 #include "engine/security/xorstr.h"
 
+#include <DbgHelp.h>
 
-
+// i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
+// i love chawndi for always being here
+// i love you dylan for showing me what it really means to love someone for who they really are
+// i love you grassii for doing everything you could in spite of not understanding
+// i love you sim for understanding me like noone else before
+// i love you h0pde for being the greatest and most honest friend i ever met
+// i love you hayden for being so light-hearted and cheerful
+// i love you carol for showing me whats it like to care for someone with your life
 // i love you bowish for falling for my lie that my girlfriend had died >.<
-// i love you swoopae for giving me the gift of edebug
+// i love you swoopae for giving me the gift of ebog
 
 // im in love with navewindre
 // why is this still here
@@ -39,7 +47,57 @@
 // day 1, czapek has drove me insane - day 1 pt2, czapek is fail pasting view_matrix
 // day 2, naz has been driving me insane that nigga makes me wanna throw a toaster into his mothers bathtub
 // day 3, eternity still hasnt made any progress on the loader and is sending me random webm memes instead of answering stuff
+// day 9, can't figure out why the loader is crashing, last ditch effort will be asking duxe
+// day 10, loader has been fixed. millionware is a go.
+
+static void* cheat_base = 0;
+
+long __stdcall exception_filter(EXCEPTION_POINTERS *info) {
+    if (info->ExceptionRecord->ExceptionCode != EXCEPTION_ACCESS_VIOLATION)
+        return EXCEPTION_EXECUTE_HANDLER;
+
+    char buffer[512];
+
+    std::string symbol_info;
+
+    auto displacement = (DWORD64) 0;
+    auto symbol = (SYMBOL_INFO *) calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
+
+    symbol->MaxNameLen = 255; // liar.
+    symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+
+    if (SymFromAddr(GetCurrentProcess(), (DWORD64) info->ExceptionRecord->ExceptionAddress, &displacement, symbol)) {
+        symbol_info = fmt::format(XORSTR("{} + {:#x}"), symbol->Name, displacement);
+    }
+    else if ((DWORD64) info->ExceptionRecord->ExceptionAddress >= (DWORD64) cheat_base) {
+        MEMORY_BASIC_INFORMATION mbi;
+
+        VirtualQuery(cheat_base, &mbi, sizeof(mbi));
+
+        if ((DWORD64) info->ExceptionRecord->ExceptionAddress <= (DWORD64) cheat_base + mbi.RegionSize) {
+            symbol_info = fmt::format(XORSTR("cheat + {:#x}"), (DWORD64) info->ExceptionRecord->ExceptionAddress - (DWORD64) cheat_base);
+        }
+    }
+
+    if (!symbol_info.empty()) {
+        sprintf_s(buffer, XORSTR("Exception code: 0x%08x\nException address: 0x%08x\n\nSymbol information: %s\n\nCopy this information using CTRL+C and report it to developers"),
+                  (uintptr_t) info->ExceptionRecord->ExceptionCode, (uintptr_t) info->ExceptionRecord->ExceptionAddress, symbol_info.data());
+    }
+    else {
+        sprintf_s(buffer, XORSTR("Exception code: 0x%08x\nException address: 0x%08x\n\nCopy this information using CTRL+C and report it to developers"), (uintptr_t) info->ExceptionRecord->ExceptionCode,
+                  (uintptr_t) info->ExceptionRecord->ExceptionAddress);
+    }
+
+    MessageBoxA(nullptr, buffer, nullptr, MB_ICONERROR | MB_OK);
+
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
 unsigned long __stdcall initial_thread(void *base_pointer) {
+    cheat_base = base_pointer;
+    AddVectoredExceptionHandler(true, exception_filter);
+    SymInitialize(GetCurrentProcess(), nullptr, true);
+
 #ifdef _DEBUG
     logging::init(SEVERITY_DEBUG);
 #else
@@ -65,28 +123,28 @@ unsigned long __stdcall initial_thread(void *base_pointer) {
     while (!input::is_key_down(VK_DELETE) || !input::is_key_down(VK_END))
         Sleep(100);
 #endif
+    while (true)
+        Sleep(100);
 
 load_failed:
 #ifdef _DEBUG
     cheat::undo();
-
+    SymCleanup(GetCurrentProcess());
     FreeLibraryAndExitThread((HMODULE) base_pointer, 0);
 #endif
 
     return 0;
 }
 
-int __stdcall DllMain(void *base_pointer, unsigned int reason_to_call, void *reserved) {
-    if (reason_to_call != 1)
-        return 1;
+int __stdcall DllMain(HMODULE base_pointer, unsigned int reason_to_call, void *) {
+    if (reason_to_call == 1) {
 
 #ifdef _DEBUG
-    DisableThreadLibraryCalls((HMODULE) base_pointer);
-    CreateThread(nullptr, 0, &initial_thread, base_pointer, 0, nullptr);
+        DisableThreadLibraryCalls((HMODULE) base_pointer);
+        CreateThread(nullptr, 0, &initial_thread, base_pointer, 0, nullptr);
 #else
-    initial_thread(base_pointer);
-
+        initial_thread(base_pointer);
 #endif
-
+    }
     return 1;
 }
