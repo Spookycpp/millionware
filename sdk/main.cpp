@@ -1,3 +1,5 @@
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+
 #include <windows.h>
 
 #include "core/cheat/cheat.h"
@@ -9,7 +11,11 @@
 #include "engine/security/xorstr.h"
 
 #include <DbgHelp.h>
+#include <winternl.h>
+#include <locale>
+#include <codecvt>
 
+// shoutout navewindre 4 dis one
 // i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
 // i love chawndi for always being here
 // i love you dylan for showing me what it really means to love someone for who they really are
@@ -50,52 +56,118 @@
 // day 9, can't figure out why the loader is crashing, last ditch effort will be asking duxe
 // day 10, loader has been fixed. millionware is a go.
 
-static void* cheat_base = 0;
+static void *cheat_module_base = 0;
 
-long __stdcall exception_filter(EXCEPTION_POINTERS *info) {
-    if (info->ExceptionRecord->ExceptionCode != EXCEPTION_ACCESS_VIOLATION)
-        return EXCEPTION_EXECUTE_HANDLER;
+static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) {
+    struct _LDR_DATA_TABLE_ENTRY_ {
+        PVOID Reserved1[2];
+        LIST_ENTRY InMemoryOrderLinks;
+        PVOID Reserved2[2];
+        PVOID DllBase;
+        PVOID Reserved3[2];
+        UNICODE_STRING FullDllName;
+        UNICODE_STRING BaseDllName;
+    };
 
-    char buffer[512];
+    const auto peb = reinterpret_cast<PEB *>(reinterpret_cast<TEB *>(__readfsdword(0x18))->ProcessEnvironmentBlock);
+    const auto module_list = &peb->Ldr->InMemoryOrderModuleList;
 
-    std::string symbol_info;
+    for (auto i = module_list->Flink; i != module_list; i = i->Flink) {
+        auto entry = CONTAINING_RECORD(i, _LDR_DATA_TABLE_ENTRY_, InMemoryOrderLinks);
 
-    auto displacement = (DWORD64) 0;
-    auto symbol = (SYMBOL_INFO *) calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
+        if (!entry)
+            continue;
 
-    symbol->MaxNameLen = 255; // liar.
-    symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+        const auto module_start = (uint64_t) entry->DllBase;
+        const auto dos_headers = (IMAGE_DOS_HEADER *) module_start;
+        const auto nt_headers = (IMAGE_NT_HEADERS *) (module_start + dos_headers->e_lfanew);
 
-    if (SymFromAddr(GetCurrentProcess(), (DWORD64) info->ExceptionRecord->ExceptionAddress, &displacement, symbol)) {
-        symbol_info = fmt::format(XORSTR("{} + {:#x}"), symbol->Name, displacement);
-    }
-    else if ((DWORD64) info->ExceptionRecord->ExceptionAddress >= (DWORD64) cheat_base) {
-        MEMORY_BASIC_INFORMATION mbi;
+        if (address >= module_start && address <= module_start + nt_headers->OptionalHeader.SizeOfImage) {
+            std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 
-        VirtualQuery(cheat_base, &mbi, sizeof(mbi));
-
-        if ((DWORD64) info->ExceptionRecord->ExceptionAddress <= (DWORD64) cheat_base + mbi.RegionSize) {
-            symbol_info = fmt::format(XORSTR("cheat + {:#x}"), (DWORD64) info->ExceptionRecord->ExceptionAddress - (DWORD64) cheat_base);
+            return std::make_pair(module_start, converter.to_bytes(entry->BaseDllName.Buffer, entry->BaseDllName.Buffer + entry->BaseDllName.Length / 2));
         }
     }
 
-    if (!symbol_info.empty()) {
-        sprintf_s(buffer, XORSTR("Exception code: 0x%08x\nException address: 0x%08x\n\nSymbol information: %s\n\nCopy this information using CTRL+C and report it to developers"),
-                  (uintptr_t) info->ExceptionRecord->ExceptionCode, (uintptr_t) info->ExceptionRecord->ExceptionAddress, symbol_info.data());
+    MEMORY_BASIC_INFORMATION mbi;
+
+    VirtualQuery(cheat_module_base, &mbi, sizeof(mbi));
+
+    if ((DWORD64) address >= (DWORD64) mbi.BaseAddress && (DWORD64) address <= (DWORD64) mbi.BaseAddress + mbi.RegionSize) {
+        return std::make_pair((uint64_t) mbi.BaseAddress, XORSTR("<cheat>"));
     }
     else {
-        sprintf_s(buffer, XORSTR("Exception code: 0x%08x\nException address: 0x%08x\n\nCopy this information using CTRL+C and report it to developers"), (uintptr_t) info->ExceptionRecord->ExceptionCode,
-                  (uintptr_t) info->ExceptionRecord->ExceptionAddress);
+        return std::make_pair((uint64_t) mbi.BaseAddress, fmt::format(XORSTR("<unknown module {:#x}>"), (DWORD64) mbi.BaseAddress));
     }
 
-    MessageBoxA(nullptr, buffer, nullptr, MB_ICONERROR | MB_OK);
+    return std::make_pair(0, XORSTR("<unknown module>"));
+}
+
+long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
+
+    if (info->ExceptionRecord->ExceptionCode != EXCEPTION_ACCESS_VIOLATION)
+        return EXCEPTION_CONTINUE_SEARCH;
+
+    DWORD64 displacement;
+
+    const auto symbol = (SYMBOL_INFO *) std::malloc(sizeof(SYMBOL_INFO) + 256);
+
+    if (symbol != nullptr) {
+        const auto [module_base, module_name] = get_containing_module((uint64_t) info->ExceptionRecord->ExceptionAddress);
+
+        symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+        symbol->MaxNameLen = 255;
+
+        std::string symbol_info;
+
+        if (SymFromAddr(GetCurrentProcess(), (DWORD64) info->ExceptionRecord->ExceptionAddress, &displacement, symbol)) {
+            symbol_info = fmt::format(XORSTR("{}!{} + {:#x}"), module_name, symbol->Name, displacement);
+        }
+        else {
+            symbol_info = fmt::format(XORSTR("{} + {:#x}"), module_name, (DWORD64) info->ExceptionRecord->ExceptionAddress - module_base);
+        }
+
+        auto message = fmt::format(XORSTR("Exception code: {:#x}\nException information: {}\n"), (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
+
+        if (info->ContextRecord->Ebp != 0) {
+            message += XORSTR("\n");
+
+            auto ebp = info->ContextRecord->Ebp;
+
+            while (true) {
+                const auto eip_ebp = ebp + 4;
+                const auto eip = *(uint32_t *) eip_ebp;
+
+                if (eip == 0)
+                    break;
+
+                ebp = *(uint32_t *) ebp;
+
+                const auto [module_base, module_name] = get_containing_module((uint64_t) eip);
+
+                symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+                symbol->MaxNameLen = 255;
+
+                if (SymFromAddr(GetCurrentProcess(), (DWORD64) eip, &displacement, symbol)) {
+                    message += fmt::format(XORSTR("> {}!{} + {:#x}\n"), module_name, symbol->Name, displacement);
+                }
+                else {
+                    message += fmt::format(XORSTR("> {} + {:#x}\n"), module_name, (DWORD64) eip - module_base);
+                }
+            }
+        }
+
+        message += XORSTR("\nCopy this information using CTRL+C and report it to the developers");
+
+        MessageBoxA(nullptr, message.data(), nullptr, MB_ICONERROR | MB_OK);
+    }
 
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
 unsigned long __stdcall initial_thread(void *base_pointer) {
-    cheat_base = base_pointer;
-    AddVectoredExceptionHandler(true, exception_filter);
+    cheat_module_base = base_pointer;
+    AddVectoredExceptionHandler(true, unhandledExceptionFilter);
     SymInitialize(GetCurrentProcess(), nullptr, true);
 
 #ifdef _DEBUG
