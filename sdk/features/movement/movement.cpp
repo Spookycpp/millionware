@@ -5,6 +5,7 @@
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/patterns/patterns.h"
 #include "../../core/settings/settings.h"
+#include "../../core/util/util.h"
 
 #include "../../engine/hash/hash.h"
 #include "../../engine/input/input.h"
@@ -214,6 +215,121 @@ void features::movement::slide_walk(c_user_cmd *user_cmd) {
     }
 }
 
-void features::movement::strafe_optimizer(c_user_cmd *user_cmd) {
+void features::movement::strafe_optimizer(c_user_cmd *user_cmd, int pre_flags, int post_flags) {
+    if (!settings.miscellaneous.movement.strafe_optimizer)
+        return;
 
+    static float old_yaw = user_cmd->view_angles.y;
+
+    if (input::is_key_down(settings.miscellaneous.movement.strafe_optimizer_key)) {
+        static auto sensitivity = interfaces::convar_system->find_convar(XORSTR("sensitivity"));
+        vector_t velocity = cheat::local_player->get_velocity();
+
+        float m_speed = velocity.length_2d();
+        float m_ideal = (m_speed > 0.f) ? math::rad_to_deg(std::asin(settings.miscellaneous.movement.strafe_optimizer_max_gain / 100.f) * 30.f) / m_speed : 0.f;
+
+        auto yaw_delta = math::strafe_opti_normalize_angle(user_cmd->view_angles.y - old_yaw, 180);
+
+        auto absolute_yaw_delta = fabsf(yaw_delta);
+        auto ideal_strafe = std::copysignf(m_ideal, yaw_delta);
+
+        if (!(pre_flags & ENTITY_FLAG_ONGROUND) && !(post_flags & ENTITY_FLAG_ONGROUND) && fabsf(yaw_delta) > 0.f && m_speed > 150.f && absolute_yaw_delta > (fabsf(m_ideal) / 10.f)) {
+
+            if (m_speed >= settings.miscellaneous.movement.strafe_optimizer_max_velocity)
+                return;
+
+            auto error_margin = ideal_strafe - yaw_delta;
+            float target_angle = old_yaw + yaw_delta + (error_margin * settings.miscellaneous.movement.strafe_optimizer_pull_amount / 100.f);
+            yaw_delta = target_angle - old_yaw;
+            auto moused_x = floor(floor((yaw_delta / sensitivity->get_float()) / 0.022));
+
+            auto humanized_angle = moused_x * sensitivity->get_float() * 0.022;
+
+            user_cmd->view_angles.y = humanized_angle + old_yaw;
+        }
+    }
+    
+    old_yaw = user_cmd->view_angles.y;
+    interfaces::engine_client->set_view_angles(user_cmd->view_angles);
+}
+
+void features::movement::blockbot(c_user_cmd *user_cmd) {
+    if (!settings.miscellaneous.movement.blockbot || !input::is_key_down(settings.miscellaneous.movement.blockbot_key))
+        return;
+
+    vector_t local_pos = cheat::local_player->get_abs_origin();
+
+    c_player *closest_teammate = nullptr;
+
+    float dist = 400.f;
+
+    for (int i = 1; i < interfaces::global_vars->max_clients; i++) {
+        auto current_ent = reinterpret_cast<c_player *>(interfaces::entity_list->get_entity(i));
+
+        if (!current_ent || current_ent == cheat::local_player)
+            continue;
+
+        if (!current_ent->is_alive() || current_ent->get_networkable()->is_dormant())
+            continue;
+
+        float current_dist = cheat::local_player->get_abs_origin().dist_2d(current_ent->get_abs_origin());
+        if (current_dist < dist) {
+            dist = current_dist;
+            closest_teammate = current_ent;
+        }
+    }
+
+    if (!closest_teammate)
+        return;
+
+    const vector_t velocity = closest_teammate->get_velocity();
+    const auto speed = velocity.length_2d();
+
+    if (closest_teammate) {
+        vector_t ally_origin = closest_teammate->get_abs_origin();
+
+        vector_t fixed_velocity = closest_teammate->get_velocity();
+        fixed_velocity *= interfaces::global_vars->interval_per_tick;
+
+        ally_origin += fixed_velocity;
+
+        vector_t ang = math::calc_angle(local_pos, ally_origin);
+
+        if (ang.x >= 40.0f) {
+            if (local_pos.dist_2d(ally_origin) > 5.0f) {
+                // on head
+                ally_origin += closest_teammate->get_view_offset();
+                vector_t angle = math::calc_angle(local_pos, ally_origin);
+
+                user_cmd->forward_move = 450.0f;
+                user_cmd->side_move = 0.0f;
+                util::movement_fix(angle, user_cmd);
+            }
+        }
+        //else {
+        //    // blocking
+        //    vector_t angle = math::calc_angle(cheat::local_player->get_abs_origin(), closest_teammate->get_abs_origin());
+        //
+        //    angle.y -= cheat::local_player->get_eye_angles().y;
+        //    angle.normalize();
+        //
+        //    float distance_to_player = ally_origin.dist_2d(local_pos);
+        //    vector_t angle_from_ally = math::calc_angle(ally_origin, local_pos);
+        //
+        //    vector_t fixed_angle = math::align_with_world(angle_from_ally);
+        //
+        //    vector_t fixed_pos = math::make_vector(fixed_angle);
+        //    fixed_pos *= distance_to_player;
+        //    fixed_pos += ally_origin;
+        //    if (local_pos.dist(fixed_pos) > 5.0f) {
+        //
+        //        if (fabs(angle.y) > 0.f) {
+        //            if (angle.y < 0.0f)
+        //                user_cmd->side_move = 450.f;
+        //            else if (angle.y > 0.0f)
+        //                user_cmd->side_move = -450.f;
+        //        }
+        //    }
+        //}
+    }
 }

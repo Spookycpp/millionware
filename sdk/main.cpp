@@ -194,9 +194,10 @@ unsigned long __stdcall initial_thread(void *base_pointer) {
 #ifdef _DEBUG
     while (!input::is_key_down(VK_DELETE) || !input::is_key_down(VK_END))
         Sleep(100);
-#endif
+#else
     while (true)
         Sleep(100);
+#endif
 
 load_failed:
 #ifdef _DEBUG

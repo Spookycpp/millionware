@@ -246,6 +246,15 @@ struct settings_t {
 			bool  air_duck = false;
 			bool  no_duck_cooldown = false;
 			bool  slide_walk = false;
+
+            bool strafe_optimizer = false;
+            int strafe_optimizer_key = 0;
+            float strafe_optimizer_max_gain = 0.f;
+            float strafe_optimizer_pull_amount = 0.f;
+            int strafe_optimizer_max_velocity = 0;
+
+			bool blockbot = false;
+			int blockbot_key = 0;
 		} movement;
 
 		struct {

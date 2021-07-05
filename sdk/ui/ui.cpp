@@ -325,6 +325,13 @@ void ui::init() {
                 group->new_slider(XORSTR("Edgebug units"), settings.miscellaneous.movement.edge_bug_radius, 0, 32, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
                 group->new_slider(XORSTR("Edgebug pull amount"), settings.miscellaneous.movement.edgebug_rage_amount, 0.f, 10.0f, XORSTR("{:.1f}"))->add_dependency(settings.miscellaneous.movement.edge_bug_assist);
 
+                group->new_checkbox(XORSTR("Strafe optimizer"), settings.miscellaneous.movement.strafe_optimizer)->add_key_bind(settings.miscellaneous.movement.strafe_optimizer_key);
+                group->new_slider(XORSTR("Strafe pull amount"), settings.miscellaneous.movement.strafe_optimizer_pull_amount, 0.f, 100.f, XORSTR("{:.1f}"))->add_dependency(settings.miscellaneous.movement.strafe_optimizer);
+                group->new_slider(XORSTR("Strafe max gain"), settings.miscellaneous.movement.strafe_optimizer_max_gain, 0.f, 100.f, XORSTR("{:.1f}"))->add_dependency(settings.miscellaneous.movement.strafe_optimizer);
+                group->new_slider(XORSTR("Strafe max velocity"), settings.miscellaneous.movement.strafe_optimizer_max_velocity, 0, 2000, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.strafe_optimizer);
+
+                group->new_checkbox(XORSTR("Block bot"), settings.miscellaneous.movement.blockbot)->add_key_bind(settings.miscellaneous.movement.blockbot_key);
+
                 group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);
 
                 group->new_checkbox(XORSTR("Air duck"), settings.miscellaneous.movement.air_duck);

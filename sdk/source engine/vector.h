@@ -98,6 +98,16 @@ struct vector_t
 		return delta.length();
 	}
 
+	inline float dist_2d(const vector_t &vec) {
+        vector_t delta;
+
+        delta.x = x - vec.x;
+        delta.y = y - vec.y;
+        delta.z = z - vec.z;
+
+        return delta.length_2d();
+    }
+
 	__forceinline float dot(const float* fl) const {
 		const vector_t& a = *this;
 		return a.x * fl[0] + a.y * fl[1] + a.z * fl[2];
@@ -129,6 +139,68 @@ struct vector_t
         v.z *= radius;
 
         return 1;
+    }
+
+    inline void normalize() {
+        auto floorf = [&](float x) { return float((int) x); };
+
+        auto roundf = [&](float x) {
+            float t;
+
+            // if (!isfinite(x))
+            //    return x;
+
+            if (x >= 0.0) {
+                t = floorf(x);
+                if (t - x <= -0.5)
+                    t += 1.0;
+                return t;
+            }
+            else {
+                t = floorf(-x);
+                if (t + x <= -0.5)
+                    t += 1.0;
+                return -t;
+            }
+        };
+
+        auto absf = [](float x) { return x > 0.f ? x : -x; };
+
+        auto x_rev = this->x / 360.f;
+        if (this->x > 180.f || this->x < -180.f) {
+            x_rev = absf(x_rev);
+            x_rev = roundf(x_rev);
+
+            if (this->x < 0.f)
+                this->x = (this->x + 360.f * x_rev);
+
+            else
+                this->x = (this->x - 360.f * x_rev);
+        }
+
+        auto y_rev = this->y / 360.f;
+        if (this->y > 180.f || this->y < -180.f) {
+            y_rev = absf(y_rev);
+            y_rev = roundf(y_rev);
+
+            if (this->y < 0.f)
+                this->y = (this->y + 360.f * y_rev);
+
+            else
+                this->y = (this->y - 360.f * y_rev);
+        }
+
+        auto z_rev = this->z / 360.f;
+        if (this->z > 180.f || this->z < -180.f) {
+            z_rev = absf(z_rev);
+            z_rev = roundf(z_rev);
+
+            if (this->z < 0.f)
+                this->z = (this->z + 360.f * z_rev);
+
+            else
+                this->z = (this->z - 360.f * z_rev);
+        }
     }
 };
 

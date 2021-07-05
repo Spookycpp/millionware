@@ -70,6 +70,9 @@ namespace math {
 	void set_matrix_position(vector_t pos, matrix3x4_t& matrix);
 	vector_t dist_segment_to_segment(vector_t s1, vector_t s2, vector_t k1, vector_t k2);
 	bool world_to_screen(const vector_t& world_pos, point_t& screen_pos);
+    vector_t align_with_world(vector_t view);
+    vector_t make_vector(const vector_t angles);
+    void angle_vectors(const vector_t &angles, vector_t *forward, vector_t *right = nullptr, vector_t *up = nullptr);
 
 	__forceinline vector_t calc_angle(const vector_t v1, const vector_t v2) {
 		const vector_t delta = v1 - v2;

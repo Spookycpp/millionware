@@ -3,6 +3,7 @@
 #include "../../core/util/util.h"
 
 #include "../../source engine/client_dll.h"
+#include "../../source engine/input.h"
 #include "../../source engine/entity.h"
 #include "../../source engine/vector.h"
 
@@ -33,6 +34,7 @@ namespace util {
 	void set_skybox(const char* name);
 	void on_frame_stage_notify(e_client_frame_stage frame_stage);
 	void play_sound(const char* file_path, int volume = -1);
+    void movement_fix(const vector_t &old_angles, c_user_cmd* user_cmd);
 
 	point_t screen_transform(const vector_t &world);
 

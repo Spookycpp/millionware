@@ -51,6 +51,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         features::engine_prediction::end_prediction();
 
         const auto post_flags = cheat::local_player->get_flags();
+        features::movement::strafe_optimizer(user_cmd, pre_flags, post_flags);
         features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
         c_weapon *local_weapon = (c_weapon *) cheat::local_player->get_active_weapon_handle().get();
@@ -73,6 +74,8 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 
     features::miscellaneous::rank_reveal(user_cmd);
     features::miscellaneous::preserve_killfeed();
+
+    features::movement::blockbot(user_cmd);
 
     math::normalize_angles(user_cmd->view_angles);
     math::clamp_angles(user_cmd->view_angles);

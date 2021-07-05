@@ -137,6 +137,29 @@ void util::play_sound(const char* file_path, int volume) {
 	interfaces::engine_client->execute_command(buffer);
 }
 
+void util::movement_fix(const vector_t &old_angles, c_user_cmd *user_cmd) {
+    vector_t view_angles = {0.0f, old_angles.y, 0.0f};
+    vector_t aim_angles = {0.0f, user_cmd->view_angles.y, 0.0f};
+
+    vector_t view_forward, view_side;
+    vector_t aim_forward, aim_side;
+
+    math::angle_vectors(view_angles, &view_forward, &view_side);
+    math::angle_vectors(aim_angles, &aim_forward, &aim_side);
+
+    view_forward.normalize();
+    view_side.normalize();
+
+    vector_t forward_norm = view_forward * user_cmd->forward_move;
+    vector_t side_norm = view_side * user_cmd->side_move;
+
+    float new_forward = forward_norm.dot(aim_forward) + side_norm.dot(aim_forward);
+    float new_side = forward_norm.dot(aim_side) + side_norm.dot(aim_side);
+
+    user_cmd->forward_move = new_forward;
+    user_cmd->side_move = new_side;
+}
+
 point_t util::screen_transform(const vector_t &world) {
 
     const auto screen_transform = [&](const vector_t &in, point_t &out) -> bool {

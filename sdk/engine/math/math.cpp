@@ -329,3 +329,58 @@ bool math::world_to_screen(const vector_t &world_pos, point_t &screen_pos) {
 
     return true;
 }
+
+vector_t math::align_with_world(vector_t view) {
+    vector_t aligned_view = {0.0f, 0.0f, 0.0f};
+
+    float yaw = view.y;
+
+    if (yaw >= 45.0f && yaw <= 135.0f) {
+        aligned_view.y = 90.0f;
+    }
+    else if (yaw <= 45.0f && yaw >= -45.0f) {
+        aligned_view.y = 0.0f;
+    }
+    else if (yaw <= -45.0f && yaw <= -135.0f) {
+        aligned_view.y = -90.0f;
+    }
+    else {
+        aligned_view.y = 180.0f;
+    }
+
+    return aligned_view;
+}
+
+vector_t math::make_vector(const vector_t angles) {
+    float cp = cos(deg_to_rad(angles.y));
+    float sy = sin(deg_to_rad(angles.y));
+
+    float sp = sin(deg_to_rad(angles.x));
+    float cy = cos(deg_to_rad(angles.x));
+
+    return {(cp * cy), (cp * sy), (-sp)};
+}
+
+void math::angle_vectors(const vector_t &angles, vector_t *forward, vector_t *right, vector_t *up) {
+    float cp = cos(deg_to_rad(angles.x)), sp = sin(deg_to_rad(angles.x));
+    float cy = cos(deg_to_rad(angles.y)), sy = sin(deg_to_rad(angles.y));
+    float cr = cos(deg_to_rad(angles.z)), sr = sin(deg_to_rad(angles.z));
+
+    if (forward) {
+        forward->x = cp * cy;
+        forward->y = cp * sy;
+        forward->z = -sp;
+    }
+
+    if (right) {
+        right->x = -1.f * sr * sp * cy + -1.f * cr * -sy;
+        right->y = -1.f * sr * sp * sy + -1.f * cr * cy;
+        right->z = -1.f * sr * cp;
+    }
+
+    if (up) {
+        up->x = cr * sp * cy + -sr * -sy;
+        up->y = cr * sp * sy + -sr * cy;
+        up->z = cr * cp;
+    }
+}
