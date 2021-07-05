@@ -59,6 +59,7 @@ namespace patterns
     inline uintptr_t find_hud_element_addr_1;
     inline uintptr_t find_hud_element_addr_2;
     inline uintptr_t enable_world_fog;
+    inline uintptr_t game_rules_proxy;
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
@@ -110,6 +111,7 @@ namespace patterns
     PATTERN_GET(find_hud_element_addr_1, find_hud_element_addr_1);
     PATTERN_GET(find_hud_element_addr_2, find_hud_element_addr_2);
     PATTERN_GET(enable_world_fog, enable_world_fog);
+    PATTERN_GET(game_rules_proxy, game_rules_proxy);
 
 	uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();

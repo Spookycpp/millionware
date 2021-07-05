@@ -58,6 +58,8 @@ namespace render {
     void init(HWND window, IDirect3DDevice9 *device);
 	void undo();
 
+	HWND window();
+
 	float get_frame_time();
 
 	point_t get_screen_size();

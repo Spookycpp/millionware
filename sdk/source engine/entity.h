@@ -564,6 +564,16 @@ public:
 	DECLARE_NETVAR(float, throw_strength, "DT_BaseCSGrenade", "m_flThrowStrength");
 };
 
+class c_game_rules {
+  public:
+    DECLARE_NETVAR(bool, freeze_period, "DT_CSGameRules", "m_bFreezePeriod");
+
+	static c_game_rules* get() {
+        return **(c_game_rules ***) (patterns::get_game_rules_proxy() + 1);
+	}
+
+};
+
 class c_player_resource {
 public:
 	bool is_c4_carrier(int index) {

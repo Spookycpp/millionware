@@ -267,6 +267,10 @@ void render::undo()
 	initialized = false;
 }
 
+HWND render::window() {
+    return target_window_handle;
+}
+
 float render::get_frame_time()
 {
 	return ImGui::GetIO().DeltaTime;

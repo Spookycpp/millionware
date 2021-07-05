@@ -339,9 +339,16 @@ namespace features::miscellaneous {
     static uintptr_t *death_notice = nullptr;
 
     void preserve_killfeed() {
-
-        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
+        
+        if (auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period()) {
+            death_notice = 0;
             return;
+        }
+
+        if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
+            death_notice = 0;
+            return;
+        }
 
         if (!death_notice)
             death_notice = util::find_hud_element(XORSTR("CCSGO_HudDeathNotice"));

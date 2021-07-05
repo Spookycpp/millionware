@@ -78,7 +78,6 @@ bool cheat::undo() {
     if (!hooks::undo())
         return false;
 
-    // feature reverts & stabilization
     util::undo();
 
     Sleep(1000);

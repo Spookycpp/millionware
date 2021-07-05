@@ -262,5 +262,8 @@ bool patterns::init()
 	if ((enable_world_fog = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 8B 0D ? ? ? ? 83 EC 0C 8B 01 53"))) == 0u)
         return false;
 
+	if ((game_rules_proxy = get_pattern(XORSTR("client.dll"), XORSTR("A1 ???? 8B 0D ???? 6A 00 68 ???? C6"))) == 0u) // + 1
+        return false;
+
 	return true;
 }
