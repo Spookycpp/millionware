@@ -41,7 +41,7 @@ bool cheat::init() {
     // if the cheat doesn't inject open your console in csgo
     // and type "version" & grab the "Exe version" value
     // remove the dots & you have the build number
-    if (interfaces::engine_client->get_engine_build_number() != 13794)
+    if (interfaces::engine_client->get_engine_build_number() != 13795)
         return false;
 
     netvars::init();
