@@ -34,8 +34,8 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
 
     c_player* entity = (c_player*)interfaces::entity_list->get_entity(info->entity_index);
 
-    const auto& visible_color = settings.visuals.player.chams.visible_color;
-    const auto& invisible_color = settings.visuals.player.chams.invisible_color;
+    const auto visible_color   = settings.visuals.player.chams.visible_color;
+    const auto invisible_color = settings.visuals.player.chams.invisible_color;
 
     if (entity == nullptr || !entity->is_enemy() || entity->get_life_state() != LIFE_STATE_ALIVE) {
         draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
@@ -52,6 +52,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
 
     if (settings.visuals.player.chams.invisible) {
         material->set_color(invisible_color);
+        material->set_alpha(invisible_color.a);
         material->set_flag(MATERIAL_FLAG_IGNORE_Z, true);
 
         interfaces::model_render->force_material_override(material);
@@ -64,6 +65,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
 
     if (settings.visuals.player.chams.visible) {
         material->set_color(visible_color);
+        material->set_alpha(visible_color.a);
         material->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
 
         interfaces::model_render->force_material_override(material);

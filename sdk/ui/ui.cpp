@@ -234,8 +234,8 @@ void ui::init() {
 
             if (const auto group = players_tab->new_group(XORSTR("Model"))) {
                 group->new_select(XORSTR("Material"), settings.visuals.player.chams.material, {XORSTR("Textured"), XORSTR("Flat")});
-                group->new_checkbox(XORSTR("Player"), settings.visuals.player.chams.visible)->add_color_picker(settings.visuals.player.chams.visible_color, false);
-                group->new_checkbox(XORSTR("Player (behind walls)"), settings.visuals.player.chams.invisible)->add_color_picker(settings.visuals.player.chams.invisible_color, false);
+                group->new_checkbox(XORSTR("Player"), settings.visuals.player.chams.visible)->add_color_picker(settings.visuals.player.chams.visible_color);
+                group->new_checkbox(XORSTR("Player (behind walls)"), settings.visuals.player.chams.invisible)->add_color_picker(settings.visuals.player.chams.invisible_color);
                 group->new_checkbox(XORSTR("Visualize backtrack"), settings.visuals.player.chams.backtrack);
             }
         }
