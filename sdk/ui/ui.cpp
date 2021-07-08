@@ -267,6 +267,14 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Damage log"), settings.visuals.player.damage_logs);
                 group->new_checkbox(XORSTR("Purchase log"), settings.miscellaneous.buy_log);
                 group->new_checkbox(XORSTR("Money reveal"), settings.miscellaneous.money_reveal);
+
+                //group->new_select(XORSTR("Region selector"), settings.miscellaneous.server_regions, {
+                //    XORSTR("Disabled"),          XORSTR("Australia"),        XORSTR("Austria"),        XORSTR("Brazil"),          XORSTR("Chile"),              XORSTR("Dubai"),
+                //    XORSTR("France"),            XORSTR("Germany"),          XORSTR("Hong Kong"),      XORSTR("India (Chennai)"), XORSTR("India (Mumbai)"),     XORSTR("Japan"),
+                //    XORSTR("Luxembourg"),        XORSTR("Netherlands"),      XORSTR("Peru"),           XORSTR("Philipines"),      XORSTR("Poland"),             XORSTR("Singapore"),
+                //    XORSTR("South Africa"),      XORSTR("Spain"),            XORSTR("Sweden"),         XORSTR("United kingdom"),  XORSTR("USA (Atlanta)"),      XORSTR("USA (Chicago)"), 
+                //    XORSTR("USA (Los Angeles)"), XORSTR("USA (Moses Lake)"), XORSTR("USA (Oklahoma)"), XORSTR("USA (Seattle)"),   XORSTR("USA (Washington DC)")
+                //});
             }
         }
 
@@ -366,7 +374,7 @@ void ui::init() {
                 
                 group->new_button(XORSTR("Name spam"), features::miscellaneous::name_spam);
                 group->new_button(XORSTR("Unlock hidden convars"), features::miscellaneous::unlock_hidden_convars);
-                group->new_text_input("Example text input", text_input_value1);
+                //group->new_text_input("Example text input", text_input_value1);
             }
         }
 

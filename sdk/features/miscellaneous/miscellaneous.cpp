@@ -201,6 +201,16 @@ namespace features::miscellaneous {
         name->set_value(buffer);
     }
 
+    //void server_selector() {
+    //    const char *regions[] = {
+    //        XORSTR(""),    XORSTR("syd"), XORSTR("vie"), XORSTR("gru"), XORSTR("scl"),  XORSTR("dxb"), XORSTR("par"), XORSTR("fra"), XORSTR("hkg"), XORSTR("maa"),
+    //        XORSTR("bom"), XORSTR("tyo"), XORSTR("lux"), XORSTR("ams"), XORSTR("limc"), XORSTR("man"), XORSTR("waw"), XORSTR("sgp"), XORSTR("jnb"), XORSTR("mad"),
+    //        XORSTR("sto"), XORSTR("lhr"), XORSTR("atl"), XORSTR("ord"), XORSTR("lax"),  XORSTR("mwh"), XORSTR("okc"), XORSTR("sea"), XORSTR("iad")};
+    //
+	//	static std::string *ForceRelayClusterValue = *(std::string **) patterns::get_relay_cluster() + 1;
+    //    *ForceRelayClusterValue = regions[settings.miscellaneous.server_regions]; 
+    //}
+
     void skybox_changer(const int skybox) {
         if (!interfaces::engine_client->is_in_game())
             return;
@@ -248,7 +258,7 @@ namespace features::miscellaneous {
         if (skybox_name.empty())
             return;
 
-        static auto load_named_sky_addr = patterns::load_named_sky;
+        static auto load_named_sky_addr = patterns::get_load_named_sky();
         static auto load_named_sky_fn = reinterpret_cast<void(__fastcall *)(const char *)>(load_named_sky_addr);
 
         if (!load_named_sky_fn)
@@ -329,7 +339,7 @@ namespace features::miscellaneous {
     static uintptr_t *death_notice = nullptr;
 
     void preserve_killfeed() {
-        
+
         if (auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period()) {
             death_notice = 0;
             return;

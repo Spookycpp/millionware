@@ -1,14 +1,18 @@
 #include "../core/cheat/cheat.h"
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
+
 #include "../engine/render/render.h"
 #include "../engine/security/xorstr.h"
+
+#include "../features/miscellaneous/miscellaneous.h"
+#include "../features/nade prediction/nade_prediction.h"
 #include "../features/visuals/players/esp.h"
 #include "../features/visuals/world/world.h"
-#include "../ui/ui.h"
-#include "../features/nade prediction/nade_prediction.h"
 
 #include "../lua/lua_game.hpp"
+
+#include "../ui/ui.h"
 
 static int active_tab = 0;
 

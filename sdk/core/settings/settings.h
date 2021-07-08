@@ -225,6 +225,7 @@ struct settings_t {
 		bool  discord_rpc = false;
 		int   hit_sound = 0;
         int   kill_sound = 0;
+		int   server_regions = 0;
 		std::string hit_sound_custom;
 		std::string kill_sound_custom;
 

@@ -31,6 +31,7 @@ namespace features::miscellaneous {
     void ragdoll_push();
     void ragdoll_float();
     void name_spam();
+    void server_selector();
     void skybox_changer(int skybox);
     void foot_fx();
     void foot_trail();
