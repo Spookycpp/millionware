@@ -84,6 +84,15 @@ bool util::intersects_hitbox(const vector_t eye_pos, const vector_t end_pos, con
 	return math::dist_segment_to_segment(eye_pos, end_pos, min, max).length() < radius;
 }
 
+void util::auto_accept() {
+    const auto set_local_player_ready_fn = reinterpret_cast<bool(__stdcall *)(const char *)>(patterns::get_accept_match());
+
+    if (!set_local_player_ready_fn)
+        return;
+
+    set_local_player_ready_fn(XORSTR(""));
+}
+
 void util::force_full_update() {
 
 	static float update_time = 0.f;

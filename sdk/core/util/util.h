@@ -29,6 +29,7 @@ namespace util {
 	bool line_goes_through_smoke(const vector_t& src, const vector_t& dst);
 	bool intersects_hitbox(const vector_t eye_pos, const vector_t end_pos, const vector_t min, const vector_t max, const float radius);
 
+	void auto_accept();
 	void force_full_update();
 	void set_random_seed(const int seed);
 	void set_skybox(const char* name);

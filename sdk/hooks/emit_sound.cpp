@@ -2,6 +2,7 @@
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 #include "../core/settings/settings.h"
+#include "../core/util/util.h"
 
 #include "../engine/input/input.h"
 #include "../engine/logging/logging.h"
@@ -16,14 +17,12 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
                                   float sound_time, int speaker_entity, uintptr_t fds) {
 
 	if (settings.miscellaneous.auto_accept && !std::strcmp(sound_entry, XORSTR("UIPanorama.popup_accept_match_beep"))) {
-        logging::info("UIPanorama.popup_accept_match_beep");
-        features::miscellaneous::auto_accept();
+        util::auto_accept();
 
-        SetForegroundWindow(render::window());
+        ShowWindow(render::window(), SW_RESTORE);
 
-        if (std::strstr(sample_name, XORSTR("competitive_accept_beep"))) {
+        if (std::strstr(sample_name, XORSTR("competitive_accept_beep"))) 
             volume = 0.0f;
-        }
     }
 
     if (cheat::b_predicting)

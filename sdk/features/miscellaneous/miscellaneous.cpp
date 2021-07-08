@@ -64,16 +64,6 @@ namespace features::miscellaneous {
         }
     }
 
-    void auto_accept() {
-
-        const auto set_local_player_ready_fn = reinterpret_cast<bool(__stdcall *)(const char *)>(patterns::get_accept_match());
-
-        if (!set_local_player_ready_fn)
-            return;
-
-        set_local_player_ready_fn(XORSTR(""));
-    }
-
     void rank_reveal(c_user_cmd *user_cmd) {
         if (!settings.miscellaneous.rank_reveal)
             return;
