@@ -21,6 +21,7 @@ namespace hooks {
 	bool __fastcall create_move(c_client_mode* ecx, uintptr_t edx, float frame_time, c_user_cmd* user_cmd);
 	int __fastcall do_post_screen_effects(c_client_mode* ecx, uintptr_t edx, int effect_id);
 	void __fastcall draw_model_execute(uintptr_t, uintptr_t, void* ctx, void* state, c_model_render_info* info, matrix3x4_t* matrix);
+    bool __fastcall draw_print_text(uintptr_t, uintptr_t, const wchar_t *text, int text_length, int draw_type);
 	void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char*, int, const char*, float, float, int, int, int, const vector_t*, const vector_t*, vector_t*, bool, float, int, uintptr_t);
     void __fastcall enable_world_fog();
 	bool _fastcall fire_event_client_side(uintptr_t, uintptr_t, c_game_event* event);
@@ -45,6 +46,7 @@ namespace hooks {
 	inline decltype(&create_move) create_move_original;
 	inline decltype(&do_post_screen_effects) do_post_screen_effects_original;
 	inline decltype(&draw_model_execute) draw_model_execute_original;
+    inline decltype(&draw_print_text) draw_print_text_original;
 	inline decltype(&emit_sound) emit_sound_original;
     inline decltype(&enable_world_fog) enable_world_fog_original;
 	inline decltype(&fire_event_client_side) fire_event_client_side_original;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "macros.h"
 
 class c_vgui_panel
@@ -13,6 +14,7 @@ public:
 class c_vgui_surface
 {
 public:
+    DECLARE_VFUNC(28, render_text(std::wstring_view string, int length, int flags = 0), void(__thiscall *)(void *, const wchar_t *, int, int))(string.data(), length, flags);
 	DECLARE_VFUNC(66, unlock_cursor(), void(__thiscall *)(void *))();
 	DECLARE_VFUNC(67, lock_cursor(), void(__thiscall *)(void *))();
 };

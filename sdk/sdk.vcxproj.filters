@@ -79,6 +79,7 @@
     <ClCompile Include="core\v2 exports\v2 exports.cpp" />
     <ClCompile Include="hooks\enable_world_fog.cpp" />
     <ClCompile Include="features\discord presence\rpc.cpp" />
+    <ClCompile Include="hooks\draw_print_text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
