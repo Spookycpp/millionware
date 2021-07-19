@@ -359,7 +359,7 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Log bomb plants"), settings.miscellaneous.bomb_log);
                 group->new_checkbox(XORSTR("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)->add_dependency(settings.miscellaneous.bomb_log);
 
-                group->new_checkbox(XORSTR("Vote revealer"), settings.miscellaneous.vote_reveal);
+                group->new_checkbox(XORSTR("Inventory unlocker"), settings.miscellaneous.unlock_inventory);
 
                 group->new_checkbox(XORSTR("Report player on death"), settings.miscellaneous.report_player_on_death);
 
