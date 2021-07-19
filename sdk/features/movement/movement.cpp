@@ -261,7 +261,7 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
 
     c_player *closest_teammate = nullptr;
 
-    float dist = 400.f;
+    float dist = 250.f;
 
     for (int i = 1; i < interfaces::global_vars->max_clients; i++) {
         auto current_ent = reinterpret_cast<c_player *>(interfaces::entity_list->get_entity(i));
@@ -295,9 +295,11 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
 
         vector_t ang = math::calc_angle(local_pos, ally_origin);
 
-        if (ang.x >= 40.0f) {
-            if (local_pos.dist_2d(ally_origin) > 5.0f) {
-                // on head
+        auto ground_entity = cheat::local_player->get_ground_entity().get();
+
+        if (ground_entity && ground_entity->is_player()) {
+            if (local_pos.dist_2d(ally_origin) > 1.0f) {
+
                 ally_origin += closest_teammate->get_view_offset();
                 vector_t angle = math::calc_angle(local_pos, ally_origin);
 
@@ -306,30 +308,30 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
                 util::movement_fix(angle, user_cmd);
             }
         }
-        //else {
-        //    // blocking
-        //    vector_t angle = math::calc_angle(cheat::local_player->get_abs_origin(), closest_teammate->get_abs_origin());
-        //
-        //    angle.y -= cheat::local_player->get_eye_angles().y;
-        //    angle.normalize();
-        //
-        //    float distance_to_player = ally_origin.dist_2d(local_pos);
-        //    vector_t angle_from_ally = math::calc_angle(ally_origin, local_pos);
-        //
-        //    vector_t fixed_angle = math::align_with_world(angle_from_ally);
-        //
-        //    vector_t fixed_pos = math::make_vector(fixed_angle);
-        //    fixed_pos *= distance_to_player;
-        //    fixed_pos += ally_origin;
-        //    if (local_pos.dist(fixed_pos) > 5.0f) {
-        //
-        //        if (fabs(angle.y) > 0.f) {
-        //            if (angle.y < 0.0f)
-        //                user_cmd->side_move = 450.f;
-        //            else if (angle.y > 0.0f)
-        //                user_cmd->side_move = -450.f;
-        //        }
-        //    }
-        //}
+        else {
+            // blocking
+            vector_t angle = math::calc_angle(cheat::local_player->get_abs_origin(), closest_teammate->get_abs_origin());
+        
+            angle.y -= cheat::local_player->get_eye_angles().y;
+            angle.normalize();
+        
+            float distance_to_player = ally_origin.dist_2d(local_pos);
+            vector_t angle_from_ally = math::calc_angle(ally_origin, local_pos);
+        
+            vector_t fixed_angle = math::align_with_world(angle_from_ally);
+        
+            vector_t fixed_pos = math::make_vector(fixed_angle);
+            fixed_pos *= distance_to_player;
+            fixed_pos += ally_origin;
+            if (local_pos.dist(fixed_pos) > 5.0f) {
+        
+                if (fabs(angle.y) > 0.f) {
+                    if (angle.y < 0.0f)
+                        user_cmd->side_move = 450.f;
+                    else if (angle.y > 0.0f)
+                        user_cmd->side_move = -450.f;
+                }
+            }
+        }
     }
 }
