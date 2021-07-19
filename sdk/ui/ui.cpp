@@ -356,11 +356,11 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Auto pistol"), settings.miscellaneous.auto_pistol);
                 group->new_checkbox(XORSTR("Log weapon purchases"), settings.miscellaneous.buy_log);
 
-                group->new_checkbox(XORSTR("Log bomb plants"), settings.miscellaneous.bomb_log);
+                group->new_checkbox(XORSTR("Vote revealer"), settings.miscellaneous.vote_reveal);
                 group->new_checkbox(XORSTR("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)->add_dependency(settings.miscellaneous.bomb_log);
 
                 group->new_checkbox(XORSTR("Inventory unlocker"), settings.miscellaneous.unlock_inventory);
-
+                group->new_checkbox(XORSTR("Kill say"), settings.miscellaneous.kill_say);
                 group->new_checkbox(XORSTR("Report player on death"), settings.miscellaneous.report_player_on_death);
 
                 const auto custom_hit_sound_dependency = [](const auto _) { return settings.miscellaneous.hit_sound == 3; };

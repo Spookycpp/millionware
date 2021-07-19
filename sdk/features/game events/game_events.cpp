@@ -121,6 +121,10 @@ namespace features::game_events {
             return;
 
         const int ent_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("entityid")));
+
+        if (ent_id == 0 || ent_id > interfaces::global_vars->max_clients)
+            return;
+
         const auto ent = (c_player*)interfaces::entity_list->get_entity(ent_id);
 
         if (!ent)
@@ -128,7 +132,7 @@ namespace features::game_events {
 
         player_info_t info;
 
-        if (!interfaces::engine_client->get_player_info(ent->get_networkable()->index(), info))
+        if (!interfaces::engine_client->get_player_info(ent_id, info))
             return;
 
         static const char *options[] = {"yes", "no", "wtf", "help", "stop"};
@@ -150,6 +154,11 @@ namespace features::game_events {
             return;
 
         if (user != attacker && attacker == cheat::local_player) {
+
+            if (settings.miscellaneous.kill_say) {
+                interfaces::engine_client->execute_command(XORSTR("say god i wish i had millionware $$$$"));
+            }
+
             if (settings.visuals.local.kill_effect) {
                 cheat::local_player->get_health_shot_boost_time() = interfaces::global_vars->current_time + 0.8f;
             }

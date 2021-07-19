@@ -223,6 +223,7 @@ struct settings_t {
 		bool  report_player_on_death = false;
 		bool  vote_reveal = false;
 		bool  discord_rpc = false;
+		bool  kill_say = false;
 		int   hit_sound = 0;
         int   kill_sound = 0;
 		int   server_regions = 0;
