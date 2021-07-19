@@ -94,7 +94,7 @@ void features::visuals::esp::frame() {
 
         const auto time_since_last_update = interfaces::global_vars->current_time - entity_info.last_server_update;
 
-        if (time_since_last_update > 3.0f)
+        if (time_since_last_update > 0.5f)
             continue;
 
         bounding_box_t entity_box;
