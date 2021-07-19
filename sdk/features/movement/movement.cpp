@@ -170,6 +170,10 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
 }
 
 void features::movement::slide_walk(c_user_cmd *user_cmd) {
+
+    if (!settings.miscellaneous.movement.slide_walk)
+        return;
+
     user_cmd->buttons &= ~BUTTON_IN_MOVE_RIGHT;
     user_cmd->buttons &= ~BUTTON_IN_MOVE_LEFT;
     user_cmd->buttons &= ~BUTTON_IN_LEFT;
@@ -179,7 +183,7 @@ void features::movement::slide_walk(c_user_cmd *user_cmd) {
 
     const auto move_type = cheat::local_player->get_move_type();
 
-    if (settings.miscellaneous.movement.slide_walk && move_type != MOVE_TYPE_NOCLIP && move_type != MOVE_TYPE_LADDER) {
+    if (move_type != MOVE_TYPE_NOCLIP && move_type != MOVE_TYPE_LADDER) {
         if (user_cmd->forward_move < 0.0f) {
             user_cmd->buttons |= BUTTON_IN_FORWARD;
         }
