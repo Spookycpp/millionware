@@ -25,7 +25,7 @@ c_event_listener::c_event_listener() {
     interfaces::game_events->add_listener(this, XORSTR("hostage_follows"), false);
     interfaces::game_events->add_listener(this, XORSTR("vote_cast"), false);
     interfaces::game_events->add_listener(this, XORSTR("player_death"), false);
-    interfaces::game_events->add_listener(this, XORSTR("round_end"), false);
+    interfaces::game_events->add_listener(this, XORSTR("round_start"), false);
 }
 
 c_event_listener::~c_event_listener() {
@@ -67,7 +67,7 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
     else if (std::strncmp(game_event->get_name(), XORSTR("vote_cast"), 10) == 0) {
         features::game_events::on_vote_cast(game_event);
     }
-    else if (std::strncmp(game_event->get_name(), XORSTR("round_end"), 10) == 0) {
+    else if (std::strncmp(game_event->get_name(), XORSTR("round_start"), 10) == 0) {
         cheat::should_clear_death_notices = true;
     }
 
