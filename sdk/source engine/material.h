@@ -57,7 +57,8 @@ public:
     DECLARE_VFUNC(27, set_alpha(int alpha), void(__thiscall *)(void *, float))(static_cast<float>(alpha) / 255.f);
 	DECLARE_VFUNC(28, set_color(float r, float g, float b), void(__thiscall*)(void*, float, float, float))(r, g, b);
 	DECLARE_VFUNC(29, set_flag(int flag, bool state), void(__thiscall*)(void*, int, bool))(flag, state);
-	DECLARE_VFUNC(37, refresh(), void(__thiscall*)(void*))();
+    DECLARE_VFUNC(34, set_shader(const char *name), void(__thiscall *)(void *, const char *))(name);
+    DECLARE_VFUNC(37, refresh_material(), void(__thiscall *)(void *))();
 
 	void set_color(const color_t& color) {
 		set_color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f);
