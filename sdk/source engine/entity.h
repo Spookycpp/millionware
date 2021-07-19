@@ -149,7 +149,6 @@ struct animation_data_t {
     float last_anim_time;
 };
 
-
 enum e_life_state
 {
 	LIFE_STATE_ALIVE,
