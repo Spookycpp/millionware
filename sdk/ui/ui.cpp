@@ -267,6 +267,8 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Damage log"), settings.visuals.player.damage_logs);
                 group->new_checkbox(XORSTR("Purchase log"), settings.miscellaneous.buy_log);
                 group->new_checkbox(XORSTR("Money reveal"), settings.miscellaneous.money_reveal);
+                group->new_checkbox(XORSTR("Log bomb plants"), settings.miscellaneous.bomb_log);
+                group->new_checkbox(XORSTR("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)->add_dependency(settings.miscellaneous.bomb_log);
 
                 //group->new_select(XORSTR("Region selector"), settings.miscellaneous.server_regions, {
                 //    XORSTR("Disabled"),          XORSTR("Australia"),        XORSTR("Austria"),        XORSTR("Brazil"),          XORSTR("Chile"),              XORSTR("Dubai"),
@@ -354,11 +356,7 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Fake latency"), settings.miscellaneous.fake_ping.enabled);
                 group->new_checkbox(XORSTR("Player privacy"), settings.miscellaneous.player_privacy);
                 group->new_checkbox(XORSTR("Auto pistol"), settings.miscellaneous.auto_pistol);
-                group->new_checkbox(XORSTR("Log weapon purchases"), settings.miscellaneous.buy_log);
-
                 group->new_checkbox(XORSTR("Vote revealer"), settings.miscellaneous.vote_reveal);
-                group->new_checkbox(XORSTR("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)->add_dependency(settings.miscellaneous.bomb_log);
-
                 group->new_checkbox(XORSTR("Inventory unlocker"), settings.miscellaneous.unlock_inventory);
                 group->new_checkbox(XORSTR("Kill say"), settings.miscellaneous.kill_say);
                 group->new_checkbox(XORSTR("Report player on death"), settings.miscellaneous.report_player_on_death);
