@@ -265,8 +265,8 @@ bool patterns::init()
 	if ((game_rules_proxy = get_pattern(XORSTR("client.dll"), XORSTR("A1 ???? 8B 0D ???? 6A 00 68 ???? C6"))) == 0u) // + 1
         return false;
 
-	if ((relay_cluster = get_pattern(XORSTR("steamnetworkingsockets.dll"), XORSTR("B8 ???? B9 ???? 0F 43"))) == 0u) // + 1
-        return false;
+	//if ((relay_cluster = get_pattern(XORSTR("steamnetworkingsockets.dll"), XORSTR("B8 ???? B9 ???? 0F 43"))) == 0u) // + 1
+    //    return false;
 
 	return true;
 }

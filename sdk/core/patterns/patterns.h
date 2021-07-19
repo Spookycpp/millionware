@@ -113,7 +113,7 @@ namespace patterns
     PATTERN_GET(find_hud_element_addr_2, find_hud_element_addr_2);
     PATTERN_GET(enable_world_fog, enable_world_fog);
     PATTERN_GET(game_rules_proxy, game_rules_proxy);
-    PATTERN_GET(relay_cluster, relay_cluster);
+    //PATTERN_GET(relay_cluster, relay_cluster);
 
 	uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();

@@ -201,15 +201,15 @@ namespace features::miscellaneous {
         name->set_value(buffer);
     }
 
-    //void server_selector() {
-    //    const char *regions[] = {
-    //        XORSTR(""),    XORSTR("syd"), XORSTR("vie"), XORSTR("gru"), XORSTR("scl"),  XORSTR("dxb"), XORSTR("par"), XORSTR("fra"), XORSTR("hkg"), XORSTR("maa"),
-    //        XORSTR("bom"), XORSTR("tyo"), XORSTR("lux"), XORSTR("ams"), XORSTR("limc"), XORSTR("man"), XORSTR("waw"), XORSTR("sgp"), XORSTR("jnb"), XORSTR("mad"),
-    //        XORSTR("sto"), XORSTR("lhr"), XORSTR("atl"), XORSTR("ord"), XORSTR("lax"),  XORSTR("mwh"), XORSTR("okc"), XORSTR("sea"), XORSTR("iad")};
-    //
-	//	static std::string *ForceRelayClusterValue = *(std::string **) patterns::get_relay_cluster() + 1;
-    //    *ForceRelayClusterValue = regions[settings.miscellaneous.server_regions]; 
-    //}
+    void server_selector() {
+        //const char *regions[] = {
+        //    (""),    ("syd"), ("vie"), ("gru"), ("scl"),  ("dxb"), ("par"), ("fra"), ("hkg"), ("maa"),
+        //    ("bom"), ("tyo"), ("lux"), ("ams"), ("limc"), ("man"), ("waw"), ("sgp"), ("jnb"), ("mad"),
+        //    ("sto"), ("lhr"), ("atl"), ("ord"), ("lax"),  ("mwh"), ("okc"), ("sea"), ("iad")};
+
+        //static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9 ? ? ? ? 0F 43") + 1);
+        //*relay_cluster = "lax";
+    }
 
     void skybox_changer(const int skybox) {
         if (!interfaces::engine_client->is_in_game())
