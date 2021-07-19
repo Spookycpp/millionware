@@ -253,13 +253,13 @@ bool patterns::init()
 	if ((clear_death_notices = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 83 EC 0C 53 56 8B 71 58"))) == 0u)
         return false;
 
-	if ((find_hud_element_addr_1 = get_pattern(XORSTR("client.dll"), XORSTR("B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08"))) == 0u)
+	if ((find_hud_element_addr_1 = get_pattern(XORSTR("client.dll"), XORSTR("B9 ???? E8 ???? 8B 5D 08"))) == 0u)
         return false;
 		
 	if ((find_hud_element_addr_2 = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 53 8B 5D 08 56 57 8B F9 33 F6 39 77 28"))) == 0u)
         return false;
 		
-	if ((enable_world_fog = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 8B 0D ? ? ? ? 83 EC 0C 8B 01 53"))) == 0u)
+	if ((enable_world_fog = get_pattern(XORSTR("client.dll"), XORSTR("55 8B EC 8B 0D ???? 83 EC 0C 8B 01 53"))) == 0u)
         return false;
 
 	if ((game_rules_proxy = get_pattern(XORSTR("client.dll"), XORSTR("A1 ???? 8B 0D ???? 6A 00 68 ???? C6"))) == 0u) // + 1
