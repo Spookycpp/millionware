@@ -23,17 +23,16 @@ namespace features::miscellaneous {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-        case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
-            panorama_blur();
-            post_processing();
+            case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
+                post_processing();
 
-            force_crosshair();
-            recoil_crosshair();
-            flash_alpha();
+                force_crosshair();
+                recoil_crosshair();
+                flash_alpha();
 
-            ragdoll_float();
-            ragdoll_push();
-        }
+                ragdoll_float();
+                ragdoll_push();
+            }
         }
     }
 
