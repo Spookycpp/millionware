@@ -1,6 +1,10 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "../../../source engine/client_dll.h"
+#include "../../../source engine/entity.h"
 
 namespace features::visuals::world {
 
@@ -9,5 +13,7 @@ namespace features::visuals::world {
     void nightmode();
     void indicators();
     void velocity_graph();
+
+    void display_spectator();
 
 } // namespace features::visuals::world

@@ -23,6 +23,8 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 
     features::visuals::world::indicators();
 
+    features::visuals::world::display_spectator();
+
     features::nade_prediction::on_paint_traverse();
 
     ui::frame();

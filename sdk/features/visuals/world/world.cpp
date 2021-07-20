@@ -1,13 +1,13 @@
-#include "world.h"
+﻿#include "world.h"
 
 #include <cstdio>
 #include <string>
 #include <windows.h>
 
-#include <tlhelp32.h>
-#include <psapi.h>
 #include <algorithm>
 #include <cstdint>
+#include <psapi.h>
+#include <tlhelp32.h>
 #include <unordered_map>
 
 #include "../../../core/cheat/cheat.h"
@@ -20,13 +20,15 @@
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 
+#include "../../../source engine/entity.h"
+
 namespace features::visuals::world {
 
     void on_frame_stage_notify(e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
-                nightmode();
-            }
+        case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
+            nightmode();
+        }
         }
     }
 
@@ -47,7 +49,7 @@ namespace features::visuals::world {
             offset += measure.y + 8.0f;
         };
 
-       if (settings.visuals.local.indicators & (1 << 0)) {
+        if (settings.visuals.local.indicators & (1 << 0)) {
             static auto tick_prev = 0;
             static auto last_velocity = 0;
             static auto take_off = 0;
@@ -135,6 +137,60 @@ namespace features::visuals::world {
             auto cl_csm_shadows = interfaces::convar_system->find_convar(XORSTR("cl_csm_shadows"));
             if (cl_csm_shadows->get_int() != 0)
                 cl_csm_shadows->set_value(0);
+        }
+    }
+
+    void display_spectator() {
+        if (!settings.visuals.local.spectator_list)
+            return;
+
+        if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+            return;
+
+        const auto obs_mode_to_string = [](int obs_mode)->std::string {
+            switch (obs_mode) {
+                // clang-format off
+                case OBS_MODE_IN_EYE:    return XORSTR("firstperson");
+                case OBS_MODE_CHASE:     return XORSTR("thirdperson");
+                default:                 return "";
+                // clang-format on
+            }
+        };
+
+        for (auto i = 1, y = 0; i <= interfaces::entity_list->get_highest_ent_index(); i++) {
+            const auto ent = (c_player *) interfaces::entity_list->get_entity(i);
+
+            if (!ent || !ent->is_player())
+                continue;
+
+            if (ent->get_life_state() == LIFE_STATE_ALIVE)
+                continue;
+
+            const auto obs_target = ent->get_observer_target().get();
+            const auto obs_mode = ent->get_observer_mode();
+
+            player_info_t info;
+
+            if (!interfaces::engine_client->get_player_info(i, info))
+                continue;
+
+            if (obs_target) {
+                player_info_t target_info;
+
+                if (!interfaces::engine_client->get_player_info(obs_target->get_networkable()->index(), target_info))
+                    continue;
+
+                const auto obs_mode_str = obs_mode_to_string(obs_mode);
+
+                if (obs_mode_str.empty())
+                    continue;
+
+                const auto string = fmt::format(XORSTR("{} -> {} ({})"), info.name, target_info.name, obs_mode_str);
+                const auto screen_size = render::get_screen_size();
+                const auto text_size = render::measure_text(string.c_str(), FONT_TAHOMA_11);
+
+                render::draw_text({screen_size.x - text_size.x - 4.0f, 4.0f + y++ * 16.0f}, {255, 255, 255, 255}, string.c_str(), FONT_TAHOMA_11);
+            }
         }
     }
 } // namespace features::visuals::world
