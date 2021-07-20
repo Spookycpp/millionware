@@ -98,7 +98,7 @@ namespace features::visuals::world {
         static bool toggled = false;
         static float last_darkness = 0.f;
 
-        auto do_nightmode = settings.visuals.world.nightmode != toggled || last_darkness != settings.visuals.world.nightmode_darkness;
+        auto do_nightmode = settings.visuals.world.nightmode != toggled || last_darkness != settings.visuals.world.nightmode_darkness || cheat::disconnect_state;
 
         if (!do_nightmode)
             return;
@@ -108,6 +108,8 @@ namespace features::visuals::world {
 
         if (!cheat::local_player || !interfaces::engine_client->is_in_game())
             return;
+
+        cheat::disconnect_state = false;
 
         const static auto draw_specific_static_prop = interfaces::convar_system->find_convar(XORSTR("r_DrawSpecificStaticProp"));
 
