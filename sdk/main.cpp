@@ -160,6 +160,7 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
         message += XORSTR("\nCopy this information using CTRL+C and report it to the developers");
 
         MessageBoxA(nullptr, message.data(), nullptr, MB_ICONERROR | MB_OK);
+        ExitProcess(0);
     }
 
     return EXCEPTION_EXECUTE_HANDLER;
