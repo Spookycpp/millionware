@@ -55,6 +55,7 @@
 // day 3, eternity still hasnt made any progress on the loader and is sending me random webm memes instead of answering stuff
 // day 9, can't figure out why the loader is crashing, last ditch effort will be asking duxe
 // day 10, loader has been fixed. millionware is a go.
+// day 32, cheats kinda coming together, still don't wanna release it or do the skin changer
 
 static void *cheat_module_base = 0;
 
