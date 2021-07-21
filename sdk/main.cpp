@@ -50,6 +50,9 @@
 
 /* credits: duxe/laine/aiden */
 
+// saves us fps
+// doesnt matter theyre fucked anyways
+
 // laines diary don't open.
 // day 1, czapek has drove me insane - day 1 pt2, czapek is fail pasting view_matrix
 // day 2, naz has been driving me insane that nigga makes me wanna throw a toaster into his mothers bathtub

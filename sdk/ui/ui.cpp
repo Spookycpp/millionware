@@ -267,6 +267,7 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Damage log"), settings.visuals.player.damage_logs);
                 group->new_checkbox(XORSTR("Purchase log"), settings.miscellaneous.buy_log);
                 group->new_checkbox(XORSTR("Money reveal"), settings.miscellaneous.money_reveal);
+                group->new_checkbox(XORSTR("Bomb timer"), settings.visuals.world.bomb);
                 group->new_checkbox(XORSTR("Log bomb plants"), settings.miscellaneous.bomb_log);
                 group->new_checkbox(XORSTR("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)->add_dependency(settings.miscellaneous.bomb_log);
 

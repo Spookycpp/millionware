@@ -322,12 +322,17 @@ public:
     DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
 
 	DECLARE_NETVAR(float, simulation_time, "DT_BaseEntity", "m_flSimulationTime");
+    DECLARE_NETVAR(float, c4_blow, "DT_PlantedC4", "m_flC4Blow");
+
 	DECLARE_NETVAR(bool, is_spotted, "DT_BaseEntity", "m_bSpotted");
+    DECLARE_NETVAR(bool, is_bomb_ticking, "DT_PlantedC4", "m_bBombTicking");
+    DECLARE_NETVAR(bool, is_bomb_defused, "DT_PlantedC4", "m_bBombDefused");
+
 	DECLARE_NETVAR(int, flags, "DT_BasePlayer", "m_fFlags");
 	DECLARE_NETVAR(int, team_num, "DT_BaseEntity", "m_iTeamNum");
+
 	DECLARE_NETVAR(vector_t, vec_origin, "DT_BaseEntity", "m_vecOrigin");
 	DECLARE_NETVAR(entity_handle_t, owner_handle, "DT_BaseEntity", "m_hOwnerEntity");
-
 	DECLARE_NETVAR_OFFSET(matrix3x4_t, transformation_matrix, "DT_BaseEntity", "m_CollisionGroup", -48);
 
 	template <typename T>

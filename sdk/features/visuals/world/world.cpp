@@ -1,4 +1,4 @@
-#include "world.h"
+﻿#include "world.h"
 
 #include <cstdio>
 #include <string>
@@ -20,8 +20,10 @@
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 
+#include "../../../core/util/util.h"
 #include "../../../source engine/entity.h"
 #include <format>
+#include <iomanip>
 
 namespace features::visuals::world {
 
@@ -152,7 +154,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-            // clang-format off
+                // clang-format off
                 case OBS_MODE_IN_EYE:    return XORSTR("firstperson");
                 case OBS_MODE_CHASE:     return XORSTR("thirdperson");
                 default:                 return "";
@@ -198,5 +200,54 @@ namespace features::visuals::world {
                 render::draw_text({screen_size.x - text_size.x - 4.0f, 4.0f + y++ * 16.0f}, {255, 255, 255, 255}, string.c_str(), FONT_TAHOMA_11);
             }
         }
+    }
+
+    void bomb_timer(c_entity *ent) {
+        const auto get_bomb_time = [&]() -> std::string {
+            if (!ent->get_is_bomb_ticking() || ent->get_is_bomb_defused())
+                return {};
+
+            const float bomb_time = (interfaces::global_vars->current_time - ent->get_c4_blow()) * -1.0f;
+
+            return std::format(XORSTR("{:2f}s"), bomb_time);
+        };
+
+        const auto get_bomb_damage = [&]() {
+            const vector_t delta = ent->get_renderable()->get_render_origin() - cheat::local_player->get_renderable()->get_render_origin();
+
+            const float bomb_damage = 500.0f * std::exp(-(delta.length() * delta.length() / (1750.0f * 0.33333334f * 2.0f * (1750.0f * 0.33333334f))));
+            float damage = bomb_damage;
+
+            const int armor_value = cheat::local_player->get_armor();
+
+            if (armor_value > 0) {
+                damage *= 0.5f;
+
+                if ((bomb_damage - damage) * 0.5f > float(armor_value))
+                    damage = bomb_damage - float(armor_value) * (1.0f / 0.5f);
+            }
+
+            return cheat::local_player->get_health() - int(std::round(damage));
+        };
+
+        if (!settings.visuals.world.bomb)
+            return;
+
+        const std::string bomb_time = get_bomb_time();
+
+        if (bomb_time.empty())
+            return;
+
+        const auto bomb_time_str = get_bomb_time();
+        const auto health_remaining = get_bomb_damage();
+        const auto health_remaining_text = std::format(XORSTR("Health remaing: {} hp"), std::max(health_remaining, 0));
+
+        const auto screen_size = render::get_screen_size();
+        const auto bomb_time_text_size = render::measure_text(bomb_time_str.c_str(), FONT_TAHOMA_11);
+        const auto health_remaining_text_size = render::measure_text(health_remaining_text.c_str(), FONT_TAHOMA_11);
+
+        render::draw_text({screen_size.x * 0.5f - bomb_time_text_size.x * 0.5f, screen_size.y * 0.3f}, {255, 255, 255, 255}, bomb_time_str.c_str(), FONT_TAHOMA_11);
+        render::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.3f + 20.0f}, health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235},
+                          health_remaining_text.c_str(), FONT_TAHOMA_11);
     }
 } // namespace features::visuals::world

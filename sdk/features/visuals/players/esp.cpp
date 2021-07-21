@@ -13,6 +13,7 @@
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 #include "esp.h"
+#include "../world/world.h"
 
 // cringe but ye
 static std::array<float, 65> m_bottom_offset;
@@ -118,6 +119,8 @@ void features::visuals::esp::frame() {
         draw_skeleton(player);
         draw_headspot(player);
         draw_barrel(player);
+
+        features::visuals::world::bomb_timer(entity);
     }
 }
 

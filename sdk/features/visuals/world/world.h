@@ -15,5 +15,6 @@ namespace features::visuals::world {
     void velocity_graph();
 
     void display_spectators();
+    void bomb_timer(c_entity *ent);
 
 } // namespace features::visuals::world
