@@ -104,6 +104,10 @@ void features::visuals::esp::frame() {
 
         m_bottom_offset[i] = 0.f;
 
+        if (settings.visuals.player.engine_radar)
+            if (!player->get_is_spotted())
+                player->get_is_spotted() = true;
+
         draw_box(entity_box, player);
         draw_name(entity_box, player);
         draw_health(entity_box, player);
