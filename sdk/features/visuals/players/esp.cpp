@@ -141,11 +141,10 @@ void features::visuals::esp::draw_name(const bounding_box_t &entity_box, c_playe
         return;
 
     std::string player_name = info.name;
-    std::transform(player_name.begin(), player_name.end(), player_name.begin(), std::tolower);
-    const char *c_player_name = player_name.c_str();
+    std::transform(player_name.begin(), player_name.end(), player_name.begin(), ::tolower);
 
-    const auto text_size = render::measure_text(c_player_name, FONT_TAHOMA_11);
-    render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y}, settings.visuals.player.player_name_color, c_player_name, FONT_TAHOMA_11);
+    const auto text_size = render::measure_text(player_name.c_str(), FONT_TAHOMA_11);
+    render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y}, settings.visuals.player.player_name_color, player_name.c_str(), FONT_TAHOMA_11);
 }
 
 void features::visuals::esp::draw_health(const bounding_box_t &entity_box, c_player *player) {

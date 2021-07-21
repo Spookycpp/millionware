@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fmt/format.h>
+#include <format>
 
 // why tf is it even defined ???
 #ifdef SEVERITY_ERROR

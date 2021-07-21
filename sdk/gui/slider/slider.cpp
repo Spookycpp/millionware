@@ -1,4 +1,4 @@
-#include <fmt/format.h>
+#include <format>
 
 #include "../../engine/input/input.h"
 #include "../../engine/render/render.h"
