@@ -21,6 +21,7 @@
 #include "../../../engine/security/xorstr.h"
 
 #include "../../../source engine/entity.h"
+#include <format>
 
 namespace features::visuals::world {
 
@@ -187,7 +188,7 @@ namespace features::visuals::world {
                 if (obs_mode_str.empty())
                     continue;
 
-                const auto string = fmt::format(XORSTR("{} -> {} ({})"), info.name, target_info.name, obs_mode_str);
+                const auto string = std::format(XORSTR("{} -> {} ({})"), info.name, target_info.name, obs_mode_str);
                 const auto screen_size = render::get_screen_size();
                 const auto text_size = render::measure_text(string.c_str(), FONT_TAHOMA_11);
 

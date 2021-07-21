@@ -14,6 +14,7 @@
 #include <winternl.h>
 #include <locale>
 #include <codecvt>
+#include <format>
 
 // shoutout navewindre 4 dis one
 // i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
@@ -98,7 +99,7 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
         return std::make_pair((uint64_t) mbi.BaseAddress, XORSTR("<cheat>"));
     }
     else {
-        return std::make_pair((uint64_t) mbi.BaseAddress, fmt::format(XORSTR("<unknown module {:#x}>"), (DWORD64) mbi.BaseAddress));
+        return std::make_pair((uint64_t) mbi.BaseAddress, std::format(XORSTR("<unknown module {:#x}>"), (DWORD64) mbi.BaseAddress));
     }
 
     return std::make_pair(0, XORSTR("<unknown module>"));
@@ -122,13 +123,13 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
         std::string symbol_info;
 
         if (SymFromAddr(GetCurrentProcess(), (DWORD64) info->ExceptionRecord->ExceptionAddress, &displacement, symbol)) {
-            symbol_info = fmt::format(XORSTR("{}!{} + {:#x}"), module_name, symbol->Name, displacement);
+            symbol_info = std::format(XORSTR("{}!{} + {:#x}"), module_name, symbol->Name, displacement);
         }
         else {
-            symbol_info = fmt::format(XORSTR("{} + {:#x}"), module_name, (DWORD64) info->ExceptionRecord->ExceptionAddress - module_base);
+            symbol_info = std::format(XORSTR("{} + {:#x}"), module_name, (DWORD64) info->ExceptionRecord->ExceptionAddress - module_base);
         }
 
-        auto message = fmt::format(XORSTR("Exception code: {:#x}\nException information: {}\n"), (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
+        auto message = std::format(XORSTR("Exception code: {:#x}\nException information: {}\n"), (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
 
         if (info->ContextRecord->Ebp != 0) {
             message += XORSTR("\n");
@@ -150,10 +151,10 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
                 symbol->MaxNameLen = 255;
 
                 if (SymFromAddr(GetCurrentProcess(), (DWORD64) eip, &displacement, symbol)) {
-                    message += fmt::format(XORSTR("> {}!{} + {:#x}\n"), module_name, symbol->Name, displacement);
+                    message += std::format(XORSTR("> {}!{} + {:#x}\n"), module_name, symbol->Name, displacement);
                 }
                 else {
-                    message += fmt::format(XORSTR("> {} + {:#x}\n"), module_name, (DWORD64) eip - module_base);
+                    message += std::format(XORSTR("> {} + {:#x}\n"), module_name, (DWORD64) eip - module_base);
                 }
             }
         }

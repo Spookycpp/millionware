@@ -30,7 +30,7 @@ namespace logging
 		if (!should_log(severity))
 			return;
 
-		print(severity, fmt::format(format_str, args...));
+		print(severity, std::format(format_str, args...));
 	}
 
 	template <typename ...A>

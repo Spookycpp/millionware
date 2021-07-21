@@ -34,7 +34,7 @@ template <typename T> void c_slider<T>::layout(layout_item &overlay, layout_item
 	c_element::layout(overlay, parent);
 
 	const auto track_head_pos = scale_value<float>((float) value_.get(), (float) value_min_, (float) value_max_, 0.0f, title_wrap_width_ - var_track_head_size);
-	const auto value_formatted = format_fn_ != nullptr ? format_fn_(value_.get()) : fmt::format(format_, value_.get());
+    const auto value_formatted = format_fn_ != nullptr ? format_fn_(value_.get()) : std::format(format_, value_.get());
 
 	const auto title_size = render::measure_text(title_.data(), FONT_CEREBRI_SANS_MEDIUM_18, title_wrap_width_);
 	const auto value_size = render::measure_text(value_formatted.data(), FONT_CEREBRI_SANS_BOLD_32, 0.0f, 13.0f);
@@ -68,7 +68,7 @@ template <typename T> void c_slider<T>::layout(layout_item &overlay, layout_item
 
 template <typename T> void c_slider<T>::render()
 {
-	const auto value_formatted = format_fn_ != nullptr ? format_fn_(value_.get()) : fmt::format(format_, value_.get());
+    const auto value_formatted = format_fn_ != nullptr ? format_fn_(value_.get()) : std::format(format_, value_.get());
 
 	const auto [root_pos, root_size] = rect_to_xywh(root_.get_rect());
 	const auto [track_bar_pos, track_bar_size] = rect_to_xywh(track_bar_.get_rect());
