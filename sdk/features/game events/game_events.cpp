@@ -116,28 +116,16 @@ namespace features::game_events {
     }
 
     void on_vote_cast(c_game_event *game_event) {
-
         if (!settings.miscellaneous.vote_reveal)
             return;
 
-        const int ent_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("entityid")));
+        int vote = game_event->get_int(XORSTR("vote_option"));
+        int id   = game_event->get_int(XORSTR("entityid"));
 
-        if (ent_id == 0 || ent_id > interfaces::global_vars->max_clients)
-            return;
+        player_info_t player_info;
+        interfaces::engine_client->get_player_info(id, player_info);
 
-        const auto ent = (c_player*)interfaces::entity_list->get_entity(ent_id);
-
-        if (!ent)
-            return;
-
-        player_info_t info;
-
-        if (!interfaces::engine_client->get_player_info(ent_id, info))
-            return;
-
-        static const char *options[] = {"yes", "no", "wtf", "help", "stop"};
-
-        logging::info(XORSTR("{} voted {}"), info.name, options[game_event->get_int(XORSTR("vote_option"))]);
+        logging::info(XORSTR("{} voted {}"), player_info.name, std::string(vote == 0 ? XORSTR("yes\n") : XORSTR("no\n")));
     }
 
     void on_player_death(c_game_event *game_event) {
