@@ -1,4 +1,4 @@
-﻿#include "world.h"
+#include "world.h"
 
 #include <cstdio>
 #include <string>
@@ -143,16 +143,16 @@ namespace features::visuals::world {
         }
     }
 
-    void display_spectator() {
+    void display_spectators() {
         if (!settings.visuals.local.spectator_list)
             return;
 
         if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
             return;
 
-        const auto obs_mode_to_string = [](int obs_mode)->std::string {
+        const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-                // clang-format off
+            // clang-format off
                 case OBS_MODE_IN_EYE:    return XORSTR("firstperson");
                 case OBS_MODE_CHASE:     return XORSTR("thirdperson");
                 default:                 return "";
@@ -163,10 +163,13 @@ namespace features::visuals::world {
         for (auto i = 1, y = 0; i <= interfaces::entity_list->get_highest_ent_index(); i++) {
             const auto ent = (c_player *) interfaces::entity_list->get_entity(i);
 
-            if (!ent || !ent->is_player())
+            if (!ent || !ent->is_player() || ent->get_networkable()->is_dormant())
                 continue;
 
             if (ent->get_life_state() == LIFE_STATE_ALIVE)
+                continue;
+
+            if (ent->get_team_num() != cheat::local_player->get_team_num())
                 continue;
 
             const auto obs_target = ent->get_observer_target().get();

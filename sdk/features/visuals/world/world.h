@@ -14,6 +14,6 @@ namespace features::visuals::world {
     void indicators();
     void velocity_graph();
 
-    void display_spectator();
+    void display_spectators();
 
 } // namespace features::visuals::world
