@@ -125,7 +125,7 @@ namespace features::game_events {
         player_info_t player_info;
         interfaces::engine_client->get_player_info(id, player_info);
 
-        logging::info(XORSTR("{} voted {}"), player_info.name, std::string(vote == 0 ? XORSTR("yes\n") : XORSTR("no\n")));
+        logging::info(XORSTR("{} voted {}"), player_info.name, std::string(vote == 0 ? XORSTR("yes") : XORSTR("no")));
     }
 
     void on_player_death(c_game_event *game_event) {
