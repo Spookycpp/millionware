@@ -338,10 +338,9 @@ namespace features::miscellaneous {
     static uintptr_t *death_notice = nullptr;
 
     void preserve_killfeed() {
-        static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
 
         if (auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period()) {
-            clear_notices((uintptr_t) death_notice - 0x14);
+            death_notice = 0;
             return;
         }
 
@@ -353,11 +352,20 @@ namespace features::miscellaneous {
         if (!death_notice)
             death_notice = util::find_hud_element(XORSTR("CCSGO_HudDeathNotice"));
 
-        if (death_notice && cheat::local_player->is_alive()) {
+        if (death_notice) {
             auto local_death_notice = (float *) ((uintptr_t) death_notice + 0x50);
 
             if (local_death_notice)
                 *local_death_notice = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
+
+            if (cheat::should_clear_death_notices) {
+
+                cheat::should_clear_death_notices = false;
+
+                static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
+
+                clear_notices((uintptr_t) death_notice - 0x14);
+            }
         }
     }
 
