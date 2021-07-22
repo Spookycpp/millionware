@@ -14,7 +14,10 @@ namespace features::visuals::world {
     void indicators();
     void velocity_graph();
 
-    void display_spectators();
-    void bomb_timer(c_entity *ent);
 
+    void display_spectators();
+
+    void draw_world(c_entity *entity);
+    void bomb_timer(c_entity *entity);
+    void dropped_weapons(c_entity *entity);
 } // namespace features::visuals::world

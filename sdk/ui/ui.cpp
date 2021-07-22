@@ -230,6 +230,8 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Outside of FOV"), settings.visuals.player.outside_fov);
                 group->new_slider(XORSTR("Radius"), settings.visuals.player.outside_fov_radius, 0.f, 2.0f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.player.outside_fov);
                 group->new_slider(XORSTR("Size"), settings.visuals.player.outside_fov_size, 0, 30, XORSTR("{}"))->add_dependency(settings.visuals.player.outside_fov);
+
+                group->new_checkbox(XORSTR("Engine radar"), settings.visuals.player.engine_radar);
             }
 
             if (const auto group = players_tab->new_group(XORSTR("Model"))) {
@@ -242,6 +244,7 @@ void ui::init() {
 
         if (const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, XORSTR("Weapons"))) {
             if (const auto group = weapons_tab->new_group(XORSTR("Main"))) {
+                group->new_checkbox(XORSTR("Dropped weapons"), settings.visuals.world.weapon);
             }
         }
 
@@ -312,9 +315,9 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Ragdoll float"), settings.miscellaneous.ragdoll_float);
                 group->new_select(XORSTR("Feet fx"), settings.visuals.local.feet_fx, {XORSTR("None"), XORSTR("Sparks"), XORSTR("Dust"), XORSTR("Energy splash")});
 
-                group->new_checkbox(XORSTR("Feet trails"), settings.visuals.local.foot_trail)->add_color_picker(settings.visuals.local.trail_color);
-                group->new_slider(XORSTR("Time"), settings.visuals.local.trail_time, 0.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
-                group->new_slider(XORSTR("Size"), settings.visuals.local.trail_size, 0.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
+                //group->new_checkbox(XORSTR("Feet trails"), settings.visuals.local.foot_trail)->add_color_picker(settings.visuals.local.trail_color);
+                //group->new_slider(XORSTR("Time"), settings.visuals.local.trail_time, 0.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
+                //group->new_slider(XORSTR("Size"), settings.visuals.local.trail_size, 0.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
             }
         }
     }

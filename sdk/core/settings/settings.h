@@ -151,7 +151,7 @@ struct settings_t {
 			bool    fog = false;
 			int     fog_length = 0;
 			color_t fog_color = { 255, 255, 255 };
-			int     weapon = 0;
+			bool    weapon = false;
 			bool    grenade = false;
 			bool    bomb = false;
 			bool    defusal_kit = false;

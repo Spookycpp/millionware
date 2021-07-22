@@ -33,7 +33,7 @@ static entity_esp_t &get_entity_info(int index) {
     return entity_esp_info[index];
 }
 
-static bool get_bounding_box(const entity_esp_t &entity_info, c_entity *entity, features::visuals::esp::bounding_box_t &out_box) {
+static bool get_bounding_box(c_entity *entity, features::visuals::esp::bounding_box_t &out_box) {
     const auto collideable = entity->get_collideable();
     const auto mins = collideable->get_mins();
     const auto maxs = collideable->get_maxs();
@@ -75,7 +75,15 @@ void features::visuals::esp::frame() {
     for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {
         const auto entity = interfaces::entity_list->get_entity(i);
 
-        if (!entity || !entity->is_player())
+        if (!entity)
+            continue;
+
+        if (entity->is_weapon() && !entity->get_networkable()->is_dormant())
+            draw_dropped_weapon(entity);
+
+        features::visuals::world::draw_world(entity);
+        
+        if (!entity->is_player())
             continue;
 
         auto &entity_info = get_entity_info(i);
@@ -100,7 +108,7 @@ void features::visuals::esp::frame() {
 
         bounding_box_t entity_box;
 
-        if (!get_bounding_box(entity_info, entity, entity_box))
+        if (!get_bounding_box(entity, entity_box))
             continue;
 
         m_bottom_offset[i] = 0.f;
@@ -120,7 +128,6 @@ void features::visuals::esp::frame() {
         draw_headspot(player);
         draw_barrel(player);
 
-        features::visuals::world::bomb_timer(entity);
     }
 }
 
@@ -417,6 +424,56 @@ void features::visuals::esp::draw_barrel(c_player *player) {
 
     interfaces::debug_overlay->add_line(tr.start_pos, tr.end_pos, {255, 255, 255}, false, interval_per_tick);
     interfaces::debug_overlay->add_swept_box(tr.end_pos, tr.end_pos, -.9f, .9f, eye_angles, {255, 255, 255}, interval_per_tick);
+}
+
+void features::visuals::esp::draw_dropped_weapon(c_entity *entity) {
+
+    auto weapon = (c_weapon *) entity;
+
+    if (weapon->get_owner_handle() != entity_handle_t())
+        return;
+
+    if (weapon->get_networkable()->is_dormant())
+        return;
+
+    auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
+
+    if (!weapon_info)
+        return;
+
+    c_client_class *client_class = weapon->get_networkable()->get_client_class();
+
+    if (!client_class)
+        return;
+
+    if (!settings.visuals.world.weapon)
+        return;
+
+    bounding_box_t entity_box;
+
+    if (!get_bounding_box(entity, entity_box))
+        return;
+
+    if (client_class->class_id != WEAPON_C4) {
+        char weapon_name[128];
+
+        memset(weapon_name, 0, sizeof(weapon_name));
+
+        if (strncmp(weapon_info->weapon_name, XORSTR("weapon_"), 7) == 0)
+            strcpy(weapon_name, weapon_info->weapon_name + 7);
+        else
+            strcpy(weapon_name, weapon_info->weapon_name);
+
+        for (auto i = 0; i < strlen(weapon_name); i++)
+            weapon_name[i] = tolower(weapon_name[i]);
+
+        const auto text_size = render::measure_text(weapon_name, FONT_TAHOMA_11);
+        const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+        render::draw_text(text_pos, {255, 255, 255, 255}, weapon_name, FONT_TAHOMA_11);
+    }
+    else if (client_class->class_id == WEAPON_C4) {
+    }
 }
 
 void features::visuals::esp::update_dormant_pos(int index, const vector_t &position) {

@@ -1,4 +1,4 @@
-﻿#include "world.h"
+#include "world.h"
 
 #include <cstdio>
 #include <string>
@@ -23,7 +23,6 @@
 #include "../../../core/util/util.h"
 #include "../../../source engine/entity.h"
 #include <format>
-#include <iomanip>
 
 namespace features::visuals::world {
 
@@ -154,7 +153,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-                // clang-format off
+            // clang-format off
                 case OBS_MODE_IN_EYE:    return XORSTR("firstperson");
                 case OBS_MODE_CHASE:     return XORSTR("thirdperson");
                 default:                 return "";
@@ -162,8 +161,12 @@ namespace features::visuals::world {
             }
         };
 
-        for (auto i = 1, y = 0; i <= interfaces::entity_list->get_highest_ent_index(); i++) {
+        for (auto i = 1, y = 0; i <= 64; i++) {
+
             const auto ent = (c_player *) interfaces::entity_list->get_entity(i);
+
+            if (!cheat::local_player)
+                continue;
 
             if (!ent || !ent->is_player() || ent->get_networkable()->is_dormant())
                 continue;
@@ -202,18 +205,48 @@ namespace features::visuals::world {
         }
     }
 
-    void bomb_timer(c_entity *ent) {
+    void draw_world(c_entity *entity) {
+        c_client_class *client_class = entity->get_networkable()->get_client_class();
+
+        if (!client_class)
+            return;
+
+        if (client_class->class_id == CPlantedC4)
+            bomb_timer(entity);
+    }
+
+    void bomb_timer(c_entity *entity) {
+
+        const auto get_bombsite = [&]() -> std::string {
+            const auto player_res = util::get_player_resource();
+
+            if (player_res == nullptr)
+                return XORSTR("<unknown>");
+
+            const auto bomb_origin = entity->get_abs_origin();
+            const auto &site_a = player_res->get_bomb_site_center_a();
+            const auto &site_b = player_res->get_bomb_site_center_b();
+
+            const auto dist_to_site_a = bomb_origin.dist(site_a);
+            const auto dist_to_site_b = bomb_origin.dist(site_b);
+
+            if (dist_to_site_a < dist_to_site_b)
+                return XORSTR("A");
+
+            return XORSTR("B");
+        };
+
         const auto get_bomb_time = [&]() -> std::string {
-            if (!ent->get_is_bomb_ticking() || ent->get_is_bomb_defused())
+            if (!entity->get_is_bomb_ticking() || entity->get_is_bomb_defused())
                 return {};
 
-            const float bomb_time = (interfaces::global_vars->current_time - ent->get_c4_blow()) * -1.0f;
+            const float bomb_time = (interfaces::global_vars->current_time - entity->get_c4_blow()) * -1.0f;
 
-            return std::format(XORSTR("{:2f}s"), bomb_time);
+            return std::format(XORSTR("{}: {:.2f}s"), get_bombsite(), bomb_time);
         };
 
         const auto get_bomb_damage = [&]() {
-            const vector_t delta = ent->get_renderable()->get_render_origin() - cheat::local_player->get_renderable()->get_render_origin();
+            const vector_t delta = entity->get_renderable()->get_render_origin() - cheat::local_player->get_renderable()->get_render_origin();
 
             const float bomb_damage = 500.0f * std::exp(-(delta.length() * delta.length() / (1750.0f * 0.33333334f * 2.0f * (1750.0f * 0.33333334f))));
             float damage = bomb_damage;
@@ -240,14 +273,15 @@ namespace features::visuals::world {
 
         const auto bomb_time_str = get_bomb_time();
         const auto health_remaining = get_bomb_damage();
-        const auto health_remaining_text = std::format(XORSTR("Health remaing: {} hp"), std::max(health_remaining, 0));
+        const auto health_remaining_text = std::format(XORSTR("Health remaining: {} HP"), std::max(health_remaining, 0));
 
         const auto screen_size = render::get_screen_size();
         const auto bomb_time_text_size = render::measure_text(bomb_time_str.c_str(), FONT_TAHOMA_11);
         const auto health_remaining_text_size = render::measure_text(health_remaining_text.c_str(), FONT_TAHOMA_11);
 
-        render::draw_text({screen_size.x * 0.5f - bomb_time_text_size.x * 0.5f, screen_size.y * 0.3f}, {255, 255, 255, 255}, bomb_time_str.c_str(), FONT_TAHOMA_11);
-        render::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.3f + 20.0f}, health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235},
-                          health_remaining_text.c_str(), FONT_TAHOMA_11);
+        render::draw_text({screen_size.x * 0.5f - bomb_time_text_size.x * 0.5f, screen_size.y * 0.15f}, {255, 255, 255, 255}, bomb_time_str.c_str(), FONT_TAHOMA_11);
+        render::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.15f + bomb_time_text_size.y + 5.f},
+                          health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235}, health_remaining_text.c_str(), FONT_TAHOMA_11);
     }
+
 } // namespace features::visuals::world
