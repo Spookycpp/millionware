@@ -309,6 +309,4 @@ void util::undo() {
 		cheat::local_player->get_flash_alpha() = 255.0f;
         features::miscellaneous::skybox_changer(0);
     }
-
-	interfaces::engine_client->execute_command(XORSTR("clear"));
 }
