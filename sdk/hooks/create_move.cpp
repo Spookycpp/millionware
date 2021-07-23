@@ -43,10 +43,11 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         if (settings.miscellaneous.movement.edge_bug_assist_hotkey)
             features::engine_prediction::create_edgebug_entry(user_cmd);
 
+        features::engine_prediction::repredict();
+
         features::movement::pre_prediction(user_cmd);
         const auto pre_flags = cheat::local_player->get_flags();
 
-        /* engine prediction */
         features::engine_prediction::start_prediction();
         features::engine_prediction::end_prediction();
 
