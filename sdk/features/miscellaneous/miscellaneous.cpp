@@ -54,11 +54,11 @@ namespace features::miscellaneous {
             return;
 
         if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() == WEAPON_REVOLVER) {
-            if (weapon->get_next_secondary_attack() > interfaces::global_vars->current_time)
+            if (weapon->get_next_secondary_attack() > cheat::local_player->get_tick_base() * interfaces::global_vars->interval_per_tick)
                 user_cmd->buttons &= ~BUTTON_IN_ATTACK2;
         }
         else if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() != WEAPON_REVOLVER) {
-            if (weapon->get_next_primary_attack() > interfaces::global_vars->current_time)
+            if (weapon->get_next_primary_attack() > cheat::local_player->get_tick_base() * interfaces::global_vars->interval_per_tick)
                 user_cmd->buttons &= ~BUTTON_IN_ATTACK;
         }
     }
