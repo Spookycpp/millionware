@@ -161,7 +161,7 @@ void features::visuals::esp::draw_name(const bounding_box_t &entity_box, c_playe
     if (!interfaces::engine_client->get_player_info(player->get_networkable()->index(), info))
         return;
 
-    std::string player_name = info.name;
+    const auto player_name = info.fake_player ? std::format(XORSTR("[BOT] {}"), info.name) : info.name;
 
     const auto text_size = render::measure_text(player_name.c_str(), FONT_TAHOMA_11);
     render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y}, settings.visuals.player.player_name_color, player_name.c_str(), FONT_TAHOMA_11);
