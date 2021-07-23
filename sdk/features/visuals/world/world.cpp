@@ -153,7 +153,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-            // clang-format off
+                // clang-format off
                 case OBS_MODE_IN_EYE:    return XORSTR("firstperson");
                 case OBS_MODE_CHASE:     return XORSTR("thirdperson");
                 default:                 return "";

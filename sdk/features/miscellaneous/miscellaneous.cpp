@@ -23,6 +23,7 @@ namespace features::miscellaneous {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
+            // clang-format off
             case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
                 post_processing();
 
@@ -33,6 +34,7 @@ namespace features::miscellaneous {
                 ragdoll_float();
                 ragdoll_push();
             }
+            // clang-format on
         }
     }
 
@@ -201,12 +203,12 @@ namespace features::miscellaneous {
     }
 
     void server_selector() {
-        //const char *regions[] = {
+        // const char *regions[] = {
         //    (""),    ("syd"), ("vie"), ("gru"), ("scl"),  ("dxb"), ("par"), ("fra"), ("hkg"), ("maa"),
         //    ("bom"), ("tyo"), ("lux"), ("ams"), ("limc"), ("man"), ("waw"), ("sgp"), ("jnb"), ("mad"),
         //    ("sto"), ("lhr"), ("atl"), ("ord"), ("lax"),  ("mwh"), ("okc"), ("sea"), ("iad")};
 
-        //static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9 ? ? ? ? 0F 43") + 1);
+        // static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9 ? ? ? ? 0F 43") + 1);
         //*relay_cluster = "lax";
     }
 
