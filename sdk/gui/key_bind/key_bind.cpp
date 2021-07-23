@@ -8,6 +8,7 @@
 #include "../../engine/render/render.h"
 #include "../../ui/ui.h"
 #include "key_bind.h"
+#include "../../engine/security/xorstr.h"
 
 static std::string get_key_display_name(int key)
 {
@@ -42,19 +43,19 @@ static std::string get_key_display_name(int key)
 		switch (key)
 		{
 			case VK_LBUTTON:
-				return "Left Mouse";
+				return XORSTR("Left Mouse");
 
 			case VK_MBUTTON:
-				return "Middle Mouse";
+                return XORSTR("Middle Mouse");
 
 			case VK_RBUTTON:
-				return "Right Mouse";
+                return XORSTR("Right Mouse");
 
 			case VK_XBUTTON1:
-				return "Mouse 4";
+                return XORSTR("Mouse 4");
 
 			case VK_XBUTTON2:
-				return "Mouse 5";
+				return XORSTR("Mouse 5");
 		}
 	}
 

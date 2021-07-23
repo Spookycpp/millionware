@@ -1,5 +1,6 @@
 ﻿#include "../../engine/input/input.h"
 #include "../../engine/render/render.h"
+#include "../../engine/security/xorstr.h"
 #include "../../resources/font_awesome.h"
 #include "../../ui/ui.h"
 #include "select.h"
@@ -45,7 +46,7 @@ void c_select::layout(layout_item &overlay, layout_item &parent)
 
 		if (value_.get() == 0)
 		{
-			const auto no_value_selected_size = render::measure_text("Select an option", FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
+			const auto no_value_selected_size = render::measure_text(XORSTR("Select an option"), FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
 
 			value_item_ = container_
 				.new_item(LAY_LEFT | LAY_VCENTER)
@@ -127,7 +128,7 @@ void c_select::layout(layout_item &overlay, layout_item &parent)
 
 		if (!overlay_container_.begin().is_valid())
 		{
-			const auto no_choices_size = render::measure_text("No choices to choose from", FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
+            const auto no_choices_size = render::measure_text(XORSTR("No choices to choose from"), FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
 
 			no_choices_item_ = overlay_container_
 				.new_item(LAY_LEFT | LAY_VCENTER)
@@ -170,7 +171,8 @@ void c_select::render()
 
 			if (item_hovered)
 			{
-				printf("Hovered %s \n", item.name.data());
+				// nigga what the FUCK
+				//printf("Hovered %s \n", item.name.data());
 
 				hovered = false;
 			}
@@ -259,7 +261,7 @@ void c_select::render()
 			std::clamp((int) (150.0f + (20.0f * hover_animation_)), 150, 170),
 			std::clamp((int) (150.0f + (20.0f * hover_animation_)), 150, 170));
 
-		render::draw_text(value_pos, value_color, "Select an option", FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
+		render::draw_text(value_pos, value_color, XORSTR("Select an option"), FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
 	}
 	else if (is_multi_select_)
 	{
@@ -348,7 +350,7 @@ void c_select::render()
 		{
 			const auto [no_choices_pos, _] = rect_to_xywh(no_choices_item_.get_rect());
 
-			render::draw_text(no_choices_pos, { 255, 255, 255 }, "No choices to choose from", FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
+			render::draw_text(no_choices_pos, { 255, 255, 255 }, XORSTR("No choices to choose from"), FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
 		}
 
 		render::set_layer(0);
