@@ -12,8 +12,8 @@
 #include "../../../engine/math/math.h"
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
-#include "esp.h"
 #include "../world/world.h"
+#include "esp.h"
 
 // cringe but ye
 static std::array<float, 65> m_bottom_offset;
@@ -81,8 +81,11 @@ void features::visuals::esp::frame() {
         if (entity->is_weapon() && !entity->get_networkable()->is_dormant())
             draw_dropped_weapon(entity);
 
+        if (entity->is_grenade() && !entity->get_networkable()->is_dormant())
+            draw_thrown_utility(entity);
+
         features::visuals::world::draw_world(entity);
-        
+
         if (!entity->is_player())
             continue;
 
@@ -127,7 +130,6 @@ void features::visuals::esp::frame() {
         draw_skeleton(player);
         draw_headspot(player);
         draw_barrel(player);
-
     }
 }
 
@@ -279,7 +281,6 @@ void features::visuals::esp::draw_weapon(const bounding_box_t &entity_box, c_pla
 
     const auto localized_name_size = render::measure_text(localized_name_buffer, FONT_TAHOMA_11);
 
-
     render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()]},
                       {255, 255, 255, 255}, localized_name_buffer, FONT_TAHOMA_11);
 
@@ -297,28 +298,33 @@ void features::visuals::esp::draw_flags(const bounding_box_t &entity_box, c_play
     };
 
     if (settings.visuals.player.flags & (1 << 0))
-        draw_flag(player->get_has_helmet() ? XORSTR("HK") : XORSTR("K"), {255, 255, 255});
+        draw_flag(player->get_has_helmet() ? XORSTR("hk") : XORSTR("k"), {255, 255, 255});
 
     if (settings.visuals.player.flags & (1 << 1) && player->get_is_scoped())
-        draw_flag(XORSTR("SCOPED"), {0, 150, 255});
+        draw_flag(XORSTR("scoped"), {0, 150, 255});
 
     if (settings.visuals.player.flags & (1 << 2) && player->is_reloading())
-        draw_flag(XORSTR("RELOADING"), {2, 106, 198});
+        draw_flag(XORSTR("reloading"), {2, 106, 198});
 
     if (settings.visuals.player.flags & (1 << 3) && player->is_flashed())
-        draw_flag(XORSTR("FLASHED"), {255, 255, 255});
+        draw_flag(XORSTR("flash"), {255, 255, 255});
 
     if (settings.visuals.player.flags & (1 << 4) && player->has_bomb())
-        draw_flag(XORSTR("BOMB"), {255, 0, 0});
-       
+        draw_flag(XORSTR("bomb"), {255, 0, 0});
+
     if (settings.visuals.player.flags & (1 << 5) && player->get_is_defusing())
-        draw_flag(XORSTR("DEFUSING"), {255, 100, 0});
+        draw_flag(XORSTR("defusing"), {255, 100, 0});
 
     if (settings.visuals.player.flags & (1 << 6) && player->is_smoked())
-        draw_flag(XORSTR("SMOKED"), {255, 255, 255});
+        draw_flag(XORSTR("smoked"), {255, 255, 255});
 
     if (settings.visuals.player.flags & (1 << 7) && player->get_health() == 1)
-        draw_flag(XORSTR("FLASH KILL"), {125, 255, 248});
+        draw_flag(XORSTR("flash kill"), {125, 255, 248});
+
+    if (settings.visuals.player.flags & (1 << 8)) {
+        auto flag_string = std::format(XORSTR("${}"), player->get_money());
+        draw_flag(flag_string.c_str(), {0, 255, 0, 255});
+    }
 }
 
 void features::visuals::esp::draw_skeleton(c_player *player) {
@@ -441,12 +447,55 @@ void features::visuals::esp::draw_dropped_weapon(c_entity *entity) {
     if (!weapon_info)
         return;
 
-    c_client_class *client_class = weapon->get_networkable()->get_client_class();
+    bounding_box_t entity_box;
 
-    if (!client_class)
+    if (!get_bounding_box(entity, entity_box))
         return;
 
-    if (!settings.visuals.world.weapon)
+    if (weapon->get_item_definition_index() != WEAPON_C4 && settings.visuals.world.weapon) {
+
+        const auto localized_name = interfaces::localize->find(weapon_info->hud_name);
+
+        char localized_name_buffer[32];
+
+        memset(localized_name_buffer, 0, sizeof(localized_name_buffer));
+
+        const auto localized_name_length = WideCharToMultiByte(CP_UTF8, 0, localized_name, wcslen(localized_name), localized_name_buffer, sizeof(localized_name_buffer), nullptr, nullptr);
+
+        for (auto i = 0; i < localized_name_length; i++)
+            localized_name_buffer[i] = std::tolower(localized_name_buffer[i]);
+
+        const auto text_size = render::measure_text(localized_name_buffer, FONT_TAHOMA_11);
+        const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+        render::draw_text(text_pos, settings.visuals.world.weapon_color, localized_name_buffer, FONT_TAHOMA_11);
+    }
+    else if (weapon->get_item_definition_index() == WEAPON_C4 && settings.visuals.world.bomb) {
+
+        // doing this instead of using localized
+        // name because "c4 explosive" looks stupid
+        const auto bomb_string = XORSTR("bomb");
+
+        const auto text_size = render::measure_text(bomb_string, FONT_TAHOMA_11);
+        const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+        render::draw_text(text_pos, settings.visuals.world.bomb_color, bomb_string, FONT_TAHOMA_11);
+    }
+}
+
+void features::visuals::esp::draw_thrown_utility(c_entity *entity) {
+
+    if (!settings.visuals.world.grenades)
+        return;
+
+    auto grenade = (c_weapon *) entity;
+
+    if (grenade->get_networkable()->is_dormant())
+        return;
+
+    c_client_class *client_class = grenade->get_networkable()->get_client_class();
+
+    if (!client_class)
         return;
 
     bounding_box_t entity_box;
@@ -454,25 +503,57 @@ void features::visuals::esp::draw_dropped_weapon(c_entity *entity) {
     if (!get_bounding_box(entity, entity_box))
         return;
 
-    if (client_class->class_id != WEAPON_C4) {
-        char weapon_name[128];
+    const auto model = grenade->get_renderable()->get_model();
 
-        memset(weapon_name, 0, sizeof(weapon_name));
+    if (!model)
+        return;
 
-        if (strncmp(weapon_info->weapon_name, XORSTR("weapon_"), 7) == 0)
-            strcpy(weapon_name, weapon_info->weapon_name + 7);
-        else
-            strcpy(weapon_name, weapon_info->weapon_name);
+    auto model_name = interfaces::model_info->get_model_name(model);
 
-        for (auto i = 0; i < strlen(weapon_name); i++)
-            weapon_name[i] = tolower(weapon_name[i]);
+    if (client_class->class_id == CBaseCSGrenadeProjectile) {
+        if (std::strstr(model_name, XORSTR("fraggrenade")) && grenade->get_explode_effect_tick_begin() < 1) {
+            const auto text_size = render::measure_text(XORSTR("frag"), FONT_TAHOMA_11);
+            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-        const auto text_size = render::measure_text(weapon_name, FONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("frag"), FONT_TAHOMA_11);
+        }
+        else if (std::strstr(model_name, XORSTR("flashbang"))) {
+            const auto text_size = render::measure_text(XORSTR("flashbang"), FONT_TAHOMA_11);
+            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("flashbang"), FONT_TAHOMA_11);
+        }
+    }
+
+    if (client_class->class_id == CSmokeGrenadeProjectile) {
+        const auto text_size = render::measure_text(XORSTR("smoke"), FONT_TAHOMA_11);
         const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-        render::draw_text(text_pos, {255, 255, 255, 255}, weapon_name, FONT_TAHOMA_11);
+        render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("smoke"), FONT_TAHOMA_11);
     }
-    else if (client_class->class_id == WEAPON_C4) {
+
+    if (client_class->class_id == CMolotovProjectile) {
+        if (std::strstr(model_name, XORSTR("molotov"))) {
+
+            const auto text_size = render::measure_text(XORSTR("molotov"), FONT_TAHOMA_11);
+            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("molotov"), FONT_TAHOMA_11);
+        }
+        else if (std::strstr(model_name, XORSTR("incendiary"))) {
+
+            const auto text_size = render::measure_text(XORSTR("incendiary"), FONT_TAHOMA_11);
+            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("incendiary"), FONT_TAHOMA_11);
+        }
+    }
+
+    if (client_class->class_id == CDecoyProjectile) {
+        const auto text_size = render::measure_text(XORSTR("decoy"), FONT_TAHOMA_11);
+        const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+        render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("decoy"), FONT_TAHOMA_11);
     }
 }
 

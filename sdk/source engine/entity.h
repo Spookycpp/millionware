@@ -330,10 +330,14 @@ public:
 
 	DECLARE_NETVAR(int, flags, "DT_BasePlayer", "m_fFlags");
 	DECLARE_NETVAR(int, team_num, "DT_BaseEntity", "m_iTeamNum");
+	DECLARE_NETVAR(int, explode_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nExplodeEffectTickBegin");
+	DECLARE_NETVAR(int, smoke_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nSmokeEffectTickBegin");
 
 	DECLARE_NETVAR(vector_t, vec_origin, "DT_BaseEntity", "m_vecOrigin");
 	DECLARE_NETVAR(entity_handle_t, owner_handle, "DT_BaseEntity", "m_hOwnerEntity");
 	DECLARE_NETVAR_OFFSET(matrix3x4_t, transformation_matrix, "DT_BaseEntity", "m_CollisionGroup", -48);
+
+	bool is_grenade();
 
 	template <typename T>
     T &get(const uintptr_t offset) {

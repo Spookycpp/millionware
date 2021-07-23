@@ -43,6 +43,11 @@ bool entity_handle_t::operator !=(c_entity *entity) const
 	return get() != entity;
 }
 
+bool c_entity::is_grenade() {
+    auto classid = this->get_networkable()->get_client_class()->class_id;
+    return classid == CBaseCSGrenadeProjectile || classid == CSmokeGrenadeProjectile || classid == CMolotovProjectile || classid == CDecoyProjectile;
+}
+
 CUtlVector<c_animation_layer>& c_player::animation_overlay() {
 	const static auto offset = netvars::get(CRC_CT("DT_BaseAnimating:m_hLightingOrigin"));
 

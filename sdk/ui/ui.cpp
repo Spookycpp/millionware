@@ -220,7 +220,7 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Armor"), settings.visuals.player.armor);
 
                 group->new_select(XORSTR("Flags"), settings.visuals.player.flags,
-                                  {XORSTR("Armor"), XORSTR("Scoped"), XORSTR("Reloading"), XORSTR("Flashed"), XORSTR("Bomb"), XORSTR("Defusing"), XORSTR("Smoked"), XORSTR("Flash kill")}, true);
+                                  {XORSTR("Armor"), XORSTR("Scoped"), XORSTR("Reloading"), XORSTR("Flashed"), XORSTR("Bomb"), XORSTR("Defusing"), XORSTR("Smoked"), XORSTR("Flash kill"), XORSTR("Money")}, true);
 
                 group->new_checkbox(XORSTR("Skeleton"), settings.visuals.player.skeleton)->add_color_picker(settings.visuals.player.skeleton_color);
                 group->new_checkbox(XORSTR("Headspot"), settings.visuals.player.head_spot)->add_color_picker(settings.visuals.player.head_spot_color);
@@ -244,7 +244,9 @@ void ui::init() {
 
         if (const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, XORSTR("Weapons"))) {
             if (const auto group = weapons_tab->new_group(XORSTR("Main"))) {
-                group->new_checkbox(XORSTR("Dropped weapons"), settings.visuals.world.weapon);
+                group->new_checkbox(XORSTR("Dropped weapons"), settings.visuals.world.weapon)->add_color_picker(settings.visuals.world.weapon_color);
+                group->new_checkbox(XORSTR("Dropped bomb"), settings.visuals.world.bomb)->add_color_picker(settings.visuals.world.bomb_color);
+                group->new_checkbox(XORSTR("Grenades"), settings.visuals.world.grenades)->add_color_picker(settings.visuals.world.grenades_color);
             }
         }
 
