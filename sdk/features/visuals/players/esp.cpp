@@ -120,6 +120,11 @@ void features::visuals::esp::frame() {
             if (!player->get_is_spotted())
                 player->get_is_spotted() = true;
 
+        const auto screen_size = render::get_screen_size();
+
+        if (entity_box.x + entity_box.width - 1 < 0 || entity_box.x - 1 >= screen_size.x || entity_box.y + entity_box.height - 1 < 0 || entity_box.y - 1 >= screen_size.y)
+            continue;
+
         draw_box(entity_box, player);
         draw_name(entity_box, player);
         draw_health(entity_box, player);
