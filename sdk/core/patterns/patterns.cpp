@@ -139,7 +139,7 @@ bool patterns::init()
 	if ((money_reveal = get_pattern(XORSTR("client.dll"), XORSTR("84 C0 75 0C 5B"))) == 0u)
 		return false;
 
-	if ((insert_into_tree_list_leaves_in_box_call = get_pattern(XORSTR("client.dll"), XORSTR("89 44 24 14 EB 08 C7 44 24 ????? 8B 45"))) == 0u)
+	if ((insert_into_tree_list_leaves_in_box_call = get_pattern(XORSTR("client.dll"), XORSTR("56 52 FF 50 18"))) == 0u)
 		return false;
 
 	if ((weapon_system = get_pattern(XORSTR("client.dll"), XORSTR("8B 35 ???? FF 10 0F B7 C0"))) == 0u)
