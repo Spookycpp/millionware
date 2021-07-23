@@ -216,6 +216,7 @@ struct settings_t {
 		bool  money_reveal = false;
 		bool  preserve_killfeed = false;
 		bool  auto_accept = false;
+		bool  reveal_overwatch_suspect = false;
 		bool  unlock_hidden_convars = false;
 		bool  unlock_inventory = false;
 		bool  ragdoll_push = false;

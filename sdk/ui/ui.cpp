@@ -364,6 +364,7 @@ void ui::init() {
                 group->new_checkbox(XORSTR("Auto pistol"), settings.miscellaneous.auto_pistol);
                 group->new_checkbox(XORSTR("Vote revealer"), settings.miscellaneous.vote_reveal);
                 group->new_checkbox(XORSTR("Inventory unlocker"), settings.miscellaneous.unlock_inventory);
+                group->new_checkbox(XORSTR("Reveal overwatch suspect"), settings.miscellaneous.reveal_overwatch_suspect);
                 group->new_checkbox(XORSTR("Kill say"), settings.miscellaneous.kill_say);
                 group->new_checkbox(XORSTR("Report player on death"), settings.miscellaneous.report_player_on_death);
 

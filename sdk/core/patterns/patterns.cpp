@@ -270,6 +270,9 @@ bool patterns::init()
 
     if ((inventory_unlocker = get_pattern(XORSTR("client.dll"), XORSTR("84 C0 75 04 B0 01 5F"))) == 0u)
         return false;
+	
+	if ((demo_file_end_reached = get_pattern(XORSTR("client.dll"), XORSTR("8B C8 85 C9 74 1F 80 79 10"))) == 0u)
+        return false;
 
 	return true;
 }

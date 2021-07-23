@@ -80,6 +80,7 @@
     <ClCompile Include="hooks\enable_world_fog.cpp" />
     <ClCompile Include="features\discord presence\rpc.cpp" />
     <ClCompile Include="hooks\draw_print_text.cpp" />
+    <ClCompile Include="hooks\get_demo_playback_parameters.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />

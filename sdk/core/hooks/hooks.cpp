@@ -45,6 +45,7 @@ bool hooks::init() {
     enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
     fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_event_manager, 9, &fire_event_client_side);
     frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
+    get_demo_playback_parameters_original = create_hook((uintptr_t) interfaces::engine_client, 218, &get_demo_playback_parameters);
     get_screen_aspect_ratio_original = create_hook((uintptr_t) interfaces::engine_client, 101, &get_screen_aspect_ratio);
     get_player_info_original = create_hook((uintptr_t) interfaces::engine_client, 8, &get_player_info);
     is_connected_original = create_hook((uintptr_t) interfaces::engine_client, 27, &is_connected);
@@ -77,6 +78,7 @@ bool hooks::init() {
     INIT_HOOK(enable_world_fog_original, "EnableWorldFog");
     INIT_HOOK(fire_event_client_side_original, "FireEventClientSide");
     INIT_HOOK(frame_stage_notify_original, "FrameStageNotify");
+    INIT_HOOK(get_demo_playback_parameters_original, "GetDemoPlayParameters");
     INIT_HOOK(get_screen_aspect_ratio_original, "GetScreenAspectRatioOriginal");
     INIT_HOOK(get_player_info_original, "GetPlayerInfo");
     INIT_HOOK(is_connected_original, "IsConnected");

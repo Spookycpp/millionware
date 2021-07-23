@@ -33,6 +33,11 @@ public:
 	DECLARE_VFUNC(6, get_highest_ent_index(), int(__thiscall *)(void *))();
 };
 
+struct c_demo_playback_paramaters {
+    char padding0_[16];
+    bool anonymous_player_identity;
+    char padding1_[23];
+};
 
 struct c_net_channel {
 	char padding0_[20];

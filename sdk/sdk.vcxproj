@@ -213,6 +213,7 @@
     <ClCompile Include="hooks\enable_world_fog.cpp" />
     <ClCompile Include="hooks\fire_event_client_side.cpp" />
     <ClCompile Include="hooks\frame_stage_notify.cpp" />
+    <ClCompile Include="hooks\get_demo_playback_parameters.cpp" />
     <ClCompile Include="hooks\get_player_info.cpp" />
     <ClCompile Include="hooks\get_screen_aspect_ratio.cpp" />
     <ClCompile Include="hooks\is_connected.cpp" />
