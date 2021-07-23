@@ -62,7 +62,7 @@ static bool get_bounding_box(c_entity *entity, features::visuals::esp::bounding_
         bottom = std::min(bottom, screen_pos[i].y);
     }
 
-    out_box = {left, bottom, right - left, (top - bottom) + 4.0f};
+    out_box = {left, bottom, right - left, (top - bottom)};
 
     return true;
 }
