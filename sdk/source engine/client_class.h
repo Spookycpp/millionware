@@ -1,19 +1,9 @@
 #pragma once
-
 #include "macros.h"
 
+class c_networkable;
 class c_client_class;
 class c_recv_table;
-
-class c_client_networkable
-{
-public:
-	DECLARE_VFUNC(1, release(), void(__thiscall *)(void *))();
-	DECLARE_VFUNC(5, on_data_changed(int type), void(__thiscall *)(void *, int))(type);
-	DECLARE_VFUNC(6, pre_data_update(int type), void(__thiscall *)(void *, int))(type);
-	DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
-	DECLARE_VFUNC(13, set_destroyed_on_recreate_entities(), void(__thiscall *)(void *))();
-};
 
 // @note: sv_dump_class_info is very useful fucking use it.
 enum e_class_id
@@ -304,8 +294,8 @@ enum e_class_id
     SporeTrail,
 };
 
-using create_client_class_fn = c_client_networkable * (*)(int, int);
-using create_event_fn = c_client_networkable * (*)();
+using create_client_class_fn = c_networkable * (*)(int, int);
+using create_event_fn = c_networkable * (*)();
 
 class c_client_class
 {

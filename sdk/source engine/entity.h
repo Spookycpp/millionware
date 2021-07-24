@@ -316,11 +316,6 @@ public:
 	DECLARE_VFUNC(157, is_player(), bool(__thiscall *)(void *))();
 	DECLARE_VFUNC(165, is_weapon(), bool(__thiscall *)(void *))();
 
-	DECLARE_VFUNC(4, on_pre_data_change(int type), void(__thiscall *)(void *, int))(type);
-    DECLARE_VFUNC(5, on_post_data_change(int type), void(__thiscall *)(void *, int))(type);
-    DECLARE_VFUNC(6, pre_data_update(int type), void(__thiscall *)(void *, int))(type);
-    DECLARE_VFUNC(7, post_data_update(int type), void(__thiscall *)(void *, int))(type);
-
 	DECLARE_NETVAR(float, simulation_time, "DT_BaseEntity", "m_flSimulationTime");
     DECLARE_NETVAR(float, c4_blow, "DT_PlantedC4", "m_flC4Blow");
 
