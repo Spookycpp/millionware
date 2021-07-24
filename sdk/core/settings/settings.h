@@ -242,6 +242,12 @@ struct settings_t {
 			int	  edge_bug_hotkey = 0;
 			bool  edge_jump = false;
 			int	  edge_jump_hotkey = 0;
+			bool  edge_jump_duck = false;
+			int   edge_jump_duck_hotkey = 0;
+			bool  long_jump = false;
+			int   long_jump_hotkey = 0;
+			bool  edge_jump_lj_bind = false;
+			int   edge_jump_lj_bind_hotkey = 0;
 
 			bool  edge_bug_assist = false;
 			int   edge_bug_assist_hotkey = 0;

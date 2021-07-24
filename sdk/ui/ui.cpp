@@ -333,7 +333,7 @@ void ui::init() {
                     { XORSTR("Velocity"), XORSTR("Takeoff velocity"), XORSTR("Jumpbug"), XORSTR("Edgebug"), XORSTR("Edgebug assist"), XORSTR("Edge jump") }, true );
 
                 group->new_checkbox(XORSTR("Bunnyhop"), settings.miscellaneous.movement.bunny_hop);
-                group->new_checkbox(XORSTR("Infinite duck"), settings.miscellaneous.movement.no_duck_cooldown);
+                group->new_checkbox(XORSTR("Instant crouch"), settings.miscellaneous.movement.no_duck_cooldown);
 
                 group->new_checkbox(XORSTR("Jumpbug"), settings.miscellaneous.movement.jump_bug)->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
 
@@ -347,8 +347,12 @@ void ui::init() {
                 group->new_slider(XORSTR("Strafe max velocity"), settings.miscellaneous.movement.strafe_optimizer_max_velocity, 0, 2000, XORSTR("{}"))->add_dependency(settings.miscellaneous.movement.strafe_optimizer);
 
                 group->new_checkbox(XORSTR("Block bot"), settings.miscellaneous.movement.blockbot)->add_key_bind(settings.miscellaneous.movement.blockbot_key);
+                
+                group->new_checkbox(XORSTR("Long jump"), settings.miscellaneous.movement.long_jump)->add_key_bind(settings.miscellaneous.movement.long_jump_hotkey);
 
                 group->new_checkbox(XORSTR("Edge jump"), settings.miscellaneous.movement.edge_jump)->add_key_bind(settings.miscellaneous.movement.edge_jump_hotkey);
+                group->new_checkbox(XORSTR("Edge jump (Duck after)"), settings.miscellaneous.movement.edge_jump_duck)->add_key_bind(settings.miscellaneous.movement.edge_jump_duck_hotkey);
+                group->new_checkbox(XORSTR("Edge jump (LJ bind)"), settings.miscellaneous.movement.edge_jump_lj_bind)->add_key_bind(settings.miscellaneous.movement.edge_jump_lj_bind_hotkey);
 
                 group->new_checkbox(XORSTR("Air duck"), settings.miscellaneous.movement.air_duck);
 

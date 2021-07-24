@@ -59,6 +59,60 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
             user_cmd->buttons |= BUTTON_IN_JUMP;
     }
 
+    static int64_t ej_lj_duck = -1;
+    if (settings.miscellaneous.movement.edge_jump_duck && input::is_key_down(settings.miscellaneous.movement.edge_jump_duck_hotkey)) {
+        if (ej_lj_duck == -1 && pre_flags & ENTITY_FLAG_ONGROUND && !(post_flags & ENTITY_FLAG_ONGROUND)) {
+            user_cmd->buttons |= BUTTON_IN_JUMP | BUTTON_IN_DUCK;
+
+            ej_lj_duck = interfaces::global_vars->tick_count;
+        }
+
+        if (ej_lj_duck != -1) {
+            if (interfaces::global_vars->tick_count - ej_lj_duck < 2) {
+                user_cmd->buttons |= BUTTON_IN_DUCK;
+            }
+            else {
+                ej_lj_duck = -1;
+            }
+        }
+    }
+
+    static int64_t lj_tick = -1;
+    if (settings.miscellaneous.movement.long_jump && input::is_key_down(settings.miscellaneous.movement.long_jump_hotkey)) {
+        if (lj_tick == -1) {
+            user_cmd->buttons |= BUTTON_IN_JUMP | BUTTON_IN_DUCK;
+
+            lj_tick = interfaces::global_vars->tick_count;
+        }
+
+        if (lj_tick != -1) {
+            if (interfaces::global_vars->tick_count - lj_tick < 2) {
+                user_cmd->buttons |= BUTTON_IN_DUCK;
+            }
+            else {
+                lj_tick = -1;
+            }
+        }
+    }
+
+    static int64_t ej_lj_tick = -1;
+    if (settings.miscellaneous.movement.edge_jump_lj_bind && input::is_key_down(settings.miscellaneous.movement.edge_jump_lj_bind_hotkey)) {
+        if (ej_lj_tick == -1 && pre_flags & ENTITY_FLAG_ONGROUND && !(post_flags & ENTITY_FLAG_ONGROUND)) {
+            user_cmd->buttons |= BUTTON_IN_JUMP | BUTTON_IN_DUCK;
+
+            ej_lj_tick = interfaces::global_vars->tick_count;
+        }
+
+        if (ej_lj_tick != -1) {
+            if (interfaces::global_vars->tick_count - ej_lj_tick < 2) {
+                user_cmd->buttons |= BUTTON_IN_DUCK;
+            }
+            else {
+                ej_lj_tick = -1;
+            }
+        }
+    }
+
     edgebug_assist(user_cmd);
 }
 
@@ -69,9 +123,8 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
         features::movement::predicted_successful = 0;
         features::movement::prediction_failed = 1;
     }
-    else if (cheat::unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > cheat::unpredicted_velocity.z &&
-             cheat::local_player->get_velocity().z < -6.0 && (cheat::local_player->get_flags() & 1) == 0 &&
-             cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
+    else if (cheat::unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > cheat::unpredicted_velocity.z && cheat::local_player->get_velocity().z < -6.0 &&
+             (cheat::local_player->get_flags() & 1) == 0 && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
         const auto previous_velocity = cheat::local_player->get_velocity().z;
 
         engine_prediction::start_prediction();
@@ -142,7 +195,6 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
                     engine_prediction::start_prediction();
                     engine_prediction::end_prediction();
                 }
-
             }
 
             if (features::movement::predicted_successful)
@@ -152,8 +204,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
 
     if (features::movement::predicted_successful) {
 
-        if (interfaces::global_vars->tick_count <
-            features::movement::prediction_ticks + features::movement::prediction_timestamp) {
+        if (interfaces::global_vars->tick_count < features::movement::prediction_ticks + features::movement::prediction_timestamp) {
             user_cmd->forward_move = 0.0;
             user_cmd->side_move = 0.0;
 
@@ -252,7 +303,7 @@ void features::movement::strafe_optimizer(c_user_cmd *user_cmd, int pre_flags, i
             user_cmd->view_angles.y = humanized_angle + old_yaw;
         }
     }
-    
+
     old_yaw = user_cmd->view_angles.y;
     interfaces::engine_client->set_view_angles(user_cmd->view_angles);
 }
@@ -306,6 +357,7 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
 
                 ally_origin += closest_teammate->get_view_offset();
                 vector_t angle = math::calc_angle(local_pos, ally_origin);
+                ally_origin += closest_teammate->get_velocity().length_2d() * interfaces::global_vars->interval_per_tick;
 
                 user_cmd->forward_move = 450.0f;
                 user_cmd->side_move = 0.0f;
@@ -315,26 +367,27 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
         else {
             // blocking
             vector_t angle = math::calc_angle(cheat::local_player->get_abs_origin(), closest_teammate->get_abs_origin());
-        
+
             angle.y -= cheat::local_player->get_eye_angles().y;
             angle.normalize();
-        
+
             float distance_to_player = ally_origin.dist_2d(local_pos);
             vector_t angle_from_ally = math::calc_angle(ally_origin, local_pos);
-        
+
             vector_t fixed_angle = math::align_with_world(angle_from_ally);
-        
+
             vector_t fixed_pos = math::make_vector(fixed_angle);
             fixed_pos *= distance_to_player;
             fixed_pos += ally_origin;
+
+            ally_origin += closest_teammate->get_velocity().length_2d() * interfaces::global_vars->interval_per_tick;
+
             if (local_pos.dist(fixed_pos) > 5.0f) {
-        
-                if (fabs(angle.y) > 0.f) {
-                    if (angle.y < 0.0f)
-                        user_cmd->side_move = 450.f;
-                    else if (angle.y > 0.0f)
-                        user_cmd->side_move = -450.f;
-                }
+
+                if (angle.y < 0.0f)
+                    user_cmd->side_move = 450.f;
+                else if (angle.y > 0.0f)
+                    user_cmd->side_move = -450.f;
             }
         }
     }
