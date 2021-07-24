@@ -68,72 +68,72 @@ void lua::callbacks::startup() {
 }
 
 void lua::callbacks::run_events(c_game_event *game_event) {
-    constexpr std::array<std::pair<const char *, int>, 58> keys = {{
+    static std::array<std::pair<const char *, int>, 58> keys = {{
         // integer, byte
-        {"userid", 1},
-        {"health", 1},
-        {"armor", 1},
-        {"dmg_health", 1},
-        {"dmg_armor", 1},
-        {"userid", 1},
-        {"userid", 1},
-        {"userid", 1},
-        {"hitgroup", 1},
-        {"team", 1},
-        {"loadout", 1},
-        {"site", 1},
-        {"entindex", 1},
-        {"hostage", 1},
-        {"defindex", 1},
-        {"defindex", 1},
-        {"weptype", 1},
-        {"winner", 1},
-        {"player_count", 1},
-        {"entityid", 1},
-        {"player", 1},
-        {"quality", 1},
-        {"method", 1},
-        {"itemdef", 1},
-        {"itemid", 1},
-        {"vote_parameter", 1},
-        {"botid", 1},
-        {"toteam", 1},
-        {"priority", 1},
-        {"drone_dispatched", 1},
-        {"delivered", 1},
-        {"cargo", 1},
-        {"attacker", 1},
-        {"dominated", 1},
-        {"revenge", 1},
-        {"usepenetratedrid", 1},
-        {"x", 1},
-        {"y", 1},
-        {"z", 1},
+        {XORSTR("userid"), 1},
+        {XORSTR("health"), 1},
+        {XORSTR("armor"), 1},
+        {XORSTR("dmg_health"), 1},
+        {XORSTR("dmg_armor"), 1},
+        {XORSTR("userid"), 1},
+        {XORSTR("userid"), 1},
+        {XORSTR("userid"), 1},
+        {XORSTR("hitgroup"), 1},
+        {XORSTR("team"), 1},
+        {XORSTR("loadout"), 1},
+        {XORSTR("site"), 1},
+        {XORSTR("entindex"), 1},
+        {XORSTR("hostage"), 1},
+        {XORSTR("defindex"), 1},
+        {XORSTR("defindex"), 1},
+        {XORSTR("weptype"), 1},
+        {XORSTR("winner"), 1},
+        {XORSTR("player_count"), 1},
+        {XORSTR("entityid"), 1},
+        {XORSTR("player"), 1},
+        {XORSTR("quality"), 1},
+        {XORSTR("method"), 1},
+        {XORSTR("itemdef"), 1},
+        {XORSTR("itemid"), 1},
+        {XORSTR("vote_parameter"), 1},
+        {XORSTR("botid"), 1},
+        {XORSTR("toteam"), 1},
+        {XORSTR("priority"), 1},
+        {XORSTR("drone_dispatched"), 1},
+        {XORSTR("delivered"), 1},
+        {XORSTR("cargo"), 1},
+        {XORSTR("attacker"), 1},
+        {XORSTR("dominated"), 1},
+        {XORSTR("revenge"), 1},
+        {XORSTR("usepenetratedrid"), 1},
+        {XORSTR("x"), 1},
+        {XORSTR("y"), 1},
+        {XORSTR("z"), 1},
 
         // float
-        {"damage", 2},
-        {"distance", 2},
+        {XORSTR("damage"), 2},
+        {XORSTR("distance"), 2},
 
         // bool
-        {"canbuy", 3},
-        {"isplanted", 3},
-        {"hasbomb", 3},
-        {"haskit", 3},
-        {"silenced", 3},
-        {"inrestart", 3},
-        {"success", 3},
-        {"assistedflash", 3},
-        {"noscope", 3},
-        {"thrusmoke", 3},
-        {"urgent", 3},
-        {"headshot", 3},
+        {XORSTR("canbuy"), 3},
+        {XORSTR("isplanted"), 3},
+        {XORSTR("hasbomb"), 3},
+        {XORSTR("haskit"), 3},
+        {XORSTR("silenced"), 3},
+        {XORSTR("inrestart"), 3},
+        {XORSTR("success"), 3},
+        {XORSTR("assistedflash"), 3},
+        {XORSTR("noscope"), 3},
+        {XORSTR("thrusmoke"), 3},
+        {XORSTR("urgent"), 3},
+        {XORSTR("headshot"), 3},
 
         // string
-        {"item", 4},
-        {"message", 4},
-        {"type", 4},
-        {"weapon", 4},
-        {"weapon_itemid", 4},
+        {XORSTR("item"), 4},
+        {XORSTR("message"), 4},
+        {XORSTR("type"), 4},
+        {XORSTR("weapon"), 4},
+        {XORSTR("weapon_itemid"), 4},
     }};
 
     if (!mutex.initialized) {
@@ -193,13 +193,13 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events("run_command")) {
+        for (auto &it : handler.events(XORSTR("run_command"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
             
             // create new table for user_cmd data
             it.ref[2] = luabridge::newTable(it.l);
-            it.ref["command_number"] = cmd->command_number;
+            it.ref[XORSTR("command_number")] = cmd->command_number;
 
             // push to stack
             it.ref.push();
@@ -209,7 +209,7 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error("{}", ex.what());
+        logging::error(XORSTR("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -222,16 +222,16 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
     EnterCriticalSection(&mutex.critical_section);
     try {
 
-        for (auto &it : handler.events("override_view")) {
+        for (auto &it : handler.events(XORSTR("override_view"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
             // create new table for user_cmd data
             it.ref[2] = luabridge::newTable(it.l);
-            it.ref["x"] = view_setup->x;
-            it.ref["y"] = view_setup->y;
+            it.ref[XORSTR("x")] = view_setup->x;
+            it.ref[XORSTR("y")] = view_setup->y;
             // TODO: missing z
-            it.ref["fov"] = view_setup->fov;
+            it.ref[XORSTR("fov")] = view_setup->fov;
 
             // push to stack
             it.ref.push();
@@ -239,13 +239,13 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
 
-            view_setup->x = it.ref["x"];
-            view_setup->y = it.ref["y"];
-            view_setup->fov = it.ref["fov"];
+            view_setup->x = it.ref[XORSTR("x")];
+            view_setup->y = it.ref[XORSTR("y")];
+            view_setup->fov = it.ref[XORSTR("fov")];
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error("{}", ex.what());
+        logging::error(XORSTR("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -257,7 +257,7 @@ void lua::callbacks::draw() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events("draw")) {
+        for (auto &it : handler.events(XORSTR("draw"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -266,7 +266,7 @@ void lua::callbacks::draw() {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error("{}", ex.what());
+        logging::error(XORSTR("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }

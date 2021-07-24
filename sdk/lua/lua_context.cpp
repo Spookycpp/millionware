@@ -50,8 +50,8 @@ void lua_internal::context::new_state() {
 void lua_internal::context::setup_tables() {
 	// init mw table
 	luabridge::getGlobalNamespace(l)
-	.beginNamespace("mw")
-		.addFunction("register_callback", std::function([this]() {
+	.beginNamespace(XORSTR("mw"))
+        .addFunction(XORSTR("register_callback"), std::function([this]() {
 			size_t len;
 
 			// first argument is the event name
@@ -71,7 +71,7 @@ void lua_internal::context::setup_tables() {
 			
 			callbacks.push_back(cb);
 		}))
-		.addFunction("remove_callback", std::function([this]() {
+        .addFunction(XORSTR("remove_callback"), std::function([this]() {
 			size_t len;
 
 			// first argument is the event name
@@ -84,7 +84,7 @@ void lua_internal::context::setup_tables() {
 				return false;
 			}).begin(), callbacks.end());
 		}))
-	    .addFunction("register_event_callback", std::function([this]() {
+	    .addFunction(XORSTR("register_event_callback"), std::function([this]() {
 			size_t len;
 
 			// first argument is the event name
@@ -125,7 +125,7 @@ void lua_internal::context::ffi(const bool state) const {
 		lua_call(l, 1, 0);
 	}
 	else {
-		lua_getglobal(l, "ffi");
+        lua_getglobal(l, XORSTR("ffi"));
 		lua_pushnil(l);
 		lua_pop(l, 1);
 	}
