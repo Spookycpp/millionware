@@ -153,7 +153,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-                // clang-format off
+            // clang-format off
                 case OBS_MODE_IN_EYE:    return XORSTR("firstperson");
                 case OBS_MODE_CHASE:     return XORSTR("thirdperson");
                 default:                 return "";
@@ -280,8 +280,10 @@ namespace features::visuals::world {
         const auto health_remaining_text_size = render::measure_text(health_remaining_text.c_str(), FONT_TAHOMA_11);
 
         render::draw_text({screen_size.x * 0.5f - bomb_time_text_size.x * 0.5f, screen_size.y * 0.15f}, {255, 255, 255, 255}, bomb_time_str.c_str(), FONT_TAHOMA_11);
-        render::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.15f + bomb_time_text_size.y + 5.f},
-                          health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235}, health_remaining_text.c_str(), FONT_TAHOMA_11);
+
+        if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE)
+            render::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.15f + bomb_time_text_size.y + 5.f},
+                              health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235}, health_remaining_text.c_str(), FONT_TAHOMA_11);
     }
 
 } // namespace features::visuals::world
