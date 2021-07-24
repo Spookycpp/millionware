@@ -41,29 +41,29 @@ namespace features::damage_logs {
         const auto hit_group_to_str = [](int hit_group) -> std::string {
             switch (hit_group) {
             case HIT_GROUP_GENERIC:
-                return XORSTR("body");
+                return xs("body");
             case HIT_GROUP_HEAD:
-                return XORSTR("head");
+                return xs("head");
             case HIT_GROUP_CHEST:
-                return XORSTR("chest");
+                return xs("chest");
             case HIT_GROUP_STOMACH:
-                return XORSTR("stomach");
+                return xs("stomach");
             case HIT_GROUP_LEFT_ARM:
-                return XORSTR("left arm");
+                return xs("left arm");
             case HIT_GROUP_RIGHT_ARM:
-                return XORSTR("right arm");
+                return xs("right arm");
             case HIT_GROUP_LEFT_LEG:
-                return XORSTR("left leg");
+                return xs("left leg");
             case HIT_GROUP_RIGHT_LEG:
-                return XORSTR("right leg");
+                return xs("right leg");
             case HIT_GROUP_GEAR:
-                return XORSTR("gear");
+                return xs("gear");
             }
 
-            return XORSTR("unknown");
+            return xs("unknown");
         };
 
-        logging::info(XORSTR("hurt {} in the {} for {} damage | {} health remaining"), info.name, hit_group_to_str(data.hit_group), data.dmg_health, data.health);
+        logging::info(xs("hurt {} in the {} for {} damage | {} health remaining"), info.name, hit_group_to_str(data.hit_group), data.dmg_health, data.health);
     }
 
     std::vector<damage_log_data_t> get_damage_logs() {

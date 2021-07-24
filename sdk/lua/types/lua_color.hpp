@@ -52,12 +52,12 @@ struct color {
 
 inline void lua_color(lua_State* l) {
     luabridge::getGlobalNamespace(l)
-    .beginClass<color>(XORSTR("color"))
+    .beginClass<color>(xs("color"))
         .addConstructor<void(*)(const int&, const int&, const int&, const int&)>()
-        .addData(XORSTR("r"), &color::r)
-        .addData(XORSTR("g"), &color::g)
-        .addData(XORSTR("b"), &color::b)
-        .addData(XORSTR("a"), &color::a)
+        .addData(xs("r"), &color::r)
+        .addData(xs("g"), &color::g)
+        .addData(xs("b"), &color::b)
+        .addData(xs("a"), &color::a)
         .addStaticFunction("hsb", &color::hsb)
 	.endClass();
 }

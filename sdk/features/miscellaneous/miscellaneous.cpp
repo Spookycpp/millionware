@@ -88,7 +88,7 @@ namespace features::miscellaneous {
         auto set_clantag = [&](std::string tag) { // fps enhancer
             static auto set_tag_fn = reinterpret_cast<int(__fastcall *)(const char *, const char *)>(patterns::get_set_clantag());
 
-            set_tag_fn(tag.c_str(), XORSTR("millionware"));
+            set_tag_fn(tag.c_str(), xs("millionware"));
         };
 
         if (!interfaces::engine_client->get_net_channel_info())
@@ -101,14 +101,14 @@ namespace features::miscellaneous {
 
         if (!settings.miscellaneous.clantag && clear_tag) {
             if (interfaces::global_vars->tick_count % 99 == 2) {
-                set_clantag(XORSTR(""));
+                set_clantag(xs(""));
                 clear_tag = false;
             }
         }
         else if (settings.miscellaneous.clantag && server_time != tick_count) {
-            static std::string clantag = XORSTR("millionware ");
+            static std::string clantag = xs("millionware ");
             std::rotate(clantag.begin(), clantag.begin() + 1, clantag.end());
-            std::string prefix = XORSTR("$ ");
+            std::string prefix = xs("$ ");
             prefix.append(clantag);
 
             set_clantag(prefix);
@@ -123,9 +123,9 @@ namespace features::miscellaneous {
         if (!interfaces::engine_client->is_in_game())
             return;
 
-        const static auto post_processing = interfaces::convar_system->find_convar(XORSTR("mat_postprocess_enable"));
-        const static auto blur_overlay = interfaces::material_system->find_material(XORSTR("dev/scope_bluroverlay"));
-        const static auto lens_dirt = interfaces::material_system->find_material(XORSTR("models/weapons/shared/scope/scope_lens_dirt"));
+        const static auto post_processing = interfaces::convar_system->find_convar(xs("mat_postprocess_enable"));
+        const static auto blur_overlay = interfaces::material_system->find_material(xs("dev/scope_bluroverlay"));
+        const static auto lens_dirt = interfaces::material_system->find_material(xs("models/weapons/shared/scope/scope_lens_dirt"));
 
         const auto should_do_post_processing = settings.visuals.local.disable_post_processing;
 
@@ -135,13 +135,13 @@ namespace features::miscellaneous {
     }
 
     void panorama_blur() {
-        const static auto panorama_blur = interfaces::convar_system->find_convar(XORSTR("@panorama_disable_blur"));
+        const static auto panorama_blur = interfaces::convar_system->find_convar(xs("@panorama_disable_blur"));
 
         panorama_blur->set_value(settings.visuals.local.disable_panorama_blur);
     }
 
     void force_crosshair() {
-        const static auto weapon_debug_spread_show = interfaces::convar_system->find_convar(XORSTR("weapon_debug_spread_show"));
+        const static auto weapon_debug_spread_show = interfaces::convar_system->find_convar(xs("weapon_debug_spread_show"));
 
         const auto should_draw_crosshair =
             settings.visuals.local.sniper_crosshair && cheat::local_player && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE && !cheat::local_player->get_is_scoped();
@@ -157,13 +157,13 @@ namespace features::miscellaneous {
     }
 
     void recoil_crosshair() {
-        const static auto recoil_crosshair = interfaces::convar_system->find_convar(XORSTR("cl_crosshair_recoil"));
+        const static auto recoil_crosshair = interfaces::convar_system->find_convar(xs("cl_crosshair_recoil"));
 
         recoil_crosshair->set_value(settings.visuals.local.recoil_crosshair);
     }
 
     void ragdoll_push() {
-        const static auto phys_pushscale = interfaces::convar_system->find_convar(XORSTR("phys_pushscale"));
+        const static auto phys_pushscale = interfaces::convar_system->find_convar(xs("phys_pushscale"));
 
         if (settings.miscellaneous.ragdoll_push) {
             phys_pushscale->callbacks.clear();
@@ -175,7 +175,7 @@ namespace features::miscellaneous {
     }
 
     void ragdoll_float() {
-        const static auto cl_ragdoll_gravity = interfaces::convar_system->find_convar(XORSTR("cl_ragdoll_gravity"));
+        const static auto cl_ragdoll_gravity = interfaces::convar_system->find_convar(xs("cl_ragdoll_gravity"));
 
         if (settings.miscellaneous.ragdoll_float) {
             cl_ragdoll_gravity->callbacks.clear();
@@ -190,7 +190,7 @@ namespace features::miscellaneous {
         if (!interfaces::engine_client->is_in_game())
             return;
 
-        static auto name = interfaces::convar_system->find_convar(XORSTR("name"));
+        static auto name = interfaces::convar_system->find_convar(xs("name"));
 
         name->callbacks.clear();
 
@@ -216,12 +216,12 @@ namespace features::miscellaneous {
         if (!interfaces::engine_client->is_in_game())
             return;
 
-        static auto sv_skyname = interfaces::convar_system->find_convar(XORSTR("sv_skyname"));
+        static auto sv_skyname = interfaces::convar_system->find_convar(xs("sv_skyname"));
 
         if (!sv_skyname)
             return;
 
-        static auto r_3dsky = interfaces::convar_system->find_convar(XORSTR("r_3dsky"));
+        static auto r_3dsky = interfaces::convar_system->find_convar(xs("r_3dsky"));
 
         if (!r_3dsky)
             return;
@@ -230,28 +230,28 @@ namespace features::miscellaneous {
 
         // clang-format off
         switch (skybox) {
-			case 1:  skybox_name = XORSTR("cs_tibet");					break;
-			case 2:  skybox_name = XORSTR("cs_baggage_skybox_");		break;
-			case 3:  skybox_name = XORSTR("embassy");					break;
-			case 4:  skybox_name = XORSTR("italy");						break;
-			case 5:  skybox_name = XORSTR("jungle");					break;
-			case 6:  skybox_name = XORSTR("office");					break;
-			case 7:  skybox_name = XORSTR("sky_cs15_daylight01_hdr");	break;
-			case 8:  skybox_name = XORSTR("vertigoblue_hdr");			break;
-			case 9:  skybox_name = XORSTR("sky_cs15_daylight02_hdr");	break;
-			case 10: skybox_name = XORSTR("vertigo");					break;
-			case 11: skybox_name = XORSTR("sky_day02_05_hdr");			break;
-			case 12: skybox_name = XORSTR("nukeblank");					break;
-			case 13: skybox_name = XORSTR("sky_venice");				break;
-			case 14: skybox_name = XORSTR("sky_cs15_daylight03_hdr");	break;
-			case 15: skybox_name = XORSTR("sky_cs15_daylight04_hdr");	break;
-			case 16: skybox_name = XORSTR("sky_csgo_cloudy01");			break;
-			case 17: skybox_name = XORSTR("sky_csgo_night02");			break;
-			case 18: skybox_name = XORSTR("sky_csgo_night02b");			break;
-			case 19: skybox_name = XORSTR("sky_csgo_night_flat");		break;
-			case 20: skybox_name = XORSTR("sky_dust");					break;
-			case 21: skybox_name = XORSTR("vietnam");					break;
-			case 22: skybox_name = XORSTR("custom");					break;
+			case 1:  skybox_name = xs("cs_tibet");					break;
+			case 2:  skybox_name = xs("cs_baggage_skybox_");		break;
+			case 3:  skybox_name = xs("embassy");					break;
+			case 4:  skybox_name = xs("italy");						break;
+			case 5:  skybox_name = xs("jungle");					break;
+			case 6:  skybox_name = xs("office");					break;
+			case 7:  skybox_name = xs("sky_cs15_daylight01_hdr");	break;
+			case 8:  skybox_name = xs("vertigoblue_hdr");			break;
+			case 9:  skybox_name = xs("sky_cs15_daylight02_hdr");	break;
+			case 10: skybox_name = xs("vertigo");					break;
+			case 11: skybox_name = xs("sky_day02_05_hdr");			break;
+			case 12: skybox_name = xs("nukeblank");					break;
+			case 13: skybox_name = xs("sky_venice");				break;
+			case 14: skybox_name = xs("sky_cs15_daylight03_hdr");	break;
+			case 15: skybox_name = xs("sky_cs15_daylight04_hdr");	break;
+			case 16: skybox_name = xs("sky_csgo_cloudy01");			break;
+			case 17: skybox_name = xs("sky_csgo_night02");			break;
+			case 18: skybox_name = xs("sky_csgo_night02b");			break;
+			case 19: skybox_name = xs("sky_csgo_night_flat");		break;
+			case 20: skybox_name = xs("sky_dust");					break;
+			case 21: skybox_name = xs("vietnam");					break;
+			case 22: skybox_name = xs("custom");					break;
 			default: skybox_name = sv_skyname->string;			        break;
 		}
         // clang-format on
@@ -306,8 +306,8 @@ namespace features::miscellaneous {
         if (!tick) {
             beam_info_t beam_info;
             beam_info.m_ntype = 0;
-            beam_info.m_pszmodelname = XORSTR("sprites/purplelaser1.vmt");
-            beam_info.m_nmodelindex = interfaces::model_info->get_model_index(XORSTR("sprites/purplelaser1.vmt"));
+            beam_info.m_pszmodelname = xs("sprites/purplelaser1.vmt");
+            beam_info.m_nmodelindex = interfaces::model_info->get_model_index(xs("sprites/purplelaser1.vmt"));
             beam_info.m_flhaloscale = 0.0;
             beam_info.m_fllife = settings.visuals.local.trail_time;
             beam_info.m_flwidth = settings.visuals.local.trail_size;
@@ -352,7 +352,7 @@ namespace features::miscellaneous {
         }
 
         if (!death_notice)
-            death_notice = util::find_hud_element(XORSTR("CCSGO_HudDeathNotice"));
+            death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
 
         if (death_notice) {
             auto local_death_notice = (float *) ((uintptr_t) death_notice + 0x50);
@@ -393,9 +393,9 @@ namespace features::miscellaneous {
         static auto old_z = 0.0f;
 
         if (viewmodel_offset_x == nullptr) {
-            viewmodel_offset_x = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_x"));
-            viewmodel_offset_y = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_y"));
-            viewmodel_offset_z = interfaces::convar_system->find_convar(XORSTR("viewmodel_offset_z"));
+            viewmodel_offset_x = interfaces::convar_system->find_convar(xs("viewmodel_offset_x"));
+            viewmodel_offset_y = interfaces::convar_system->find_convar(xs("viewmodel_offset_y"));
+            viewmodel_offset_z = interfaces::convar_system->find_convar(xs("viewmodel_offset_z"));
 
             viewmodel_offset_x->callbacks.clear();
             viewmodel_offset_y->callbacks.clear();

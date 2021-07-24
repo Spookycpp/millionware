@@ -99,13 +99,13 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
     VirtualQuery(cheat_module_base, &mbi, sizeof(mbi));
 
     if ((DWORD64) address >= (DWORD64) mbi.BaseAddress && (DWORD64) address <= (DWORD64) mbi.BaseAddress + mbi.RegionSize) {
-        return std::make_pair((uint64_t) mbi.BaseAddress, XORSTR("<cheat>"));
+        return std::make_pair((uint64_t) mbi.BaseAddress, xs("<cheat>"));
     }
     else {
-        return std::make_pair((uint64_t) mbi.BaseAddress, std::format(XORSTR("<unknown module {:#x}>"), (DWORD64) mbi.BaseAddress));
+        return std::make_pair((uint64_t) mbi.BaseAddress, std::format(xs("<unknown module {:#x}>"), (DWORD64) mbi.BaseAddress));
     }
 
-    return std::make_pair(0, XORSTR("<unknown module>"));
+    return std::make_pair(0, xs("<unknown module>"));
 }
 
 long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
@@ -126,16 +126,16 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
         std::string symbol_info;
 
         if (SymFromAddr(GetCurrentProcess(), (DWORD64) info->ExceptionRecord->ExceptionAddress, &displacement, symbol)) {
-            symbol_info = std::format(XORSTR("{}!{} + {:#x}"), module_name, symbol->Name, displacement);
+            symbol_info = std::format(xs("{}!{} + {:#x}"), module_name, symbol->Name, displacement);
         }
         else {
-            symbol_info = std::format(XORSTR("{} + {:#x}"), module_name, (DWORD64) info->ExceptionRecord->ExceptionAddress - module_base);
+            symbol_info = std::format(xs("{} + {:#x}"), module_name, (DWORD64) info->ExceptionRecord->ExceptionAddress - module_base);
         }
 
-        auto message = std::format(XORSTR("Exception code: {:#x}\nException information: {}\n"), (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
+        auto message = std::format(xs("Exception code: {:#x}\nException information: {}\n"), (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
 
         if (info->ContextRecord->Ebp != 0) {
-            message += XORSTR("\n");
+            message += xs("\n");
 
             auto ebp = info->ContextRecord->Ebp;
 
@@ -154,15 +154,15 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
                 symbol->MaxNameLen = 255;
 
                 if (SymFromAddr(GetCurrentProcess(), (DWORD64) eip, &displacement, symbol)) {
-                    message += std::format(XORSTR("> {}!{} + {:#x}\n"), module_name, symbol->Name, displacement);
+                    message += std::format(xs("> {}!{} + {:#x}\n"), module_name, symbol->Name, displacement);
                 }
                 else {
-                    message += std::format(XORSTR("> {} + {:#x}\n"), module_name, (DWORD64) eip - module_base);
+                    message += std::format(xs("> {} + {:#x}\n"), module_name, (DWORD64) eip - module_base);
                 }
             }
         }
 
-        message += XORSTR("\nCopy this information using CTRL+C and report it to the developers");
+        message += xs("\nCopy this information using CTRL+C and report it to the developers");
 
         MessageBoxA(nullptr, message.data(), nullptr, MB_ICONERROR | MB_OK);
         ExitProcess(0);
@@ -184,9 +184,9 @@ unsigned long __stdcall initial_thread(void *base_pointer) {
 
     auto i = 0;
 
-    while (pe::get_module(XORSTR("serverbrowser.dll")) == 0u) {
+    while (pe::get_module(xs("serverbrowser.dll")) == 0u) {
         if (++i == 5) {
-            logging::error(XORSTR("couldn't find the 'serverbrowser.dll' module"));
+            logging::error(xs("couldn't find the 'serverbrowser.dll' module"));
     
             goto load_failed;
         }

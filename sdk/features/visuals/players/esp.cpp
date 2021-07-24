@@ -161,7 +161,7 @@ void features::visuals::esp::draw_name(const bounding_box_t &entity_box, c_playe
     if (!interfaces::engine_client->get_player_info(player->get_networkable()->index(), info))
         return;
 
-    const auto player_name = info.fake_player ? std::format(XORSTR("[BOT] {}"), info.name) : info.name;
+    const auto player_name = info.fake_player ? std::format(xs("[BOT] {}"), info.name) : info.name;
 
     const auto text_size = render::measure_text(player_name.c_str(), FONT_TAHOMA_11);
     render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y}, settings.visuals.player.player_name_color, player_name.c_str(), FONT_TAHOMA_11);
@@ -185,7 +185,7 @@ void features::visuals::esp::draw_health(const bounding_box_t &entity_box, c_pla
     if (player->get_health() <= 90 || player->get_health() > 100) {
         char health_text_buffer[8];
 
-        sprintf_s(health_text_buffer, XORSTR("%d"), player->get_health());
+        sprintf_s(health_text_buffer, xs("%d"), player->get_health());
 
         const auto health_text_size = render::measure_text(health_text_buffer, FONT_SMALL_TEXT);
 
@@ -207,7 +207,7 @@ void features::visuals::esp::draw_armor(const bounding_box_t &entity_box, c_play
     if (player->get_armor() < 90) {
         char armor_text_buffer[8];
 
-        sprintf_s(armor_text_buffer, XORSTR("%d"), player->get_armor());
+        sprintf_s(armor_text_buffer, xs("%d"), player->get_armor());
 
         const auto armor_text_size = render::measure_text(armor_text_buffer, FONT_SMALL_TEXT);
 
@@ -246,7 +246,7 @@ void features::visuals::esp::draw_ammo(const bounding_box_t &entity_box, c_playe
     if (weapon->get_ammo1() > 0 && weapon->get_ammo1() < weapon_data->max_clip_ammo && !player->is_reloading()) {
         char ammo_text_buffer[8];
 
-        sprintf_s(ammo_text_buffer, XORSTR("%d"), weapon->get_ammo1());
+        sprintf_s(ammo_text_buffer, xs("%d"), weapon->get_ammo1());
 
         const auto ammo_text_size = render::measure_text(ammo_text_buffer, FONT_SMALL_TEXT);
 
@@ -302,31 +302,31 @@ void features::visuals::esp::draw_flags(const bounding_box_t &entity_box, c_play
     };
 
     if (settings.visuals.player.flags & (1 << 0))
-        draw_flag(player->get_has_helmet() ? XORSTR("hk") : XORSTR("k"), {255, 255, 255});
+        draw_flag(player->get_has_helmet() ? xs("hk") : xs("k"), {255, 255, 255});
 
     if (settings.visuals.player.flags & (1 << 1) && player->get_is_scoped())
-        draw_flag(XORSTR("scoped"), {0, 150, 255});
+        draw_flag(xs("scoped"), {0, 150, 255});
 
     if (settings.visuals.player.flags & (1 << 2) && player->is_reloading())
-        draw_flag(XORSTR("reloading"), {2, 106, 198});
+        draw_flag(xs("reloading"), {2, 106, 198});
 
     if (settings.visuals.player.flags & (1 << 3) && player->is_flashed())
-        draw_flag(XORSTR("flash"), {255, 255, 255});
+        draw_flag(xs("flash"), {255, 255, 255});
 
     if (settings.visuals.player.flags & (1 << 4) && player->has_bomb())
-        draw_flag(XORSTR("bomb"), {255, 0, 0});
+        draw_flag(xs("bomb"), {255, 0, 0});
 
     if (settings.visuals.player.flags & (1 << 5) && player->get_is_defusing())
-        draw_flag(XORSTR("defusing"), {255, 100, 0});
+        draw_flag(xs("defusing"), {255, 100, 0});
 
     if (settings.visuals.player.flags & (1 << 6) && player->is_smoked())
-        draw_flag(XORSTR("smoked"), {255, 255, 255});
+        draw_flag(xs("smoked"), {255, 255, 255});
 
     if (settings.visuals.player.flags & (1 << 7) && player->get_health() == 1)
-        draw_flag(XORSTR("flash kill"), {125, 255, 248});
+        draw_flag(xs("flash kill"), {125, 255, 248});
 
     if (settings.visuals.player.flags & (1 << 8)) {
-        auto flag_string = std::format(XORSTR("${}"), player->get_money());
+        auto flag_string = std::format(xs("${}"), player->get_money());
         draw_flag(flag_string.c_str(), {0, 255, 0, 255});
     }
 }
@@ -478,7 +478,7 @@ void features::visuals::esp::draw_dropped_weapon(c_entity *entity) {
 
         // doing this instead of using localized
         // name because "c4 explosive" looks stupid
-        const auto bomb_string = XORSTR("bomb");
+        const auto bomb_string = xs("bomb");
 
         const auto text_size = render::measure_text(bomb_string, FONT_TAHOMA_11);
         const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
@@ -515,49 +515,49 @@ void features::visuals::esp::draw_thrown_utility(c_entity *entity) {
     auto model_name = interfaces::model_info->get_model_name(model);
 
     if (client_class->class_id == CBaseCSGrenadeProjectile) {
-        if (std::strstr(model_name, XORSTR("fraggrenade")) && grenade->get_explode_effect_tick_begin() < 1) {
-            const auto text_size = render::measure_text(XORSTR("frag"), FONT_TAHOMA_11);
+        if (std::strstr(model_name, xs("fraggrenade")) && grenade->get_explode_effect_tick_begin() < 1) {
+            const auto text_size = render::measure_text(xs("frag"), FONT_TAHOMA_11);
             const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("frag"), FONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("frag"), FONT_TAHOMA_11);
         }
-        else if (std::strstr(model_name, XORSTR("flashbang"))) {
-            const auto text_size = render::measure_text(XORSTR("flashbang"), FONT_TAHOMA_11);
+        else if (std::strstr(model_name, xs("flashbang"))) {
+            const auto text_size = render::measure_text(xs("flashbang"), FONT_TAHOMA_11);
             const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("flashbang"), FONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("flashbang"), FONT_TAHOMA_11);
         }
     }
 
     if (client_class->class_id == CSmokeGrenadeProjectile) {
-        const auto text_size = render::measure_text(XORSTR("smoke"), FONT_TAHOMA_11);
+        const auto text_size = render::measure_text(xs("smoke"), FONT_TAHOMA_11);
         const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-        render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("smoke"), FONT_TAHOMA_11);
+        render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("smoke"), FONT_TAHOMA_11);
     }
 
     if (client_class->class_id == CMolotovProjectile) {
-        if (std::strstr(model_name, XORSTR("molotov"))) {
+        if (std::strstr(model_name, xs("molotov"))) {
 
-            const auto text_size = render::measure_text(XORSTR("molotov"), FONT_TAHOMA_11);
+            const auto text_size = render::measure_text(xs("molotov"), FONT_TAHOMA_11);
             const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("molotov"), FONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("molotov"), FONT_TAHOMA_11);
         }
-        else if (std::strstr(model_name, XORSTR("incendiary"))) {
+        else if (std::strstr(model_name, xs("incendiary"))) {
 
-            const auto text_size = render::measure_text(XORSTR("incendiary"), FONT_TAHOMA_11);
+            const auto text_size = render::measure_text(xs("incendiary"), FONT_TAHOMA_11);
             const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-            render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("incendiary"), FONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("incendiary"), FONT_TAHOMA_11);
         }
     }
 
     if (client_class->class_id == CDecoyProjectile) {
-        const auto text_size = render::measure_text(XORSTR("decoy"), FONT_TAHOMA_11);
+        const auto text_size = render::measure_text(xs("decoy"), FONT_TAHOMA_11);
         const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
-        render::draw_text(text_pos, settings.visuals.world.grenades_color, XORSTR("decoy"), FONT_TAHOMA_11);
+        render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("decoy"), FONT_TAHOMA_11);
     }
 }
 

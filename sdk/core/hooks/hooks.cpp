@@ -66,7 +66,7 @@ bool hooks::init() {
 
 #define INIT_HOOK(h, n)                                                                                                                                                                                \
     if (h == 0) {                                                                                                                                                                                      \
-        logging::error(XORSTR("failed to initialize hook " n));                                                                                                                                        \
+        logging::error(xs("failed to initialize hook " n));                                                                                                                                        \
         return false;                                                                                                                                                                                  \
     }
 

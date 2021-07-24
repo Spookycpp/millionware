@@ -40,10 +40,10 @@ float util::get_total_latency() {
 
 float util::get_lerp_time() {
 
-    static auto cl_interpolate = interfaces::convar_system->find_convar(XORSTR("cl_interpolate"));
-    static auto cl_interp = interfaces::convar_system->find_convar(XORSTR("cl_interp"));
-    static auto cl_updaterate = interfaces::convar_system->find_convar(XORSTR("cl_updaterate"));
-    static auto cl_interp_ratio = interfaces::convar_system->find_convar(XORSTR("cl_interp_ratio"));
+    static auto cl_interpolate = interfaces::convar_system->find_convar(xs("cl_interpolate"));
+    static auto cl_interp = interfaces::convar_system->find_convar(xs("cl_interp"));
+    static auto cl_updaterate = interfaces::convar_system->find_convar(xs("cl_updaterate"));
+    static auto cl_interp_ratio = interfaces::convar_system->find_convar(xs("cl_interp_ratio"));
 
     if (cl_interp && cl_interpolate && cl_updaterate && cl_interp_ratio) {
         if (cl_interpolate->get_int()) {
@@ -57,7 +57,7 @@ float util::get_lerp_time() {
 float util::get_random_float(const float min, const float max) {
 
     using random_float_t = float (*)(float, float);
-    static random_float_t random_float_fn = (random_float_t) GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("RandomFloat"));
+    static random_float_t random_float_fn = (random_float_t) GetProcAddress(GetModuleHandleA(xs("vstdlib.dll")), xs("RandomFloat"));
 
     if (!random_float_fn)
         return 0.f;
@@ -90,7 +90,7 @@ void util::auto_accept() {
     if (!set_local_player_ready_fn)
         return;
 
-    set_local_player_ready_fn(XORSTR(""));
+    set_local_player_ready_fn(xs(""));
 }
 
 void util::force_full_update() {
@@ -115,7 +115,7 @@ void util::force_full_update() {
 void util::set_random_seed(const int seed) {
 
     using random_seed_t = int(__cdecl *)(int);
-    static random_seed_t random_seed_fn = (random_seed_t) GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("RandomSeed"));
+    static random_seed_t random_seed_fn = (random_seed_t) GetProcAddress(GetModuleHandleA(xs("vstdlib.dll")), xs("RandomSeed"));
 
     if (!random_seed_fn)
         return;
@@ -141,7 +141,7 @@ void util::play_sound(const char *file_path, int volume) {
         volume = settings.global.sound_fx_volume;
 
     char buffer[256] = {};
-    sprintf_s(buffer, XORSTR("playvol \"%s\" \"%s\""), file_path, std::to_string(static_cast<float>(volume) / 100.0f).c_str());
+    sprintf_s(buffer, xs("playvol \"%s\" \"%s\""), file_path, std::to_string(static_cast<float>(volume) / 100.0f).c_str());
 
     interfaces::engine_client->execute_command(buffer);
 }
@@ -170,7 +170,7 @@ void util::movement_fix(const vector_t &old_angles, c_user_cmd *user_cmd) {
 }
 
 void util::disable_model_occlusion() {
-    const static auto r_drawallrenderables = interfaces::convar_system->find_convar(XORSTR("r_drawallrenderables"));
+    const static auto r_drawallrenderables = interfaces::convar_system->find_convar(xs("r_drawallrenderables"));
 
     if (r_drawallrenderables->get_int() != 1) {
         r_drawallrenderables->callbacks.clear();
@@ -310,12 +310,12 @@ std::string util::sanitize_string(const std::string &str) {
 
 void util::undo() {
 
-    interfaces::convar_system->find_convar(XORSTR("weapon_debug_spread_show"))->set_value(0);
-    interfaces::convar_system->find_convar(XORSTR("cl_crosshair_recoil"))->set_value(0);
-    interfaces::convar_system->find_convar(XORSTR("mat_postprocess_enable"))->set_value(1);
-    interfaces::convar_system->find_convar(XORSTR("@panorama_disable_blur"))->set_value(0);
-    interfaces::convar_system->find_convar(XORSTR("phys_pushscale"))->set_value(1);
-    interfaces::convar_system->find_convar(XORSTR("cl_ragdoll_gravity"))->set_value(600);
+    interfaces::convar_system->find_convar(xs("weapon_debug_spread_show"))->set_value(0);
+    interfaces::convar_system->find_convar(xs("cl_crosshair_recoil"))->set_value(0);
+    interfaces::convar_system->find_convar(xs("mat_postprocess_enable"))->set_value(1);
+    interfaces::convar_system->find_convar(xs("@panorama_disable_blur"))->set_value(0);
+    interfaces::convar_system->find_convar(xs("phys_pushscale"))->set_value(1);
+    interfaces::convar_system->find_convar(xs("cl_ragdoll_gravity"))->set_value(600);
 
     if (interfaces::engine_client->is_in_game()) {
         cheat::local_player->get_flash_alpha() = 255.0f;

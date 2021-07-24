@@ -78,14 +78,14 @@ struct sticker_kit_data_t {
 void kit_parser::initialize_kits() {
 
     using  usc2_to_utf8_t = int(__cdecl *)(const wchar_t *ucs2, char *utf8, int length);
-    static usc2_to_utf8_t usc2_to_utf8_fn = (usc2_to_utf8_t) GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("V_UCS2ToUTF8"));
+    static usc2_to_utf8_t usc2_to_utf8_fn = (usc2_to_utf8_t) GetProcAddress(GetModuleHandleA(xs("vstdlib.dll")), xs("V_UCS2ToUTF8"));
 
     //static auto usc2_to_utf8_fn = pe::get_export<int (*)(const wchar_t *ucs2, char *utf8, int length)>(pe::get_module(XORSTR("vstdlib.dll")), XORSTR("V_UCS2ToUTF8"));
 
     static auto address = patterns::get_kit_parser_data_1();
 
     if (!address) {
-        logging::info(XORSTR("Failed to get kit parser data (1)"));
+        logging::info(xs("Failed to get kit parser data (1)"));
         return;
     }
 
@@ -102,7 +102,7 @@ void kit_parser::initialize_kits() {
         const auto map_head = reinterpret_cast<head_t<int, paint_kit_data_t *> *>(uintptr_t(item_schema) + head_offset);
 
         if (!map_head) {
-            logging::info(XORSTR("Failed to parse paint kits (1)"));
+            logging::info(xs("Failed to parse paint kits (1)"));
             return;
         }
 
@@ -126,15 +126,15 @@ void kit_parser::initialize_kits() {
         std::sort(skin_kits.begin(), skin_kits.end());
         std::sort(glove_kits.begin(), glove_kits.end());
 
-        skin_kits.at(0).name = XORSTR("None");
-        glove_kits.at(0).name = XORSTR("None");
+        skin_kits.at(0).name = xs("None");
+        glove_kits.at(0).name = xs("None");
     }
 
     {
         address = patterns::get_kit_parser_data_2();
 
         if (!address) {
-            logging::info(XORSTR("Failed to get kit parser data (2)"));
+            logging::info(xs("Failed to get kit parser data (2)"));
             return;
         }
 
@@ -149,7 +149,7 @@ void kit_parser::initialize_kits() {
         const auto map_head = reinterpret_cast<head_t<int, sticker_kit_data_t *> *>(uintptr_t(item_schema) + head_offset);
 
         if (!map_head) {
-            logging::info(XORSTR("Failed to parse paint kits (2)"));
+            logging::info(xs("Failed to parse paint kits (2)"));
             return;
         }
 
@@ -160,8 +160,8 @@ void kit_parser::initialize_kits() {
 
             auto sticker_name_ptr = sticker_kit->item_name.buffer + 1;
 
-            if (strstr(sticker_name_ptr, XORSTR("StickerKit_dhw2014_dignitas"))) {
-                strcpy_s(sticker_name_if_valve_fucked_up_their_translations, XORSTR("StickerKit_dhw2014_teamdignitas"));
+            if (strstr(sticker_name_ptr, xs("StickerKit_dhw2014_dignitas"))) {
+                strcpy_s(sticker_name_if_valve_fucked_up_their_translations, xs("StickerKit_dhw2014_teamdignitas"));
                 strcat_s(sticker_name_if_valve_fucked_up_their_translations, sticker_name_ptr + 27);
                 sticker_name_ptr = sticker_name_if_valve_fucked_up_their_translations;
             }
@@ -176,6 +176,6 @@ void kit_parser::initialize_kits() {
 
         std::sort(sticker_kits.begin(), sticker_kits.end());
 
-        sticker_kits.insert(sticker_kits.begin(), paint_kit_t{0, XORSTR("None")});
+        sticker_kits.insert(sticker_kits.begin(), paint_kit_t{0, xs("None")});
     }
 }

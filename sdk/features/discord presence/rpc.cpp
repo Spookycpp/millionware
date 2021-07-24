@@ -33,7 +33,7 @@ void discord_rpc::update() {
         // handlers.joinGame = handleDiscordJoinGame;
         // handlers.joinRequest = handleDiscordJoinRequest;
 
-        Discord_Initialize(XORSTR("558049724675129365"), &handlers, true, nullptr);
+        Discord_Initialize(xs("558049724675129365"), &handlers, true, nullptr);
 
         is_initialized = true;
         last_presence_update = 0.0f;
@@ -53,14 +53,14 @@ void discord_rpc::update() {
     presence.largeImageKey = "918242";
 
     if (!interfaces::engine_client->is_in_game()) {
-        presence.state = XORSTR("In main menu");
+        presence.state = xs("In main menu");
     }
     else {
         auto map_name = interfaces::engine_client->get_map_name();
         char presence_status_buffer[64];
 
         memset(presence_status_buffer, 0, sizeof(presence_status_buffer));
-        sprintf_s(presence_status_buffer, XORSTR("In game: %s"), map_name);
+        sprintf_s(presence_status_buffer, xs("In game: %s"), map_name);
 
         presence.state = presence_status_buffer;
     }

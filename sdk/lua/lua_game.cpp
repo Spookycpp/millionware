@@ -6,9 +6,9 @@ bool lua::init() {
     // create the main cheat directory and subdirectories for scripts and other stuff
     // i dont think you can use `std::filesystem::create_directories` to create nested directories
     // so we have to do it manually like this, fix this if you know a better way AND FUCKING TEST IT PLEASE
-    if (!std::filesystem::exists(XORSTR(".\\mw"))) {
-        std::filesystem::create_directories(XORSTR(".\\mw"));
-        std::filesystem::create_directories(XORSTR(".\\mw\\scripts"));
+    if (!std::filesystem::exists(xs(".\\mw"))) {
+        std::filesystem::create_directories(xs(".\\mw"));
+        std::filesystem::create_directories(xs(".\\mw\\scripts"));
     }
 
     try {
@@ -53,7 +53,7 @@ void lua::callbacks::startup() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(XORSTR("startup"))) {
+        for (auto &it : handler.events(xs("startup"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -70,70 +70,70 @@ void lua::callbacks::startup() {
 void lua::callbacks::run_events(c_game_event *game_event) {
     static std::array<std::pair<const char *, int>, 58> keys = {{
         // integer, byte
-        {XORSTR("userid"), 1},
-        {XORSTR("health"), 1},
-        {XORSTR("armor"), 1},
-        {XORSTR("dmg_health"), 1},
-        {XORSTR("dmg_armor"), 1},
-        {XORSTR("userid"), 1},
-        {XORSTR("userid"), 1},
-        {XORSTR("userid"), 1},
-        {XORSTR("hitgroup"), 1},
-        {XORSTR("team"), 1},
-        {XORSTR("loadout"), 1},
-        {XORSTR("site"), 1},
-        {XORSTR("entindex"), 1},
-        {XORSTR("hostage"), 1},
-        {XORSTR("defindex"), 1},
-        {XORSTR("defindex"), 1},
-        {XORSTR("weptype"), 1},
-        {XORSTR("winner"), 1},
-        {XORSTR("player_count"), 1},
-        {XORSTR("entityid"), 1},
-        {XORSTR("player"), 1},
-        {XORSTR("quality"), 1},
-        {XORSTR("method"), 1},
-        {XORSTR("itemdef"), 1},
-        {XORSTR("itemid"), 1},
-        {XORSTR("vote_parameter"), 1},
-        {XORSTR("botid"), 1},
-        {XORSTR("toteam"), 1},
-        {XORSTR("priority"), 1},
-        {XORSTR("drone_dispatched"), 1},
-        {XORSTR("delivered"), 1},
-        {XORSTR("cargo"), 1},
-        {XORSTR("attacker"), 1},
-        {XORSTR("dominated"), 1},
-        {XORSTR("revenge"), 1},
-        {XORSTR("usepenetratedrid"), 1},
-        {XORSTR("x"), 1},
-        {XORSTR("y"), 1},
-        {XORSTR("z"), 1},
+        {xs("userid"), 1},
+        {xs("health"), 1},
+        {xs("armor"), 1},
+        {xs("dmg_health"), 1},
+        {xs("dmg_armor"), 1},
+        {xs("userid"), 1},
+        {xs("userid"), 1},
+        {xs("userid"), 1},
+        {xs("hitgroup"), 1},
+        {xs("team"), 1},
+        {xs("loadout"), 1},
+        {xs("site"), 1},
+        {xs("entindex"), 1},
+        {xs("hostage"), 1},
+        {xs("defindex"), 1},
+        {xs("defindex"), 1},
+        {xs("weptype"), 1},
+        {xs("winner"), 1},
+        {xs("player_count"), 1},
+        {xs("entityid"), 1},
+        {xs("player"), 1},
+        {xs("quality"), 1},
+        {xs("method"), 1},
+        {xs("itemdef"), 1},
+        {xs("itemid"), 1},
+        {xs("vote_parameter"), 1},
+        {xs("botid"), 1},
+        {xs("toteam"), 1},
+        {xs("priority"), 1},
+        {xs("drone_dispatched"), 1},
+        {xs("delivered"), 1},
+        {xs("cargo"), 1},
+        {xs("attacker"), 1},
+        {xs("dominated"), 1},
+        {xs("revenge"), 1},
+        {xs("usepenetratedrid"), 1},
+        {xs("x"), 1},
+        {xs("y"), 1},
+        {xs("z"), 1},
 
         // float
-        {XORSTR("damage"), 2},
-        {XORSTR("distance"), 2},
+        {xs("damage"), 2},
+        {xs("distance"), 2},
 
         // bool
-        {XORSTR("canbuy"), 3},
-        {XORSTR("isplanted"), 3},
-        {XORSTR("hasbomb"), 3},
-        {XORSTR("haskit"), 3},
-        {XORSTR("silenced"), 3},
-        {XORSTR("inrestart"), 3},
-        {XORSTR("success"), 3},
-        {XORSTR("assistedflash"), 3},
-        {XORSTR("noscope"), 3},
-        {XORSTR("thrusmoke"), 3},
-        {XORSTR("urgent"), 3},
-        {XORSTR("headshot"), 3},
+        {xs("canbuy"), 3},
+        {xs("isplanted"), 3},
+        {xs("hasbomb"), 3},
+        {xs("haskit"), 3},
+        {xs("silenced"), 3},
+        {xs("inrestart"), 3},
+        {xs("success"), 3},
+        {xs("assistedflash"), 3},
+        {xs("noscope"), 3},
+        {xs("thrusmoke"), 3},
+        {xs("urgent"), 3},
+        {xs("headshot"), 3},
 
         // string
-        {XORSTR("item"), 4},
-        {XORSTR("message"), 4},
-        {XORSTR("type"), 4},
-        {XORSTR("weapon"), 4},
-        {XORSTR("weapon_itemid"), 4},
+        {xs("item"), 4},
+        {xs("message"), 4},
+        {xs("type"), 4},
+        {xs("weapon"), 4},
+        {xs("weapon_itemid"), 4},
     }};
 
     if (!mutex.initialized) {
@@ -193,13 +193,13 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(XORSTR("run_command"))) {
+        for (auto &it : handler.events(xs("run_command"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
             
             // create new table for user_cmd data
             it.ref[2] = luabridge::newTable(it.l);
-            it.ref[XORSTR("command_number")] = cmd->command_number;
+            it.ref[xs("command_number")] = cmd->command_number;
 
             // push to stack
             it.ref.push();
@@ -209,7 +209,7 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(XORSTR("{}"), ex.what());
+        logging::error(xs("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -222,16 +222,16 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
     EnterCriticalSection(&mutex.critical_section);
     try {
 
-        for (auto &it : handler.events(XORSTR("override_view"))) {
+        for (auto &it : handler.events(xs("override_view"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
             // create new table for user_cmd data
             it.ref[2] = luabridge::newTable(it.l);
-            it.ref[XORSTR("x")] = view_setup->x;
-            it.ref[XORSTR("y")] = view_setup->y;
+            it.ref[xs("x")] = view_setup->x;
+            it.ref[xs("y")] = view_setup->y;
             // TODO: missing z
-            it.ref[XORSTR("fov")] = view_setup->fov;
+            it.ref[xs("fov")] = view_setup->fov;
 
             // push to stack
             it.ref.push();
@@ -239,13 +239,13 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
 
-            view_setup->x = it.ref[XORSTR("x")];
-            view_setup->y = it.ref[XORSTR("y")];
-            view_setup->fov = it.ref[XORSTR("fov")];
+            view_setup->x = it.ref[xs("x")];
+            view_setup->y = it.ref[xs("y")];
+            view_setup->fov = it.ref[xs("fov")];
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(XORSTR("{}"), ex.what());
+        logging::error(xs("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -257,7 +257,7 @@ void lua::callbacks::draw() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(XORSTR("draw"))) {
+        for (auto &it : handler.events(xs("draw"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -266,7 +266,7 @@ void lua::callbacks::draw() {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(XORSTR("{}"), ex.what());
+        logging::error(xs("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }

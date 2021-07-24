@@ -462,7 +462,7 @@ namespace features::legitbot {
         if (target->get_has_gun_game_immunity())
             return false;
 
-        const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
+        const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(xs("mp_teammates_are_enemies"));
 
         if (!settings_lbot->check_team) {
             if (mp_teammates_are_enemies->get_int() == 0 && target->get_team_num() == cheat::local_player->get_team_num())
@@ -506,8 +506,8 @@ namespace features::legitbot {
     }
 
     point_t angles_to_pixels(const vector_t &angles) {
-        static auto m_yaw = interfaces::convar_system->find_convar(XORSTR("m_yaw"));
-        static auto m_pitch = interfaces::convar_system->find_convar(XORSTR("m_pitch"));
+        static auto m_yaw = interfaces::convar_system->find_convar(xs("m_yaw"));
+        static auto m_pitch = interfaces::convar_system->find_convar(xs("m_pitch"));
 
         const float x = angles.x / m_pitch->get_float();
         const float y = angles.y / m_yaw->get_float();
@@ -516,8 +516,8 @@ namespace features::legitbot {
     }
 
     vector_t pixels_to_angles(const point_t &pixels) {
-        static auto m_yaw = interfaces::convar_system->find_convar(XORSTR("m_yaw"));
-        static auto m_pitch = interfaces::convar_system->find_convar(XORSTR("m_pitch"));
+        static auto m_yaw = interfaces::convar_system->find_convar(xs("m_yaw"));
+        static auto m_pitch = interfaces::convar_system->find_convar(xs("m_pitch"));
 
         const float x = pixels.x * m_pitch->get_float();
         const float y = pixels.y * m_yaw->get_float();

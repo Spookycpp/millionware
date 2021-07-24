@@ -130,7 +130,7 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
         engine_prediction::start_prediction();
         engine_prediction::end_prediction();
 
-        static auto sv_gravity = interfaces::convar_system->find_convar(XORSTR("sv_gravity"));
+        static auto sv_gravity = interfaces::convar_system->find_convar(xs("sv_gravity"));
         const float gravity_velocity_constant = roundf((-sv_gravity->get_float()) * interfaces::global_vars->interval_per_tick + previous_velocity);
 
         if (gravity_velocity_constant == roundf(cheat::local_player->get_velocity().z)) {
@@ -277,7 +277,7 @@ void features::movement::strafe_optimizer(c_user_cmd *user_cmd, int pre_flags, i
     static float old_yaw = user_cmd->view_angles.y;
 
     if (input::is_key_down(settings.miscellaneous.movement.strafe_optimizer_key)) {
-        static auto sensitivity = interfaces::convar_system->find_convar(XORSTR("sensitivity"));
+        static auto sensitivity = interfaces::convar_system->find_convar(xs("sensitivity"));
         vector_t velocity = cheat::local_player->get_velocity();
 
         float m_speed = velocity.length_2d();

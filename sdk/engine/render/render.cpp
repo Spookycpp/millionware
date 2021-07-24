@@ -50,11 +50,11 @@ static bool get_system_font_path(std::string_view font_name, std::string &result
 	if (!GetWindowsDirectoryA(windows_directory, MAX_PATH))
 		return false;
 
-	const auto fonts_directory = std::string(windows_directory).append(XORSTR("\\Fonts\\"));
+	const auto fonts_directory = std::string(windows_directory).append(xs("\\Fonts\\"));
 
 	HKEY registry_key;
 
-	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, XORSTR("Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts"), 0, KEY_READ, &registry_key))
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, xs("Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts"), 0, KEY_READ, &registry_key))
 		return false;
 
 	auto index = 0u;
@@ -221,13 +221,13 @@ void render::init(HWND window, IDirect3DDevice9 *device)
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
 
-	fonts[FONT_VERDANA_12] = create_from_system(io, XORSTR("Verdana"), 13.0f);
-	fonts[FONT_VERDANA_14] = create_from_system(io, XORSTR("Verdana"), 15.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
-	fonts[FONT_VERDANA_24] = create_from_system(io, XORSTR("Verdana"), 25.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
-    fonts[FONT_TAHOMA_11] = create_from_system(io, XORSTR("Tahoma"), 12.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
-    fonts[FONT_TAHOMA_12] = create_from_system(io, XORSTR("Tahoma"), 13.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+	fonts[FONT_VERDANA_12] = create_from_system(io, xs("Verdana"), 13.0f);
+	fonts[FONT_VERDANA_14] = create_from_system(io, xs("Verdana"), 15.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
+	fonts[FONT_VERDANA_24] = create_from_system(io, xs("Verdana"), 25.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_TAHOMA_11] = create_from_system(io, xs("Tahoma"), 12.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_TAHOMA_12] = create_from_system(io, xs("Tahoma"), 13.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
 	//fonts[FONT_SMALL_TEXT] = create_from_system(io, XORSTR("Small Fonts"), 10.f, ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome);
-	fonts[FONT_SMALL_TEXT] = create_from_system(io, XORSTR("Verdana"), 10.f, ImGuiFreeTypeBuilderFlags_Monochrome);
+	fonts[FONT_SMALL_TEXT] = create_from_system(io, xs("Verdana"), 10.f, ImGuiFreeTypeBuilderFlags_Monochrome);
 	fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
 	fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
 	fonts[FONT_CEREBRI_SANS_MEDIUM_18] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 18.0f);

@@ -12,7 +12,7 @@ static std::ofstream netvar_dump;
 
 void dump_netvar_table(c_recv_table *table, int child_offset = 0)
 {
-	auto join_string = (const char *) XORSTR(":");
+	auto join_string = (const char *) xs(":");
 
 	for (auto i = 0; i < table->props_count; i++)
 	{

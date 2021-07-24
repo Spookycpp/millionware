@@ -59,7 +59,7 @@ class c_inventory_manager {
         static auto equip_item_in_loadout_fn = reinterpret_cast<bool(__thiscall *)(void *, int, int, uint64_t, bool)>(equip_item_in_loadout_addr);
 
         if (!equip_item_in_loadout_fn) {
-            logging::info(XORSTR("Failed to get EquipItemInLoadout"));
+            logging::info(xs("Failed to get EquipItemInLoadout"));
             return false;
         }
 
@@ -71,7 +71,7 @@ class c_inventory_manager {
         static auto find_or_create_reference_econ_item = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, int64_t)>(find_or_create_reference_econ_addr);
 
         if (!find_or_create_reference_econ_item) {
-            logging::info(XORSTR("Failed to get FindOrCreateReferenceEconItem"));
+            logging::info(xs("Failed to get FindOrCreateReferenceEconItem"));
             return nullptr;
         }
 
@@ -83,7 +83,7 @@ class c_inventory_manager {
         static auto clear_inventory_images_fn = reinterpret_cast<void(__thiscall *)(void *)>(clear_inventory_images_addr);
 
         if (!clear_inventory_images_fn) {
-            logging::info(XORSTR("Failed to get econ_clear_inventory_images"));
+            logging::info(xs("Failed to get econ_clear_inventory_images"));
             return;
         }
 
@@ -98,7 +98,7 @@ class c_player_inventory {
 
             // ghetto check
             if (item.rarity > 0) 
-                logging::info(XORSTR("Failed to add item to inventory: {}"), index);
+                logging::info(xs("Failed to add item to inventory: {}"), index);
 
             return nullptr;
         }
@@ -106,7 +106,7 @@ class c_player_inventory {
         auto econ_item = create_econ_item();
 
         if (!econ_item) {
-            logging::info(XORSTR("Failed to create econ item"));
+            logging::info(xs("Failed to create econ item"));
             return nullptr;
         }
 
@@ -169,7 +169,7 @@ class c_player_inventory {
             auto base_type_cache = this->base_type_cache();
 
             if (!base_type_cache) {
-                logging::info(XORSTR("Failed to get object cache"));
+                logging::info(xs("Failed to get object cache"));
                 return;
             }
 
@@ -263,7 +263,7 @@ class c_player_inventory {
         static auto remove_item_fn = reinterpret_cast<int(__thiscall *)(void *, int64_t)>(remove_item_addr);
 
         if (!remove_item_fn) {
-            logging::info(XORSTR("Failed to get RemoveItem"));
+            logging::info(xs("Failed to get RemoveItem"));
             return;
         }
 
@@ -275,7 +275,7 @@ class c_player_inventory {
         static auto find_shared_object_cache_fn = reinterpret_cast<uintptr_t(__thiscall *)(uintptr_t, uint64_t, uint64_t, bool)>(find_shared_object_cache_addr);
 
         if (!find_shared_object_cache_fn) {
-            logging::info(XORSTR("Failed to get FindSharedObjectCache"));
+            logging::info(xs("Failed to get FindSharedObjectCache"));
             return nullptr;
         }
 
@@ -283,21 +283,21 @@ class c_player_inventory {
         static auto create_base_type_cache_fn = reinterpret_cast<CSharedObjectTypeCache *(__thiscall *) (uintptr_t, int)>(create_base_type_cache_addr);
 
         if (!create_base_type_cache_fn) {
-            logging::info(XORSTR("Failed to get CreateBaseTypeCache"));
+            logging::info(xs("Failed to get CreateBaseTypeCache"));
             return nullptr;
         }
 
         static auto gc_client_system = **reinterpret_cast<uintptr_t **>(patterns::get_gc_client_system() + 0x2);
 
         if (!gc_client_system) {
-            logging::info(XORSTR("Failed to get GCClientSystem"));
+            logging::info(xs("Failed to get GCClientSystem"));
             return nullptr;
         }
 
         const auto cache = find_shared_object_cache_fn(gc_client_system + 0x70, *reinterpret_cast<uint64_t *>(this + 0x8), *reinterpret_cast<uint64_t *>(this + 0x10), false);
 
         if (!cache) {
-            logging::info(XORSTR("Failed to create shared object cache"));
+            logging::info(xs("Failed to create shared object cache"));
             return nullptr;
         }
 
@@ -313,7 +313,7 @@ class c_player_inventory {
         static auto get_inventory_item_by_item_id_fn = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, uint64_t)>(get_inventory_item_by_item_id_addr);
 
         if (!get_inventory_item_by_item_id_fn) {
-            logging::info(XORSTR("Failed to get GetInventoryItemByItemID"));
+            logging::info(xs("Failed to get GetInventoryItemByItemID"));
             return nullptr;
         }
 
@@ -331,14 +331,14 @@ class c_player_inventory {
         static auto add_econ_item_fn = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, c_econ_item *, int, int, char)>(add_econ_item_addr);
 
         if (!add_econ_item_fn) {
-            logging::info(XORSTR("Failed to get AddEconItem"));
+            logging::info(xs("Failed to get AddEconItem"));
             return nullptr;
         }
 
         auto base_type_cache = this->base_type_cache();
 
         if (!base_type_cache) {
-            logging::info(XORSTR("Failed to get object cache"));
+            logging::info(xs("Failed to get object cache"));
             return nullptr;
         }
 

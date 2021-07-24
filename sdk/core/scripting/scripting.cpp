@@ -12,7 +12,7 @@ void scripting::init()
 
 	while (iter != nullptr && ui_engine->is_valid_panel_ptr(iter))
 	{
-		if (strcmp(iter->get_panel_id(), XORSTR("CSGOMainMenu")) == 0)
+		if (strcmp(iter->get_panel_id(), xs("CSGOMainMenu")) == 0)
 			break;
 
 		iter = iter->get_parent();
@@ -25,5 +25,5 @@ void scripting::run_script(const std::string &script)
 {
 	const auto ui_engine = interfaces::panorama->access_ui_engine();
 
-	ui_engine->run_script(root_panel, script.data(), XORSTR("panorama/layout/base_mainmenu.xml"), 8, 10, false, false);
+	ui_engine->run_script(root_panel, script.data(), xs("panorama/layout/base_mainmenu.xml"), 8, 10, false, false);
 }

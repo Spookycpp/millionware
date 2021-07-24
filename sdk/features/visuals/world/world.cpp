@@ -74,9 +74,9 @@ namespace features::visuals::world {
             char buffer[32];
 
             if (should_draw_takeoff)
-                sprintf_s(buffer, XORSTR("%i (%i)"), (int) vel, (int) take_off);
+                sprintf_s(buffer, xs("%i (%i)"), (int) vel, (int) take_off);
             else
-                sprintf_s(buffer, XORSTR("%i"), (int) vel);
+                sprintf_s(buffer, xs("%i"), (int) vel);
 
             draw_indicator(buffer, color);
 
@@ -87,13 +87,13 @@ namespace features::visuals::world {
         }
 
         if (settings.visuals.local.indicators & (1 << 2) && settings.miscellaneous.movement.jump_bug && input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey))
-            draw_indicator(XORSTR("jb"), {255, 255, 255, 220});
+            draw_indicator(xs("jb"), {255, 255, 255, 220});
 
         if (settings.visuals.local.indicators & (1 << 4) && settings.miscellaneous.movement.edge_bug_assist && input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
-            draw_indicator(XORSTR("eb"), {255, 255, 255, 220});
+            draw_indicator(xs("eb"), {255, 255, 255, 220});
 
         if (settings.visuals.local.indicators & (1 << 5) && settings.miscellaneous.movement.edge_jump && input::is_key_down(settings.miscellaneous.movement.edge_jump_hotkey))
-            draw_indicator(XORSTR("ej"), {255, 255, 255, 220});
+            draw_indicator(xs("ej"), {255, 255, 255, 220});
     }
 
     void nightmode() {
@@ -113,7 +113,7 @@ namespace features::visuals::world {
 
         cheat::disconnect_state = false;
 
-        const static auto draw_specific_static_prop = interfaces::convar_system->find_convar(XORSTR("r_DrawSpecificStaticProp"));
+        const static auto draw_specific_static_prop = interfaces::convar_system->find_convar(xs("r_DrawSpecificStaticProp"));
 
         const float world_darkness = settings.visuals.world.nightmode ? 1.f - (settings.visuals.world.nightmode_darkness / 100.f) : 1.f;
         const float prop_darkness = settings.visuals.world.nightmode ? 1.3f - (settings.visuals.world.nightmode_darkness / 100.f) : 1.f;
@@ -132,13 +132,13 @@ namespace features::visuals::world {
             //	continue;
 
             // modulate world materials.
-            if (strncmp(material->get_group_name(), XORSTR("World textures"), 14) == 0)
+            if (strncmp(material->get_group_name(), xs("World textures"), 14) == 0)
                 material->set_color(world_darkness, world_darkness, world_darkness);
             // modulate props materials.
-            else if (strncmp(material->get_group_name(), XORSTR("StaticProp textures"), 19) == 0)
+            else if (strncmp(material->get_group_name(), xs("StaticProp textures"), 19) == 0)
                 material->set_color(prop_darkness, prop_darkness, prop_darkness);
 
-            auto cl_csm_shadows = interfaces::convar_system->find_convar(XORSTR("cl_csm_shadows"));
+            auto cl_csm_shadows = interfaces::convar_system->find_convar(xs("cl_csm_shadows"));
             if (cl_csm_shadows->get_int() != 0)
                 cl_csm_shadows->set_value(0);
         }
@@ -154,8 +154,8 @@ namespace features::visuals::world {
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
             // clang-format off
-                case OBS_MODE_IN_EYE:    return XORSTR("firstperson");
-                case OBS_MODE_CHASE:     return XORSTR("thirdperson");
+                case OBS_MODE_IN_EYE:    return xs("firstperson");
+                case OBS_MODE_CHASE:     return xs("thirdperson");
                 default:                 return "";
                 // clang-format on
             }
@@ -196,7 +196,7 @@ namespace features::visuals::world {
                 if (obs_mode_str.empty())
                     continue;
 
-                const auto string = std::format(XORSTR("{} -> {} ({})"), info.name, target_info.name, obs_mode_str);
+                const auto string = std::format(xs("{} -> {} ({})"), info.name, target_info.name, obs_mode_str);
                 const auto screen_size = render::get_screen_size();
                 const auto text_size = render::measure_text(string.c_str(), FONT_TAHOMA_11);
 
@@ -221,7 +221,7 @@ namespace features::visuals::world {
             const auto player_res = util::get_player_resource();
 
             if (player_res == nullptr)
-                return XORSTR("<unknown>");
+                return xs("<unknown>");
 
             const auto bomb_origin = entity->get_abs_origin();
             const auto &site_a = player_res->get_bomb_site_center_a();
@@ -231,9 +231,9 @@ namespace features::visuals::world {
             const auto dist_to_site_b = bomb_origin.dist(site_b);
 
             if (dist_to_site_a < dist_to_site_b)
-                return XORSTR("A");
+                return xs("A");
 
-            return XORSTR("B");
+            return xs("B");
         };
 
         const auto get_bomb_time = [&]() -> std::string {
@@ -242,7 +242,7 @@ namespace features::visuals::world {
 
             const float bomb_time = (interfaces::global_vars->current_time - entity->get_c4_blow()) * -1.0f;
 
-            return std::format(XORSTR("{}: {:.2f}s"), get_bombsite(), bomb_time);
+            return std::format(xs("{}: {:.2f}s"), get_bombsite(), bomb_time);
         };
 
         const auto get_bomb_damage = [&]() {
@@ -273,7 +273,7 @@ namespace features::visuals::world {
 
         const auto bomb_time_str = get_bomb_time();
         const auto health_remaining = get_bomb_damage();
-        const auto health_remaining_text = std::format(XORSTR("Health remaining: {} HP"), std::max(health_remaining, 0));
+        const auto health_remaining_text = std::format(xs("Health remaining: {} HP"), std::max(health_remaining, 0));
 
         const auto screen_size = render::get_screen_size();
         const auto bomb_time_text_size = render::measure_text(bomb_time_str.c_str(), FONT_TAHOMA_11);

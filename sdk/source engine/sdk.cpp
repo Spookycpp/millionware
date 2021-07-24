@@ -192,7 +192,7 @@ bool c_player::is_enemy() {
     if (interfaces::game_types->get_current_game_type() == GAME_TYPE_FREEFORALL)
         return this->get_survival_team() != cheat::local_player->get_survival_team();
 
-	const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
+	const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(xs("mp_teammates_are_enemies"));
 
 	if (!mp_teammates_are_enemies)
 		return player->get_team_num() != cheat::local_player->get_team_num();

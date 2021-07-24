@@ -16,12 +16,12 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
                                   float attenuation, int seed, int flags, int pitch, const vector_t *origin, const vector_t *direction, vector_t *utl_vec_origins, bool update_positions,
                                   float sound_time, int speaker_entity, uintptr_t fds) {
 
-	if (settings.miscellaneous.auto_accept && !std::strcmp(sound_entry, XORSTR("UIPanorama.popup_accept_match_beep"))) {
+	if (settings.miscellaneous.auto_accept && !std::strcmp(sound_entry, xs("UIPanorama.popup_accept_match_beep"))) {
         util::auto_accept();
 
         ShowWindow(render::window(), SW_RESTORE);
 
-        if (std::strstr(sample_name, XORSTR("competitive_accept_beep"))) 
+        if (std::strstr(sample_name, xs("competitive_accept_beep"))) 
             volume = 0.0f;
     }
 

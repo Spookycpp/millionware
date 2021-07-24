@@ -198,7 +198,7 @@ namespace features::legitbot::triggerbot {
         if (!player->is_valid() || player->get_has_gun_game_immunity())
             return false;
 
-        const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(XORSTR("mp_teammates_are_enemies"));
+        const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(xs("mp_teammates_are_enemies"));
 
         if (!settings_lbot->triggerbot.check_team) {
 

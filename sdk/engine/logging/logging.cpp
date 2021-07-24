@@ -19,7 +19,7 @@ static int min_severity = SEVERITY_INFO;
 void logging::init(int severity)
 {
 	min_severity = SEVERITY_ERROR + 1;
-	con_color_msg = (con_color_msg_fn) pe::get_export(XORSTR("tier0.dll"), XORSTR("?ConColorMsg@@YAXABVColor@@PBDZZ"));
+	con_color_msg = (con_color_msg_fn) pe::get_export(xs("tier0.dll"), xs("?ConColorMsg@@YAXABVColor@@PBDZZ"));
 	min_severity = severity;
 }
 
@@ -35,7 +35,7 @@ void logging::print(int severity, const std::string &message)
 		const auto prev_severity = min_severity;
 
 		min_severity = SEVERITY_ERROR + 1;
-		con_color_msg = (con_color_msg_fn) pe::get_export(XORSTR("tier0.dll"), XORSTR("?ConColorMsg@@YAXABVColor@@PBDZZ"));
+		con_color_msg = (con_color_msg_fn) pe::get_export(xs("tier0.dll"), xs("?ConColorMsg@@YAXABVColor@@PBDZZ"));
 		min_severity = prev_severity;
 
 		if (con_color_msg == nullptr)
@@ -63,25 +63,25 @@ void logging::print(int severity, const std::string &message)
 	switch (severity)
 	{
 	case SEVERITY_TRACE:
-		con_color_msg({ 184, 184, 184, 255 }, XORSTR("[millionware] "));
+		con_color_msg({ 184, 184, 184, 255 }, xs("[millionware] "));
 		break;
 
 	case SEVERITY_DEBUG:
-		con_color_msg({ 82, 235, 224, 255 }, XORSTR("[millionware] "));
+		con_color_msg({ 82, 235, 224, 255 }, xs("[millionware] "));
 		break;
 
 	case SEVERITY_INFO:
-        con_color_msg({(uint8_t) accent.r, (uint8_t) accent.g, (uint8_t) accent.b, 255}, XORSTR("[millionware] "));
+        con_color_msg({(uint8_t) accent.r, (uint8_t) accent.g, (uint8_t) accent.b, 255}, xs("[millionware] "));
         break;
 
 	case SEVERITY_WARNING:
-		con_color_msg({ 255, 213, 28, 255 }, XORSTR("[millionware] "));
+		con_color_msg({ 255, 213, 28, 255 }, xs("[millionware] "));
 		break;
 
 	case SEVERITY_ERROR:
-		con_color_msg({ 255, 32, 28, 255 }, XORSTR("[millionware] "));
+		con_color_msg({ 255, 32, 28, 255 }, xs("[millionware] "));
 		break;
 	}
 
-	con_color_msg({ 255, 255, 255, 255 }, XORSTR("%s \n"), message.data());
+	con_color_msg({ 255, 255, 255, 255 }, xs("%s \n"), message.data());
 }

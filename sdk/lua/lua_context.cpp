@@ -50,8 +50,8 @@ void lua_internal::context::new_state() {
 void lua_internal::context::setup_tables() {
 	// init mw table
 	luabridge::getGlobalNamespace(l)
-	.beginNamespace(XORSTR("mw"))
-        .addFunction(XORSTR("register_callback"), std::function([this]() {
+	.beginNamespace(xs("mw"))
+        .addFunction(xs("register_callback"), std::function([this]() {
 			size_t len;
 
 			// first argument is the event name
@@ -71,7 +71,7 @@ void lua_internal::context::setup_tables() {
 			
 			callbacks.push_back(cb);
 		}))
-        .addFunction(XORSTR("remove_callback"), std::function([this]() {
+        .addFunction(xs("remove_callback"), std::function([this]() {
 			size_t len;
 
 			// first argument is the event name
@@ -84,7 +84,7 @@ void lua_internal::context::setup_tables() {
 				return false;
 			}).begin(), callbacks.end());
 		}))
-	    .addFunction(XORSTR("register_event_callback"), std::function([this]() {
+	    .addFunction(xs("register_event_callback"), std::function([this]() {
 			size_t len;
 
 			// first argument is the event name
@@ -93,7 +93,7 @@ void lua_internal::context::setup_tables() {
             if (!interfaces::_event_listener->exists(event_name)) {
 				// event is not already registered by us
                 if (!interfaces::_event_listener->add(event_name)) {
-                    logging::error(XORSTR("Failed to register event: {}"), event_name);
+                    logging::error(xs("Failed to register event: {}"), event_name);
                     return;
                 }
 			}
@@ -125,7 +125,7 @@ void lua_internal::context::ffi(const bool state) const {
 		lua_call(l, 1, 0);
 	}
 	else {
-        lua_getglobal(l, XORSTR("ffi"));
+        lua_getglobal(l, xs("ffi"));
 		lua_pushnil(l);
 		lua_pop(l, 1);
 	}

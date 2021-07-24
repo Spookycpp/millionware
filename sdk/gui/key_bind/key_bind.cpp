@@ -43,19 +43,19 @@ static std::string get_key_display_name(int key)
 		switch (key)
 		{
 			case VK_LBUTTON:
-				return XORSTR("Left Mouse");
+				return xs("Left Mouse");
 
 			case VK_MBUTTON:
-                return XORSTR("Middle Mouse");
+                return xs("Middle Mouse");
 
 			case VK_RBUTTON:
-                return XORSTR("Right Mouse");
+                return xs("Right Mouse");
 
 			case VK_XBUTTON1:
-                return XORSTR("Mouse 4");
+                return xs("Mouse 4");
 
 			case VK_XBUTTON2:
-				return XORSTR("Mouse 5");
+				return xs("Mouse 5");
 		}
 	}
 

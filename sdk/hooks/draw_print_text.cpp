@@ -8,8 +8,8 @@
 
 bool __fastcall hooks::draw_print_text(uintptr_t ecx, uintptr_t edx, const wchar_t *text, int text_length, int draw_type) {
 
-    if (wcsncmp(text, XORSTR(L"fps"), 3) == 0) {
-        std::wstring millionware_string = std::wstring(XORSTR(L"[millionware] ")) + text;
+    if (wcsncmp(text, xs(L"fps"), 3) == 0) {
+        std::wstring millionware_string = std::wstring(xs(L"[millionware] ")) + text;
         return draw_print_text_original(ecx, edx, millionware_string.data(), millionware_string.length(), draw_type);
     }
 

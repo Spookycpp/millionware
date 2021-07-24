@@ -264,13 +264,13 @@ namespace lua_internal::tables::draw {
     //@todo: redo this
     inline void image(lua_State *l) {
         if (_textures.empty()) {
-            logging::error(XORSTR("no images have been loaded"));
+            logging::error(xs("no images have been loaded"));
             return;
         }
 
         const size_t idx = luaL_checkinteger(l, 5);
         if (idx > _textures.size()) {
-            logging::error(XORSTR("image index of {} is out of bounds, current size is {}"), 
+            logging::error(xs("image index of {} is out of bounds, current size is {}"), 
                 idx, _textures.size());
             return;
         }
@@ -286,13 +286,13 @@ namespace lua_internal::tables::draw {
     //@todo: redo this
     inline void gif(lua_State *l) {
         if (_gifs.empty()) {
-            logging::error(XORSTR("no gifs have been loaded"));
+            logging::error(xs("no gifs have been loaded"));
             return;
         }
 
         const size_t idx = luaL_checkinteger(l, 5);
         if (idx > _gifs.size()) {
-            logging::error(XORSTR("gif index of {} is out of bounds, current size is {}"), idx, _gifs.size());
+            logging::error(xs("gif index of {} is out of bounds, current size is {}"), idx, _gifs.size());
             return;
         }
 

@@ -8,7 +8,7 @@
 #include <type_traits>
 
 #define XORSTR_(s) ::jm::xor_string([]() { return s; }, std::integral_constant<std::size_t, sizeof(s) / sizeof(*s)>{}, std::make_index_sequence<::jm::detail::_buffer_size<sizeof(s)>()>{})
-#define XORSTR(s) XORSTR_(s).crypt_get()
+#define xs(s) XORSTR_(s).crypt_get()
 
 #define XORSTR_FORCEINLINE __forceinline
 #define JM_XORSTR_DISABLE_AVX_INTRINSICS

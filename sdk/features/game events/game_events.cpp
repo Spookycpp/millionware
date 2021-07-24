@@ -10,13 +10,13 @@
 
 namespace features::game_events {
     void on_player_hurt(c_game_event *game_event) {
-        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("userid")));
+        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("userid")));
         const auto user = (c_player*)interfaces::entity_list->get_entity(user_id);
 
         if (!user)
             return;
 
-        const int attacker_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("attacker")));
+        const int attacker_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("attacker")));
         const auto attacker = (c_player *) interfaces::entity_list->get_entity(attacker_id);
 
         if (!attacker)
@@ -24,8 +24,8 @@ namespace features::game_events {
 
         if (user != attacker && attacker == cheat::local_player) {
             switch (settings.miscellaneous.hit_sound) {
-            case 1: util::play_sound(XORSTR("survival\\money_collect_05.wav")); break;
-            case 2: util::play_sound(XORSTR("buttons\\arena_switch_press_02.wav")); break;
+            case 1: util::play_sound(xs("survival\\money_collect_05.wav")); break;
+            case 2: util::play_sound(xs("buttons\\arena_switch_press_02.wav")); break;
             default: break;
             }
         }
@@ -49,12 +49,12 @@ namespace features::game_events {
 
         std::string item = purchase_data.item;
 
-        if (item.find(XORSTR("weapon_")) != std::string::npos)
+        if (item.find(xs("weapon_")) != std::string::npos)
             item.erase(0, 7);
-        else if (item.find(XORSTR("item_")) != std::string::npos)
+        else if (item.find(xs("item_")) != std::string::npos)
             item.erase(0, 5);
 
-        logging::info(XORSTR("{} purchased {}"), info.name, item);
+        logging::info(xs("{} purchased {}"), info.name, item);
     }
 
     void on_begin_plant(c_game_event *game_event) {
@@ -62,7 +62,7 @@ namespace features::game_events {
         if (!settings.miscellaneous.bomb_log)
             return;
 
-        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("userid")));
+        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("userid")));
         const auto user = (c_player *) interfaces::entity_list->get_entity(user_id);
 
         if (!user || user == cheat::local_player)
@@ -104,14 +104,14 @@ namespace features::game_events {
         std::string bomb_site;
 
         if ((bomb_site_center_a - origin).length() < (bomb_site_center_b - origin).length())
-            bomb_site = XORSTR("A");
+            bomb_site = xs("A");
         else
-            bomb_site = XORSTR("B");
+            bomb_site = xs("B");
 
-        logging::info(XORSTR("{} planting at bombsite {}"), info.name, bomb_site);
+        logging::info(xs("{} planting at bombsite {}"), info.name, bomb_site);
 
         if (settings.miscellaneous.bomb_log_sounds) {
-            util::play_sound(XORSTR("weapons\\c4\\c4_initiate.wav"));
+            util::play_sound(xs("weapons\\c4\\c4_initiate.wav"));
         }
     }
 
@@ -119,23 +119,23 @@ namespace features::game_events {
         if (!settings.miscellaneous.vote_reveal)
             return;
 
-        int vote = game_event->get_int(XORSTR("vote_option"));
-        int id   = game_event->get_int(XORSTR("entityid"));
+        int vote = game_event->get_int(xs("vote_option"));
+        int id   = game_event->get_int(xs("entityid"));
 
         player_info_t player_info;
         interfaces::engine_client->get_player_info(id, player_info);
 
-        logging::info(XORSTR("{} voted {}"), player_info.name, std::string(vote == 0 ? XORSTR("yes") : XORSTR("no")));
+        logging::info(xs("{} voted {}"), player_info.name, std::string(vote == 0 ? xs("yes") : xs("no")));
     }
 
     void on_player_death(c_game_event *game_event) {
-        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("userid")));
+        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("userid")));
         const auto user = (c_player *) interfaces::entity_list->get_entity(user_id);
 
         if (!user)
             return;
 
-        const int attacker_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(XORSTR("attacker")));
+        const int attacker_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("attacker")));
         const auto attacker = (c_player *) interfaces::entity_list->get_entity(attacker_id);
 
         if (!attacker)
@@ -144,7 +144,7 @@ namespace features::game_events {
         if (user != attacker && attacker == cheat::local_player) {
 
             if (settings.miscellaneous.kill_say) {
-                interfaces::engine_client->execute_command(XORSTR("say god i wish i had millionware $$$$"));
+                interfaces::engine_client->execute_command(xs("say god i wish i had millionware $$$$"));
             }
 
             if (settings.visuals.local.kill_effect) {
@@ -152,8 +152,8 @@ namespace features::game_events {
             }
 
             switch (settings.miscellaneous.kill_sound) {
-            case 1: util::play_sound(XORSTR("survival\\money_collect_05.wav")); break;
-            case 2: util::play_sound(XORSTR("buttons\\arena_switch_press_02.wav")); break;
+            case 1: util::play_sound(xs("survival\\money_collect_05.wav")); break;
+            case 2: util::play_sound(xs("buttons\\arena_switch_press_02.wav")); break;
             default: break;
             }
         }
@@ -179,7 +179,7 @@ namespace features::game_events {
         if (!report_player_fn)
             return;
 
-        report_player_fn(std::to_string(info.xuid).c_str(), XORSTR("aimbot,wallhack,"));
+        report_player_fn(std::to_string(info.xuid).c_str(), xs("aimbot,wallhack,"));
     }
 
 } // namespace features::game_events

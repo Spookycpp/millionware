@@ -43,7 +43,7 @@ bool cheat::init() {
     // remove the dots & you have the build number
     // big bash bosh
     if (interfaces::engine_client->get_engine_build_number() != 13796) {
-        logging::info(XORSTR("tell laine 'big bash bosh'"));
+        logging::info(xs("tell laine 'big bash bosh'"));
         return false;
     }
 
@@ -68,7 +68,7 @@ bool cheat::init() {
 
     lua::init();
 
-    logging::info(XORSTR("successfully initialized"));
+    logging::info(xs("successfully initialized"));
 
     return true;
 }
@@ -89,7 +89,7 @@ bool cheat::undo() {
 
     input::undo();
 
-    logging::info(XORSTR("successfully uninitialized"));
+    logging::info(xs("successfully uninitialized"));
 
     return true;
 }

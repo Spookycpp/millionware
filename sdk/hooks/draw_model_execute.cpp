@@ -18,9 +18,9 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
     static c_material* glow = nullptr;
 
     if (!textured || !flat) {
-        textured = interfaces::material_system->find_material(XORSTR("debug/debugambientcube"));
-        flat = interfaces::material_system->find_material(XORSTR("debug/debugdrawflat"));
-        glow = interfaces::material_system->find_material(XORSTR("dev/glow_armsrace"));
+        textured = interfaces::material_system->find_material(xs("debug/debugambientcube"));
+        flat = interfaces::material_system->find_material(xs("debug/debugdrawflat"));
+        glow = interfaces::material_system->find_material(xs("dev/glow_armsrace"));
 
         // fixing crashes related to map change
         textured->increment_reference_count();
@@ -30,7 +30,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
         util::disable_model_occlusion();
     }
 
-    if (info->flags != 1 || strstr(info->model->name, XORSTR("models/player")) == nullptr) {
+    if (info->flags != 1 || strstr(info->model->name, xs("models/player")) == nullptr) {
         draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
         return;
     }
