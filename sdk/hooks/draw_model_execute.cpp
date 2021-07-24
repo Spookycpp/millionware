@@ -9,6 +9,7 @@
 #include "../source engine/material.h"
 #include "../source engine/material_handle.h"
 #include "../engine/logging/logging.h"
+#include "../core/util/util.h"
 
 void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ctx, void* state, c_model_render_info* info, matrix3x4_t* matrix) {
 
@@ -25,6 +26,8 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ct
         textured->increment_reference_count();
         flat->increment_reference_count();
         glow->increment_reference_count();
+
+        util::disable_model_occlusion();
     }
 
     if (info->flags != 1 || strstr(info->model->name, XORSTR("models/player")) == nullptr) {

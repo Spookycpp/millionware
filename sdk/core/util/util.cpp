@@ -5,83 +5,83 @@
 #include "../../core/patterns/patterns.h"
 #include "../../core/settings/settings.h"
 
-#include "../../engine/security/xorstr.h"
 #include "../../engine/math/math.h"
+#include "../../engine/security/xorstr.h"
 
 #include "../../source engine/cvar.h"
 
-#include "../../features/miscellaneous/miscellaneous.h"
 #include "../../engine/logging/logging.h"
 #include "../../engine/render/render.h"
+#include "../../features/miscellaneous/miscellaneous.h"
 
 static bool force_update = false;
 
 float TICK_INTERVAL() {
-	return interfaces::global_vars->interval_per_tick;
+    return interfaces::global_vars->interval_per_tick;
 }
 
 int TIME_TO_TICKS(const float dt) {
-	return static_cast<int>(0.5f + dt / TICK_INTERVAL());
+    return static_cast<int>(0.5f + dt / TICK_INTERVAL());
 }
 
 float TICKS_TO_TIME(const int tick) {
-	return tick * TICK_INTERVAL();
+    return tick * TICK_INTERVAL();
 }
 
 float util::get_total_latency() {
 
-	c_net_channel_info* nci = interfaces::engine_client->get_net_channel_info();
+    c_net_channel_info *nci = interfaces::engine_client->get_net_channel_info();
 
-	if (!nci)
-		return 0.0f;
+    if (!nci)
+        return 0.0f;
 
-	return nci->get_latency(FLOW_OUTGOING) + nci->get_latency(FLOW_INCOMING);
+    return nci->get_latency(FLOW_OUTGOING) + nci->get_latency(FLOW_INCOMING);
 }
 
 float util::get_lerp_time() {
 
-	static auto cl_interpolate  = interfaces::convar_system->find_convar(XORSTR("cl_interpolate"));
-	static auto cl_interp	    = interfaces::convar_system->find_convar(XORSTR("cl_interp"));
-	static auto cl_updaterate   = interfaces::convar_system->find_convar(XORSTR("cl_updaterate"));
-	static auto cl_interp_ratio = interfaces::convar_system->find_convar(XORSTR("cl_interp_ratio"));
+    static auto cl_interpolate = interfaces::convar_system->find_convar(XORSTR("cl_interpolate"));
+    static auto cl_interp = interfaces::convar_system->find_convar(XORSTR("cl_interp"));
+    static auto cl_updaterate = interfaces::convar_system->find_convar(XORSTR("cl_updaterate"));
+    static auto cl_interp_ratio = interfaces::convar_system->find_convar(XORSTR("cl_interp_ratio"));
 
-	if (cl_interp && cl_interpolate && cl_updaterate && cl_interp_ratio) {
-		if (cl_interpolate->get_int()) {
-			return std::max(cl_interp->get_float(), cl_interp_ratio->get_float() / cl_updaterate->get_float());
-		}
-	}
+    if (cl_interp && cl_interpolate && cl_updaterate && cl_interp_ratio) {
+        if (cl_interpolate->get_int()) {
+            return std::max(cl_interp->get_float(), cl_interp_ratio->get_float() / cl_updaterate->get_float());
+        }
+    }
 
-	return 0.0f;
+    return 0.0f;
 }
 
 float util::get_random_float(const float min, const float max) {
 
-	using  random_float_t = float(*)(float, float);
-	static random_float_t random_float_fn = (random_float_t)GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("RandomFloat"));
+    using random_float_t = float (*)(float, float);
+    static random_float_t random_float_fn = (random_float_t) GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("RandomFloat"));
 
-	if (!random_float_fn)
-		return 0.f;
+    if (!random_float_fn)
+        return 0.f;
 
-	return random_float_fn(min, max);
+    return random_float_fn(min, max);
 }
 
 bool util::run_frame() {
-	return cheat::local_player != nullptr;
+    return cheat::local_player != nullptr;
 }
 
-bool util::line_goes_through_smoke(const vector_t& src, const vector_t& dst) {
+bool util::line_goes_through_smoke(const vector_t &src, const vector_t &dst) {
 
-	using       line_goes_through_smoke_t = bool(*) (vector_t, vector_t, int16_t);
-	static auto line_goes_through_smoke_fn = (line_goes_through_smoke_t)patterns::line_goes_through_smoke;
+    using line_goes_through_smoke_t = bool (*)(vector_t, vector_t, int16_t);
+    static auto line_goes_through_smoke_fn = (line_goes_through_smoke_t) patterns::line_goes_through_smoke;
 
-	if (!line_goes_through_smoke_fn)
-		return false;
+    if (!line_goes_through_smoke_fn)
+        return false;
 
-	return line_goes_through_smoke_fn(src, dst, 1);
+    return line_goes_through_smoke_fn(src, dst, 1);
 }
 
 bool util::intersects_hitbox(const vector_t eye_pos, const vector_t end_pos, const vector_t min, const vector_t max, const float radius) {
-	return math::dist_segment_to_segment(eye_pos, end_pos, min, max).length() < radius;
+    return math::dist_segment_to_segment(eye_pos, end_pos, min, max).length() < radius;
 }
 
 void util::auto_accept() {
@@ -95,16 +95,16 @@ void util::auto_accept() {
 
 void util::force_full_update() {
 
-	static float update_time = 0.f;
-	static bool  should_update = false;
+    static float update_time = 0.f;
+    static bool should_update = false;
 
-	if (force_update) {
-		update_time = interfaces::global_vars->current_time + .1f;
-		should_update = true;
-		force_update = false;
+    if (force_update) {
+        update_time = interfaces::global_vars->current_time + .1f;
+        should_update = true;
+        force_update = false;
     }
 
-	if (should_update && interfaces::global_vars->current_time > update_time && interfaces::client_state->delta_tick != -1) {
+    if (should_update && interfaces::global_vars->current_time > update_time && interfaces::client_state->delta_tick != -1) {
         logging::info("Forcing game update");
         interfaces::client_state->delta_tick = -1;
 
@@ -114,36 +114,36 @@ void util::force_full_update() {
 
 void util::set_random_seed(const int seed) {
 
-	using  random_seed_t = int(__cdecl*)(int);
-	static random_seed_t random_seed_fn = (random_seed_t)GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("RandomSeed"));
+    using random_seed_t = int(__cdecl *)(int);
+    static random_seed_t random_seed_fn = (random_seed_t) GetProcAddress(GetModuleHandleA(XORSTR("vstdlib.dll")), XORSTR("RandomSeed"));
 
-	if (!random_seed_fn)
-		return;
+    if (!random_seed_fn)
+        return;
 
-	random_seed_fn(seed);
+    random_seed_fn(seed);
 }
 
-void util::set_skybox(const char* name) {
+void util::set_skybox(const char *name) {
     features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
 }
 
 void util::on_frame_stage_notify(const e_client_frame_stage frame_stage) {
 
-	if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_START)
-		return;
+    if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_START)
+        return;
 
-	features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
+    features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
 }
 
-void util::play_sound(const char* file_path, int volume) {
+void util::play_sound(const char *file_path, int volume) {
 
-	if (volume == -1)
-		volume = settings.global.sound_fx_volume;
+    if (volume == -1)
+        volume = settings.global.sound_fx_volume;
 
-	char buffer[256] = {};
-	sprintf_s(buffer, XORSTR("playvol \"%s\" \"%s\""), file_path, std::to_string(static_cast<float>(volume) / 100.0f).c_str());
+    char buffer[256] = {};
+    sprintf_s(buffer, XORSTR("playvol \"%s\" \"%s\""), file_path, std::to_string(static_cast<float>(volume) / 100.0f).c_str());
 
-	interfaces::engine_client->execute_command(buffer);
+    interfaces::engine_client->execute_command(buffer);
 }
 
 void util::movement_fix(const vector_t &old_angles, c_user_cmd *user_cmd) {
@@ -169,6 +169,15 @@ void util::movement_fix(const vector_t &old_angles, c_user_cmd *user_cmd) {
     user_cmd->side_move = new_side;
 }
 
+void util::disable_model_occlusion() {
+    const static auto r_drawallrenderables = interfaces::convar_system->find_convar(XORSTR("r_drawallrenderables"));
+
+    if (r_drawallrenderables->get_int() != 1) {
+        r_drawallrenderables->callbacks.clear();
+        r_drawallrenderables->set_value(1);
+    }
+}
+
 point_t util::screen_transform(const vector_t &world) {
 
     const auto screen_transform = [&](const vector_t &in, point_t &out) -> bool {
@@ -192,7 +201,7 @@ point_t util::screen_transform(const vector_t &world) {
 
     point_t screen;
 
-    if (!screen_transform(world, screen)) 
+    if (!screen_transform(world, screen))
         return {};
 
     const auto screen_size = render::get_screen_size();
@@ -203,22 +212,22 @@ point_t util::screen_transform(const vector_t &world) {
     return screen;
 }
 
-c_player_resource* util::get_player_resource() {
+c_player_resource *util::get_player_resource() {
 
-	for (int i = 65; i < interfaces::entity_list->get_highest_ent_index(); ++i) {
-		auto ent = (c_entity*)interfaces::entity_list->get_entity(i);
+    for (int i = 65; i < interfaces::entity_list->get_highest_ent_index(); ++i) {
+        auto ent = (c_entity *) interfaces::entity_list->get_entity(i);
 
-		if (!ent)
-			continue;
+        if (!ent)
+            continue;
 
-		const auto cc = ent->get_networkable()->get_client_class();
+        const auto cc = ent->get_networkable()->get_client_class();
 
-		if (cc && cc->class_id == CCSPlayerResource) {
-			return reinterpret_cast<c_player_resource*>(ent);
-		}
-	}
+        if (cc && cc->class_id == CCSPlayerResource) {
+            return reinterpret_cast<c_player_resource *>(ent);
+        }
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 uintptr_t *util::find_hud_element(const char *name) {
@@ -245,68 +254,71 @@ uintptr_t *util::find_hud_element(const char *name) {
     return reinterpret_cast<uintptr_t *>(find_hud_element_fn(this_ptr, name));
 }
 
-std::optional<vector_t> util::get_intersection(const vector_t& start, const vector_t& end, const vector_t& mins, const vector_t& maxs, float radius) {
+std::optional<vector_t> util::get_intersection(const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs, float radius) {
 
-	const auto sphere_ray_intersection = [start, end, radius](auto&& center) -> std::optional< vector_t > {
-		auto direction = end - start;
-		direction /= direction.length();
+    const auto sphere_ray_intersection = [start, end, radius](auto &&center) -> std::optional<vector_t> {
+        auto direction = end - start;
+        direction /= direction.length();
 
-		auto q = center - start;
-		auto v = q.dot(direction);
-		auto d = radius * radius - (q.length_sqr() - v * v);
+        auto q = center - start;
+        auto v = q.dot(direction);
+        auto d = radius * radius - (q.length_sqr() - v * v);
 
-		if (d < FLT_EPSILON) {
-			return {};
-		}
+        if (d < FLT_EPSILON) {
+            return {};
+        }
 
-		return start + direction * (v - std::sqrt(d));
-	};
+        return start + direction * (v - std::sqrt(d));
+    };
 
-	auto delta = maxs - mins;
+    auto delta = maxs - mins;
 
-	delta /= delta.length();
+    delta /= delta.length();
 
-	for (size_t i = 0; i < std::floor(mins.dist(maxs)); ++i) {
-		if (const auto intersection = sphere_ray_intersection(mins + delta * float(i)); intersection) {
-			return intersection;
-		}
-	}
+    for (size_t i = 0; i < std::floor(mins.dist(maxs)); ++i) {
+        if (const auto intersection = sphere_ray_intersection(mins + delta * float(i)); intersection) {
+            return intersection;
+        }
+    }
 
-	if (const auto intersection = sphere_ray_intersection(maxs); intersection) {
-		return intersection;
-	}
+    if (const auto intersection = sphere_ray_intersection(maxs); intersection) {
+        return intersection;
+    }
 
-	return {};
+    return {};
 }
 
-std::string util::sanitize_string(const std::string& str) {
+std::string util::sanitize_string(const std::string &str) {
 
-	std::string ret = str;
+    std::string ret = str;
 
-	for (auto& it : ret) {
-		switch (it) {
-			case '"': case '\\': case ';': case '\n':
-				it = ' ';
-				break;
-			default:
-				break;
-		}
-	}
+    for (auto &it : ret) {
+        switch (it) {
+        case '"':
+        case '\\':
+        case ';':
+        case '\n':
+            it = ' ';
+            break;
+        default:
+            break;
+        }
+    }
 
-	return ret;
+    return ret;
 }
 
 void util::undo() {
 
-	interfaces::convar_system->find_convar(XORSTR("weapon_debug_spread_show"))->set_value(0);
-	interfaces::convar_system->find_convar(XORSTR("cl_crosshair_recoil"))->set_value(0);
-	interfaces::convar_system->find_convar(XORSTR("mat_postprocess_enable"))->set_value(1);
-	interfaces::convar_system->find_convar(XORSTR("@panorama_disable_blur"))->set_value(0);
-	interfaces::convar_system->find_convar(XORSTR("phys_pushscale"))->set_value(1);
-	interfaces::convar_system->find_convar(XORSTR("cl_ragdoll_gravity"))->set_value(600);
+    interfaces::convar_system->find_convar(XORSTR("weapon_debug_spread_show"))->set_value(0);
+    interfaces::convar_system->find_convar(XORSTR("cl_crosshair_recoil"))->set_value(0);
+    interfaces::convar_system->find_convar(XORSTR("mat_postprocess_enable"))->set_value(1);
+    interfaces::convar_system->find_convar(XORSTR("@panorama_disable_blur"))->set_value(0);
+    interfaces::convar_system->find_convar(XORSTR("phys_pushscale"))->set_value(1);
+    interfaces::convar_system->find_convar(XORSTR("cl_ragdoll_gravity"))->set_value(600);
 
-	if (interfaces::engine_client->is_in_game()) {
-		cheat::local_player->get_flash_alpha() = 255.0f;
+    if (interfaces::engine_client->is_in_game()) {
+        cheat::local_player->get_flash_alpha() = 255.0f;
         features::miscellaneous::skybox_changer(0);
     }
 }
