@@ -253,10 +253,13 @@ void ui::init() {
 
         if (const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, XORSTR("World"))) {
             if (const auto group = world_tab->new_group(XORSTR("Main"))) {
-                group->new_checkbox(XORSTR("Rain"), settings.visuals.world.weather);
                 group->new_checkbox(XORSTR("Nightmode"), settings.visuals.world.nightmode)->add_color_picker(settings.visuals.world.nightmode_color);
                 group->new_slider(XORSTR("Intensity"), settings.visuals.world.nightmode_darkness, 0.f, 100.f, XORSTR("{:.0f}%"))->add_dependency(settings.visuals.world.nightmode);
                 group->new_checkbox(XORSTR("Fullbright"), settings.visuals.world.fullbright);
+                group->new_checkbox(XORSTR("Weather"), settings.visuals.world.weather);
+
+                group->new_checkbox(XORSTR("Fog"), settings.visuals.world.fog)->add_color_picker(settings.visuals.world.fog_color);
+                group->new_slider(XORSTR("Distance"), settings.visuals.world.fog_length, 0, 5000, XORSTR("{}"))->add_dependency(settings.visuals.world.fog);
 
                 // weather (rain, snow & wtv else we can do)
                 group->new_select(XORSTR("Skybox"), settings.visuals.world.skybox,

@@ -329,6 +329,9 @@ public:
 	DECLARE_NETVAR(int, smoke_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nSmokeEffectTickBegin");
 
 	DECLARE_NETVAR(vector_t, vec_origin, "DT_BaseEntity", "m_vecOrigin");
+    DECLARE_NETVAR(vector_t, mins, "DT_CollisionProperty", "m_vecMins");
+    DECLARE_NETVAR(vector_t, maxs, "DT_CollisionProperty", "m_vecMaxs");
+
 	DECLARE_NETVAR(entity_handle_t, owner_handle, "DT_BaseEntity", "m_hOwnerEntity");
 	DECLARE_NETVAR_OFFSET(matrix3x4_t, transformation_matrix, "DT_BaseEntity", "m_CollisionGroup", -48);
 
@@ -369,8 +372,6 @@ public:
 	DECLARE_NETVAR(vector_t, aim_punch_angle, "DT_Local", "m_aimPunchAngle");
 	DECLARE_NETVAR(vector_t, velocity, "DT_LocalPlayerExclusive", "m_vecVelocity[0]");
 	DECLARE_NETVAR(vector_t, view_offset, "DT_LocalPlayerExclusive", "m_vecViewOffset[0]");
-    DECLARE_NETVAR(vector_t, mins, "DT_BaseEntity", "m_vecMins");
-    DECLARE_NETVAR(vector_t, maxs, "DT_BaseEntity", "m_vecMaxs");
 	DECLARE_NETVAR(entity_handle_t, observer_target, "DT_BasePlayer", "m_hObserverTarget");
 	DECLARE_NETVAR(entity_handle_t, active_weapon_handle, "DT_BaseCombatCharacter", "m_hActiveWeapon");
 	DECLARE_NETVAR(entity_handle_t, view_model_handle, "DT_BasePlayer", "m_hViewModel[0]");

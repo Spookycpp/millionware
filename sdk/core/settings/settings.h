@@ -149,7 +149,7 @@ struct settings_t {
 			color_t nightmode_color = { 38, 34, 34 };
 			bool    fullbright = false;
 			bool    fog = false;
-			int     fog_length = 0;
+			int     fog_length = 5000;
 			color_t fog_color = { 255, 255, 255 };
 			bool    weapon = false;
             color_t weapon_color = {255, 255, 255};
