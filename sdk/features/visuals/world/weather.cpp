@@ -10,49 +10,47 @@ namespace features::visuals::weather {
     void update_weather() {
 
         static bool last_state = false;
-        static void *rain_networkable = nullptr;
-        c_precipitation_entity *rain_ent = (c_precipitation_entity *) interfaces::entity_list->get_entity(MAX_EDICTS - 1);
-        static c_client_class *precipitation_client_class = nullptr;
+        static bool created_rain = false;
 
-        if (!settings.visuals.world.weather)
-            return;
+        static c_precipitation_entity *rain_entity = nullptr;
+        static c_client_class *precipitation = nullptr;
 
-        if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected()) {
-            rain_networkable = rain_ent = nullptr;
-            return;
+        if (!precipitation) {
+            for (auto client_class = interfaces::client_dll->get_all_classes(); client_class && !precipitation; client_class = client_class->next) {
+                if (client_class->class_id == CPrecipitation)
+                    precipitation = client_class;
+            }
         }
 
-        if (!cheat::local_player)
+        if (!precipitation)
             return;
 
-        if (!precipitation_client_class) {
-            for (auto pclass = interfaces::client_dll->get_all_classes(); pclass && !precipitation_client_class; pclass = pclass->next)
-                if (strstr(pclass->class_name, XORSTR("CPrecipitation"))) {
+        if (last_state != settings.visuals.world.weather) {
+            if (settings.visuals.world.weather) {
+                if (precipitation->create && precipitation->create(MAX_EDICTS - 1, 0)) {
+                    rain_entity = (c_precipitation_entity *) interfaces::entity_list->get_entity(MAX_EDICTS - 1);
 
-                    precipitation_client_class = pclass;
-                }
-        }
+                    rain_entity->get_networkable()->pre_data_update(0);
+                    rain_entity->get_networkable()->on_pre_data_changed(0);
 
-        else {
-            if (!rain_ent && precipitation_client_class && precipitation_client_class->create) {
+                    rain_entity->get_precip_type() = precipitation_type_t::PRECIPITATION_TYPE_SNOW;
+                    rain_entity->get_mins() = {-16384.0f, -16384.0f, -16384.0f};
+                    rain_entity->get_maxs() = {16384.0f, 16384.0f, 16384.0f};
 
-                rain_networkable = ((void *(*) (int, int) ) precipitation_client_class->create)(MAX_EDICTS - 1, 0);
-
-                if (rain_networkable) {
-                    rain_ent = (c_precipitation_entity *) interfaces::entity_list->get_entity(MAX_EDICTS - 1);
-
-                    rain_ent->get_precip_type() = (precipitation_type_t::PRECIPITATION_TYPE_SNOW);
-
-                    rain_ent->get_networkable()->pre_data_update(0);
-                    rain_ent->get_networkable()->on_pre_data_changed(0);
-
-                    rain_ent->get_mins() = vector_t(-32767.0f, -32767.0f, -32767.0f);
-                    rain_ent->get_maxs() = vector_t(32767.0f, 32767.0f, 32767.0f);
-
-                    rain_ent->get_networkable()->on_data_changed(0);
-                    rain_ent->get_networkable()->post_data_update(0);
+                    rain_entity->get_networkable()->on_data_changed(0);
+                    rain_entity->get_networkable()->post_data_update(0);
                 }
             }
+            else {
+                const auto networkable = rain_entity ? rain_entity->get_networkable() : nullptr;
+
+                if (networkable)
+                    networkable->release();
+
+                rain_entity = nullptr;
+            }
+
+            last_state = settings.visuals.world.weather;
         }
     }
 
