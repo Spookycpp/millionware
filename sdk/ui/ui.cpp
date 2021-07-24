@@ -99,7 +99,8 @@ void ui::init() {
             if (const auto group = legit_tab->new_group(XORSTR("Weapon groups"))) {
                 group->new_checkbox(XORSTR("Enabled"), settings.global.weapon_groups);
                 group->new_select(XORSTR("Group"), weapon_group,
-                                  {XORSTR("Global"), XORSTR("Pistols"), XORSTR("Heavy pistol"), XORSTR("Rifles"), XORSTR("AWP"), XORSTR("Scout"), XORSTR("Auto"), XORSTR("Other")});
+                                 {XORSTR("Global"), XORSTR("Pistols"), XORSTR("Heavy pistol"), XORSTR("Rifles"), 
+                                  XORSTR("AWP"), XORSTR("Scout"), XORSTR("Auto"), XORSTR("Other")})->add_dependency(settings.global.weapon_groups);
             }
 
             const auto make_weapon_group_ui = [&legit_tab](int weapon_group_index, settings_t::legitbot_t *group_settings) {
