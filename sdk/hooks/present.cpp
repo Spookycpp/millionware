@@ -2,6 +2,7 @@
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 
+#include "../engine/logging/logging.h"
 #include "../engine/render/render.h"
 #include "../engine/security/xorstr.h"
 
@@ -26,6 +27,8 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
     features::visuals::world::display_spectators();
 
     features::nade_prediction::on_paint_traverse();
+
+    logging::render();
 
     ui::frame();
 

@@ -1,87 +1,125 @@
+#include <imgui.h>
+
 #include "../../core/interfaces/interfaces.h"
+#include "../../core/settings/settings.h"
 #include "../../engine/hash/hash.h"
 #include "../../engine/pe/pe.h"
+#include "../../engine/render/render.h"
 #include "../../engine/security/xorstr.h"
 #include "logging.h"
-#include "../../core/settings/settings.h"
 
-struct valve_color_t
-{
-	unsigned char r, g, b, a;
+constexpr auto LOG_MAX_BACKLOG = 32;
+constexpr auto FADE_IN_OUT_GRACE_PERIOD = 0.5f;
+constexpr auto DEFAULT_ENTRY_DURATION = 5.0f;
+
+struct valve_color_t {
+    int r : 8;
+    int g : 8;
+    int b : 8;
+    int a : 8;
+};
+
+struct log_entry_t {
+    int severity;
+
+    float time_added;
+    float duration;
+
+    std::string message;
 };
 
 using con_color_msg_fn = void(__cdecl *)(const valve_color_t &, const char *, ...);
 
-static std::vector<std::pair<int, std::string>> log_buffer = {};
-static con_color_msg_fn con_color_msg = nullptr;
-static int min_severity = SEVERITY_INFO;
+static std::vector<log_entry_t> messages;
+static con_color_msg_fn con_color_msg;
 
-void logging::init(int severity)
-{
-	min_severity = SEVERITY_ERROR + 1;
-	con_color_msg = (con_color_msg_fn) pe::get_export(xs("tier0.dll"), xs("?ConColorMsg@@YAXABVColor@@PBDZZ"));
-	min_severity = severity;
+void logging::init() {
+    ImGui::CreateContext();
+
+    con_color_msg = (con_color_msg_fn) pe::get_export(xs("tier0.dll"), xs("?ConColorMsg@@YAXABVColor@@PBDZZ"));
 }
 
-bool logging::should_log(int severity)
-{
-	return severity >= min_severity;
+void logging::render() {
+    const auto current_time = (float) ImGui::GetTime();
+    const auto messages_to_remove = std::remove_if(messages.begin(), messages.end(), [current_time](const auto &message) {
+        const auto displayed_for = current_time - message.time_added;
+
+        return displayed_for >= message.duration;
+    });
+
+    messages.erase(messages_to_remove, messages.end());
+
+    auto offset = 0.0f;
+
+    for (const auto &message : messages) {
+        const auto displayed_for = current_time - message.time_added;
+        const auto text_size = render::measure_text(message.message.c_str(), FONT_TAHOMA_12);
+        const auto message_increment = text_size.y + 3.0f;
+
+        auto position = point_t{4.0f, 4.0f + offset};
+        auto alpha = 0;
+
+        if (displayed_for <= FADE_IN_OUT_GRACE_PERIOD || message.duration - displayed_for <= FADE_IN_OUT_GRACE_PERIOD) {
+            const auto what1 = displayed_for <= FADE_IN_OUT_GRACE_PERIOD;
+            const auto what2 = what1 ? displayed_for : (message.duration - displayed_for);
+            const auto what3 = std::clamp(what2, 0.0f, FADE_IN_OUT_GRACE_PERIOD) / FADE_IN_OUT_GRACE_PERIOD;
+
+            alpha = std::clamp((int) (what2 * 255.0f), 0, 255);
+            offset += message_increment * what2;
+
+            if (what1)
+                position.x -= (1.0f - what2) * 150.0f;
+        }
+        else {
+            alpha = 255;
+            offset += message_increment;
+        }
+
+        color_t color;
+
+        if (message.severity == LOG_SEVERITY_DEBUG)
+            color = {82, 235, 224};
+        else if (message.severity == LOG_SEVERITY_INFO)
+            color = settings.global.accent_color;
+        else if (message.severity == LOG_SEVERITY_WARNING)
+            color = {255, 213, 28};
+        else if (message.severity == LOG_SEVERITY_ERROR)
+            color = {255, 32, 28};
+
+        render::draw_text(position + 1, {10, 10, 10, 80}, message.message.c_str(), FONT_TAHOMA_12);
+        render::draw_text(position, color, message.message.c_str(), FONT_TAHOMA_12);
+    }
 }
 
-void logging::print(int severity, const std::string &message)
-{
-	if (con_color_msg == nullptr)
-	{
-		const auto prev_severity = min_severity;
+void logging::print(int severity, const std::string &message) {
+    log_entry_t entry;
 
-		min_severity = SEVERITY_ERROR + 1;
-		con_color_msg = (con_color_msg_fn) pe::get_export(xs("tier0.dll"), xs("?ConColorMsg@@YAXABVColor@@PBDZZ"));
-		min_severity = prev_severity;
+    entry.severity = severity;
+    entry.time_added = ImGui::GetTime();
+    entry.duration = DEFAULT_ENTRY_DURATION;
+    entry.message = move(message);
 
-		if (con_color_msg == nullptr)
-		{
-			log_buffer.push_back(std::make_pair(severity, message));
+    if (messages.size() >= LOG_MAX_BACKLOG)
+        messages.erase(messages.begin());
 
-			return;
-		}
-	}
+    messages.push_back(entry);
 
-	if (!log_buffer.empty())
-	{
-		const auto log_buffer_copy = log_buffer;
+    if (con_color_msg) {
+        const auto accent = settings.global.accent_color;
 
-		log_buffer.clear();
+        valve_color_t color;
 
-		for (const auto &[buffer_severity, buffer_message] : log_buffer_copy)
-		{
-			print(buffer_severity, buffer_message);
-		}
-	}
+        if (severity == LOG_SEVERITY_DEBUG)
+            color = {82, 235, 224, 255};
+        else if (severity == LOG_SEVERITY_INFO)
+            color = {accent.r, accent.g, accent.b, 255};
+        else if (severity == LOG_SEVERITY_WARNING)
+            color = {255, 213, 28, 255};
+        else if (severity == LOG_SEVERITY_ERROR)
+            color = {255, 32, 28, 255};
 
-	const auto accent = settings.global.accent_color;
-
-	switch (severity)
-	{
-	case SEVERITY_TRACE:
-		con_color_msg({ 184, 184, 184, 255 }, xs("[millionware] "));
-		break;
-
-	case SEVERITY_DEBUG:
-		con_color_msg({ 82, 235, 224, 255 }, xs("[millionware] "));
-		break;
-
-	case SEVERITY_INFO:
-        con_color_msg({(uint8_t) accent.r, (uint8_t) accent.g, (uint8_t) accent.b, 255}, xs("[millionware] "));
-        break;
-
-	case SEVERITY_WARNING:
-		con_color_msg({ 255, 213, 28, 255 }, xs("[millionware] "));
-		break;
-
-	case SEVERITY_ERROR:
-		con_color_msg({ 255, 32, 28, 255 }, xs("[millionware] "));
-		break;
-	}
-
-	con_color_msg({ 255, 255, 255, 255 }, xs("%s \n"), message.data());
+        con_color_msg(color, xs("[millionware] "));
+        con_color_msg({255, 255, 255, 255}, entry.message.c_str());
+        con_color_msg({255, 255, 255, 255}, xs("\n"));
+    }
 }

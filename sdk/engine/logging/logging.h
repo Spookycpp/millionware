@@ -2,64 +2,35 @@
 
 #include <format>
 
-// why tf is it even defined ???
-#ifdef SEVERITY_ERROR
-#undef SEVERITY_ERROR
+#ifdef _DEBUG
+#define MIN_SEVERITY LOG_SEVERITY_DEBUG
+#else
+#define MIN_SEVERITY LOG_SEVERITY_INFO
 #endif
 
-enum e_log_severity
-{
-	SEVERITY_TRACE,
-	SEVERITY_DEBUG,
-	SEVERITY_INFO,
-	SEVERITY_WARNING,
-	SEVERITY_ERROR,
+enum e_log_severity {
+    LOG_SEVERITY_DEBUG,
+    LOG_SEVERITY_INFO,
+    LOG_SEVERITY_WARNING,
+    LOG_SEVERITY_ERROR,
 };
 
-namespace logging
-{
-	void init(int severity);
+#define IMPL_LOGGING_LEVEL(level_name, level_severity)                                                                                                                                                 \
+    template <typename... A> void level_name(const std::string &format_str, A &&...args) {                                                                                                             \
+        if constexpr (level_severity >= MIN_SEVERITY)                                                                                                                                                            \
+            print(level_severity, std::format(format_str, std::forward<A>(args)...));                                                                                                                  \
+    }
 
-	bool should_log(int severity);
+namespace logging {
 
-	void print(int severity, const std::string &message);
+    void init();
+    void render();
 
-	template <typename ...A>
-	void print(int severity, const std::string &format_str, A&& ...args)
-	{
-		if (!should_log(severity))
-			return;
+    void print(int severity, const std::string &message);
 
-		print(severity, std::format(format_str, args...));
-	}
+    IMPL_LOGGING_LEVEL(debug, LOG_SEVERITY_DEBUG);
+    IMPL_LOGGING_LEVEL(info, LOG_SEVERITY_INFO);
+    IMPL_LOGGING_LEVEL(warning, LOG_SEVERITY_WARNING);
+    IMPL_LOGGING_LEVEL(error, LOG_SEVERITY_ERROR);
 
-	template <typename ...A>
-	void trace(const std::string &format_str, A&& ...args)
-	{
-		print(SEVERITY_TRACE, format_str, args...);
-	}
-
-	template <typename ...A>
-	void debug(const std::string &format_str, A&& ...args)
-	{
-		print(SEVERITY_DEBUG, format_str, args...);
-	}
-
-	template <typename ...A>
-	void info(const std::string &format_str, A&& ...args)
-	{
-		print(SEVERITY_INFO, format_str, args...);
-	}
-
-	template <typename ...A>
-	void warning(const std::string &format_str, A&& ...args)
-	{
-		print(SEVERITY_WARNING, format_str, args...);
-	}
-
-	template <typename ...A>
-	void error(const std::string &format_str, A&& ...args)
-	{
-		print(SEVERITY_ERROR, format_str, args...);
-	}
-}
+} // namespace logging

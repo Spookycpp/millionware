@@ -173,14 +173,11 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
 
 unsigned long __stdcall initial_thread(void *base_pointer) {
     cheat_module_base = base_pointer;
+
     AddVectoredExceptionHandler(true, unhandledExceptionFilter);
     SymInitialize(GetCurrentProcess(), nullptr, true);
 
-#ifdef _DEBUG
-    logging::init(SEVERITY_DEBUG);
-#else
-    logging::init(SEVERITY_INFO);
-#endif
+    logging::init();
 
     auto i = 0;
 

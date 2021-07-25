@@ -208,10 +208,6 @@ void render::init(HWND window, IDirect3DDevice9 *device)
 	d3d9_device = device;
 
 	device->CreateStateBlock(D3DSBT_ALL, &state_block);
-    
-	// Set up imgui context and colors style
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
 
 	// Create fonts and build the font atlas
 	//
