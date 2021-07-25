@@ -200,5 +200,6 @@
     <ClInclude Include="features\visuals\world\weather.h" />
     <ClInclude Include="core\v2 exports\v2 exports.h" />
     <ClInclude Include="features\discord presence\rpc.h" />
+    <ClInclude Include="source engine\key_values.h" />
   </ItemGroup>
 </Project>

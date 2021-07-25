@@ -271,7 +271,16 @@ bool patterns::init()
     if ((inventory_unlocker = get_pattern(xs("client.dll"), xs("84 C0 75 04 B0 01 5F"))) == 0u)
         return false;
 	
-	if ((demo_file_end_reached = get_pattern(xs("client.dll"), xs("8B C8 85 C9 74 1F 80 79 10"))) == 0u)
+	if ((key_values_system = get_pattern(xs("client.dll"), xs("55 8B EC 51 33 C0 C7 45"))) == 0u)
+        return false;
+
+	if ((load_from_buffer = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89 4C 24 04"))) == 0u)
+        return false;
+
+	if ((find_key = get_pattern(xs("client.dll"), xs("55 8B EC 83 EC 1C 53 8B D9 85 DB"))) == 0u)
+        return false;
+
+	if ((set_string = get_pattern(xs("client.dll"), xs("55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01"))) == 0u)
         return false;
 
 	return true;
