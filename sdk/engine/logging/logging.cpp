@@ -52,7 +52,7 @@ void logging::render() {
 
     auto offset = 0.0f;
 
-    const auto tag_text = xs("[millionware]");
+    const auto tag_text = xs("[millionware]  ");
     const auto tag_size = render::measure_text(tag_text, FONT_TAHOMA_11);
 
     for (const auto &message : messages) {
