@@ -2,6 +2,7 @@
 
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/settings/settings.h"
+#include "../../engine/easing/easing.h"
 #include "../../engine/hash/hash.h"
 #include "../../engine/pe/pe.h"
 #include "../../engine/render/render.h"
@@ -51,13 +52,16 @@ void logging::render() {
 
     auto offset = 0.0f;
 
+    const auto tag_text = xs("[millionware]");
+    const auto tag_size = render::measure_text(tag_text, FONT_TAHOMA_11);
+
     for (const auto &message : messages) {
         const auto displayed_for = current_time - message.time_added;
         const auto text_size = render::measure_text(message.message.c_str(), FONT_TAHOMA_11);
         const auto message_increment = text_size.y + 1.0f;
 
         color_t color;
-        point_t position = {4.0f, 4.0f + offset};
+        point_t position = {6.0f, 6.0f + offset};
 
         if (message.severity == LOG_SEVERITY_DEBUG)
             color = {82, 235, 224};
@@ -72,20 +76,24 @@ void logging::render() {
             const auto what1 = displayed_for <= FADE_IN_OUT_GRACE_PERIOD;
             const auto what2 = what1 ? displayed_for : message.duration - displayed_for;
             const auto what3 = std::clamp(what2, 0.0f, FADE_IN_OUT_GRACE_PERIOD) / FADE_IN_OUT_GRACE_PERIOD;
+            const auto what4 = easing::out_cubic(what3);
 
             color.a = std::clamp((int) (what3 * 255.0f), 0, 255);
-            offset += message_increment * what3;
+            offset += message_increment * what4;
 
             if (what1)
-                position.x -= (1.0f - what3) * 150.0f;
+                position.x -= (1.0f - what4) * 150.0f;
         }
         else {
             color.a = 255;
             offset += message_increment;
         }
 
-        render::draw_text(position + 1, {10, 10, 10, 80}, message.message.c_str(), FONT_TAHOMA_11);
-        render::draw_text(position, color, message.message.c_str(), FONT_TAHOMA_11);
+        render::draw_text(position + 1, {10, 10, 10, color.a / 3}, tag_text, FONT_TAHOMA_11);
+        render::draw_text(position, color, tag_text, FONT_TAHOMA_11);
+
+        render::draw_text({position.x + tag_size.x + 1, position.y + 1}, {10, 10, 10, color.a / 3}, message.message.c_str(), FONT_TAHOMA_11);
+        render::draw_text({position.x + tag_size.x, position.y}, {255, 255, 255, color.a}, message.message.c_str(), FONT_TAHOMA_11);
     }
 }
 
