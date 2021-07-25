@@ -53,29 +53,11 @@ void logging::render() {
 
     for (const auto &message : messages) {
         const auto displayed_for = current_time - message.time_added;
-        const auto text_size = render::measure_text(message.message.c_str(), FONT_TAHOMA_12);
-        const auto message_increment = text_size.y + 3.0f;
-
-        auto position = point_t{4.0f, 4.0f + offset};
-        auto alpha = 0;
-
-        if (displayed_for <= FADE_IN_OUT_GRACE_PERIOD || message.duration - displayed_for <= FADE_IN_OUT_GRACE_PERIOD) {
-            const auto what1 = displayed_for <= FADE_IN_OUT_GRACE_PERIOD;
-            const auto what2 = what1 ? displayed_for : (message.duration - displayed_for);
-            const auto what3 = std::clamp(what2, 0.0f, FADE_IN_OUT_GRACE_PERIOD) / FADE_IN_OUT_GRACE_PERIOD;
-
-            alpha = std::clamp((int) (what2 * 255.0f), 0, 255);
-            offset += message_increment * what2;
-
-            if (what1)
-                position.x -= (1.0f - what2) * 150.0f;
-        }
-        else {
-            alpha = 255;
-            offset += message_increment;
-        }
+        const auto text_size = render::measure_text(message.message.c_str(), FONT_TAHOMA_11);
+        const auto message_increment = text_size.y + 1.0f;
 
         color_t color;
+        point_t position = {4.0f, 4.0f + offset};
 
         if (message.severity == LOG_SEVERITY_DEBUG)
             color = {82, 235, 224};
@@ -86,8 +68,24 @@ void logging::render() {
         else if (message.severity == LOG_SEVERITY_ERROR)
             color = {255, 32, 28};
 
-        render::draw_text(position + 1, {10, 10, 10, 80}, message.message.c_str(), FONT_TAHOMA_12);
-        render::draw_text(position, color, message.message.c_str(), FONT_TAHOMA_12);
+        if (displayed_for <= FADE_IN_OUT_GRACE_PERIOD || message.duration - displayed_for <= FADE_IN_OUT_GRACE_PERIOD) {
+            const auto what1 = displayed_for <= FADE_IN_OUT_GRACE_PERIOD;
+            const auto what2 = what1 ? displayed_for : message.duration - displayed_for;
+            const auto what3 = std::clamp(what2, 0.0f, FADE_IN_OUT_GRACE_PERIOD) / FADE_IN_OUT_GRACE_PERIOD;
+
+            color.a = std::clamp((int) (what3 * 255.0f), 0, 255);
+            offset += message_increment * what3;
+
+            if (what1)
+                position.x -= (1.0f - what3) * 150.0f;
+        }
+        else {
+            color.a = 255;
+            offset += message_increment;
+        }
+
+        render::draw_text(position + 1, {10, 10, 10, 80}, message.message.c_str(), FONT_TAHOMA_11);
+        render::draw_text(position, color, message.message.c_str(), FONT_TAHOMA_11);
     }
 }
 

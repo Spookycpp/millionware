@@ -255,10 +255,7 @@ void render::undo()
 		return;
 
 	ImGui_ImplDX9_Shutdown();
-
 	ImGui_ImplWin32_Shutdown();
-
-	ImGui::DestroyContext();
 
 	initialized = false;
 }
