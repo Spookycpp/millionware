@@ -128,8 +128,8 @@ namespace features::visuals::world {
             if (!material)
                 continue;
 
-            // if (material->is_error_material())
-            //	continue;
+            if (material->is_error_material())
+            continue;
 
             // modulate world materials.
             if (strncmp(material->get_group_name(), xs("World textures"), 14) == 0)
