@@ -56,39 +56,32 @@ namespace features::visuals::weather {
 
     void do_fog() {
 
-        if (!settings.visuals.world.fog)
-            return;
-
         if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
             return;
 
-        static auto fog_enable           = interfaces::convar_system->find_convar(xs("fog_enable"));
-        static auto fog_enableskybox     = interfaces::convar_system->find_convar(xs("fog_enableskybox"));
-        static auto fog_override         = interfaces::convar_system->find_convar(xs("fog_override"));
-        static auto fog_color            = interfaces::convar_system->find_convar(xs("fog_color"));
-        static auto fog_colorskybox      = interfaces::convar_system->find_convar(xs("fog_colorskybox"));
-        static auto fog_maxdensity       = interfaces::convar_system->find_convar(xs("fog_maxdensity"));
-        static auto fog_maxdensityskybox = interfaces::convar_system->find_convar(xs("fog_maxdensityskybox"));
-        static auto fog_start            = interfaces::convar_system->find_convar(xs("fog_start"));
-        static auto fog_end              = interfaces::convar_system->find_convar(xs("fog_end"));
-        static auto fog_endskybox        = interfaces::convar_system->find_convar(xs("fog_endskybox"));
+        static auto fog_override   = interfaces::convar_system->find_convar(xs("fog_override"));
+        static auto fog_start      = interfaces::convar_system->find_convar(xs("fog_start"));
+        static auto fog_end        = interfaces::convar_system->find_convar(xs("fog_end"));
+        static auto fog_maxdensity = interfaces::convar_system->find_convar(xs("fog_maxdensity"));
+        static auto fog_color_cvar = interfaces::convar_system->find_convar(xs("fog_color"));
 
-        auto override_fog_color = settings.visuals.world.fog_color;
+        const auto fog_enable = settings.visuals.world.fog;
+        const auto fog_length = settings.visuals.world.fog_length;
+        const auto fog_color  = settings.visuals.world.fog_color;
 
-        fog_enable->callbacks.clear();
-        fog_enableskybox->callbacks.clear();
-        fog_override->callbacks.clear();
-        fog_color->callbacks.clear();
-        fog_colorskybox->callbacks.clear();
+        static bool old_enable = false;
+        static int old_length = 0;
+        static color_t old_color;
 
-        fog_start->set_value(0);
-        fog_override->set_value(settings.visuals.world.fog);
-        fog_end->set_value(settings.visuals.world.fog_length);
-        fog_endskybox->set_value(settings.visuals.world.fog_length);
-        fog_maxdensity->set_value(override_fog_color.a / 255.f);
-        fog_maxdensityskybox->set_value(override_fog_color.a / 255.f);
-
-        fog_color->set_value(std::format(xs("{} {} {}"), override_fog_color.r, override_fog_color.g, override_fog_color.b).data());
-        fog_colorskybox->set_value(std::format(xs("{} {} {}"), override_fog_color.r, override_fog_color.g, override_fog_color.b).data());
+        if (fog_enable != old_enable || fog_length != old_length || fog_color != old_color) {
+            fog_override->set_value(fog_enable);
+            fog_start->set_value(0);
+            fog_end->set_value(fog_length);
+            fog_maxdensity->set_value(fog_color.a / 255.f);
+            fog_color_cvar->set_value(std::format(xs("{} {} {}"), fog_color.r, fog_color.g, fog_color.b).data());
+            old_enable = fog_enable;
+            old_length = fog_length;
+            old_color  = fog_color;
+        }
     }
 } // namespace features::visuals::weather
