@@ -46,6 +46,7 @@ namespace features::visuals::world {
         auto draw_indicator = [screen_center, offset = 400.0f](const char *text, const color_t &color) mutable {
             const auto measure = render::measure_text(text, FONT_VERDANA_24);
 
+            render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset) + 2, {0, 0, 0, 100}, text, FONT_VERDANA_24);
             render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset), color, text, FONT_VERDANA_24);
 
             offset += measure.y + 8.0f;
@@ -68,7 +69,7 @@ namespace features::visuals::world {
 
             last_on_ground = on_ground;
 
-            const auto color = vel == last_velocity ? color_t(255, 199, 89) : vel < last_velocity ? color_t(255, 119, 119) : color_t(30, 255, 109);
+            const auto color = vel == last_velocity ? settings.visuals.local.velocity_color_1 : vel < last_velocity ? settings.visuals.local.velocity_color_2 : settings.visuals.local.velocity_color_3;
             const auto should_draw_takeoff = (!on_ground || (take_off_time > interfaces::global_vars->current_time)) && settings.visuals.local.indicators & (1 << 1);
 
             char buffer[32];

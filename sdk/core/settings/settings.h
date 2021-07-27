@@ -176,6 +176,9 @@ struct settings_t {
 			bool disable_panorama_blur   = false;
 			int indicators = 0;
             bool velocity_takeoff		 = false;
+            color_t velocity_color_1 = {255, 199, 89};
+            color_t velocity_color_2 = {255, 119, 119};
+            color_t velocity_color_3 = {30, 255, 109};
 			bool jb_indicator			 = false;
 			bool eb_indicator			 = false;
 			bool ej_indicator			 = false;
