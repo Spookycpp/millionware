@@ -341,10 +341,7 @@ namespace features::miscellaneous {
 
     void preserve_killfeed() {
 
-        if (auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period()) {
-            death_notice = 0;
-            return;
-        }
+        auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period();
 
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
             death_notice = 0;
@@ -360,9 +357,7 @@ namespace features::miscellaneous {
             if (local_death_notice)
                 *local_death_notice = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
 
-            if (cheat::should_clear_death_notices) {
-
-                cheat::should_clear_death_notices = false;
+            if (game_rules->get_freeze_period()) {
 
                 static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
 
