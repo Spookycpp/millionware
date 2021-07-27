@@ -158,6 +158,7 @@ struct settings_t {
 			bool    bomb = false;
             color_t bomb_color = {255, 255, 255};
 			bool    defusal_kit = false;
+            color_t defusal_kit_color = {255, 255, 255};
 			bool    chicken = false;
 			bool    remove_fog = false;
 			bool	weather = false;

@@ -8,7 +8,7 @@
 
 #include "../features/miscellaneous/miscellaneous.h"
 #include "../features/nade prediction/nade_prediction.h"
-#include "../features/visuals/players/esp.h"
+#include "../features/visuals/entities/esp.h"
 #include "../features/visuals/world/world.h"
 
 #include "../lua/lua_game.hpp"

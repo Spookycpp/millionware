@@ -247,6 +247,7 @@ void ui::init() {
             if (const auto group = weapons_tab->new_group(xs("Main"))) {
                 group->new_checkbox(xs("Dropped weapons"), settings.visuals.world.weapon)->add_color_picker(settings.visuals.world.weapon_color);
                 group->new_checkbox(xs("Dropped bomb"), settings.visuals.world.bomb)->add_color_picker(settings.visuals.world.bomb_color);
+                group->new_checkbox(xs("Dropped defusal kits"), settings.visuals.world.defusal_kit)->add_color_picker(settings.visuals.world.defusal_kit_color);
                 group->new_checkbox(xs("Grenades"), settings.visuals.world.grenades)->add_color_picker(settings.visuals.world.grenades_color);
             }
         }
@@ -333,8 +334,11 @@ void ui::init() {
 
             if (const auto group = main_tab->new_group(xs("Movement"))) {
 
-                group->new_select(xs("Indicators"), settings.visuals.local.indicators,
-                    { xs("Velocity"), xs("Takeoff velocity"), xs("Jumpbug"), xs("Edgebug"), xs("Edgebug assist"), xs("Edge jump") }, true );
+                group->new_select(xs("Indicators"), settings.visuals.local.indicators, {xs("Velocity"), xs("Takeoff velocity"), xs("Jumpbug"), xs("Edgebug"), xs("Edgebug assist"), xs("Edge jump"), xs("Long jump")},
+                                 true)
+                    ->add_color_picker(settings.visuals.local.velocity_color_3)
+                    ->add_color_picker(settings.visuals.local.velocity_color_2)
+                    ->add_color_picker(settings.visuals.local.velocity_color_1);
 
                 group->new_checkbox(xs("Bunnyhop"), settings.miscellaneous.movement.bunny_hop);
                 group->new_checkbox(xs("Instant crouch"), settings.miscellaneous.movement.no_duck_cooldown);

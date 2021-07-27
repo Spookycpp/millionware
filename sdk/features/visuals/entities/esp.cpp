@@ -80,9 +80,10 @@ void features::visuals::esp::frame() {
 
         if (entity->is_weapon() && !entity->get_networkable()->is_dormant())
             draw_dropped_weapon(entity);
-
-        if (entity->is_grenade() && !entity->get_networkable()->is_dormant())
+        else if (entity->is_grenade() && !entity->get_networkable()->is_dormant())
             draw_thrown_utility(entity);
+        else if (!entity->get_networkable()->is_dormant())
+            draw_defusal_kit(entity);
 
         features::visuals::world::draw_world(entity);
 
@@ -456,7 +457,9 @@ void features::visuals::esp::draw_dropped_weapon(c_entity *entity) {
     if (!get_bounding_box(entity, entity_box))
         return;
 
-    if (weapon->get_item_definition_index() != WEAPON_C4 && settings.visuals.world.weapon) {
+    auto client_class = entity->get_networkable()->get_client_class();
+
+    if (settings.visuals.world.weapon && weapon->get_item_definition_index() != WEAPON_C4) {
 
         const auto localized_name = interfaces::localize->find(weapon_info->hud_name);
 
@@ -474,7 +477,7 @@ void features::visuals::esp::draw_dropped_weapon(c_entity *entity) {
 
         render::draw_text(text_pos, settings.visuals.world.weapon_color, localized_name_buffer, FONT_TAHOMA_11);
     }
-    else if (weapon->get_item_definition_index() == WEAPON_C4 && settings.visuals.world.bomb) {
+    else if (settings.visuals.world.bomb && weapon->get_item_definition_index() == WEAPON_C4) {
 
         // doing this instead of using localized
         // name because "c4 explosive" looks stupid
@@ -558,6 +561,29 @@ void features::visuals::esp::draw_thrown_utility(c_entity *entity) {
         const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
         render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("decoy"), FONT_TAHOMA_11);
+    }
+}
+
+void features::visuals::esp::draw_defusal_kit(c_entity *entity) {
+
+    bounding_box_t entity_box;
+
+    if (!get_bounding_box(entity, entity_box))
+        return;
+
+    auto client_class = entity->get_networkable()->get_client_class();
+
+    if (!client_class)
+        return;
+
+    if (settings.visuals.world.defusal_kit && client_class->class_id == CEconEntity) {
+
+        const auto defusal_kit_string = xs("defusal kit");
+
+        const auto text_size = render::measure_text(defusal_kit_string, FONT_TAHOMA_11);
+        const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+
+        render::draw_text(text_pos, settings.visuals.world.defusal_kit_color, defusal_kit_string, FONT_TAHOMA_11);
     }
 }
 

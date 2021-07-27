@@ -60,7 +60,7 @@
     <ClCompile Include="thirdparty\layout\layout.cpp" />
     <ClCompile Include="features\fake ping\fake_ping.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
-    <ClCompile Include="features\visuals\players\esp.cpp" />
+    <ClCompile Include="features\visuals\entities\esp.cpp" />
     <ClCompile Include="hooks\override_config.cpp" />
     <ClCompile Include="features\visuals\world\world.cpp" />
     <ClCompile Include="features\game events\game_events.cpp" />
@@ -169,7 +169,7 @@
     <ClInclude Include="features\fake ping\fake_ping.h" />
     <ClInclude Include="source engine\effects.h" />
     <ClInclude Include="source engine\game_events.h" />
-    <ClInclude Include="features\visuals\players\esp.h" />
+    <ClInclude Include="features\visuals\entities\esp.h" />
     <ClInclude Include="source engine\localize.h" />
     <ClInclude Include="source engine\material_system_config.h" />
     <ClInclude Include="features\visuals\world\world.h" />
