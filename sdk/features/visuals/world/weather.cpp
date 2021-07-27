@@ -73,7 +73,8 @@ namespace features::visuals::weather {
         static int old_length = 0;
         static color_t old_color;
 
-        if (fog_enable != old_enable || fog_length != old_length || fog_color != old_color) {
+        // ghetto but simple way for it to actually disable
+        if (fog_enable != old_enable || fog_length != old_length || fog_color != old_color) { // credits: swoopae / crescent
             fog_override->set_value(fog_enable);
             fog_start->set_value(0);
             fog_end->set_value(fog_length);
