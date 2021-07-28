@@ -23,6 +23,7 @@ namespace features::visuals::esp {
     void draw_headspot(c_player *player);
     void draw_barrel(c_player *player);
 
+    void draw_planted_bomb(c_entity* entity);
     void draw_dropped_weapon(c_entity *entity);
     void draw_thrown_utility(c_entity *entity);
     void draw_defusal_kit(c_entity *entity);

@@ -1,6 +1,7 @@
 #include "world.h"
 
 #include <cstdio>
+#include <format>
 #include <string>
 #include <windows.h>
 
@@ -13,14 +14,13 @@
 #include "../../../core/cheat/cheat.h"
 #include "../../../core/interfaces/interfaces.h"
 #include "../../../core/settings/settings.h"
+#include "../../../core/util/util.h"
 
 #include "../../../engine/input/input.h"
 #include "../../../engine/logging/logging.h"
 #include "../../../engine/math/math.h"
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
-
-#include "../../../core/util/util.h"
 #include "../../../source engine/entity.h"
 #include <format>
 
@@ -132,8 +132,8 @@ namespace features::visuals::world {
             if (!material)
                 continue;
 
-            if (material->is_error_material())
-            continue;
+            // if (material->is_error_material())
+            //    continue;
 
             // modulate world materials.
             if (strncmp(material->get_group_name(), xs("World textures"), 14) == 0)
@@ -157,7 +157,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-            // clang-format off
+                // clang-format off
                 case OBS_MODE_IN_EYE:    return xs("firstperson");
                 case OBS_MODE_CHASE:     return xs("thirdperson");
                 default:                 return "";
@@ -249,7 +249,7 @@ namespace features::visuals::world {
             const auto mp_c4timer = interfaces::convar_system->find_convar(xs("mp_c4timer"))->get_float();
             const float time = std::clamp(entity->get_bomb_blow_time() - interfaces::global_vars->current_time, 0.f, mp_c4timer);
 
-            if (time || !entity->get_is_bomb_defused())
+            if (time && !entity->get_is_bomb_defused() && entity->get_is_bomb_ticking())
                 return std::format(xs("{}: {:.2f}s"), get_bombsite(), time);
 
             return {};
@@ -273,7 +273,7 @@ namespace features::visuals::world {
             return cheat::local_player->get_health() - int(std::round(damage));
         };
 
-        if (!settings.visuals.world.bomb)
+        if (!settings.visuals.world.planted_bomb)
             return;
 
         const std::string bomb_time = get_bomb_time();

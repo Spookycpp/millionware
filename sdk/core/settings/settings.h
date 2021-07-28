@@ -155,8 +155,10 @@ struct settings_t {
             color_t weapon_color = {255, 255, 255};
 			bool    grenades = false;
             color_t grenades_color = {255, 255, 255};
-			bool    bomb = false;
-            color_t bomb_color = {255, 255, 255};
+			bool    planted_bomb = false;
+            color_t planted_bomb_color = {255, 255, 255};
+			bool    dropped_bomb = false;
+            color_t dropped_bomb_color = {255, 255, 255};
 			bool    defusal_kit = false;
             color_t defusal_kit_color = {255, 255, 255};
 			bool    chicken = false;

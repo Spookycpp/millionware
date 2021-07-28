@@ -246,7 +246,7 @@ void ui::init() {
         if (const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, xs("Weapons"))) {
             if (const auto group = weapons_tab->new_group(xs("Main"))) {
                 group->new_checkbox(xs("Dropped weapons"), settings.visuals.world.weapon)->add_color_picker(settings.visuals.world.weapon_color);
-                group->new_checkbox(xs("Dropped bomb"), settings.visuals.world.bomb)->add_color_picker(settings.visuals.world.bomb_color);
+                group->new_checkbox(xs("Dropped bomb"), settings.visuals.world.dropped_bomb)->add_color_picker(settings.visuals.world.dropped_bomb_color);
                 group->new_checkbox(xs("Dropped defusal kits"), settings.visuals.world.defusal_kit)->add_color_picker(settings.visuals.world.defusal_kit_color);
                 group->new_checkbox(xs("Grenades"), settings.visuals.world.grenades)->add_color_picker(settings.visuals.world.grenades_color);
             }
@@ -277,7 +277,7 @@ void ui::init() {
                 group->new_checkbox(xs("Damage log"), settings.visuals.player.damage_logs);
                 group->new_checkbox(xs("Purchase log"), settings.miscellaneous.buy_log);
                 group->new_checkbox(xs("Money reveal"), settings.miscellaneous.money_reveal);
-                group->new_checkbox(xs("Bomb timer"), settings.visuals.world.bomb);
+                group->new_checkbox(xs("Bomb timer"), settings.visuals.world.planted_bomb);
                 group->new_checkbox(xs("Log bomb plants"), settings.miscellaneous.bomb_log);
                 group->new_checkbox(xs("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)->add_dependency(settings.miscellaneous.bomb_log);
 
