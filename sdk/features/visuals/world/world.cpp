@@ -241,12 +241,18 @@ namespace features::visuals::world {
         };
 
         const auto get_bomb_time = [&]() -> std::string {
-            if (!entity->get_is_bomb_ticking() || entity->get_is_bomb_defused())
-                return {};
+            // @note: this is kinda autistic but it works.
+            // i don't know if we should clamp this to mp_c4timer->get_float();
+            // if the mp_c4timer changes while the c4 is planted to something lower than the remaining time
+            // it will clamp it.. (99% sure it won't occur never seen a server that modifies it)
+            // because if we don't sometimes when the round ends the bomb timer will not go away so..
+            const auto mp_c4timer = interfaces::convar_system->find_convar(xs("mp_c4timer"))->get_float();
+            const float time = std::clamp(entity->get_bomb_blow_time() - interfaces::global_vars->current_time, 0.f, mp_c4timer);
 
-            const float bomb_time = (interfaces::global_vars->current_time - entity->get_c4_blow()) * -1.0f;
+            if (time || !entity->get_is_bomb_defused())
+                return std::format(xs("{}: {:.2f}s"), get_bombsite(), time);
 
-            return std::format(xs("{}: {:.2f}s"), get_bombsite(), bomb_time);
+            return {};
         };
 
         const auto get_bomb_damage = [&]() {
