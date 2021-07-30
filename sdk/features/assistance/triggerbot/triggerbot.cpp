@@ -56,7 +56,7 @@ namespace features::legitbot::triggerbot {
         const vector_t src = cheat::local_player->get_eye_pos();
         const vector_t dst = src + fwd;
 
-        if (!settings_lbot->triggerbot.check_smoked)
+        if (settings_lbot->triggerbot.check_smoked)
             if (util::line_goes_through_smoke(src, dst))
                 return;
 

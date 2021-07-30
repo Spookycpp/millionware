@@ -349,7 +349,7 @@ namespace features::legitbot {
                 }
             }
 
-            if (!settings_lbot->check_smoked) {
+            if (settings_lbot->check_smoked) {
                 if (util::line_goes_through_smoke(cheat::local_player->get_eye_pos(), aim_pos)) {
                     continue;
                 }
