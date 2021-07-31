@@ -226,7 +226,8 @@ void ui::init() {
                 group->new_checkbox(xs("Skeleton"), settings.visuals.player.skeleton)->add_color_picker(settings.visuals.player.skeleton_color);
                 group->new_checkbox(xs("Headspot"), settings.visuals.player.head_spot)->add_color_picker(settings.visuals.player.head_spot_color);
                 group->new_checkbox(xs("Barrel"), settings.visuals.player.barrel);
-                group->new_checkbox(xs("Glow"), settings.visuals.player.glow);
+
+                group->new_checkbox(xs("Glow"), settings.visuals.player.glow)->add_color_picker(settings.visuals.player.glow_color);
 
                 group->new_checkbox(xs("Outside of FOV"), settings.visuals.player.outside_fov);
                 group->new_slider(xs("Radius"), settings.visuals.player.outside_fov_radius, 0.f, 2.0f, xs("{:.1f}"))->add_dependency(settings.visuals.player.outside_fov);

@@ -126,6 +126,8 @@ struct settings_t {
 			bool  barrel = false;
 
 			bool  glow = false;
+            color_t glow_color = {222, 102, 122, 150};
+
             bool  damage_logs = false;
 			bool  outside_fov = false;
 			float outside_fov_radius = 0.75f;

@@ -329,6 +329,7 @@
     <ClInclude Include="source engine\game_events_manager.h" />
     <ClInclude Include="source engine\game_types.h" />
     <ClInclude Include="source engine\globals.h" />
+    <ClInclude Include="source engine\glow.h" />
     <ClInclude Include="source engine\input.h" />
     <ClInclude Include="source engine\key_values.h" />
     <ClInclude Include="source engine\leaf_system.h" />

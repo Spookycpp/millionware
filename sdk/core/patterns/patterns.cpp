@@ -283,5 +283,8 @@ bool patterns::init()
 	if ((set_string = get_pattern(xs("client.dll"), xs("55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01"))) == 0u)
         return false;
 
+	if ((glow_manager = get_pattern(xs("client.dll"), xs("0F 11 05 ? ? ? ? 83 C8 01"))) == 0u)
+        return false;
+
 	return true;
 }

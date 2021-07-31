@@ -201,5 +201,6 @@
     <ClInclude Include="core\v2 exports\v2 exports.h" />
     <ClInclude Include="features\discord presence\rpc.h" />
     <ClInclude Include="source engine\key_values.h" />
+    <ClInclude Include="source engine\glow.h" />
   </ItemGroup>
 </Project>

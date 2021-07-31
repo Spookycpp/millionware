@@ -67,6 +67,7 @@ namespace patterns
     inline uintptr_t load_from_buffer;
     inline uintptr_t find_key;
     inline uintptr_t set_string;
+    inline uintptr_t glow_manager;
 
 	PATTERN_GET(input, *(uintptr_t *) (input + 1u));
 	PATTERN_GET(local_player, **(c_player ***) (local_player + 2u));
@@ -126,6 +127,7 @@ namespace patterns
     PATTERN_GET(load_from_buffer, load_from_buffer);
     PATTERN_GET(find_key, find_key);
     PATTERN_GET(set_string, set_string);
+    PATTERN_GET(glow_manager, glow_manager);
 
 	uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();
