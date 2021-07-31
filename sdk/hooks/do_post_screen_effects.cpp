@@ -37,6 +37,7 @@ int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, 
 
         auto index = entity->get_glow_index();
 
+        // clang-format off
         if (index < glow_size) {
             glow_objects[index].set(
                 settings.visuals.player.glow_color.r / 255.f,
@@ -44,6 +45,7 @@ int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, 
                 settings.visuals.player.glow_color.b / 255.f,
                 settings.visuals.player.glow_color.a / 255.f);
         }
+        // clang-format on
     }
 
     return do_post_screen_effects_original(ecx, edx, effect_id);
