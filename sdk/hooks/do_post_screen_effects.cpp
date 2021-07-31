@@ -3,7 +3,7 @@
 #include "../core/interfaces/interfaces.h"
 #include "../core/settings/settings.h"
 
-#include "../source engine/glow.h"
+#include "../source engine/glow_object_definition.h"
 
 int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, int effect_id) {
 
