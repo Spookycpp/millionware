@@ -24,6 +24,7 @@ namespace hooks {
     bool __fastcall draw_print_text(uintptr_t, uintptr_t, const wchar_t *text, int text_length, int draw_type);
 	void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char*, int, const char*, float, float, int, int, int, const vector_t*, const vector_t*, vector_t*, bool, float, int, uintptr_t);
     void __fastcall enable_world_fog();
+    void __fastcall engine_paint(uintptr_t, uintptr_t, int);
 	bool _fastcall fire_event_client_side(uintptr_t, uintptr_t, c_game_event* event);
 	void __fastcall frame_stage_notify(c_base_client_dll* ecx, uintptr_t edx, e_client_frame_stage stage);
     c_demo_playback_paramaters *__fastcall get_demo_playback_parameters(uintptr_t, uintptr_t);
@@ -38,8 +39,8 @@ namespace hooks {
 	bool __fastcall override_config(uintptr_t, uintptr_t, material_system_config_t*, bool);
 	void __fastcall override_mouse_input(c_client_mode* ecx, uintptr_t edx, float* x, float* y);
 	int __fastcall override_view(c_client_mode* ecx, uintptr_t edx, view_setup_t* view_setup);
+    void __fastcall screen_size_changed(uintptr_t, uintptr_t, int, int);
 	int __fastcall send_datagram(c_net_channel*, uintptr_t*, void*);
-	void __fastcall paint_traverse(c_vgui_panel* ecx, uintptr_t edx, int panel_id, bool force_repaint, bool allow_force);
     bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
 
 	long __stdcall present(IDirect3DDevice9* device, RECT* source_rect, RECT* dest_rect, HWND dest_window_override, RGNDATA* dirty_region);
@@ -50,6 +51,7 @@ namespace hooks {
     inline decltype(&draw_print_text) draw_print_text_original;
 	inline decltype(&emit_sound) emit_sound_original;
     inline decltype(&enable_world_fog) enable_world_fog_original;
+    inline decltype(&engine_paint) engine_paint_original;
 	inline decltype(&fire_event_client_side) fire_event_client_side_original;
 	inline decltype(&frame_stage_notify) frame_stage_notify_original;
     inline decltype(&get_demo_playback_parameters) get_demo_playback_parameters_original;
@@ -64,8 +66,8 @@ namespace hooks {
 	inline decltype(&override_config) override_config_original;
 	inline decltype(&override_mouse_input) override_mouse_input_original;
 	inline decltype(&override_view) override_view_original;
+    inline decltype(&screen_size_changed) screen_size_changed_original;
 	inline decltype(&send_datagram) send_datagram_original;
-	inline decltype(&paint_traverse) paint_traverse_original;
     inline decltype(&write_user_cmd_delta_to_buffer) write_user_cmd_delta_to_buffer_original;
 
 	inline decltype(&present) present_original;

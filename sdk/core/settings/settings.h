@@ -112,7 +112,7 @@ struct settings_t {
 			bool  weapon = false;
 
 			bool  ammo = false;
-            color_t ammo_color = {87, 230, 225};
+            color_t ammo_color = {64, 143, 255};
 
 			bool  armor = false;
             int	  flags = 0;

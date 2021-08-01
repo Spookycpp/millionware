@@ -47,7 +47,7 @@ namespace interfaces
 	inline c_model_info			 *model_info;
 	inline c_model_render		 *model_render;
 	inline c_material_system	 *material_system;
-	inline c_vgui_panel			 *panel;
+	inline void					 *vgui_engine;
 	inline c_vgui_surface		 *surface;
 	inline c_ui_engine			 *ui_engine;
 	inline c_cvar			     *convar_system;

@@ -95,7 +95,7 @@ bool interfaces::init()
 	if ((material_system = (c_material_system*) get_interface(xs("materialsystem.dll"), xs("VMaterialSystem080"))) == nullptr)
 		return false;
 
-	if ((panel = (c_vgui_panel *) get_interface(xs("vgui2.dll"), xs("VGUI_Panel009"))) == nullptr)
+	if ((vgui_engine = (void *) get_interface(xs("engine.dll"), xs("VEngineVGui001"))) == nullptr)
 		return false;
 
 	if ((surface = (c_vgui_surface *) get_interface(xs("vguimatsurface.dll"), xs("VGUI_Surface031"))) == nullptr)
