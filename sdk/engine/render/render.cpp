@@ -28,7 +28,6 @@
 #include "../../resources/font_awesome.h"
 #include "../../resources/mw_logo_png.h"
 #include "../../resources/transparency_checkerboard_png.h"
-#include "../../resources/phoenix_ega_ttf.h"
 #include "../../engine/logging/logging.h"
 #include "../hash/hash.h"
 #include "../security/xorstr.h"
@@ -224,7 +223,7 @@ void render::init(HWND window, IDirect3DDevice9 *device)
     fonts[FONT_TAHOMA_11] = create_from_system(io, xs("Tahoma"), 12.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
     fonts[FONT_TAHOMA_12] = create_from_system(io, xs("Tahoma"), 13.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
 	//fonts[FONT_SMALL_TEXT] = create_from_system(io, XORSTR("Small Fonts"), 10.f, ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome);
-    fonts[FONT_SMALL_TEXT] = create_from_ttf(io, phoenix_ega_ttf_data, sizeof(phoenix_ega_ttf_data), 10.f, ImGuiFreeTypeBuilderFlags_LightHinting);
+	fonts[FONT_SMALL_TEXT] = create_from_system(io, xs("Verdana"), 10.f, ImGuiFreeTypeBuilderFlags_Monochrome);
 	fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
 	fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
 	fonts[FONT_CEREBRI_SANS_MEDIUM_18] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 18.0f);

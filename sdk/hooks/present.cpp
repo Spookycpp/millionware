@@ -20,6 +20,14 @@ static int active_tab = 0;
 long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region) {
     render::begin();
 
+    features::visuals::esp::frame();
+
+    features::visuals::world::indicators();
+
+    features::visuals::world::display_spectators();
+
+    features::nade_prediction::on_paint_traverse();
+
     logging::render();
 
     ui::frame();

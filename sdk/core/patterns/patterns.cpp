@@ -109,12 +109,6 @@ uint32_t patterns::get_pattern(std::string_view module_name, std::string_view pa
 
 bool patterns::init()
 {
-	if ((engine_vgui_start_drawing = get_pattern(xs("vguimatsurface.dll"), xs("55 8B EC 83 E4 C0 83 EC 38"))) == 0u)
-		return false;	
-
-	if ((engine_vgui_finish_drawing = get_pattern(xs("vguimatsurface.dll"), xs("8B 0D ???? 56 C6 05"))) == 0u)
-		return false;	
-
 	if ((input = get_pattern(xs("client.dll"), xs("B9 ???? F3 0F 11 04 24 FF 50 10"))) == 0u)
 		return false;
 	

@@ -204,8 +204,8 @@ void c_color_picker::render()
 	{
 		render::push_clip(root_pos, root_size);
 
-		//render::draw_image(root_pos, { 16.0f, 16.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 2.0f, CORNER_TOP_LEFT | CORNER_BOTTOM_LEFT);
-        //render::draw_image({root_pos.x + 16.0f, root_pos.y}, {16.0f, 16.0f}, {255, 255, 255}, TEXTURE_TRANSPARENCY, 2.0f, CORNER_TOP_RIGHT | CORNER_BOTTOM_RIGHT);
+		render::draw_image(root_pos, { 16.0f, 16.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY, 2.0f, CORNER_TOP_LEFT | CORNER_BOTTOM_LEFT);
+        render::draw_image({root_pos.x + 16.0f, root_pos.y}, {16.0f, 16.0f}, {255, 255, 255}, TEXTURE_TRANSPARENCY, 2.0f, CORNER_TOP_RIGHT | CORNER_BOTTOM_RIGHT);
 
 		render::pop_clip();
 	}
@@ -289,7 +289,7 @@ void c_color_picker::render()
 			{
                 const auto offset = i * 16.0f;
 			
-				//render::draw_image({ alpha_bar_pos.x + offset, alpha_bar_pos.y }, { 16.0f, 16.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY);
+				render::draw_image({ alpha_bar_pos.x + offset, alpha_bar_pos.y }, { 16.0f, 16.0f }, { 255, 255, 255 }, TEXTURE_TRANSPARENCY);
 			
 				if (offset > alpha_bar_size.x)
 					break;

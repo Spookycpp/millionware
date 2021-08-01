@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -185,7 +185,6 @@
     <ClCompile Include="engine\math\math.cpp" />
     <ClCompile Include="engine\pe\pe.cpp" />
     <ClCompile Include="engine\render\render.cpp" />
-    <ClCompile Include="engine\render\surface.cpp" />
     <ClCompile Include="features\assistance\lagcompensation\lag_comp.cpp" />
     <ClCompile Include="features\assistance\legitbot.cpp" />
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
@@ -212,7 +211,6 @@
     <ClCompile Include="hooks\draw_print_text.cpp" />
     <ClCompile Include="hooks\emit_sound.cpp" />
     <ClCompile Include="hooks\enable_world_fog.cpp" />
-    <ClCompile Include="hooks\engine_paint.cpp" />
     <ClCompile Include="hooks\fire_event_client_side.cpp" />
     <ClCompile Include="hooks\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\get_demo_playback_parameters.cpp" />
@@ -227,8 +225,8 @@
     <ClCompile Include="hooks\override_config.cpp" />
     <ClCompile Include="hooks\override_mouse_input.cpp" />
     <ClCompile Include="hooks\override_view.cpp" />
+    <ClCompile Include="hooks\paint_traverse.cpp" />
     <ClCompile Include="hooks\present.cpp" />
-    <ClCompile Include="hooks\screen_sized_changed.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
     <ClCompile Include="hooks\write_user_cmd_delta_to_buffer.cpp" />
     <ClCompile Include="lua\lua_game.cpp" />
@@ -271,7 +269,6 @@
     <ClInclude Include="engine\math\math.h" />
     <ClInclude Include="engine\pe\pe.h" />
     <ClInclude Include="engine\render\render.h" />
-    <ClInclude Include="engine\render\surface.h" />
     <ClInclude Include="engine\security\xorstr.h" />
     <ClInclude Include="core\cheat\cheat.h" />
     <ClInclude Include="core\exports\exports.h" />
@@ -315,7 +312,6 @@
     <ClInclude Include="resources\fa_solid_900_ttf.h" />
     <ClInclude Include="resources\font_awesome.h" />
     <ClInclude Include="resources\mw_logo_png.h" />
-    <ClInclude Include="resources\phoenix_ega_ttf.h" />
     <ClInclude Include="resources\transparency_checkerboard_png.h" />
     <ClInclude Include="resources\trollface_png.h" />
     <ClInclude Include="source engine\client_class.h" />
