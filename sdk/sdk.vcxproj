@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -329,7 +329,7 @@
     <ClInclude Include="source engine\game_events_manager.h" />
     <ClInclude Include="source engine\game_types.h" />
     <ClInclude Include="source engine\globals.h" />
-    <ClInclude Include="source engine\glow.h" />
+    <ClInclude Include="source engine\glow_object_definition.h" />
     <ClInclude Include="source engine\input.h" />
     <ClInclude Include="source engine\key_values.h" />
     <ClInclude Include="source engine\leaf_system.h" />
