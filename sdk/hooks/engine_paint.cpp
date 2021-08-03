@@ -10,10 +10,14 @@
 #include "../features/visuals/entities/esp.h"
 #include "../features/visuals/world/world.h"
 
-static std::once_flag initialize_renderer;
-
 void __fastcall hooks::engine_paint(uintptr_t ecx, uintptr_t edx, int mode) {
-    std::call_once(initialize_renderer, surface::initialize);
+
+    static bool init_render = false;
+
+    if (!init_render) {
+        surface::initialize();
+        init_render = true;
+    }
 
     if (mode & 1) {
 
