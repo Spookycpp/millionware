@@ -68,14 +68,14 @@ namespace lua_internal::tables::client {
 inline void lua_internal::context::lua_client() {
     luabridge::getGlobalNamespace(l)
     .beginNamespace("mw")
-        .addFunction("log", std::function([this]() { tables::client::log(l); }))
-        .addFunction("exec", std::function([this]() { tables::client::exec(l); }))
-        .addFunction("time", std::function([this]() { return tables::client::time(l); }))
-        .addFunction("unix_time", std::function([this]() { return std::time(nullptr); }))
-        .addFunction("userid_to_entity", std::function([this]() { return tables::client::userid_to_entity(l); }))
-        .addFunction("find_pattern", std::function([this]() { return tables::client::find_pattern(l); }))
-        .addFunction("accent_color", std::function([this]() { return tables::client::accent_color(l); }))
-        .addFunction("edgebugging", std::function([this]() { return tables::client::edgebugging(l); }))
+        .addFunction(xs("log"), std::function([this]() { tables::client::log(l); }))
+        .addFunction(xs("exec"), std::function([this]() { tables::client::exec(l); }))
+        .addFunction(xs("time"), std::function([this]() { return tables::client::time(l); }))
+        .addFunction(xs("unix_time"), std::function([this]() { return std::time(nullptr); }))
+        .addFunction(xs("userid_to_entity"), std::function([this]() { return tables::client::userid_to_entity(l); }))
+        .addFunction(xs("find_pattern"), std::function([this]() { return tables::client::find_pattern(l); }))
+        .addFunction(xs("accent_color"), std::function([this]() { return tables::client::accent_color(l); }))
+        .addFunction(xs("edgebugging"), std::function([this]() { return tables::client::edgebugging(l); }))
 
     .endNamespace();
 }
