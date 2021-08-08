@@ -7,28 +7,28 @@
 #include "../features/miscellaneous/miscellaneous.h"
 #include "../lua/lua_game.hpp"
 
-int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setup_t *view_setup)
-{
-	if (!view_setup)
-		return override_view_original(ecx, edx, view_setup);
+int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setup_t *view_setup) {
+    if (!view_setup)
+        return override_view_original(ecx, edx, view_setup);
 
-	if (view_setup) 
-		features::miscellaneous::on_override_view(view_setup);
+    if (view_setup)
+        features::miscellaneous::on_override_view(view_setup);
 
-	if (interfaces::engine_client->is_in_game()) {
-		auto view_model = (c_player*)cheat::local_player->get_view_model_handle().get();
+    if (interfaces::engine_client->is_in_game()) {
+        auto view_model = (c_player *) cheat::local_player->get_view_model_handle().get();
 
-		if (view_model) {
-			auto eye_angles = view_setup->angles;
+        if (view_model) {
+            auto eye_angles = view_setup->angles;
 
-			if (settings.visuals.local.viewmodel_offset)
-				eye_angles.z -= settings.visuals.local.viewmodel_offset_r;
+            if (settings.visuals.local.viewmodel_offset) {
+                eye_angles.z -= settings.visuals.local.viewmodel_offset_r;
 
-			view_model->set_abs_angles(eye_angles);
-		}
-	}
+                view_model->set_abs_angles(eye_angles);
+            }
+        }
+    }
 
-	lua::callbacks::override_view(view_setup);
+    lua::callbacks::override_view(view_setup);
 
-	return override_view_original(ecx, edx, view_setup);
+    return override_view_original(ecx, edx, view_setup);
 }
