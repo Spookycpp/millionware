@@ -27,6 +27,7 @@
 #include "../../source engine/vgui.h"
 #include "../../source engine/weapon_system.h"
 #include "../../source engine/render_beams.h"
+#include "../../source engine/client_mode_shared.h"
 
 namespace interfaces
 {

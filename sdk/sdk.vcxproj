@@ -319,6 +319,7 @@
     <ClInclude Include="resources\trollface_png.h" />
     <ClInclude Include="source engine\client_class.h" />
     <ClInclude Include="source engine\client_dll.h" />
+    <ClInclude Include="source engine\client_mode_shared.h" />
     <ClInclude Include="source engine\client_prediction.h" />
     <ClInclude Include="source engine\color.h" />
     <ClInclude Include="source engine\cvar.h" />

@@ -92,8 +92,17 @@ bool interfaces::init() {
     if ((material_system = (c_material_system *) get_interface(xs("materialsystem.dll"), xs("VMaterialSystem080"))) == nullptr)
         return false;
 
-    if ((vgui_engine = (void *) get_interface(xs("engine.dll"), xs("VEngineVGui001"))) == nullptr)
+	void **client_vmt = *(void ***)client_dll;
+    client_mode = **(c_client_mode ***) ((char *) client_vmt[10] + 5) + 2;
+
+    if (!client_mode) {
         return false;
+        logging::error(xs("failed to find client_mode"));
+
+    }
+
+	if ((d3d9_device = (IDirect3DDevice9 *) patterns::get_d3d9_device()) == nullptr) 
+		logging::error(xs("failed to find d3d9 device pattern"));
 
     if ((surface = (c_vgui_surface *) get_interface(xs("vguimatsurface.dll"), xs("VGUI_Surface031"))) == nullptr)
         return false;
