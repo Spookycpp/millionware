@@ -23,6 +23,7 @@
 #include "../../../engine/security/xorstr.h"
 #include "../../../source engine/entity.h"
 #include <format>
+#include "../../../engine/render/surface.h"
 
 namespace features::visuals::world {
 
@@ -286,14 +287,14 @@ namespace features::visuals::world {
         const auto health_remaining_text = std::format(xs("Health remaining: {} HP"), std::max(health_remaining, 0));
 
         const auto screen_size = render::get_screen_size();
-        const auto bomb_time_text_size = render::measure_text(bomb_time_str.c_str(), FONT_TAHOMA_11);
-        const auto health_remaining_text_size = render::measure_text(health_remaining_text.c_str(), FONT_TAHOMA_11);
+        const auto bomb_time_text_size = surface::measure_text(bomb_time_str.c_str(), SFONT_TAHOMA_11);
+        const auto health_remaining_text_size = surface::measure_text(health_remaining_text.c_str(), SFONT_TAHOMA_11);
 
-        render::draw_text({screen_size.x * 0.5f - bomb_time_text_size.x * 0.5f, screen_size.y * 0.15f}, {255, 255, 255, 255}, bomb_time_str.c_str(), FONT_TAHOMA_11);
+        surface::draw_text({screen_size.x * 0.5f - bomb_time_text_size.x * 0.5f, screen_size.y * 0.15f}, {255, 255, 255, 255}, bomb_time_str.c_str(), SFONT_TAHOMA_11);
 
         if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE)
-            render::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.15f + bomb_time_text_size.y + 5.f},
-                              health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235}, health_remaining_text.c_str(), FONT_TAHOMA_11);
+            surface::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.15f + bomb_time_text_size.y + 5.f},
+                              health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235}, health_remaining_text.c_str(), SFONT_TAHOMA_11);
     }
 
 } // namespace features::visuals::world
