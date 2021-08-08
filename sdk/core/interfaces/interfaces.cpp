@@ -110,6 +110,14 @@ bool interfaces::init()
 	if ((localize = (c_localize*) get_interface(xs("localize.dll"), xs("Localize_001"))) == nullptr)
 		return false;
 
+	void **client_vmt = *(void ***)client_dll;
+    client_mode = **(c_client_mode ***) ((char *) client_vmt[10] + 5) + 2;
+
+    if (!client_mode) {
+        logging::error(xs("failed to find client_mode"));
+        return false;
+    }
+
 	if ((d3d9_device = (IDirect3DDevice9 *) patterns::get_d3d9_device()) == nullptr)
 	{
 		logging::error(xs("failed to find d3d9 device pattern"));

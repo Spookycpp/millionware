@@ -202,5 +202,6 @@
     <ClInclude Include="features\discord presence\rpc.h" />
     <ClInclude Include="source engine\key_values.h" />
     <ClInclude Include="source engine\glow.h" />
+    <ClInclude Include="source engine\client_mode_shared.h" />
   </ItemGroup>
 </Project>
