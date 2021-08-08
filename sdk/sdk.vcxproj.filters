@@ -29,7 +29,6 @@
     <ClCompile Include="hooks\lock_cursor.cpp" />
     <ClCompile Include="hooks\override_mouse_input.cpp" />
     <ClCompile Include="hooks\override_view.cpp" />
-    <ClCompile Include="hooks\paint_traverse.cpp" />
     <ClCompile Include="hooks\present.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="core\cheat\cheat.cpp" />
@@ -81,6 +80,9 @@
     <ClCompile Include="features\discord presence\rpc.cpp" />
     <ClCompile Include="hooks\draw_print_text.cpp" />
     <ClCompile Include="hooks\get_demo_playback_parameters.cpp" />
+    <ClCompile Include="hooks\engine_paint.cpp" />
+    <ClCompile Include="engine\render\surface.cpp" />
+    <ClCompile Include="hooks\screen_size_changed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -201,6 +203,7 @@
     <ClInclude Include="core\v2 exports\v2 exports.h" />
     <ClInclude Include="features\discord presence\rpc.h" />
     <ClInclude Include="source engine\key_values.h" />
-    <ClInclude Include="source engine\glow.h" />
+    <ClInclude Include="source engine\glow_object_definition.h" />
+    <ClInclude Include="engine\render\surface.h" />
   </ItemGroup>
 </Project>

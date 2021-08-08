@@ -24,9 +24,9 @@ int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setu
                 eye_angles.z -= settings.visuals.local.viewmodel_offset_r;
 
                 view_model->set_abs_angles(eye_angles);
-    }
-        }
             }
+        }
+    }
 
     lua::callbacks::override_view(view_setup);
 

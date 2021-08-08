@@ -57,8 +57,9 @@ bool hooks::init() {
     override_config_original = create_hook((uintptr_t) interfaces::material_system, 21, &override_config);
     override_mouse_input_original = create_hook((uintptr_t) interfaces::client_mode, 23, &override_mouse_input);
     override_view_original = create_hook((uintptr_t) interfaces::client_mode, 18, &override_view);
+    screen_size_changed_original = create_hook((uintptr_t) interfaces::surface, 116, &screen_size_changed);
     send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t) patterns::send_datagram, (uintptr_t) &send_datagram));
-    paint_traverse_original = create_hook((uintptr_t) interfaces::panel, 42, &paint_traverse);
+    engine_paint_original = create_hook((uintptr_t) interfaces::vgui_engine, 14, &engine_paint);
 
     present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);
 
@@ -66,7 +67,7 @@ bool hooks::init() {
 
 #define INIT_HOOK(h, n)                                                                                                                                                                                \
     if (h == 0) {                                                                                                                                                                                      \
-        logging::error(xs("failed to initialize hook " n));                                                                                                                                        \
+        logging::error(xs("failed to initialize hook " n));                                                                                                                                            \
         return false;                                                                                                                                                                                  \
     }
 
@@ -89,8 +90,9 @@ bool hooks::init() {
     INIT_HOOK(lock_cursor_original, "LockCursor");
     INIT_HOOK(override_mouse_input_original, "OverrideMouseInput");
     INIT_HOOK(override_view_original, "OverrideView");
+    INIT_HOOK(screen_size_changed_original, "ScreenSizeChanged");
     INIT_HOOK(send_datagram_original, "SendDatagram");
-    INIT_HOOK(paint_traverse_original, "PaintTraverse");
+    INIT_HOOK(engine_paint_original, "EnginePaint");
 
     INIT_HOOK(present_original, "Present");
 
