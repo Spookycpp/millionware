@@ -12,6 +12,10 @@
 
 #include "../../source engine/game_events.h"
 
+#include "../../ui/ui.h"
+
+#include "../../features/movement/movement.h"
+
 namespace lua_internal::tables::client {
     inline void log(lua_State *l) {
         size_t len;
@@ -50,6 +54,15 @@ namespace lua_internal::tables::client {
 
         return entity(user, user->get_networkable()->index());
     }
+
+    inline color accent_color(lua_State *l) {
+        auto col = ui::get_accent_color();
+        return {col.r, col.g, col.b, col.a};
+    }
+
+    inline bool edgebugging(lua_State *l) {
+        return features::movement::predicted_successful && interfaces::global_vars->tick_count < features::movement::prediction_ticks + features::movement::prediction_timestamp;
+    }
 }
 
 inline void lua_internal::context::lua_client() {
@@ -61,6 +74,8 @@ inline void lua_internal::context::lua_client() {
         .addFunction("unix_time", std::function([this]() { return std::time(nullptr); }))
         .addFunction("userid_to_entity", std::function([this]() { return tables::client::userid_to_entity(l); }))
         .addFunction("find_pattern", std::function([this]() { return tables::client::find_pattern(l); }))
+        .addFunction("accent_color", std::function([this]() { return tables::client::accent_color(l); }))
+        .addFunction("edgebugging", std::function([this]() { return tables::client::edgebugging(l); }))
 
     .endNamespace();
 }
