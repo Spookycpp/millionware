@@ -47,6 +47,7 @@ namespace features::visuals::world {
             const auto measure = render::measure_text(text, FONT_VERDANA_24);
 
             render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset) + 2, {0, 0, 0, 100}, text, FONT_VERDANA_24);
+            render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset), color, text, FONT_VERDANA_24);
 
             offset += measure.y + 8.0f;
         };
@@ -156,7 +157,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-                // clang-format off
+            // clang-format off
                 case OBS_MODE_IN_EYE:    return xs("firstperson");
                 case OBS_MODE_CHASE:     return xs("thirdperson");
                 default:                 return "";
