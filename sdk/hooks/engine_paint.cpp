@@ -25,12 +25,6 @@ void __fastcall hooks::engine_paint(uintptr_t ecx, uintptr_t edx, int mode) {
 
         features::visuals::esp::frame();
 
-        features::visuals::world::indicators();
-
-        features::visuals::world::display_spectators();
-
-        features::nade_prediction::on_paint_traverse();
-
         interfaces::surface->finish_drawing();
     }
 

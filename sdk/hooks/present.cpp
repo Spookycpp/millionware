@@ -32,6 +32,12 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 
     ui::frame();
 
+    features::visuals::world::indicators();
+
+    features::visuals::world::display_spectators();
+
+    features::nade_prediction::on_paint_traverse();
+
     lua::callbacks::draw();
 
     render::finish();

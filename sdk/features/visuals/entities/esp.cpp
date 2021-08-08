@@ -403,7 +403,11 @@ namespace features::visuals::esp {
         if (!math::world_to_screen(player->get_hitbox_pos(HEAD), screen))
             return;
 
+<<<<<<< Updated upstream
         render::fill_circle(screen, 2.f, settings.visuals.player.head_spot_color);
+=======
+        surface::fill_rect(screen - 2, 2.f, settings.visuals.player.head_spot_color);
+>>>>>>> Stashed changes
     }
 
     void draw_barrel(c_player *player) {

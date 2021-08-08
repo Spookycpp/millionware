@@ -47,7 +47,6 @@ namespace features::visuals::world {
             const auto measure = render::measure_text(text, FONT_VERDANA_24);
 
             render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset) + 2, {0, 0, 0, 100}, text, FONT_VERDANA_24);
-            render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset), color, text, FONT_VERDANA_24);
 
             offset += measure.y + 8.0f;
         };
