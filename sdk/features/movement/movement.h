@@ -18,6 +18,7 @@ namespace features::movement {
     inline int prediction_ticks = 0;
     inline bool edgebugging = false;
     inline bool edgebugged = false;
+    inline vector_t last_known_velocity;
 
     // prediction container
     inline uint32_t flags;
@@ -32,6 +33,7 @@ namespace features::movement {
 
     void predict_edgebug(c_user_cmd *user_cmd);
     void edgebug_assist(c_user_cmd *user_cmd);
+    void edgebug_detection(c_user_cmd *user_cmd);
     void slide_walk(c_user_cmd *user_cmd);
     void strafe_optimizer(c_user_cmd *user_cmd, int pre_flags, int post_flags);
     void blockbot(c_user_cmd *user_cmd);

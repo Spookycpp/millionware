@@ -115,6 +115,7 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
     }
 
     edgebug_assist(user_cmd);
+    edgebug_detection(user_cmd);
 
     if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND && edgebugging) {
         edgebugging = false;
@@ -227,6 +228,32 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
     }
 
     cheat::b_predicting = false;
+}
+
+void features::movement::edgebug_detection(c_user_cmd *user_cmd) {
+
+    static bool hit_edgebug = false;
+
+    if (!features::movement::predicted_successful)
+        return;
+
+    if ((cheat::local_player->get_velocity().z >= -6.0 || cheat::local_player->get_move_type() == MOVE_TYPE_NOCLIP || cheat::local_player->get_move_type() == MOVE_TYPE_LADDER) && !hit_edgebug) {
+        last_known_velocity = cheat::local_player->get_velocity();
+        return;
+    }
+
+    if (!hit_edgebug) {
+        if (cheat::local_player->get_velocity().length_2d() <= 250.0 || roundf(cheat::local_player->get_velocity().length_2d()) > 250.0) {
+            if (std::floor(last_known_velocity.z) < -7 && (cheat::local_player->get_velocity().z / last_known_velocity.z) <= 0.7) {
+                logging::info(xs("eb"));
+            }
+        }
+    }
+
+    if (hit_edgebug)
+        hit_edgebug = 0;
+
+    last_known_velocity = cheat::local_player->get_velocity();
 }
 
 void features::movement::slide_walk(c_user_cmd *user_cmd) {
