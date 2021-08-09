@@ -116,11 +116,6 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
 
     edgebug_assist(user_cmd);
     edgebug_detection(user_cmd);
-
-    if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND && edgebugging) {
-        edgebugging = false;
-        edgebugged = true;
-    }
 }
 
 void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
@@ -247,9 +242,6 @@ void features::movement::edgebug_detection(c_user_cmd *user_cmd) {
             }
         }
     }
-
-    if (edgebugged)
-        edgebugged = false;
 
     last_known_velocity = cheat::local_player->get_velocity();
 }
