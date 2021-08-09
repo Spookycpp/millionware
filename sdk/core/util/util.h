@@ -35,6 +35,7 @@ namespace util {
 	void set_skybox(const char* name);
 	void on_frame_stage_notify(e_client_frame_stage frame_stage);
 	void play_sound(const char* file_path, int volume = -1);
+    void movement_fix(c_user_cmd* user_cmd);
     void movement_fix(const vector_t &old_angles, c_user_cmd* user_cmd);
     void disable_model_occlusion();
 

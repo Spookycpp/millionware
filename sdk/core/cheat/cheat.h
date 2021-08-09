@@ -10,6 +10,7 @@ namespace cheat
 
 	inline c_player *local_player;
 	inline c_user_cmd *user_cmd;
+	inline vector_t original_angles;
 
 	inline uint32_t unpredicted_flags;
     inline vector_t unpredicted_velocity;

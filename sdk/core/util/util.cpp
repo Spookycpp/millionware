@@ -146,6 +146,56 @@ void util::play_sound(const char *file_path, int volume) {
     interfaces::engine_client->execute_command(buffer);
 }
 
+void util::movement_fix(c_user_cmd *user_cmd) {
+
+    vector_t wish_fwd, wish_right, wish_up;
+    math::angle_to_vectors(cheat::original_angles, &wish_fwd, &wish_right, &wish_up);
+
+    vector_t view_fwd, view_right, view_up;
+    math::angle_to_vectors(user_cmd->view_angles, &view_fwd, &view_right, &view_up);
+
+    const float v8 = std::sqrt(wish_fwd.x * wish_fwd.x + wish_fwd.y * wish_fwd.y);
+    const float v10 = std::sqrt(wish_right.x * wish_right.x + wish_right.y * wish_right.y);
+    const float v12 = std::sqrt(wish_up.z * wish_up.z);
+
+    const vector_t norm_wish_fwd(1.0f / v8 * wish_fwd.x, 1.0f / v8 * wish_fwd.y, 0.0f);
+    const vector_t norm_wish_right(1.0f / v10 * wish_right.x, 1.0f / v10 * wish_right.y, 0.0f);
+    const vector_t norm_wish_up(0.0f, 0.0f, 1.0f / v12 * wish_up.z);
+
+    const float v14 = std::sqrt(view_fwd.x * view_fwd.x + view_fwd.y * view_fwd.y);
+    const float v16 = std::sqrt(view_right.x * view_right.x + view_right.y * view_right.y);
+    const float v18 = std::sqrt(view_up.z * view_up.z);
+
+    const vector_t norm_view_fwd(1.0f / v14 * view_fwd.x, 1.0f / v14 * view_fwd.y, 0.0f);
+    const vector_t norm_view_right(1.0f / v16 * view_right.x, 1.0f / v16 * view_right.y, 0.0f);
+    const vector_t norm_view_up(0.0f, 0.0f, 1.0f / v18 * view_up.z);
+
+    const float v22 = norm_wish_fwd.x * user_cmd->forward_move;
+    const float v26 = norm_wish_fwd.y * user_cmd->forward_move;
+    const float v28 = norm_wish_fwd.z * user_cmd->forward_move;
+
+    const float v24 = norm_wish_right.x * user_cmd->side_move;
+    const float v23 = norm_wish_right.y * user_cmd->side_move;
+    const float v25 = norm_wish_right.z * user_cmd->side_move;
+
+    const float v30 = norm_wish_up.x * user_cmd->up_move;
+    const float v27 = norm_wish_up.z * user_cmd->up_move;
+    const float v29 = norm_wish_up.y * user_cmd->up_move;
+
+    user_cmd->forward_move = norm_view_fwd.x * v24 + norm_view_fwd.y * v23 + norm_view_fwd.z * v25 + (norm_view_fwd.x * v22 + norm_view_fwd.y * v26 + norm_view_fwd.z * v28) +
+                        (norm_view_fwd.y * v30 + norm_view_fwd.x * v29 + norm_view_fwd.z * v27);
+
+    user_cmd->side_move = norm_view_right.x * v24 + norm_view_right.y * v23 + norm_view_right.z * v25 + (norm_view_right.x * v22 + norm_view_right.y * v26 + norm_view_right.z * v28) +
+                     (norm_view_right.x * v29 + norm_view_right.y * v30 + norm_view_right.z * v27);
+
+    user_cmd->up_move = norm_view_up.x * v23 + norm_view_up.y * v24 + norm_view_up.z * v25 + (norm_view_up.x * v26 + norm_view_up.y * v22 + norm_view_up.z * v28) +
+                   (norm_view_up.x * v30 + norm_view_up.y * v29 + norm_view_up.z * v27);
+
+    user_cmd->forward_move = std::clamp(user_cmd->forward_move, -450.0f, 450.0f);
+    user_cmd->side_move    = std::clamp(user_cmd->side_move, -450.0f, 450.0f);
+    user_cmd->up_move      = std::clamp(user_cmd->up_move, -320.0f, 320.0f);
+}
+
 void util::movement_fix(const vector_t &old_angles, c_user_cmd *user_cmd) {
     vector_t view_angles = {0.0f, old_angles.y, 0.0f};
     vector_t aim_angles = {0.0f, user_cmd->view_angles.y, 0.0f};

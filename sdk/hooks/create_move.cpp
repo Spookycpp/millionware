@@ -30,6 +30,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         interfaces::engine_client->set_view_angles(user_cmd->view_angles);
 
     cheat::user_cmd = user_cmd;
+    cheat::original_angles = user_cmd->view_angles;
 
     lua::callbacks::setup_command(user_cmd);
 
@@ -68,6 +69,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
             features::miscellaneous::on_create_move(user_cmd, local_weapon);
         }
 
+        util::movement_fix(user_cmd);
         features::movement::slide_walk(user_cmd);
     }
 
