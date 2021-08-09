@@ -232,26 +232,24 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
 
 void features::movement::edgebug_detection(c_user_cmd *user_cmd) {
 
-    static bool hit_edgebug = false;
-
     if (!features::movement::predicted_successful)
         return;
 
-    if ((cheat::local_player->get_velocity().z >= -6.0 || cheat::local_player->get_move_type() == MOVE_TYPE_NOCLIP || cheat::local_player->get_move_type() == MOVE_TYPE_LADDER) && !hit_edgebug) {
+    if ((cheat::local_player->get_velocity().z >= -6.0 || cheat::local_player->get_move_type() == MOVE_TYPE_NOCLIP || cheat::local_player->get_move_type() == MOVE_TYPE_LADDER) && !edgebugged) {
         last_known_velocity = cheat::local_player->get_velocity();
         return;
     }
 
-    if (!hit_edgebug) {
+    if (!edgebugged) {
         if (cheat::local_player->get_velocity().length_2d() <= 250.0 || roundf(cheat::local_player->get_velocity().length_2d()) > 250.0) {
             if (std::floor(last_known_velocity.z) < -7 && (cheat::local_player->get_velocity().z / last_known_velocity.z) <= 0.7) {
-                logging::info(xs("eb"));
+                edgebugged = true;
             }
         }
     }
 
-    if (hit_edgebug)
-        hit_edgebug = 0;
+    if (edgebugged)
+        edgebugged = false;
 
     last_known_velocity = cheat::local_player->get_velocity();
 }
