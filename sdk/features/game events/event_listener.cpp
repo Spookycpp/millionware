@@ -29,7 +29,7 @@ c_event_listener::c_event_listener() {
 }
 
 c_event_listener::~c_event_listener() {
-    interfaces::game_events->remove_listener(this);
+    //interfaces::game_events->remove_listener(this);
 }
 
 void c_event_listener::on_fired_game_event(c_game_event *game_event) {
