@@ -16,6 +16,8 @@ namespace features::movement {
     inline int mouse_offset = 0;
     inline int prediction_timestamp = 0;
     inline int prediction_ticks = 0;
+    inline bool edgebugging = false;
+    inline bool edgebugged = false;
 
     // prediction container
     inline uint32_t flags;

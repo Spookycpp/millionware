@@ -31,9 +31,9 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 
     cheat::user_cmd = user_cmd;
 
-    features::fake_ping::on_create_move();
+    lua::callbacks::setup_command(user_cmd);
 
-    lua::callbacks::run_command(user_cmd);
+    features::fake_ping::on_create_move();
 
     if (cheat::local_player->is_alive()) {
         features::legitbot::sample_angle_data(user_cmd->view_angles);
@@ -77,6 +77,8 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     features::miscellaneous::preserve_killfeed();
 
     features::movement::blockbot(user_cmd);
+
+    lua::callbacks::run_command(user_cmd);
 
     math::normalize_angles(user_cmd->view_angles);
     math::clamp_angles(user_cmd->view_angles);

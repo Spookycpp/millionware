@@ -3,12 +3,9 @@
 #include "../engine/logging/logging.h"
 
 bool lua::init() {
-    // create the main cheat directory and subdirectories for scripts and other stuff
-    // i dont think you can use `std::filesystem::create_directories` to create nested directories
-    // so we have to do it manually like this, fix this if you know a better way AND FUCKING TEST IT PLEASE
-    if (!std::filesystem::exists(xs(".\\mw"))) {
-        std::filesystem::create_directories(xs(".\\mw"));
-        std::filesystem::create_directories(xs(".\\mw\\scripts"));
+    if (!std::filesystem::exists((".\\mw"))) {
+        std::filesystem::create_directories((".\\mw"));
+        std::filesystem::create_directories((".\\mw\\scripts"));
     }
 
     try {
@@ -53,7 +50,7 @@ void lua::callbacks::startup() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(xs("startup"))) {
+        for (auto &it : handler.events(("startup"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -70,70 +67,70 @@ void lua::callbacks::startup() {
 void lua::callbacks::run_events(c_game_event *game_event) {
     static std::array<std::pair<const char *, int>, 58> keys = {{
         // integer, byte
-        {xs("userid"), 1},
-        {xs("health"), 1},
-        {xs("armor"), 1},
-        {xs("dmg_health"), 1},
-        {xs("dmg_armor"), 1},
-        {xs("userid"), 1},
-        {xs("userid"), 1},
-        {xs("userid"), 1},
-        {xs("hitgroup"), 1},
-        {xs("team"), 1},
-        {xs("loadout"), 1},
-        {xs("site"), 1},
-        {xs("entindex"), 1},
-        {xs("hostage"), 1},
-        {xs("defindex"), 1},
-        {xs("defindex"), 1},
-        {xs("weptype"), 1},
-        {xs("winner"), 1},
-        {xs("player_count"), 1},
-        {xs("entityid"), 1},
-        {xs("player"), 1},
-        {xs("quality"), 1},
-        {xs("method"), 1},
-        {xs("itemdef"), 1},
-        {xs("itemid"), 1},
-        {xs("vote_parameter"), 1},
-        {xs("botid"), 1},
-        {xs("toteam"), 1},
-        {xs("priority"), 1},
-        {xs("drone_dispatched"), 1},
-        {xs("delivered"), 1},
-        {xs("cargo"), 1},
-        {xs("attacker"), 1},
-        {xs("dominated"), 1},
-        {xs("revenge"), 1},
-        {xs("usepenetratedrid"), 1},
-        {xs("x"), 1},
-        {xs("y"), 1},
-        {xs("z"), 1},
+        {("userid"), 1},
+        {("health"), 1},
+        {("armor"), 1},
+        {("dmg_health"), 1},
+        {("dmg_armor"), 1},
+        {("userid"), 1},
+        {("userid"), 1},
+        {("userid"), 1},
+        {("hitgroup"), 1},
+        {("team"), 1},
+        {("loadout"), 1},
+        {("site"), 1},
+        {("entindex"), 1},
+        {("hostage"), 1},
+        {("defindex"), 1},
+        {("defindex"), 1},
+        {("weptype"), 1},
+        {("winner"), 1},
+        {("player_count"), 1},
+        {("entityid"), 1},
+        {("player"), 1},
+        {("quality"), 1},
+        {("method"), 1},
+        {("itemdef"), 1},
+        {("itemid"), 1},
+        {("vote_parameter"), 1},
+        {("botid"), 1},
+        {("toteam"), 1},
+        {("priority"), 1},
+        {("drone_dispatched"), 1},
+        {("delivered"), 1},
+        {("cargo"), 1},
+        {("attacker"), 1},
+        {("dominated"), 1},
+        {("revenge"), 1},
+        {("usepenetratedrid"), 1},
+        {("x"), 1},
+        {("y"), 1},
+        {("z"), 1},
 
         // float
-        {xs("damage"), 2},
-        {xs("distance"), 2},
+        {("damage"), 2},
+        {("distance"), 2},
 
         // bool
-        {xs("canbuy"), 3},
-        {xs("isplanted"), 3},
-        {xs("hasbomb"), 3},
-        {xs("haskit"), 3},
-        {xs("silenced"), 3},
-        {xs("inrestart"), 3},
-        {xs("success"), 3},
-        {xs("assistedflash"), 3},
-        {xs("noscope"), 3},
-        {xs("thrusmoke"), 3},
-        {xs("urgent"), 3},
-        {xs("headshot"), 3},
+        {("canbuy"), 3},
+        {("isplanted"), 3},
+        {("hasbomb"), 3},
+        {("haskit"), 3},
+        {("silenced"), 3},
+        {("inrestart"), 3},
+        {("success"), 3},
+        {("assistedflash"), 3},
+        {("noscope"), 3},
+        {("thrusmoke"), 3},
+        {("urgent"), 3},
+        {("headshot"), 3},
 
         // string
-        {xs("item"), 4},
-        {xs("message"), 4},
-        {xs("type"), 4},
-        {xs("weapon"), 4},
-        {xs("weapon_itemid"), 4},
+        {("item"), 4},
+        {("message"), 4},
+        {("type"), 4},
+        {("weapon"), 4},
+        {("weapon_itemid"), 4},
     }};
 
     if (!mutex.initialized) {
@@ -193,23 +190,71 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(xs("run_command"))) {
+        for (auto &it : handler.events(("run_command"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
             
             // create new table for user_cmd data
             it.ref[2] = luabridge::newTable(it.l);
-            it.ref[xs("command_number")] = cmd->command_number;
+            it.ref[("command_number")] = cmd->command_number;
 
             // push to stack
             it.ref.push();
 
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
+
+            cmd->command_number = it.ref[("command_number")];
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(xs("{}"), ex.what());
+        logging::error(("{}"), ex.what());
+    }
+    LeaveCriticalSection(&mutex.critical_section);
+}
+
+void lua::callbacks::setup_command(c_user_cmd *cmd) {
+    if (!mutex.initialized) {
+        return;
+    }
+
+    EnterCriticalSection(&mutex.critical_section);
+    try {
+        for (auto &it : handler.events(("setup_command"))) {
+            // push reference to lua func back onto the stack
+            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
+
+            // create new table for user_cmd data
+            it.ref[2] = luabridge::newTable(it.l);
+            it.ref[("command_number")] = cmd->command_number;
+            it.ref[("pitch")] = cmd->view_angles.x;
+            it.ref[("yaw")] = cmd->view_angles.y;
+            it.ref[("forwardmove")] = cmd->forward_move;
+            it.ref[("sidemove")] = cmd->side_move;
+            it.ref[("upmove")] = cmd->up_move;
+            it.ref[("buttons")] = cmd->buttons;
+            it.ref[("mouse_dx")] = cmd->mouse_dx;
+            it.ref[("mouse_dy")] = cmd->mouse_dy;
+
+            // push to stack
+            it.ref.push();
+
+            // call the lua function
+            /*luabridge::LuaException::*/ lua_pcall(it.l, 1, 0, 0);
+
+            cmd->command_number = it.ref[("command_number")];
+            cmd->view_angles.x = it.ref[("pitch")];
+            cmd->view_angles.y = it.ref[("yaw")];
+            cmd->forward_move = it.ref[("forwardmove")];
+            cmd->side_move = it.ref[("sidemove")];
+            cmd->up_move = it.ref[("upmove")];
+            cmd->buttons = it.ref[("buttons")];
+            cmd->mouse_dx = it.ref[("mouse_dx")];
+            cmd->mouse_dy = it.ref[("mouse_dy")];
+        }
+    }
+    catch (luabridge::LuaException &ex) {
+        logging::error(("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -222,16 +267,16 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
     EnterCriticalSection(&mutex.critical_section);
     try {
 
-        for (auto &it : handler.events(xs("override_view"))) {
+        for (auto &it : handler.events(("override_view"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
             // create new table for user_cmd data
             it.ref[2] = luabridge::newTable(it.l);
-            it.ref[xs("x")] = view_setup->x;
-            it.ref[xs("y")] = view_setup->y;
+            it.ref[("x")] = view_setup->x;
+            it.ref[("y")] = view_setup->y;
             // TODO: missing z
-            it.ref[xs("fov")] = view_setup->fov;
+            it.ref[("fov")] = view_setup->fov;
 
             // push to stack
             it.ref.push();
@@ -239,13 +284,13 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
 
-            view_setup->x = it.ref[xs("x")];
-            view_setup->y = it.ref[xs("y")];
-            view_setup->fov = it.ref[xs("fov")];
+            view_setup->x = it.ref[("x")];
+            view_setup->y = it.ref[("y")];
+            view_setup->fov = it.ref[("fov")];
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(xs("{}"), ex.what());
+        logging::error(("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -257,7 +302,7 @@ void lua::callbacks::draw() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(xs("draw"))) {
+        for (auto &it : handler.events(("draw"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -266,7 +311,7 @@ void lua::callbacks::draw() {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(xs("{}"), ex.what());
+        logging::error(("{}"), ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }

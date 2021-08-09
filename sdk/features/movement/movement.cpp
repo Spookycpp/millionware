@@ -14,6 +14,7 @@
 #include "../../engine/security/xorstr.h"
 
 void features::movement::pre_prediction(c_user_cmd *user_cmd) {
+    edgebugged = false;
 
     if (settings.miscellaneous.movement.no_duck_cooldown) {
         user_cmd->buttons |= BUTTON_IN_BULLRUSH;
@@ -114,6 +115,11 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
     }
 
     edgebug_assist(user_cmd);
+
+    if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND && edgebugging) {
+        edgebugging = false;
+        edgebugged = true;
+    }
 }
 
 void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
@@ -208,8 +214,11 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
             user_cmd->forward_move = 0.0;
             user_cmd->side_move = 0.0;
 
-            if (features::movement::should_duck)
+            if (features::movement::should_duck) {
                 user_cmd->buttons |= BUTTON_IN_DUCK;
+            }
+
+            edgebugging = true;
         }
         else {
             features::movement::predicted_successful = 0;
