@@ -318,3 +318,24 @@ void lua::callbacks::draw() {
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
+
+void lua::callbacks::draw_front() {
+    if (!mutex.initialized) {
+        return;
+    }
+
+    EnterCriticalSection(&mutex.critical_section);
+    try {
+        for (auto &it : handler.events(("draw_front"))) {
+            // push reference to lua func back onto the stack
+            lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
+
+            // call the lua function
+            /*luabridge::LuaException::*/lua_pcall(it.l, 0, 0, 0);
+        }
+    }
+    catch (luabridge::LuaException &ex) {
+        logging::error(("{}"), ex.what());
+    }
+    LeaveCriticalSection(&mutex.critical_section);
+}
