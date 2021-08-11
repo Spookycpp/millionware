@@ -275,9 +275,9 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
 
             // create new table for user_cmd data
             it.ref[2] = luabridge::newTable(it.l);
-            it.ref[("x")] = view_setup->x;
-            it.ref[("y")] = view_setup->y;
-            // TODO: missing z
+            it.ref[("x")] = view_setup->origin.x;
+            it.ref[("y")] = view_setup->origin.y;
+            it.ref[("z")] = view_setup->origin.z;
             it.ref[("fov")] = view_setup->fov;
 
             // push to stack
@@ -286,8 +286,9 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
             // call the lua function
             /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
 
-            view_setup->x = it.ref[("x")];
-            view_setup->y = it.ref[("y")];
+            view_setup->origin.x = it.ref[("x")];
+            view_setup->origin.y = it.ref[("y")];
+            view_setup->origin.z = it.ref[("z")];   
             view_setup->fov = it.ref[("fov")];
         }
     }
