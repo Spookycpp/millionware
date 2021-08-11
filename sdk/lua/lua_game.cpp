@@ -213,7 +213,7 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
     LeaveCriticalSection(&mutex.critical_section);
 }
 
-void lua::callbacks::setup_command(c_user_cmd *cmd) {
+void lua::callbacks::setup_command(c_user_cmd *cmd, bool &send_packet) {
     if (!mutex.initialized) {
         return;
     }
@@ -235,6 +235,7 @@ void lua::callbacks::setup_command(c_user_cmd *cmd) {
             it.ref[("buttons")] = cmd->buttons;
             it.ref[("mouse_dx")] = cmd->mouse_dx;
             it.ref[("mouse_dy")] = cmd->mouse_dy;
+            it.ref[("send_packet")] = true;
 
             // push to stack
             it.ref.push();
@@ -251,6 +252,7 @@ void lua::callbacks::setup_command(c_user_cmd *cmd) {
             cmd->buttons = it.ref[("buttons")];
             cmd->mouse_dx = it.ref[("mouse_dx")];
             cmd->mouse_dy = it.ref[("mouse_dy")];
+            send_packet = it.ref[("send_packet")];
         }
     }
     catch (luabridge::LuaException &ex) {

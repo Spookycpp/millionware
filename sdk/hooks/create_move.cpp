@@ -29,10 +29,14 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     if (result)
         interfaces::engine_client->set_view_angles(user_cmd->view_angles);
 
+    uintptr_t *frame_pointer;
+    __asm mov frame_pointer, ebp;
+    bool &send_packet = *reinterpret_cast<bool *>(*frame_pointer - 0x1C);
+
     cheat::user_cmd = user_cmd;
     cheat::original_angles = user_cmd->view_angles;
 
-    lua::callbacks::setup_command(user_cmd);
+    lua::callbacks::setup_command(user_cmd, send_packet);
 
     features::fake_ping::on_create_move();
 
