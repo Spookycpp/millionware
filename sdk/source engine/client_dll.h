@@ -89,7 +89,7 @@ struct c_client_state {
 	char group_name[80];
 	char pad_032C[0x5C];
 	uint32_t max_clients;
-	char pad_0314[0x4984];
+	char pad_0314[0x498C];
 	float last_server_tick_time;
 	bool in_simulation;
 	char pad_4C9D[0x03];
