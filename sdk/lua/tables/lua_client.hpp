@@ -20,7 +20,15 @@
 namespace lua_internal::tables::client {
     inline void log(lua_State *l) {
         size_t len;
-        logging::info(luaL_checklstring(l, 1, &len));
+        logging::print(user_data_argument<color, color_t>(l, 1), luaL_checklstring(l, 2, &len), luaL_checklstring(l, 3, &len));
+    }
+
+    inline void log_to_console(lua_State *l) {
+        size_t len;
+
+        const auto col = user_data_argument<color, color_t>(l, 1);
+
+        logging::console({col.r, col.g, col.b, col.a}, luaL_checklstring(l, 2, &len));
     }
 
     inline void exec(lua_State *l) {
@@ -88,6 +96,7 @@ inline void lua_internal::context::lua_client() {
     luabridge::getGlobalNamespace(l)
     .beginNamespace(xs("mw"))
         .addFunction(xs("log"), std::function([this]() { tables::client::log(l); }))
+        .addFunction(xs("log_to_console"), std::function([this]() { tables::client::log_to_console(l); }))
         .addFunction(xs("exec"), std::function([this]() { tables::client::exec(l); }))
         .addFunction(xs("time"), std::function([this]() { return tables::client::time(l); }))
         .addFunction(xs("unix_time"), std::function([this]() { return std::time(nullptr); }))

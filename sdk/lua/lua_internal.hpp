@@ -47,4 +47,12 @@ namespace lua_internal {
 
         return ss.str();
     }
+
+    template <class T1, class T2 = T1> T2 user_data_argument(lua_State *l, const int arg, const bool can_be_const = true) {
+        if (!luabridge::LuaRef::fromStack(l, arg).isUserdata()) {
+            return {};
+        }
+
+        return *reinterpret_cast<T2 *>(luabridge::detail::Userdata::get<T1>(l, arg, can_be_const));
+    }
 } // namespace lua_internal
