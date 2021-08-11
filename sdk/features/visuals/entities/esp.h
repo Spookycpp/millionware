@@ -21,7 +21,7 @@ namespace features::visuals::esp {
 
     void draw_box(const bounding_box_t &entity_box, c_player *player);
     void draw_name(const bounding_box_t &entity_box, c_player *player);
-    void draw_health(const bounding_box_t &entity_box, c_player *player, entity_esp_t &esp_info);
+    void draw_health(const bounding_box_t &entity_box, c_player *player);
     void draw_armor(const bounding_box_t &entity_box, c_player *player);
     void draw_ammo(const bounding_box_t &entity_box, c_player *player);
     void draw_weapon(const bounding_box_t &entity_box, c_player *player);

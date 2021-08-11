@@ -26,6 +26,8 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 
     ui::frame();
 
+    features::visuals::esp::frame();
+
     features::visuals::world::indicators();
 
     features::visuals::world::display_spectators();

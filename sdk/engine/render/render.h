@@ -15,7 +15,7 @@ enum e_font
 	FONT_VERDANA_12_BOLD,
     FONT_TAHOMA_11,
 	FONT_TAHOMA_12,
-	//FONT_SMALL_TEXT,
+	FONT_SMALL_TEXT,
 	FONT_CEREBRI_SANS_BOLD_13,
 	FONT_CEREBRI_SANS_MEDIUM_14,
 	FONT_CEREBRI_SANS_MEDIUM_18,
@@ -86,6 +86,7 @@ namespace render {
 	void draw_circle(const point_t &center, float radius, const color_t &color, int segments = 0);
 	void fill_circle(const point_t &center, float radius, const color_t &color, int segments = 0);
 	void draw_text(const point_t &position, const color_t &color, const char *text, int font, float wrap_width = 0.0f, float font_size = -1.0f);
+	void draw_text_outlined(const point_t &position, const color_t &color, const color_t &outline_color, const char *text, int font, float wrap_width = 0.0f, float font_size = -1.0f);
     void draw_image(const point_t &position, const point_t &size, const color_t &color, int texture, float rounding = 0.0f, int corners = CORNER_ALL);
     void draw_image(const point_t &position, const point_t &size, const color_t &color, IDirect3DTexture9 *texture, float rounding = 0.0f, int corners = CORNER_ALL);
     void draw_poly_line(const point_t *points, int num_points, const color_t &color, float thickness);

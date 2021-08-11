@@ -365,6 +365,18 @@ void render::draw_text(const point_t &position, const color_t &color, const char
     draw_list->AddText(fonts[font], font_size, {position.x, position.y}, IM_COL32(color.r, color.g, color.b, color.a), text, nullptr, wrap_width);
 }
 
+void render::draw_text_outlined(const point_t &position, const color_t &color, const color_t &outline_color, const char *text, int font, float wrap_width, float font_size) {
+    if (font_size < 0.0f)
+        font_size = fonts[font]->FontSize;
+
+    render::draw_text({ position.x, position.y + 1.0f }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
+    render::draw_text({ position.x, position.y - 1.0f }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
+    render::draw_text({ position.x + 1.0f, position.y }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
+    render::draw_text({ position.x - 1.0f, position.y }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
+
+    draw_list->AddText(fonts[font], font_size, { position.x, position.y }, IM_COL32(color.r, color.g, color.b, color.a), text, nullptr, wrap_width);
+}
+
 void render::draw_image(const point_t &position, const point_t &size, const color_t &color, int texture, float rounding, int corners) {
     draw_list->AddImageRounded(textures[texture], {position.x, position.y}, {position.x + size.x, position.y + size.y}, {0.0f, 0.0f}, {1.0f, 1.0f}, IM_COL32(color.r, color.g, color.b, color.a),
                                rounding, corners);

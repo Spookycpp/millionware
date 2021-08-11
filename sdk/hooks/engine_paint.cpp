@@ -23,7 +23,7 @@ void __fastcall hooks::engine_paint(uintptr_t ecx, uintptr_t edx, int mode) {
 
         interfaces::surface->start_drawing();
 
-        features::visuals::esp::frame();
+        //features::visuals::esp::frame();
 
         interfaces::surface->finish_drawing();
     }

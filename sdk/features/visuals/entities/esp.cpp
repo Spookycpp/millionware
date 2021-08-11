@@ -11,7 +11,7 @@
 #include "../../../engine/logging/logging.h"
 #include "../../../engine/math/math.h"
 #include "../../../engine/render/render.h"
-#include "../../../engine/render/surface.h"
+#include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 #include "../world/world.h"
 #include "esp.h"
@@ -25,7 +25,7 @@ static std::unordered_map<int, entity_esp_t> entity_esp_info;
 
 static entity_esp_t &get_entity_info(int index) {
     if (entity_esp_info.find(index) == entity_esp_info.end())
-        entity_esp_info.insert({index, {}});
+        entity_esp_info.insert({ index, {} });
 
     return entity_esp_info[index];
 }
@@ -35,8 +35,8 @@ static bool get_bounding_box(c_entity *entity, features::visuals::esp::bounding_
     const auto mins = collideable->get_mins();
     const auto maxs = collideable->get_maxs();
 
-    vector_t points[8] = {{mins.x, mins.y, mins.z}, {mins.x, maxs.y, mins.z}, {maxs.x, maxs.y, mins.z}, {maxs.x, mins.y, mins.z},
-                          {maxs.x, maxs.y, maxs.z}, {mins.x, maxs.y, maxs.z}, {mins.x, mins.y, maxs.z}, {maxs.x, mins.y, maxs.z}};
+    vector_t points[8] = { {mins.x, mins.y, mins.z}, {mins.x, maxs.y, mins.z}, {maxs.x, maxs.y, mins.z}, {maxs.x, mins.y, mins.z},
+                          {maxs.x, maxs.y, maxs.z}, {mins.x, maxs.y, maxs.z}, {mins.x, mins.y, maxs.z}, {maxs.x, mins.y, maxs.z} };
 
     std::transform(std::begin(points), std::end(points), std::begin(points), [entity](const auto point) { return math::vector_transform(point, entity->get_transformation_matrix()); });
 
@@ -59,7 +59,7 @@ static bool get_bounding_box(c_entity *entity, features::visuals::esp::bounding_
         bottom = std::min(bottom, screen_pos[i].y);
     }
 
-    out_box = {left, bottom, right - left, (top - bottom)};
+    out_box = { left, bottom, right - left, (top - bottom) };
 
     return true;
 }
@@ -99,7 +99,7 @@ namespace features::visuals::esp {
                 entity_info.position = entity->get_vec_origin();
             }
 
-            const auto player = (c_player *) entity;
+            const auto player = (c_player *)entity;
 
             if (player->get_life_state() != LIFE_STATE_ALIVE || player->get_health() <= 0)
                 continue;
@@ -130,7 +130,7 @@ namespace features::visuals::esp {
 
             draw_box(entity_box, player);
             draw_name(entity_box, player);
-            draw_health(entity_box, player, entity_info);
+            draw_health(entity_box, player);
             draw_armor(entity_box, player);
             draw_ammo(entity_box, player);
             draw_weapon(entity_box, player);
@@ -138,7 +138,7 @@ namespace features::visuals::esp {
             draw_skeleton(player);
             draw_headspot(player);
             draw_barrel(player);
-        } 
+        }
     }
 
     void draw_box(const bounding_box_t &entity_box, c_player *player) {
@@ -146,11 +146,11 @@ namespace features::visuals::esp {
         if (!settings.visuals.player.bounding_box)
             return;
 
-        const auto box_position = point_t{entity_box.x, entity_box.y};
-        const auto box_size = point_t{entity_box.width, entity_box.height};
+        const auto box_position = point_t{ entity_box.x, entity_box.y };
+        const auto box_size = point_t{ entity_box.width, entity_box.height };
 
-        render::draw_rect(box_position - 1.0f, box_size + 2.0f, {0, 0, 0, 220});
-        render::draw_rect(box_position + 1.0f, box_size - 2.0f, {0, 0, 0, 220});
+        render::draw_rect(box_position - 1.0f, box_size + 2.0f, { 0, 0, 0, 210 });
+        render::draw_rect(box_position + 1.0f, box_size - 2.0f, { 0, 0, 0, 210 });
         render::draw_rect(box_position, box_size, settings.visuals.player.bounding_box_color);
     }
 
@@ -167,8 +167,8 @@ namespace features::visuals::esp {
         const auto player_name = info.fake_player ? std::format(xs("BOT {}"), info.name) : info.name;
 
         const auto text_size = render::measure_text(player_name.c_str(), FONT_VERDANA_12_BOLD);
-        render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2) + 1, entity_box.y - text_size.y - 2 + 1}, {5, 5, 5, 220}, player_name.c_str(), FONT_VERDANA_12_BOLD);
-        render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y - 2}, settings.visuals.player.player_name_color, player_name.c_str(), FONT_VERDANA_12_BOLD);     
+        render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2) + 1, entity_box.y - text_size.y - 2 + 1 }, { 5, 5, 5, 220 }, player_name.c_str(), FONT_VERDANA_12_BOLD);
+        render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y - 2 }, settings.visuals.player.player_name_color, player_name.c_str(), FONT_VERDANA_12_BOLD);
     }
 
     void draw_health(const bounding_box_t &entity_box, c_player *player) {
@@ -177,14 +177,12 @@ namespace features::visuals::esp {
             return;
 
         const auto clamped_health = std::clamp(player->get_health(), 0, player->max_health());
-        const auto text = std::format(xs("{}"), player->get_health());
-        const auto text_size = surface::measure_text(text, SFONT_SMALL_TEXT);
         const auto bar_size = std::clamp((clamped_health * entity_box.height) / 100, 0.f, entity_box.height);
         const auto red = std::min((510 * (100 - clamped_health)) / 100, 255);
         const auto green = std::min((510 * clamped_health) / 100, 255);
 
-        surface::fill_rect({entity_box.x - 6, entity_box.y - 1}, {4, entity_box.height + 2}, {0, 0, 0, 180});
-        surface::fill_rect({entity_box.x - 5, entity_box.y + (entity_box.height - bar_size)}, {2, bar_size}, {red, green, 0, 210});
+        render::fill_rect({ entity_box.x - 6, entity_box.y - 1 }, { 4, entity_box.height + 2 }, { 0, 0, 0, 180 });
+        render::fill_rect({ entity_box.x - 5, entity_box.y + (entity_box.height - bar_size) }, { 2, bar_size }, { red, green, 0, 210 });
 
         // don't use clamped health here, because if their health
         // is larger than 100 we want to draw the health amount
@@ -195,12 +193,7 @@ namespace features::visuals::esp {
 
             const auto health_text_size = render::measure_text(health_text_buffer, FONT_SMALL_TEXT);
 
-            render::draw_text({entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f + 1.0f}, {5, 5, 5, 220}, health_text_buffer, FONT_SMALL_TEXT);
-            render::draw_text({entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f - 1.0f}, {5, 5, 5, 220}, health_text_buffer, FONT_SMALL_TEXT);
-            render::draw_text({entity_box.x - 4.0f - health_text_size.x * 0.5f + 1.0f, entity_box.y + (entity_box.height - bar_size) - 6.0f}, {5, 5, 5, 220}, health_text_buffer, FONT_SMALL_TEXT);
-            render::draw_text({entity_box.x - 4.0f - health_text_size.x * 0.5f - 1.0f, entity_box.y + (entity_box.height - bar_size) - 6.0f}, {5, 5, 5, 220}, health_text_buffer, FONT_SMALL_TEXT);
-
-            render::draw_text({entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f}, {255, 255, 255, 220}, health_text_buffer, FONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f }, { 255, 255, 255, 220 }, { 5, 5, 5, 220 }, health_text_buffer, FONT_SMALL_TEXT);
         }
     }
 
@@ -212,18 +205,17 @@ namespace features::visuals::esp {
         const auto box_multiplier = player->get_armor() / 100.0f;
         const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        surface::fill_rect({entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f}, {entity_box.width + 2.0f, 4.0f}, {0, 0, 0, 180});
-        surface::fill_rect({entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 3.0f}, {box_width, 2.0f}, {255, 255, 255});
+        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, 180 });
+        render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 3.0f }, { box_width, 2.0f }, { 255, 255, 255 });
 
         if (player->get_armor() < 90) {
             char armor_text_buffer[8];
 
             sprintf_s(armor_text_buffer, xs("%d"), player->get_armor());
 
-            const auto armor_text_size = surface::measure_text(armor_text_buffer, SFONT_SMALL_TEXT);
+            const auto armor_text_size = render::measure_text(armor_text_buffer, FONT_SMALL_TEXT);
 
-            surface::draw_text({entity_box.x + box_width - armor_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index]}, {255, 255, 255, 210}, armor_text_buffer,
-                               SFONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x + box_width - armor_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] }, { 255, 255, 255, 220 }, { 5, 5, 5, 220 }, armor_text_buffer, FONT_SMALL_TEXT);
         }
 
         m_bottom_offset[player_index] += 6.0f;
@@ -233,7 +225,7 @@ namespace features::visuals::esp {
         if (!settings.visuals.player.ammo)
             return;
 
-        const auto weapon = (c_weapon *) player->get_active_weapon_handle().get();
+        const auto weapon = (c_weapon *)player->get_active_weapon_handle().get();
 
         if (!weapon)
             return;
@@ -248,11 +240,11 @@ namespace features::visuals::esp {
 
         const auto player_index = player->get_networkable()->index();
         const auto reload_layer = &player->animation_overlay().element(1);
-        const auto box_multiplier = player->is_reloading() ? reload_layer->cycle : (weapon->get_ammo1() / (float) weapon_data->max_clip_ammo);
+        const auto box_multiplier = player->is_reloading() ? reload_layer->cycle : (weapon->get_ammo1() / (float)weapon_data->max_clip_ammo);
         const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        render::fill_rect({entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 1.0f}, {entity_box.width + 2.0f, 4.0f}, {0, 0, 0, 180});
-        render::fill_rect({entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f}, {box_width, 2.0f}, settings.visuals.player.ammo_color);
+        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, 180 });
+        render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 3.0f }, { box_width, 2.0f }, settings.visuals.player.ammo_color);
 
         if (weapon->get_ammo1() > 0 && weapon->get_ammo1() < weapon_data->max_clip_ammo && !player->is_reloading()) {
             char ammo_text_buffer[8];
@@ -261,11 +253,10 @@ namespace features::visuals::esp {
 
             const auto ammo_text_size = render::measure_text(ammo_text_buffer, FONT_SMALL_TEXT);
 
-            render::draw_text({entity_box.x + box_width - ammo_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] - 1.0f}, {255, 255, 255, 255}, ammo_text_buffer,
-                              FONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x + box_width - ammo_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] - 1.0f }, { 255, 255, 255, 255 }, { 5, 5, 5, 220 }, ammo_text_buffer, FONT_SMALL_TEXT);
         }
 
-        m_bottom_offset[player_index] += 7.0f;
+        m_bottom_offset[player_index] += 5.0f;
     }
 
     void draw_weapon(const bounding_box_t &entity_box, c_player *player) {
@@ -273,7 +264,7 @@ namespace features::visuals::esp {
         if (!settings.visuals.player.weapon)
             return;
 
-        const auto weapon = (c_weapon *) player->get_active_weapon_handle().get();
+        const auto weapon = (c_weapon *)player->get_active_weapon_handle().get();
 
         if (!weapon)
             return;
@@ -296,22 +287,10 @@ namespace features::visuals::esp {
 
         auto localized_name_size = render::measure_text(localized_name_buffer, FONT_SMALL_TEXT);
 
-        localized_name_size += point_t{1.0f, 1.0f};
+        localized_name_size += point_t{ 1.0f, 1.0f };
 
-        render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 2.0f},
-                          {5, 5, 5, 220}, localized_name_buffer, FONT_SMALL_TEXT);
-
-        render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()]},
-                          {5, 5, 5, 220}, localized_name_buffer, FONT_SMALL_TEXT);
-
-        render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f + 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 1.0f},
-                          {5, 5, 5, 220}, localized_name_buffer, FONT_SMALL_TEXT);
-
-        render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 1.0f},
-                          {5, 5, 5, 220}, localized_name_buffer, FONT_SMALL_TEXT);
-
-        render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 1.0f},
-                          {255, 255, 255, 255}, localized_name_buffer, FONT_SMALL_TEXT);
+        render::draw_text_outlined({ entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 1.0f }, 
+            { 255, 255, 255, 255 }, { 5, 5, 5, 220 }, localized_name_buffer, FONT_SMALL_TEXT);
 
         m_bottom_offset[player->get_networkable()->index()] += localized_name_size.y;
     }
@@ -319,51 +298,40 @@ namespace features::visuals::esp {
     void draw_flags(const bounding_box_t &entity_box, c_player *player) {
 
         auto draw_flag = [flag_offset = 0.0f, &entity_box, player](const char *flag_text, const color_t &flag_color) mutable {
-            const auto flag_text_size = surface::measure_text(flag_text, SFONT_SMALL_TEXT);
+            const auto flag_text_size = render::measure_text(flag_text, FONT_SMALL_TEXT);
 
-            render::draw_text({entity_box.x + entity_box.width + 4.0f, entity_box.y - 1.0f + flag_offset + 1.0f}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
-            render::draw_text({entity_box.x + entity_box.width + 4.0f, entity_box.y - 1.0f + flag_offset - 1.0f}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
-            render::draw_text({entity_box.x + entity_box.width + 4.0f + 1.0f, entity_box.y - 1.0f + flag_offset}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
-            render::draw_text({entity_box.x + entity_box.width + 4.0f - 1.0f, entity_box.y - 1.0f + flag_offset}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
-
-            render::draw_text({entity_box.x + entity_box.width + 4.0f, entity_box.y - 1.0f + flag_offset}, flag_color, flag_text, FONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x + entity_box.width + 3.0f, entity_box.y - 1.0f + flag_offset }, flag_color, { 5, 5, 5, 220 }, flag_text, FONT_SMALL_TEXT);
 
             flag_offset += flag_text_size.y;
         };
 
         if (settings.visuals.player.flags & (1 << 0))
-            draw_flag(player->get_has_helmet() ? xs("HK") : xs("K"), {255, 255, 255});
+            draw_flag(player->get_has_helmet() ? xs("HK") : xs("K"), { 255, 255, 255 });
 
         if (settings.visuals.player.flags & (1 << 1) && player->get_is_scoped())
-            draw_flag(xs("SCOPED"), {0, 150, 255});
-            draw_flag(xs("SCOPE"), {0, 150, 255, 200});
+            draw_flag(xs("SCOPE"), { 0, 150, 255, 200 });
 
         if (settings.visuals.player.flags & (1 << 2) && player->is_reloading())
-            draw_flag(xs("RELOADING"), {2, 106, 198});
-            draw_flag(xs("RELOADING"), {2, 106, 198, 200});
+            draw_flag(xs("RELOAD"), { 2, 106, 198, 200 });
 
         if (settings.visuals.player.flags & (1 << 3) && player->is_flashed())
-            draw_flag(xs("FLASH"), {255, 255, 255});
-            draw_flag(xs("FLASH"), {255, 255, 255, 200});
+            draw_flag(xs("FLASH"), { 255, 255, 255, 200 });
 
         if (settings.visuals.player.flags & (1 << 4) && player->has_bomb())
-            draw_flag(xs("BOMB"), {255, 0, 0});
-            draw_flag(xs("C4"), {230, 50, 50, 200});
+            draw_flag(xs("C4"), { 230, 50, 50, 200 });
 
         if (settings.visuals.player.flags & (1 << 5) && player->get_is_defusing())
-            draw_flag(xs("DEFUSING"), {255, 100, 0});
-            draw_flag(xs("DEFUSING"), {255, 100, 0, 200});
+            draw_flag(xs("DEFUSE"), { 255, 100, 0, 200 });
 
         if (settings.visuals.player.flags & (1 << 6) && player->is_smoked())
-            draw_flag(xs("SMOKED"), {255, 255, 255});
-            draw_flag(xs("SMOKE"), {255, 255, 255});
+            draw_flag(xs("SMOKE"), { 255, 255, 255, 200 });
 
         if (settings.visuals.player.flags & (1 << 7) && player->get_health() == 1)
-            draw_flag(xs("FLASH KILL"), {125, 255, 248});
+            draw_flag(xs("FLASH KILL"), { 125, 255, 248, 200 });
 
         if (settings.visuals.player.flags & (1 << 8)) {
             auto flag_string = std::format(xs("${}"), player->get_money());
-            draw_flag(flag_string.c_str(), {149, 184, 6, 200});
+            draw_flag(flag_string.c_str(), { 149, 184, 6, 200 });
         }
     }
 
@@ -419,7 +387,7 @@ namespace features::visuals::esp {
             if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen))
                 continue;
 
-            surface::draw_line(child_screen, parent_screen, settings.visuals.player.skeleton_color);
+            render::draw_line(child_screen, parent_screen, settings.visuals.player.skeleton_color);
         }
     }
 
@@ -441,7 +409,7 @@ namespace features::visuals::esp {
         if (!settings.visuals.player.barrel)
             return;
 
-        const auto weapon = (c_weapon *) player->get_active_weapon_handle().get();
+        const auto weapon = (c_weapon *)player->get_active_weapon_handle().get();
 
         if (!weapon)
             return;
@@ -464,10 +432,10 @@ namespace features::visuals::esp {
         filter.skip = player;
 
         trace_t tr;
-        interfaces::trace->trace_ray(ray_t{src, dst}, MASK_SHOT, &filter, &tr);
+        interfaces::trace->trace_ray(ray_t{ src, dst }, MASK_SHOT, &filter, &tr);
 
-        interfaces::debug_overlay->add_line(tr.start_pos, tr.end_pos, {255, 255, 255}, false, interfaces::global_vars->interval_per_tick);
-        interfaces::debug_overlay->add_swept_box(tr.end_pos, tr.end_pos, -.9f, .9f, eye_angles, {255, 255, 255}, interfaces::global_vars->interval_per_tick);
+        interfaces::debug_overlay->add_line(tr.start_pos, tr.end_pos, { 255, 255, 255 }, false, interfaces::global_vars->interval_per_tick);
+        interfaces::debug_overlay->add_swept_box(tr.end_pos, tr.end_pos, -.9f, .9f, eye_angles, { 255, 255, 255 }, interfaces::global_vars->interval_per_tick);
     }
 
     void draw_planted_bomb(c_entity *entity) {
@@ -475,7 +443,7 @@ namespace features::visuals::esp {
         if (!settings.visuals.world.planted_bomb)
             return;
 
-        auto planted_bomb = (c_entity *) entity;
+        auto planted_bomb = (c_entity *)entity;
 
         if (planted_bomb->get_networkable()->is_dormant())
             return;
@@ -491,16 +459,16 @@ namespace features::visuals::esp {
             return;
 
         if (client_class->class_id == CPlantedC4) {
-            const auto text_size = surface::measure_text(xs("planted c4"), SFONT_TAHOMA_11);
-            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+            const auto text_size = render::measure_text(xs("planted c4"), FONT_TAHOMA_11);
+            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-            surface::draw_text(text_pos, settings.visuals.world.grenades_color, xs("planted c4"), SFONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("planted c4"), FONT_TAHOMA_11);
         }
     }
 
     void draw_dropped_weapon(c_entity *entity) {
 
-        auto weapon = (c_weapon *) entity;
+        auto weapon = (c_weapon *)entity;
 
         if (weapon->get_owner_handle() != entity_handle_t())
             return;
@@ -533,10 +501,10 @@ namespace features::visuals::esp {
             for (auto i = 0; i < localized_name_length; i++)
                 localized_name_buffer[i] = std::tolower(localized_name_buffer[i]);
 
-            const auto text_size = surface::measure_text(localized_name_buffer, SFONT_TAHOMA_11);
-            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+            const auto text_size = render::measure_text(localized_name_buffer, FONT_TAHOMA_11);
+            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-            surface::draw_text(text_pos, settings.visuals.world.weapon_color, localized_name_buffer, SFONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.weapon_color, localized_name_buffer, FONT_TAHOMA_11);
         }
         else if (settings.visuals.world.dropped_bomb && weapon->get_item_definition_index() == WEAPON_C4) {
 
@@ -544,10 +512,10 @@ namespace features::visuals::esp {
             // name because "c4 explosive" looks stupid
             const auto bomb_string = xs("dropped bomb");
 
-            const auto text_size = surface::measure_text(bomb_string, SFONT_TAHOMA_11);
-            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+            const auto text_size = render::measure_text(bomb_string, FONT_TAHOMA_11);
+            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-            surface::draw_text(text_pos, settings.visuals.world.dropped_bomb_color, bomb_string, SFONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.dropped_bomb_color, bomb_string, FONT_TAHOMA_11);
         }
     }
 
@@ -556,7 +524,7 @@ namespace features::visuals::esp {
         if (!settings.visuals.world.grenades)
             return;
 
-        auto grenade = (c_weapon *) entity;
+        auto grenade = (c_weapon *)entity;
 
         if (grenade->get_networkable()->is_dormant())
             return;
@@ -580,48 +548,48 @@ namespace features::visuals::esp {
 
         if (client_class->class_id == CBaseCSGrenadeProjectile) {
             if (std::strstr(model_name, xs("fraggrenade")) && grenade->get_explode_effect_tick_begin() < 1) {
-                const auto text_size = surface::measure_text(xs("frag"), SFONT_TAHOMA_11);
-                const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+                const auto text_size = render::measure_text(xs("frag"), FONT_TAHOMA_11);
+                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-                surface::draw_text(text_pos, settings.visuals.world.grenades_color, xs("frag"), SFONT_TAHOMA_11);
+                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("frag"), FONT_TAHOMA_11);
             }
             else if (std::strstr(model_name, xs("flashbang"))) {
-                const auto text_size = surface::measure_text(xs("flashbang"), SFONT_TAHOMA_11);
-                const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+                const auto text_size = render::measure_text(xs("flashbang"), FONT_TAHOMA_11);
+                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-                surface::draw_text(text_pos, settings.visuals.world.grenades_color, xs("flashbang"), SFONT_TAHOMA_11);
+                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("flashbang"), FONT_TAHOMA_11);
             }
         }
 
         if (client_class->class_id == CSmokeGrenadeProjectile) {
-            const auto text_size = surface::measure_text(xs("smoke"), SFONT_TAHOMA_11);
-            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+            const auto text_size = render::measure_text(xs("smoke"), FONT_TAHOMA_11);
+            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-            surface::draw_text(text_pos, settings.visuals.world.grenades_color, xs("smoke"), SFONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("smoke"), FONT_TAHOMA_11);
         }
 
         if (client_class->class_id == CMolotovProjectile) {
             if (std::strstr(model_name, xs("molotov"))) {
 
-                const auto text_size = surface::measure_text(xs("molotov"), SFONT_TAHOMA_11);
-                const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+                const auto text_size = render::measure_text(xs("molotov"), FONT_TAHOMA_11);
+                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-                surface::draw_text(text_pos, settings.visuals.world.grenades_color, xs("molotov"), SFONT_TAHOMA_11);
+                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("molotov"), FONT_TAHOMA_11);
             }
             else if (std::strstr(model_name, xs("incendiary"))) {
 
-                const auto text_size = surface::measure_text(xs("incendiary"), SFONT_TAHOMA_11);
-                const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+                const auto text_size = render::measure_text(xs("incendiary"), FONT_TAHOMA_11);
+                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-                surface::draw_text(text_pos, settings.visuals.world.grenades_color, xs("incendiary"), SFONT_TAHOMA_11);
+                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("incendiary"), FONT_TAHOMA_11);
             }
         }
 
         if (client_class->class_id == CDecoyProjectile) {
-            const auto text_size = surface::measure_text(xs("decoy"), SFONT_TAHOMA_11);
-            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+            const auto text_size = render::measure_text(xs("decoy"), FONT_TAHOMA_11);
+            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-            surface::draw_text(text_pos, settings.visuals.world.grenades_color, xs("decoy"), SFONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("decoy"), FONT_TAHOMA_11);
         }
     }
 
@@ -641,10 +609,10 @@ namespace features::visuals::esp {
 
             const auto defusal_kit_string = xs("defusal kit");
 
-            const auto text_size = surface::measure_text(defusal_kit_string, SFONT_TAHOMA_11);
-            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+            const auto text_size = render::measure_text(defusal_kit_string, FONT_TAHOMA_11);
+            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
 
-            surface::draw_text(text_pos, settings.visuals.world.defusal_kit_color, defusal_kit_string, SFONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.defusal_kit_color, defusal_kit_string, FONT_TAHOMA_11);
         }
     }
 
