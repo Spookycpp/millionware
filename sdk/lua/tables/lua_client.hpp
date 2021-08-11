@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../lua_internal.hpp"
 #include "../lua_callback.hpp"
+#include "../lua_internal.hpp"
 
 #include "lua_entity.hpp"
 
@@ -9,6 +9,7 @@
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/patterns/patterns.h"
 
+#include "../../engine/input/input.h"
 #include "../../engine/logging/logging.h"
 
 #include "../../source engine/game_events.h"
@@ -90,11 +91,31 @@ namespace lua_internal::tables::client {
         const std::string str = "##" + cheat::notice_text;
         interfaces::client_mode->chat->chat_printf(0, 0, str.c_str());
     }
-}
+
+    inline luabridge::LuaRef get_globals(lua_State *l) {
+        luabridge::LuaRef table = luabridge::newTable(l);
+        table[("absolute_frame_time")] = interfaces::global_vars->absolute_frame_time;
+        table[("current_time")] = interfaces::global_vars->current_time;
+        table[("frame_count")] = interfaces::global_vars->frame_count;
+        table[("frame_time")] = interfaces::global_vars->frame_time;
+        table[("interval_per_tick")] = interfaces::global_vars->interval_per_tick;
+        table[("max_clients")] = interfaces::global_vars->max_clients;
+        table[("real_time")] = interfaces::global_vars->real_time;
+        table[("choked_commands")] = interfaces::client_state->choked_commands;
+        table[("last_outgoing_command")] = interfaces::client_state->last_command;
+        table[("last_command_ack")] = interfaces::client_state->last_command_ack;
+        table[("command_ack")] = interfaces::client_state->command_ack;
+        table[("level_name_short")] = std::string(interfaces::client_state->level_name_short);
+
+        // push to stack
+        table.push();
+        return table;
+    }
+} // namespace lua_internal::tables::client
 
 inline void lua_internal::context::lua_client() {
     luabridge::getGlobalNamespace(l)
-    .beginNamespace(xs("mw"))
+        .beginNamespace(xs("mw"))
         .addFunction(xs("log"), std::function([this]() { tables::client::log(l); }))
         .addFunction(xs("log_to_console"), std::function([this]() { tables::client::log_to_console(l); }))
         .addFunction(xs("exec"), std::function([this]() { tables::client::exec(l); }))
@@ -107,6 +128,7 @@ inline void lua_internal::context::lua_client() {
         .addFunction(xs("edgebugged"), std::function([this]() { return tables::client::edgebugged(l); }))
         .addFunction(xs("print_to_chat"), std::function([this]() { tables::client::print_to_chat(l); }))
         .addFunction(xs("print_to_chat_html"), std::function([this]() { tables::client::print_to_chat_html(l); }))
+        .addFunction(xs("get_globals"), std::function([this]() { return tables::client::get_globals(l); }))
 
-    .endNamespace();
+        .endNamespace();
 }
