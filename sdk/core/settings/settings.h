@@ -102,10 +102,10 @@ struct settings_t {
 			bool  engine_radar = false;
 
 			bool  bounding_box = false;
-            color_t bounding_box_color = {255, 255, 255};
+            color_t bounding_box_color = {238, 116, 211, 200};
 
 			bool  player_name = false;
-            color_t player_name_color = {255, 255, 255};
+            color_t player_name_color = {230, 230, 230};
 
 			bool  health = false;
 

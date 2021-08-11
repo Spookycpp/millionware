@@ -9,11 +9,19 @@ namespace features::visuals::esp {
         float height;
     };
 
+    struct entity_esp_t {
+        int predicted_money;
+        float last_server_update;
+        vector_t position;
+        int last_health;
+        int health_fade;
+    };
+
     void frame();
 
     void draw_box(const bounding_box_t &entity_box, c_player *player);
     void draw_name(const bounding_box_t &entity_box, c_player *player);
-    void draw_health(const bounding_box_t &entity_box, c_player *player);
+    void draw_health(const bounding_box_t &entity_box, c_player *player, entity_esp_t &esp_info);
     void draw_armor(const bounding_box_t &entity_box, c_player *player);
     void draw_ammo(const bounding_box_t &entity_box, c_player *player);
     void draw_weapon(const bounding_box_t &entity_box, c_player *player);

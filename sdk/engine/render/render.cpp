@@ -33,6 +33,7 @@
 #include "../security/xorstr.h"
 
 #include "render.h"
+#include "../../resources/pixelmix.h"
 
 static std::array<ImFont *, FONT_MAX> fonts;
 static std::array<IDirect3DTexture9 *, TEXTURE_MAX> textures;
@@ -215,6 +216,7 @@ void render::init(HWND window, IDirect3DDevice9 *device) {
     fonts[FONT_VERDANA_24] = create_from_system(io, xs("Verdana"), 25.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
     fonts[FONT_TAHOMA_11] = create_from_system(io, xs("Tahoma"), 12.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
     fonts[FONT_TAHOMA_12] = create_from_system(io, xs("Tahoma"), 13.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+<<<<<<< Updated upstream
     //fonts[FONT_SMALL_TEXT] = create_from_system(io, XORSTR("Small Fonts"), 10.f, ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome);
     fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
     fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
@@ -244,6 +246,40 @@ void render::init(HWND window, IDirect3DDevice9 *device) {
 void render::undo() {
     if (!initialized)
         return;
+=======
+    fonts[FONT_VERDANA_12_BOLD] = create_from_system(io, xs("Verdana Bold"), 12.0f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_SMALL_TEXT] = create_from_ttf(io, pixelmix_ttf, sizeof(pixelmix_ttf), 10.f, ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome);
+	//fonts[FONT_SMALL_TEXT] = create_from_system(io, xs("Verdana"), 10.f, ImGuiFreeTypeBuilderFlags_Monochrome);
+	fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
+	fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
+	fonts[FONT_CEREBRI_SANS_MEDIUM_18] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 18.0f);
+	fonts[FONT_CEREBRI_SANS_BOLD_32] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 32.0f, ImGuiFreeTypeBuilderFlags_Bold);
+	fonts[FONT_WEAPONS_16] = create_from_ttf(io,csgo_icons_ttf, sizeof(csgo_icons_ttf), 16.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON });
+	fonts[FONT_WEAPONS_32] = create_from_ttf(io,csgo_icons_ttf, sizeof(csgo_icons_ttf), 32.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON });
+	fonts[FONT_FA_BRANDS_32] = create_from_ttf(io, fa_brands_400_ttf, sizeof(fa_brands_400_ttf), 32.0f, 0, { ICON_MIN_FAB, ICON_MAX_FAB });
+	fonts[FONT_FA_REGULAR_32] = create_from_ttf(io, fa_regular_400_ttf, sizeof(fa_regular_400_ttf), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA });
+	fonts[FONT_FA_SOLID_32] = create_from_ttf(io, fa_solid_900_ttf, sizeof(fa_solid_900_ttf), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA });
+
+	textures[TEXTURE_MW_LOGO_BASE] = create_from_png(mw_logo_base_png, sizeof(mw_logo_base_png));
+	textures[TEXTURE_MW_LOGO_DOLLAR] = create_from_png(mw_logo_dollar_png, sizeof(mw_logo_dollar_png));
+	textures[TEXTURE_TRANSPARENCY] = create_from_png(transparency_checkerboard_png, sizeof(transparency_checkerboard_png));
+
+	ImGuiFreeType::BuildFontAtlas(io.Fonts);
+
+	// Initialize the binding
+	//
+	// todo: Handle possible errors
+	ImGui_ImplWin32_Init(window);
+	ImGui_ImplDX9_Init(device);
+
+	initialized = true;
+}
+
+void render::undo()
+{
+	if (!initialized)
+		return;
+>>>>>>> Stashed changes
 
     ImGui_ImplDX9_Shutdown();
     ImGui_ImplWin32_Shutdown();
