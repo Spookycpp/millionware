@@ -149,15 +149,9 @@ namespace features::visuals::esp {
         const auto box_position = point_t{entity_box.x, entity_box.y};
         const auto box_size = point_t{entity_box.width, entity_box.height};
 
-<<<<<<< Updated upstream
-        surface::draw_rect(box_position - 1.0f, box_size + 2.0f, {0, 0, 0, 100});
-        surface::draw_rect(box_position + 1.0f, box_size - 2.0f, {0, 0, 0, 100});
-        surface::draw_rect(box_position, box_size, settings.visuals.player.bounding_box_color);
-=======
         render::draw_rect(box_position - 1.0f, box_size + 2.0f, {0, 0, 0, 220});
         render::draw_rect(box_position + 1.0f, box_size - 2.0f, {0, 0, 0, 220});
         render::draw_rect(box_position, box_size, settings.visuals.player.bounding_box_color);
->>>>>>> Stashed changes
     }
 
     void draw_name(const bounding_box_t &entity_box, c_player *player) {
@@ -172,17 +166,12 @@ namespace features::visuals::esp {
 
         const auto player_name = info.fake_player ? std::format(xs("BOT {}"), info.name) : info.name;
 
-<<<<<<< Updated upstream
-        const auto text_size = surface::measure_text(player_name.c_str(), SFONT_TAHOMA_11);
-        surface::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y}, settings.visuals.player.player_name_color, player_name.c_str(), SFONT_TAHOMA_11);
-=======
         const auto text_size = render::measure_text(player_name.c_str(), FONT_VERDANA_12_BOLD);
         render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2) + 1, entity_box.y - text_size.y - 2 + 1}, {5, 5, 5, 220}, player_name.c_str(), FONT_VERDANA_12_BOLD);
         render::draw_text({entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y - 2}, settings.visuals.player.player_name_color, player_name.c_str(), FONT_VERDANA_12_BOLD);     
->>>>>>> Stashed changes
     }
 
-    void draw_health(const bounding_box_t &entity_box, c_player *player, entity_esp_t &esp_info) {
+    void draw_health(const bounding_box_t &entity_box, c_player *player) {
 
         if (!settings.visuals.player.health)
             return;
@@ -194,40 +183,8 @@ namespace features::visuals::esp {
         const auto red = std::min((510 * (100 - clamped_health)) / 100, 255);
         const auto green = std::min((510 * clamped_health) / 100, 255);
 
-<<<<<<< Updated upstream
         surface::fill_rect({entity_box.x - 6, entity_box.y - 1}, {4, entity_box.height + 2}, {0, 0, 0, 180});
         surface::fill_rect({entity_box.x - 5, entity_box.y + (entity_box.height - bar_size)}, {2, bar_size}, {red, green, 0, 210});
-
-        if (player->get_health() <= 90 || player->get_health() > 100) {
-            surface::draw_text({entity_box.x - 5 - (text_size.x / 2), entity_box.y + (entity_box.height - bar_size) - 7}, {255, 255, 255, 210}, text, SFONT_SMALL_TEXT);
-=======
-        auto alpha = [](int &current, const int min, const int max, const float frequency, const bool direction) {
-            if (current < max && direction) {
-                current += (std::ceil(frequency * render::get_frame_time()));
-            }
-            else if (current > min && !direction) {
-                current -= static_cast<int>(std::ceil(frequency * render::get_frame_time()));
-            }
-
-            math::clamp(current, min, max);
-        };
-
-        render::fill_rect({entity_box.x - 6.0f, entity_box.y - 1.0f}, {4.0f, entity_box.height + 2.0f}, {0, 0, 0, 180});
-        render::fill_rect({entity_box.x - 5.0f, entity_box.y + entity_box.height - bar_size}, {2.0f, bar_size}, {red, green, 0, 210});
-
-        if (player->get_health() != esp_info.last_health && !esp_info.health_fade) {
-            esp_info.last_health = player->get_health();
-            esp_info.health_fade = 200;
-        }
-        else if (player->get_health() != esp_info.last_health) {
-            const float damage = float(esp_info.last_health - player->get_health()) * entity_box.height / 100.0f;
-
-            alpha(esp_info.health_fade, 0, 200, 200.0f, false);
-
-            if (esp_info.health_fade > 0) {
-                render::fill_rect({entity_box.x - 5.0f, entity_box.y - damage + entity_box.height - bar_size}, {2.0f, bar_size}, {200, 200, 200, esp_info.health_fade});
-            }
-        }
 
         // don't use clamped health here, because if their health
         // is larger than 100 we want to draw the health amount
@@ -244,7 +201,6 @@ namespace features::visuals::esp {
             render::draw_text({entity_box.x - 4.0f - health_text_size.x * 0.5f - 1.0f, entity_box.y + (entity_box.height - bar_size) - 6.0f}, {5, 5, 5, 220}, health_text_buffer, FONT_SMALL_TEXT);
 
             render::draw_text({entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f}, {255, 255, 255, 220}, health_text_buffer, FONT_SMALL_TEXT);
->>>>>>> Stashed changes
         }
     }
 
@@ -295,18 +251,18 @@ namespace features::visuals::esp {
         const auto box_multiplier = player->is_reloading() ? reload_layer->cycle : (weapon->get_ammo1() / (float) weapon_data->max_clip_ammo);
         const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        surface::fill_rect({entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 1.0f}, {entity_box.width + 2.0f, 4.0f}, {0, 0, 0, 180});
-        surface::fill_rect({entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f}, {box_width, 2.0f}, settings.visuals.player.ammo_color);
+        render::fill_rect({entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 1.0f}, {entity_box.width + 2.0f, 4.0f}, {0, 0, 0, 180});
+        render::fill_rect({entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f}, {box_width, 2.0f}, settings.visuals.player.ammo_color);
 
         if (weapon->get_ammo1() > 0 && weapon->get_ammo1() < weapon_data->max_clip_ammo && !player->is_reloading()) {
             char ammo_text_buffer[8];
 
             sprintf_s(ammo_text_buffer, xs("%d"), weapon->get_ammo1());
 
-            const auto ammo_text_size = surface::measure_text(ammo_text_buffer, SFONT_SMALL_TEXT);
+            const auto ammo_text_size = render::measure_text(ammo_text_buffer, FONT_SMALL_TEXT);
 
-            surface::draw_text({entity_box.x + box_width - ammo_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] - 1.0f}, {255, 255, 255, 255}, ammo_text_buffer,
-                               SFONT_SMALL_TEXT);
+            render::draw_text({entity_box.x + box_width - ammo_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] - 1.0f}, {255, 255, 255, 255}, ammo_text_buffer,
+                              FONT_SMALL_TEXT);
         }
 
         m_bottom_offset[player_index] += 7.0f;
@@ -337,13 +293,6 @@ namespace features::visuals::esp {
 
         for (auto i = 0; i < localized_name_length; i++)
             localized_name_buffer[i] = std::toupper(localized_name_buffer[i]);
-<<<<<<< Updated upstream
-
-        const auto localized_name_size = surface::measure_text(localized_name_buffer, SFONT_SMALL_TEXT);
-
-        surface::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()]},
-                           {255, 255, 255, 255}, localized_name_buffer, SFONT_SMALL_TEXT);
-=======
 
         auto localized_name_size = render::measure_text(localized_name_buffer, FONT_SMALL_TEXT);
 
@@ -363,7 +312,6 @@ namespace features::visuals::esp {
 
         render::draw_text({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 1.0f},
                           {255, 255, 255, 255}, localized_name_buffer, FONT_SMALL_TEXT);
->>>>>>> Stashed changes
 
         m_bottom_offset[player->get_networkable()->index()] += localized_name_size.y;
     }
@@ -373,62 +321,42 @@ namespace features::visuals::esp {
         auto draw_flag = [flag_offset = 0.0f, &entity_box, player](const char *flag_text, const color_t &flag_color) mutable {
             const auto flag_text_size = surface::measure_text(flag_text, SFONT_SMALL_TEXT);
 
-<<<<<<< Updated upstream
-            surface::draw_text({entity_box.x + entity_box.width + 2.0f, entity_box.y - 1.0f + flag_offset}, flag_color, flag_text, SFONT_SMALL_TEXT);
-=======
             render::draw_text({entity_box.x + entity_box.width + 4.0f, entity_box.y - 1.0f + flag_offset + 1.0f}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
             render::draw_text({entity_box.x + entity_box.width + 4.0f, entity_box.y - 1.0f + flag_offset - 1.0f}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
             render::draw_text({entity_box.x + entity_box.width + 4.0f + 1.0f, entity_box.y - 1.0f + flag_offset}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
             render::draw_text({entity_box.x + entity_box.width + 4.0f - 1.0f, entity_box.y - 1.0f + flag_offset}, {5, 5, 5, 220}, flag_text, FONT_SMALL_TEXT);
 
             render::draw_text({entity_box.x + entity_box.width + 4.0f, entity_box.y - 1.0f + flag_offset}, flag_color, flag_text, FONT_SMALL_TEXT);
->>>>>>> Stashed changes
 
             flag_offset += flag_text_size.y;
         };
 
         if (settings.visuals.player.flags & (1 << 0))
-<<<<<<< Updated upstream
             draw_flag(player->get_has_helmet() ? xs("HK") : xs("K"), {255, 255, 255});
 
         if (settings.visuals.player.flags & (1 << 1) && player->get_is_scoped())
             draw_flag(xs("SCOPED"), {0, 150, 255});
-
-        if (settings.visuals.player.flags & (1 << 2) && player->is_reloading())
-            draw_flag(xs("RELOADING"), {2, 106, 198});
-
-        if (settings.visuals.player.flags & (1 << 3) && player->is_flashed())
-            draw_flag(xs("FLASH"), {255, 255, 255});
-
-        if (settings.visuals.player.flags & (1 << 4) && player->has_bomb())
-            draw_flag(xs("BOMB"), {255, 0, 0});
-
-        if (settings.visuals.player.flags & (1 << 5) && player->get_is_defusing())
-            draw_flag(xs("DEFUSING"), {255, 100, 0});
-
-        if (settings.visuals.player.flags & (1 << 6) && player->is_smoked())
-            draw_flag(xs("SMOKED"), {255, 255, 255});
-=======
-            draw_flag(player->get_has_helmet() ? xs("HK") : xs("K"), {255, 255, 255, 200});
-
-        if (settings.visuals.player.flags & (1 << 1) && player->get_is_scoped())
             draw_flag(xs("SCOPE"), {0, 150, 255, 200});
 
         if (settings.visuals.player.flags & (1 << 2) && player->is_reloading())
+            draw_flag(xs("RELOADING"), {2, 106, 198});
             draw_flag(xs("RELOADING"), {2, 106, 198, 200});
 
         if (settings.visuals.player.flags & (1 << 3) && player->is_flashed())
+            draw_flag(xs("FLASH"), {255, 255, 255});
             draw_flag(xs("FLASH"), {255, 255, 255, 200});
 
         if (settings.visuals.player.flags & (1 << 4) && player->has_bomb())
+            draw_flag(xs("BOMB"), {255, 0, 0});
             draw_flag(xs("C4"), {230, 50, 50, 200});
 
         if (settings.visuals.player.flags & (1 << 5) && player->get_is_defusing())
+            draw_flag(xs("DEFUSING"), {255, 100, 0});
             draw_flag(xs("DEFUSING"), {255, 100, 0, 200});
 
         if (settings.visuals.player.flags & (1 << 6) && player->is_smoked())
+            draw_flag(xs("SMOKED"), {255, 255, 255});
             draw_flag(xs("SMOKE"), {255, 255, 255});
->>>>>>> Stashed changes
 
         if (settings.visuals.player.flags & (1 << 7) && player->get_health() == 1)
             draw_flag(xs("FLASH KILL"), {125, 255, 248});
@@ -505,11 +433,7 @@ namespace features::visuals::esp {
         if (!math::world_to_screen(player->get_hitbox_pos(HEAD), screen))
             return;
 
-<<<<<<< Updated upstream
-        surface::fill_rect(screen - 2, 3.f, settings.visuals.player.head_spot_color);
-=======
-        render::fill_circle(screen - point_t(2.0f, 2.0f), 2.f, settings.visuals.player.head_spot_color);
->>>>>>> Stashed changes
+        render::fill_circle(screen, 2.f, settings.visuals.player.head_spot_color);
     }
 
     void draw_barrel(c_player *player) {

@@ -49,12 +49,6 @@ void logging::render() {
 
     auto offset = 0.0f;
 
-<<<<<<< Updated upstream
-=======
-    const auto tag_text = xs("[millionware]  ");
-    const auto tag_size = render::measure_text(tag_text, FONT_SMALL_TEXT);
-
->>>>>>> Stashed changes
     for (const auto &message : messages) {
         const auto displayed_for = current_time - message.time_added;
         const auto text_size = render::measure_text(message.message.c_str(), FONT_TAHOMA_11);
@@ -97,16 +91,11 @@ void logging::render() {
             offset += message_increment;
         }
 
-<<<<<<< Updated upstream
         render::draw_text(position + 1, {10, 10, 10, color.a / 3}, tag_text.c_str(), FONT_TAHOMA_11);
         render::draw_text(position, color, tag_text.c_str(), FONT_TAHOMA_11);
-=======
-        render::draw_text(position + 1, {10, 10, 10, color.a / 3}, tag_text, FONT_SMALL_TEXT);
-        render::draw_text(position, color, tag_text, FONT_SMALL_TEXT);
->>>>>>> Stashed changes
 
-        render::draw_text({position.x + tag_size.x + 1, position.y + 1}, {10, 10, 10, color.a / 3}, message.message.c_str(), FONT_SMALL_TEXT);
-        render::draw_text({position.x + tag_size.x, position.y}, {255, 255, 255, color.a}, message.message.c_str(), FONT_SMALL_TEXT);
+        render::draw_text({position.x + tag_size.x + 1, position.y + 1}, {10, 10, 10, color.a / 3}, message.message.c_str(), FONT_TAHOMA_11);
+        render::draw_text({position.x + tag_size.x, position.y}, {255, 255, 255, color.a}, message.message.c_str(), FONT_TAHOMA_11);
     }
 }
 
