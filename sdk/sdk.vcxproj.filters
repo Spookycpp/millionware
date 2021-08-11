@@ -207,6 +207,6 @@
     <ClInclude Include="source engine\glow_object_definition.h" />
     <ClInclude Include="source engine\client_mode_shared.h" />
     <ClInclude Include="engine\render\surface.h" />
-    <ClInclude Include="source engine\glow.h" />
+    <ClInclude Include="lua\tables\lua_input.hpp" />
   </ItemGroup>
 </Project>

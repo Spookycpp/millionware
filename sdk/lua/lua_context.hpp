@@ -13,6 +13,7 @@ namespace lua_internal {
         void lua_client();
         void lua_draw();
         void entity();
+        void lua_input();
 
     public:
         lua_State *l = nullptr;

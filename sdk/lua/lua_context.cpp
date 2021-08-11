@@ -10,6 +10,7 @@
 #include "tables/lua_client.hpp"
 #include "tables/lua_draw.hpp"
 #include "tables/lua_entity.hpp"
+#include "tables/lua_input.hpp"
 
 #include "../engine/logging/logging.h"
 #include "../engine/security/xorstr.h"
@@ -116,6 +117,7 @@ void lua_internal::context::setup_tables() {
     lua_client();
     lua_draw();
     entity();
+	lua_input();
 }
 
 void lua_internal::context::ffi(const bool state) const {

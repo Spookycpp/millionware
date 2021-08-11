@@ -304,6 +304,7 @@
     <ClInclude Include="lua\tables\lua_cvar.hpp" />
     <ClInclude Include="lua\tables\lua_draw.hpp" />
     <ClInclude Include="lua\tables\lua_entity.hpp" />
+    <ClInclude Include="lua\tables\lua_input.hpp" />
     <ClInclude Include="lua\types\lua_color.hpp" />
     <ClInclude Include="lua\types\lua_vec2d.hpp" />
     <ClInclude Include="lua\types\lua_vec3d.hpp" />
