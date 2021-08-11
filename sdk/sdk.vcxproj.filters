@@ -83,6 +83,7 @@
     <ClCompile Include="hooks\engine_paint.cpp" />
     <ClCompile Include="engine\render\surface.cpp" />
     <ClCompile Include="hooks\screen_size_changed.cpp" />
+    <ClCompile Include="hooks\push_notice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />

@@ -55,6 +55,7 @@ namespace interfaces
 	inline c_prediction			 *prediction;
 	inline c_localize			 *localize;
     inline c_view_render_beams   *render_beams;
+    inline void                  *push_notice;
 								 
 	inline IDirect3DDevice9		 *d3d9_device;
 	inline c_client_mode		 *client_mode;

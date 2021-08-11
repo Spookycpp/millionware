@@ -72,6 +72,7 @@ namespace patterns {
     inline uintptr_t find_key;
     inline uintptr_t set_string;
     inline uintptr_t glow_manager;
+    inline uintptr_t push_notice;
 
     PATTERN_GET(engine_vgui_start_drawing, engine_vgui_start_drawing);
     PATTERN_GET(engine_vgui_finish_drawing, engine_vgui_finish_drawing);
@@ -134,6 +135,7 @@ namespace patterns {
     PATTERN_GET(find_key, find_key);
     PATTERN_GET(set_string, set_string);
     PATTERN_GET(glow_manager, glow_manager);
+    PATTERN_GET(push_notice, push_notice);
 
     uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();

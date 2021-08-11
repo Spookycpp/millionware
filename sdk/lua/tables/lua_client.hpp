@@ -5,6 +5,7 @@
 
 #include "lua_entity.hpp"
 
+#include "../../core/cheat/cheat.h"
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/patterns/patterns.h"
 
@@ -72,6 +73,15 @@ namespace lua_internal::tables::client {
         size_t len;
         interfaces::client_mode->chat->chat_printf(0, 0, luaL_checklstring(l, 1, &len));
     }
+
+    inline void print_to_chat_html(lua_State *l) {
+        size_t len;
+
+        cheat::notice_text = luaL_checklstring(l, 1, &len);
+
+        const std::string str = "##" + cheat::notice_text;
+        interfaces::client_mode->chat->chat_printf(0, 0, str.c_str());
+    }
 }
 
 inline void lua_internal::context::lua_client() {
@@ -87,6 +97,7 @@ inline void lua_internal::context::lua_client() {
         .addFunction(xs("in_edgebug"), std::function([this]() { return tables::client::in_edgebug(l); }))
         .addFunction(xs("edgebugged"), std::function([this]() { return tables::client::edgebugged(l); }))
         .addFunction(xs("print_to_chat"), std::function([this]() { tables::client::print_to_chat(l); }))
+        .addFunction(xs("print_to_chat_html"), std::function([this]() { tables::client::print_to_chat_html(l); }))
 
     .endNamespace();
 }

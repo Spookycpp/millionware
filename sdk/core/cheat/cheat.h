@@ -24,4 +24,6 @@ namespace cheat
 	inline bool disconnect_state = false;
 	inline uintptr_t run_command;
     inline int tick_base_shift;
+
+    inline std::string notice_text; // used for push_notice()
 }

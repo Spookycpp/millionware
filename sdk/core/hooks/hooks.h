@@ -43,6 +43,7 @@ namespace hooks {
     void __fastcall screen_size_changed(uintptr_t, uintptr_t, int, int);
     int __fastcall send_datagram(c_net_channel *, uintptr_t *, void *);
     bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
+    void __fastcall push_notice(uintptr_t, uintptr_t, const char *, int, const char *);
 
     long __stdcall present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region);
 
@@ -70,6 +71,7 @@ namespace hooks {
     inline decltype(&screen_size_changed) screen_size_changed_original;
     inline decltype(&send_datagram) send_datagram_original;
     inline decltype(&write_user_cmd_delta_to_buffer) write_user_cmd_delta_to_buffer_original;
+    inline decltype(&push_notice) push_notice_original;
 
     inline decltype(&present) present_original;
 } // namespace hooks

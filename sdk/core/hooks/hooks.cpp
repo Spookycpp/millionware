@@ -60,6 +60,7 @@ bool hooks::init() {
     screen_size_changed_original = create_hook((uintptr_t) interfaces::surface, 116, &screen_size_changed);
     send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t) patterns::send_datagram, (uintptr_t) &send_datagram));
     engine_paint_original = create_hook((uintptr_t) interfaces::vgui_engine, 14, &engine_paint);
+    push_notice_original = decltype(&push_notice)(create_hook(patterns::push_notice, (uintptr_t) &push_notice));
 
     present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);
 
