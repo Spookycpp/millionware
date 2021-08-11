@@ -358,16 +358,6 @@ std::string util::sanitize_string(const std::string &str) {
     return ret;
 }
 
-//c_hud_element *find_hud_element(const char *name) {
-//    static auto hud_this = *reinterpret_cast<c_hud **>(patterns::get_pattern(xs("client_panorama.dll"), 
-//        xs("B9 ? ? ? ? E8 ? ? ? ? 85 C0 0F 84 ? ? ? ? 83 C0 EC 0F 84 ? ? ? ? 80 B8")) + 1);
-//
-//    static auto find_element = reinterpret_cast<c_hud_element *(__thiscall *) (c_hud *, const char *)>(
-//        patterns::get_pattern(xs("client_panorama.dll"), xs("55 8B EC 53 8B 5D 08 56 57 8B F9 33 F6")));
-//
-//    return find_element(hud_this, name);
-//}
-
 void util::undo() {
 
     interfaces::convar_system->find_convar(xs("weapon_debug_spread_show"))->set_value(0);
