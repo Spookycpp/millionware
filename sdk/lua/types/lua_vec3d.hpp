@@ -42,7 +42,7 @@ class vec3d {
     }
 
     float length_sqr() const {
-        return x * x + y * y;
+        return x * x + y * y + z * z;
     }
 
     float dot(const vec3d &v) const {
