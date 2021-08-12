@@ -22,6 +22,7 @@ bool lua::init() {
         script.ffi();
 
         if (!script.run()) {
+            logging::error(xs("failed to execute script {}"), script.filename());
             // script failed to run, e.g runtime error
             lua_close(script.l);
         }
@@ -50,7 +51,7 @@ void lua::callbacks::startup() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(("startup"))) {
+        for (auto &it : handler.events(CRC("startup"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -190,7 +191,7 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(("run_command"))) {
+        for (auto &it : handler.events(CRC("run_command"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
             
@@ -208,7 +209,7 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(("{}"), ex.what());
+        logging::error(ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -220,7 +221,7 @@ void lua::callbacks::setup_command(c_user_cmd *cmd, bool &send_packet) {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(("setup_command"))) {
+        for (auto &it : handler.events(CRC("setup_command"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -256,7 +257,7 @@ void lua::callbacks::setup_command(c_user_cmd *cmd, bool &send_packet) {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(("{}"), ex.what());
+        logging::error(ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -269,7 +270,7 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
     EnterCriticalSection(&mutex.critical_section);
     try {
 
-        for (auto &it : handler.events(("override_view"))) {
+        for (auto &it : handler.events(CRC("override_view"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -293,7 +294,7 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(("{}"), ex.what());
+        logging::error(ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -305,7 +306,7 @@ void lua::callbacks::draw() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(("draw"))) {
+        for (auto &it : handler.events(CRC("draw"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -314,7 +315,7 @@ void lua::callbacks::draw() {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(("{}"), ex.what());
+        logging::error(ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }
@@ -326,7 +327,7 @@ void lua::callbacks::draw_front() {
 
     EnterCriticalSection(&mutex.critical_section);
     try {
-        for (auto &it : handler.events(("draw_front"))) {
+        for (auto &it : handler.events(CRC("draw_front"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
@@ -335,7 +336,7 @@ void lua::callbacks::draw_front() {
         }
     }
     catch (luabridge::LuaException &ex) {
-        logging::error(("{}"), ex.what());
+        logging::error(ex.what());
     }
     LeaveCriticalSection(&mutex.critical_section);
 }

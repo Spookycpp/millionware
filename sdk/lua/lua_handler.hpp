@@ -37,6 +37,7 @@ namespace lua_internal {
         void unload();
 
         std::vector<callback> events(const std::string &name);
+        std::vector<lua_internal::callback> events(uint32_t hash, const std::string &name = "");
         std::vector<callback> events();
     };
 }

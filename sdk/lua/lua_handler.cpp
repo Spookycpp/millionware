@@ -93,3 +93,25 @@ std::vector<lua_internal::callback> lua_internal::handler::events(const std::str
 
     return ret;
 }
+
+std::vector<lua_internal::callback> lua_internal::handler::events(const uint32_t hash, const std::string &name) {
+    std::vector<callback> ret;
+
+    for (auto &it : loaded()) {
+        if (it.exiting) {
+            continue;
+        }
+
+        for (auto &cb : it.callbacks) {
+            if (!cb.ref) {
+                continue;
+            }
+
+            if (cb.hash == hash || cb.name == name) {
+                ret.push_back(cb);
+            }
+        }
+    }
+
+    return ret;
+}

@@ -65,7 +65,7 @@ void lua_internal::context::setup_tables() {
 				return 0;
 			}*/
 
-			const callback cb(l, event_name);
+			const callback cb(l, event_name, CRC(event_name));
 			
 			// save function ref to push back onto the stack later
 			cb.ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
@@ -99,7 +99,7 @@ void lua_internal::context::setup_tables() {
                 }
 			}
 
-            const callback cb(l, event_name, true);
+            const callback cb(l, event_name, CRC(event_name), true);
 
 			// save function ref to push back onto the stack later
             cb.ref[1] = luaL_ref(l, LUA_REGISTRYINDEX);
@@ -138,7 +138,7 @@ bool lua_internal::context::load(const std::string& path) {
 	new_state();
 
 	if (luaL_loadfile(l, script_path.c_str())) {
-        logging::error(std::string(lua_tostring(l, -1)));
+        logging::error(lua_tostring(l, -1));
 		lua_pop(l, 1);
 		return false;
 	}
@@ -148,7 +148,7 @@ bool lua_internal::context::load(const std::string& path) {
 
 bool lua_internal::context::run() const {
 	if (/*luabridge::LuaException::*/lua_pcall(l, 0, 0, 0)) {
-        logging::error(std::string(lua_tostring(l, -1)));
+        logging::error(lua_tostring(l, -1));
 		lua_pop(l, 1);
 		return false;
 	}
