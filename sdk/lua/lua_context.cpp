@@ -45,6 +45,21 @@ void lua_internal::context::new_state() {
 		lua_call(l, 1, 0);
 	}
 
+    // * add correct script directory to package.path *
+    lua_getglobal(l, xs("package"));
+    lua_getfield(l, -1, xs("path"));
+    std::string current_path = lua_tostring(l, -1); // retrieve current package.path
+
+    auto game_dir = std::string(interfaces::engine_client->get_game_directory());
+    game_dir.erase(game_dir.size() - 5); // remove '/csgo' from the game directory path
+
+    const std::string new_path = current_path + game_dir + xs("\\mw\\scripts\\?.lua");
+
+    lua_pop(l, 1);                       // erase old package.path
+    lua_pushstring(l, new_path.c_str()); // push new path
+    lua_setfield(l, -2, xs("path"));     // set package.path to value at the top of the stack
+    lua_pop(l, 1);                       // pop package
+
 	setup_tables();
 }
 
