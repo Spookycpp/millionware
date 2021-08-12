@@ -21,7 +21,7 @@ namespace lua_internal {
     inline std::vector<std::string> get_script_paths(const std::string &path = default_script_path) {
         std::vector<std::string> scripts;
 
-        for (const auto &it : std::filesystem::recursive_directory_iterator(path)) {
+        for (const auto &it : std::filesystem::directory_iterator(path)) {
             if (it.is_directory()) {
                 continue;
             }
