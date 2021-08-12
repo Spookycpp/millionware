@@ -64,6 +64,61 @@ namespace lua_internal::tables {
 
             return info.name;
         }
+
+        luabridge::LuaRef get_prop(lua_State *l) {
+            luabridge::LuaRef table = luabridge::newTable(l);
+
+            if (!m_entity) {
+                return table;
+            }
+
+            size_t len;
+
+            const uint32_t table_prop_hash = CRC(luaL_checklstring(l, 3, &len), CRC(":", CRC(luaL_checklstring(l, 2, &len))));
+            const size_t offset            = netvars::get(table_prop_hash);
+            const send_prop_type type      = netvars::get_type_from_netvar(table_prop_hash);
+
+            switch (type)
+            {
+            case send_prop_type::DPT_Int: {
+                table = m_entity->get<int>(offset);
+            } break;
+
+            case send_prop_type::DPT_Float: {
+                table = m_entity->get<float>(offset);
+            } break;
+
+            case send_prop_type::DPT_Vector: {
+                const auto v = m_entity->get<vector_t>(offset);
+                table = vec3d{ v.x, v.y, v.z };
+            } break;
+
+            case send_prop_type::DPT_VectorXY: {
+                const auto v = m_entity->get<point_t>(offset);
+                table = vec2d{ v.x, v.y };
+            } break;
+
+            case send_prop_type::DPT_String: {
+                table = m_entity->get_str(offset);
+            } break;
+
+            case send_prop_type::DPT_DataTable:
+            case send_prop_type::DPT_Array: {
+                // not sure if this will cause issues for DPT_Array,
+                // but should be fine for DPT_DataTable as it's just a pointer
+                table = m_entity->get<uint32_t>(offset);
+            } break;
+
+            case send_prop_type::DPT_Int64: {
+                table = m_entity->get<int64_t>(offset);
+            } break;
+
+            default: break;
+            }
+
+            table.push();
+            return table;
+        }
     };
 
     class entity_list {
@@ -106,59 +161,7 @@ namespace lua_internal::tables {
             return entity(cheat::local_player, cheat::local_player->get_networkable()->index());
         }
     };
-
 }
-
-
-//namespace lua_internal::entity {
-//    inline c_entity *get_entity(const int idx, lua_State *l) {
-//        return interfaces::entity_list->get_entity(idx);
-//    }
-//
-//    inline int get_local_player(lua_State *l) {
-//        if (!cheat::local_player) {
-//            return 0;
-//        }
-//
-//        return interfaces::engine_client->get_local_player();
-//    }
-//
-//    inline int get_prop(lua_State *l) {
-//        auto starts_with = [](const std::string &str, const std::string &match) {
-//            return str.find(match) == 0;
-//        };
-//
-//        if (!get_local_player(l)) {
-//            lua_pushnil(l);
-//            return 0;
-//        }
-//
-//        c_entity *ent = get_entity(luaL_checkinteger(l, 1), l);
-//        if (!ent) {
-//            lua_pushnil(l);
-//            return 0;
-//        }
-//
-//        size_t len;
-//        const char *table = luaL_checklstring(l, 2, &len);
-//        const char *prop = luaL_checklstring(l, 3, &len);
-//
-//        const size_t offset = netvars::get(CRC(table, CRC(":", CRC(prop))));
-//
-//        if (starts_with(prop, XORSTR("m_b"))) {
-//            lua_pushboolean(l, ent->get<bool>(offset));
-//            return 1;
-//        }
-//
-//        if (starts_with(prop, XORSTR("m_fl"))) {
-//            lua_pushnumber(l, ent->get<float>(offset));
-//            return 1;
-//        }
-//
-//        lua_pushnil(l);
-//        return 0;
-//    }
-//}
 
 inline void lua_internal::context::entity() {
     luabridge::getGlobalNamespace(l)
@@ -169,6 +172,7 @@ inline void lua_internal::context::entity() {
         .addFunction("is_dormant", &tables::entity::dormant)
         .addFunction("get_origin", &tables::entity::origin)
         .addFunction("get_name", &tables::entity::name)
+        .addFunction("get_prop", &tables::entity::get_prop)
     .endClass();
 
     luabridge::getGlobalNamespace(l)

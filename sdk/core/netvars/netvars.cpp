@@ -8,6 +8,7 @@
 #include "netvars.h"
 
 static std::unordered_map<uint32_t, uint32_t> netvars_map;
+static std::unordered_map<uint32_t, send_prop_type> prop_types_map;
 static std::ofstream netvar_dump;
 
 void dump_netvar_table(c_recv_table *table, int child_offset = 0)
@@ -33,7 +34,7 @@ void dump_netvar_table(c_recv_table *table, int child_offset = 0)
 
 			netvar_dump << buffer;
 #endif
-
+			prop_types_map[hash] = current_prop->prop_type;
 			netvars_map[hash] = child_offset + current_prop->offset;
 		}
 	}
@@ -58,6 +59,15 @@ void netvars::init()
 	//	dump_netvar_table((c_recv_table *) entry->offset);
 	//}
 //#endif
+}
+
+send_prop_type netvars::get_type_from_netvar(const uint32_t hash) {
+    const auto it = prop_types_map.find(hash);
+	if (it == prop_types_map.end()) {
+		return send_prop_type::DPT_NUMSendPropTypes; // invalid hash
+	}
+
+	return it->second;
 }
 
 uint32_t netvars::get(uint32_t hash)

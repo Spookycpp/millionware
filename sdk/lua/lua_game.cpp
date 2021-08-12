@@ -3,9 +3,9 @@
 #include "../engine/logging/logging.h"
 
 bool lua::init() {
-    if (!std::filesystem::exists((".\\mw"))) {
-        std::filesystem::create_directories((".\\mw"));
-        std::filesystem::create_directories((".\\mw\\scripts"));
+    if (!std::filesystem::exists(xs(".\\mw"))) {
+        std::filesystem::create_directories(xs(".\\mw"));
+        std::filesystem::create_directories(xs(".\\mw\\scripts"));
     }
 
     try {
