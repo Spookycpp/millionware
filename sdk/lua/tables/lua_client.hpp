@@ -106,6 +106,7 @@ namespace lua_internal::tables::client {
         table[("last_command_ack")] = interfaces::client_state->last_command_ack;
         table[("command_ack")] = interfaces::client_state->command_ack;
         table[("level_name_short")] = std::string(interfaces::client_state->level_name_short);
+        table[("tick_count")] = interfaces::global_vars->tick_count;
 
         // push to stack
         table.push();
