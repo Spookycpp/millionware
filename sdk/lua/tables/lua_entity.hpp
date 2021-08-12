@@ -102,6 +102,7 @@ namespace lua_internal::tables {
                 table = m_entity->get_str(offset);
             } break;
 
+            // do these ever get used?
             case send_prop_type::DPT_DataTable:
             case send_prop_type::DPT_Array: {
                 // not sure if this will cause issues for DPT_Array,

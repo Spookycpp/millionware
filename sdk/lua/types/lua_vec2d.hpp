@@ -74,7 +74,6 @@ public:
     }
 
     vec2d lerp(const vec2d& to, const float t) {
-
         return to * t + *this * (1.0f - t);
     }
 
