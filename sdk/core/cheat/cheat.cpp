@@ -66,9 +66,10 @@ bool cheat::init() {
     if (!hooks::init())
         return false;
 
-    lua::init();
-
     logging::info(xs("successfully initialized"));
+    logging::info(xs("executing lua scripts..."));
+
+    lua::init();
 
     return true;
 }
