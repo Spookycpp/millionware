@@ -5,15 +5,15 @@ struct color_t {
 
     constexpr color_t() : r(255), g(255), b(255), a(255) {}
 
-    constexpr color_t(int scalar) : r(scalar), g(scalar), b(scalar), a(255) {}
+    constexpr color_t(const int scalar) : r(scalar), g(scalar), b(scalar), a(255) {}
 
-    constexpr color_t(int scalar, int a) : r(scalar), g(scalar), b(scalar), a(a) {}
+    constexpr color_t(const int scalar, int const a) : r(scalar), g(scalar), b(scalar), a(a) {}
 
-    constexpr color_t(int r, int g, int b) : r(r), g(g), b(b), a(255) {}
+    constexpr color_t(const int r, const int g, const int b) : r(r), g(g), b(b), a(255) {}
 
-    constexpr color_t(int r, int g, int b, int a) : r(r), g(g), b(b), a(a) {}
+    constexpr color_t(const int r, const int g, const int b, const int a) : r(r), g(g), b(b), a(a) {}
 
-    constexpr color_t adjust_alpha(int alpha) const {
+    constexpr color_t adjust_alpha(const int alpha) const {
         return color_t(r, g, b, alpha);
     }
 

@@ -32,7 +32,7 @@ class c_engine_client {
     DECLARE_VFUNC(19, set_view_angles(const vector_t &angles), void(__thiscall *)(void *, const vector_t &))(angles);
     DECLARE_VFUNC(26, is_in_game(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(27, is_connected(), bool(__thiscall *)(void *))();
-    DECLARE_VFUNC(36, get_game_directory(), const char *(__thiscall *)(void *))();
+    DECLARE_VFUNC(36, get_game_directory(), const char *(__thiscall *) (void *) )();
     DECLARE_VFUNC(37, world_to_screen_matrix(), const matrix4x4_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(43, get_bsp_tree_query(), void *(__thiscall *) (void *) )();
     DECLARE_VFUNC(53, get_map_name(), const char *(__thiscall *) (void *) )();

@@ -1,98 +1,98 @@
 #pragma once
 
 struct weapon_info_t {
-private:
+  private:
     char pad_0000[4];
 
-public:
-    char* weapon_name;
+  public:
+    char *weapon_name;
 
-private:
+  private:
     char pad_0008[12];
 
-public:
+  public:
     int max_clip_ammo;
 
-private:
+  private:
     char pad_0018[12];
 
-public:
+  public:
     int max_ammo;
 
-private:
+  private:
     char pad_0028[4];
 
-public:
-    char* world_model;
-    char* view_model;
-    char* dropped_model;
+  public:
+    char *world_model;
+    char *view_model;
+    char *dropped_model;
 
-private:
+  private:
     char pad_0038[4];
-    char* N00000010;
+    char *N00000010;
     char pad_0040[56];
 
-public:
-    char* empty_sound;
+  public:
+    char *empty_sound;
 
-private:
+  private:
     char pad_007C[4];
 
-public:
-    char* ammo_type;
+  public:
+    char *ammo_type;
 
-private:
+  private:
     char pad_0084[4];
 
-public:
-    char* hud_name;
-    char* weapon_name2;
+  public:
+    char *hud_name;
+    char *weapon_name2;
 
-private:
+  private:
     char pad_0090[60];
 
-public:
+  public:
     int type;
     int price;
     int kill_reward;
-    char* anim_prefix;
+    char *anim_prefix;
     float cycle_time;
     float cycle_time_alt;
     float time_to_idle;
     float idle_interval;
     bool full_auto;
 
-private:
+  private:
     char pad_00E9[3];
 
-public:
+  public:
     int damage;
     float armor_ratio;
 
-private:
+  private:
     char pad_00F4[4];
 
-public:
+  public:
     float penetration;
 
-private:
+  private:
     char pad_00FC[8];
 
-public:
+  public:
     float range;
     float range_modifier;
     float throw_velocity;
 
-private:
+  private:
     char pad_010C[12];
 
-public:
+  public:
     bool has_silencer;
 
-private:
+  private:
     char pad_011D[15];
 
-public:
+  public:
     float max_speed;
     float max_speed_alt;
     float spread;
@@ -115,10 +115,10 @@ public:
     float inaccuracy_reload;
     int recoil_seed;
 
-private:
+  private:
     char pad_0180[60];
 
-public:
+  public:
     int zoom_levels;
     int zoom_fov1;
     int zoom_fov2;

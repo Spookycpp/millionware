@@ -97,7 +97,7 @@ namespace features::miscellaneous {
         static bool clear_tag = false;
         static int tick_count = 0;
 
-        int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+        const int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
 
         if (!settings.miscellaneous.clantag && clear_tag) {
             if (interfaces::global_vars->tick_count % 99 == 2) {
@@ -341,7 +341,7 @@ namespace features::miscellaneous {
 
     void preserve_killfeed() {
 
-        auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period();
+        const auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period();
 
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
             death_notice = 0;
