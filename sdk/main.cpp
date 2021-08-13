@@ -75,7 +75,6 @@
 //⠀⠀⠀⠀⢸⣿⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀  
 //⠀⠀⠀⠀⢸⣿⣀⣀⣀⣼⡿⢿⣿⣿⣿⣿⣿⡿⣿⣿⣿
 
-
 static void *cheat_module_base = 0;
 
 static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) {
