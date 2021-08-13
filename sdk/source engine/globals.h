@@ -15,11 +15,14 @@ class c_global_vars {
     int sim_ticks_this_frame;
     int network_protocol;
     void *save_data;
-private:
+
+  private:
     bool client;
-public:
+
+  public:
     bool remote_client;
-private:
+
+  private:
     int timestamp_networking_base;
     int timestamp_randomize_window;
 };

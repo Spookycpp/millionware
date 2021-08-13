@@ -97,7 +97,7 @@ class c_player_inventory {
         if (item.definition <= 0 || item.paint_kit <= 0) {
 
             // ghetto check
-            if (item.rarity > 0) 
+            if (item.rarity > 0)
                 logging::info(xs("Failed to add item to inventory: {}"), index);
 
             return nullptr;

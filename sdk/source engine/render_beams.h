@@ -43,7 +43,7 @@ class c_beam {
     float m_flgreen;     /* 228 */
     float m_flblue;      /* 232 */
     float m_flframerate; /* 244 */
-    int   m_nstartframe; /* 248 */
+    int m_nstartframe;   /* 248 */
 };
 
 struct beam_info_t {

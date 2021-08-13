@@ -4,7 +4,7 @@
 
 class glow_object_definition_t {
   public:
-    void set(float r, float g, float b, float a) {
+    void set(const float r, const float g, const float b, const float a) {
         color = vector_t(r, g, b);
         alpha = a;
         render_when_occluded = true;

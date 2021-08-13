@@ -23,22 +23,13 @@ enum item_quality {
     ITEM_QUALITY_TOURNAMENT
 };
 
-enum item_rarity { 
-    ITEM_RARITY_DEFAULT,
-    ITEM_RARITY_CONSUMER,
-    ITEM_RARITY_INDUSTRIAL,
-    ITEM_RARITY_MILSPEC,
-    ITEM_RARITY_RESTRICTED,
-    ITEM_RARITY_CLASSIFIED,
-    ITEM_RARITY_COVERT,
-    ITEM_RARITY_CONTRABAND
-};
+enum item_rarity { ITEM_RARITY_DEFAULT, ITEM_RARITY_CONSUMER, ITEM_RARITY_INDUSTRIAL, ITEM_RARITY_MILSPEC, ITEM_RARITY_RESTRICTED, ITEM_RARITY_CLASSIFIED, ITEM_RARITY_COVERT, ITEM_RARITY_CONTRABAND };
 
 class c_econ_item;
 
 inline c_econ_item *create_econ_item() {
 
-	static auto address = patterns::get_create_econ_item();
+    static auto address = patterns::get_create_econ_item();
 
     if (!address)
         return nullptr;
@@ -55,7 +46,7 @@ inline uintptr_t get_item_schema() {
 
     static auto address = patterns::get_item_schema();
 
-    if (!address) 
+    if (!address)
         return 0;
 
     static auto get_item_schema_fn = reinterpret_cast<uintptr_t(__stdcall *)()>(address);
@@ -170,7 +161,7 @@ class c_econ_item {
 
         static auto set_custom_description_fn = reinterpret_cast<c_econ_item *(__thiscall *) (void *, const char *)>(*reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
 
-        if (!set_custom_description_fn) 
+        if (!set_custom_description_fn)
             return;
 
         set_custom_description_fn(this, name);
@@ -204,7 +195,6 @@ class c_econ_item {
 
 class c_econ_item_definition {
   public:
-
     /*std::vector<AttributeInfo> GetAttributes( )
     {
         std::vector<AttributeInfo> attributes;
@@ -254,7 +244,7 @@ class c_econ_item_definition {
     }*/
 
     //@todo: add keyvalues later
-    //KeyValues *get_raw_definition() {
+    // KeyValues *get_raw_definition() {
     //    using original_fn = KeyValues *(__thiscall *) (void *);
     //    return util::get_method<original_fn>(this, 10)(this);
     //}

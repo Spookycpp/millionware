@@ -63,7 +63,7 @@ class c_material {
     DECLARE_VFUNC(42, is_error_material(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(48, set_shader_and_parameters(c_key_values *key_value), void(__thiscall *)(void *, c_key_values *))(key_value);
 
-	void set_color(const color_t& color) {
+    void set_color(const color_t &color) {
         set_color(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f);
-	}
+    }
 };

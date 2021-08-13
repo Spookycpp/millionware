@@ -6,8 +6,7 @@ class c_client_class;
 class c_recv_table;
 
 // @note: sv_dump_class_info is very useful fucking use it.
-enum e_class_id
-{
+enum e_class_id {
     CAI_BaseNPC = 0,
     CAK47,
     CBaseAnimating,
@@ -294,16 +293,15 @@ enum e_class_id
     SporeTrail,
 };
 
-using create_client_class_fn = c_networkable * (*)(int, int);
-using create_event_fn = c_networkable * (*)();
+using create_client_class_fn = c_networkable *(*) (int, int);
+using create_event_fn = c_networkable *(*) ();
 
-class c_client_class
-{
-public:
-	create_client_class_fn create;
-	create_event_fn create_event;
-	const char *class_name;
-	c_recv_table *table;
-	c_client_class *next;
-	int class_id;
+class c_client_class {
+  public:
+    create_client_class_fn create;
+    create_event_fn create_event;
+    const char *class_name;
+    c_recv_table *table;
+    c_client_class *next;
+    int class_id;
 };
