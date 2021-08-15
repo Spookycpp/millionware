@@ -199,10 +199,6 @@ struct settings_t {
 			float viewmodel_offset_z = 0.f;
 			float viewmodel_offset_r = 0.f; 
 			int feet_fx = 0;
-			bool foot_trail = false;
-            color_t trail_color = {255, 255, 255}; //@todo: change this to real color
-			float trail_time = 2.5f;
-			float trail_size = 2.5f;
             bool data_graph = false;
             bool data_graph_info = false;
             bool data_graph_background = false;

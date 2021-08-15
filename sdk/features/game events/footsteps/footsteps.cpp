@@ -23,7 +23,7 @@ namespace features::game_events::footsteps {
 		footsteps.emplace_back(footstep_data_t{ user->get_abs_origin(), 255 });
 	}
 
-	void on_paint() {
+	void on_paint() { //@todo: make footsteps diappear after 1/2 a second or a second.
 		if (!settings.visuals.player.footsteps || footsteps.empty())
 			return;
 
