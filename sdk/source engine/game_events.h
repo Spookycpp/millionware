@@ -5,6 +5,7 @@
 #include <string>
 
 #include "macros.h"
+#include "vector.h"
 
 #define EVENT_DEBUG_ID_INIT 42
 #define EVENT_DEBUG_ID_SHUTDOWN 13
@@ -27,6 +28,11 @@ struct damage_log_data_t {
     damage_log_event_data_t data;
     std::string name;
     int alpha;
+};
+
+struct footstep_data_t {
+    vector_t position;
+    int    alpha;
 };
 
 struct item_purchase_data_t {

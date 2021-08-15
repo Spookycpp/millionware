@@ -233,6 +233,8 @@ void ui::init() {
                 group->new_slider(xs("Radius"), settings.visuals.player.outside_fov_radius, 0.f, 2.0f, xs("{:.1f}"))->add_dependency(settings.visuals.player.outside_fov);
                 group->new_slider(xs("Size"), settings.visuals.player.outside_fov_size, 0, 30, xs("{}"))->add_dependency(settings.visuals.player.outside_fov);
 
+                group->new_checkbox("Footsteps", settings.visuals.player.footsteps)->add_color_picker(settings.visuals.player.footsteps_color);
+
                 group->new_checkbox(xs("Engine radar"), settings.visuals.player.engine_radar);
             }
 

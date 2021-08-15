@@ -133,6 +133,9 @@ struct settings_t {
 			float outside_fov_radius = 0.75f;
 			int   outside_fov_size = 25;
 
+			bool footsteps = false;
+			color_t footsteps_color = { 221, 12, 57, 150 };
+
 			struct {
 				int  material  = 0;
 				bool visible   = false;

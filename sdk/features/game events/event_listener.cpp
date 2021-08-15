@@ -8,6 +8,7 @@
 
 #include "../../core/cheat/cheat.h"
 #include "../../lua/lua_game.hpp"
+#include "footsteps/footsteps.h"
 
 // for game event list: https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_Events
 // this also has list of the parameters used
@@ -62,13 +63,16 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
             game_event->get_int(xs("dmg_armor")),
             game_event->get_int(xs("hitgroup"))};
         // clang-format on
-        features::damage_logs::on_hurt_event(data);
+        features::game_events::damage_logs::on_hurt_event(data);
     }
     else if (std::strncmp(game_event->get_name(), xs("vote_cast"), 10) == 0) {
         features::game_events::on_vote_cast(game_event);
     }
     else if (std::strncmp(game_event->get_name(), xs("game_newmap"), 10) == 0) {
-        cheat::disconnect_state = 1;
+        cheat::disconnect_state = true;
+    }
+    else if (std::strncmp(game_event->get_name(), xs("player_footstep"), 16) == 0) {
+        features::game_events::footsteps::on_step_event(game_event);
     }
 
     lua::callbacks::run_events(game_event);

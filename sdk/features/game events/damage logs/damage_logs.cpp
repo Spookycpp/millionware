@@ -8,7 +8,7 @@
 #include "../../../engine/logging/logging.h"
 #include "../../../engine/security/xorstr.h"
 
-namespace features::damage_logs {
+namespace features::game_events::damage_logs {
     std::vector<damage_log_data_t> damage_logs = {};
 
     void on_hurt_event(const damage_log_event_data_t &data) {
