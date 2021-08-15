@@ -34,7 +34,6 @@ namespace features::miscellaneous {
     void server_selector();
     void skybox_changer(int skybox);
     void foot_fx();
-    void foot_trail();
     void preserve_killfeed();
     void unlock_hidden_convars();
     void viewmodel_offset();

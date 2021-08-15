@@ -17,7 +17,6 @@ namespace features::miscellaneous {
         auto_pistol(user_cmd);
         clantag();
         foot_fx();
-        foot_trail();
         viewmodel_offset();
     }
 
@@ -285,56 +284,6 @@ namespace features::miscellaneous {
         case 3: interfaces::effects->energy_splash(cheat::local_player->get_vec_origin(), cheat::local_player->get_velocity() * interfaces::global_vars->interval_per_tick * 0.2f, true); break;
         }
         // clang-format on
-    }
-
-    void foot_trail() {
-        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
-            return;
-
-        if (interfaces::engine_client->is_in_game() && !interfaces::engine_client->is_connected())
-            return;
-
-        static bool jump_failed = false;
-        static int tick, ignoreticks = 1, old_velocity;
-        static vector_t old_origin;
-
-        if (!settings.visuals.local.foot_trail) {
-            old_origin = cheat::local_player->get_vec_origin();
-            return;
-        }
-
-        if (!tick) {
-            beam_info_t beam_info;
-            beam_info.m_ntype = 0;
-            beam_info.m_pszmodelname = xs("sprites/purplelaser1.vmt");
-            beam_info.m_nmodelindex = interfaces::model_info->get_model_index(xs("sprites/purplelaser1.vmt"));
-            beam_info.m_flhaloscale = 0.0;
-            beam_info.m_fllife = settings.visuals.local.trail_time;
-            beam_info.m_flwidth = settings.visuals.local.trail_size;
-            beam_info.m_flendwidth = settings.visuals.local.trail_size;
-            beam_info.m_flfadelength = 0.0;
-            beam_info.m_flamplitude = 2.0;
-            beam_info.m_flspeed = 0.5;
-            beam_info.m_flbrightness = 255.f;
-            beam_info.m_nstartframe = 0;
-            beam_info.m_flframerate = 0;
-
-            beam_info.m_flred = (float) settings.visuals.local.trail_color.r / 255.0f;
-            beam_info.m_flgreen = (float) settings.visuals.local.trail_color.g / 255.0f;
-            beam_info.m_flblue = (float) settings.visuals.local.trail_color.b / 255.0f;
-
-            beam_info.m_nsegments = 2;
-            beam_info.m_brenderable = true;
-            beam_info.m_nflags = 0;
-            beam_info.m_vecstart = old_origin;
-            beam_info.m_vecend = cheat::local_player->get_vec_origin();
-
-            auto beam = interfaces::render_beams->create_beam(beam_info);
-            if (beam)
-                interfaces::render_beams->draw_beam(beam);
-
-            old_velocity = (int) cheat::local_player->get_velocity().length_2d();
-        }
     }
 
     static uintptr_t *death_notice = nullptr;
