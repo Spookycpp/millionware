@@ -293,7 +293,7 @@ namespace features::miscellaneous {
         const auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period();
 
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
-            death_notice = 0;
+            death_notice = nullptr;
             return;
         }
 
