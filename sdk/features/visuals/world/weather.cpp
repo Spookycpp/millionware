@@ -13,6 +13,16 @@ namespace features::visuals::weather {
     static c_precipitation_entity *rain_entity = nullptr;
     static c_client_class *precipitation = nullptr;
 
+    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
+        switch (frame_stage) {
+            case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
+                update_weather();
+                do_fog();
+            }
+            default: ;
+        }
+    }
+
     void reset_weather(const bool cleanup) {
         created_rain = false;
 
@@ -42,7 +52,7 @@ namespace features::visuals::weather {
                 reset_weather();
 
             if (precipitation->create && precipitation->create(MAX_EDICTS - 1, 0)) {
-                rain_entity = static_cast<c_precipitation_entity *>(interfaces::entity_list->get_entity(MAX_EDICTS - 1));
+                rain_entity = reinterpret_cast<c_precipitation_entity *>(interfaces::entity_list->get_entity(MAX_EDICTS - 1));
 
                 rain_entity->get_networkable()->pre_data_update(0);
                 rain_entity->get_networkable()->on_pre_data_changed(0);
@@ -69,15 +79,15 @@ namespace features::visuals::weather {
         if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
             return;
 
-        static auto fog_override   = interfaces::convar_system->find_convar(xs("fog_override"));
-        static auto fog_start      = interfaces::convar_system->find_convar(xs("fog_start"));
-        static auto fog_end        = interfaces::convar_system->find_convar(xs("fog_end"));
+        static auto fog_override = interfaces::convar_system->find_convar(xs("fog_override"));
+        static auto fog_start = interfaces::convar_system->find_convar(xs("fog_start"));
+        static auto fog_end = interfaces::convar_system->find_convar(xs("fog_end"));
         static auto fog_maxdensity = interfaces::convar_system->find_convar(xs("fog_maxdensity"));
         static auto fog_color_cvar = interfaces::convar_system->find_convar(xs("fog_color"));
 
         const auto fog_enable = settings.visuals.world.fog;
         const auto fog_length = settings.visuals.world.fog_length;
-        const auto fog_color  = settings.visuals.world.fog_color;
+        const auto fog_color = settings.visuals.world.fog_color;
 
         static bool old_enable = false;
         static int old_length = 0;
@@ -92,7 +102,7 @@ namespace features::visuals::weather {
             fog_color_cvar->set_value(std::format(xs("{} {} {}"), fog_color.r, fog_color.g, fog_color.b).data());
             old_enable = fog_enable;
             old_length = fog_length;
-            old_color  = fog_color;
+            old_color = fog_color;
         }
     }
 } // namespace features::visuals::weather
