@@ -27,11 +27,12 @@
 
 namespace features::visuals::world {
 
-    void on_frame_stage_notify(e_client_frame_stage frame_stage) {
+    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-        case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
-            nightmode();
-        }
+            case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
+                nightmode();
+            }
+            default: ;
         }
     }
 
