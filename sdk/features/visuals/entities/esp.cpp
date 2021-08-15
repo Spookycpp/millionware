@@ -331,8 +331,11 @@ namespace features::visuals::esp {
 
         if (settings.visuals.player.flags & (1 << 8)) {
             auto flag_string = std::format(xs("${}"), player->get_money());
-            draw_flag(flag_string.c_str(), { 149, 184, 6, 200 });
+            draw_flag(flag_string.c_str(), { 0, 0, 150, 200 });
         }
+
+        if (settings.visuals.player.flags & (1 << 9) && player->get_has_defuser())
+            draw_flag(xs("KIT"), { 230, 50, 50, 200 });
     }
 
     void draw_skeleton(c_player *player) {

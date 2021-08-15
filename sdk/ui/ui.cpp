@@ -221,7 +221,7 @@ void ui::init() {
                 //group->new_checkbox(xs("Armor"), settings.visuals.player.armor);
 
                 group->new_select(xs("Flags"), settings.visuals.player.flags,
-                                  {xs("Armor"), xs("Scoped"), xs("Reloading"), xs("Flashed"), xs("Bomb"), xs("Defusing"), xs("Smoked"), xs("Flash kill"), xs("Money")}, true);
+                                  {xs("Armor"), xs("Scoped"), xs("Reloading"), xs("Flashed"), xs("Bomb"), xs("Defusing"), xs("Smoked"), xs("Flash kill"), xs("Money"), xs("Defuser")}, true);
 
                 group->new_checkbox(xs("Skeleton"), settings.visuals.player.skeleton)->add_color_picker(settings.visuals.player.skeleton_color);
                 group->new_checkbox(xs("Headspot"), settings.visuals.player.head_spot)->add_color_picker(settings.visuals.player.head_spot_color);
