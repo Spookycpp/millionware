@@ -360,6 +360,25 @@ namespace util {
         return ret;
     }
 
+    IDirect3DTexture9 *load_texture_from_vpk(const char *file_path) {
+        void *file = interfaces::file_system->open(file_path, xs("r"), xs("GAME"));
+        if (!file) {
+            return nullptr;
+        }
+
+        std::vector<char> buf(interfaces::file_system->size(file));
+
+        interfaces::file_system->read(buf.data(), buf.size(), file);
+        interfaces::file_system->close(file);
+
+        IDirect3DTexture9 *texture = render::rasterize_vector(buf.data(), 1.0f);
+        if (!texture) {
+            return nullptr;
+        }
+
+        return texture;
+    }
+
     void undo() {
 
         interfaces::convar_system->find_convar(xs("weapon_debug_spread_show"))->set_value(0);

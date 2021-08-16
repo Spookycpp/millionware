@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../../core/util/util.h"
-
 #include "../../source engine/client_dll.h"
 #include "../../source engine/entity.h"
 #include "../../source engine/input.h"
@@ -10,6 +8,7 @@
 #include <optional>
 #include <random>
 #include <string>
+#include <d3d9.h>
 
 extern int TIME_TO_TICKS(float dt);
 extern float TICKS_TO_TIME(int tick);
@@ -54,6 +53,8 @@ namespace util {
 
         return distribution(e2);
     }
+
+    IDirect3DTexture9 *load_texture_from_vpk(const char *file_path);
 
     void undo();
 } // namespace util
