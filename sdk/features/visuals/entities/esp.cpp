@@ -539,7 +539,7 @@ namespace features::visuals::esp {
             
             render::fill_circle(pos, radius, { 5, 5, 5, 155 });
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, 10.0f, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
+            ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, radius, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
             ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 255), 0, 2);
 
             ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, radius - 2.0f, min, max);

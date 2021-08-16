@@ -74,7 +74,7 @@ namespace features::game_events::decoy {
             }
 
             if (decoy_tex) {
-                render::draw_image({ screen_pos.x - 2.0f, screen_pos.y - 7.0f }, { 5.0f, 12.0f }, color_t{ 255, 255, 255 }, decoy_tex, 2.0f);
+                render::draw_image({ screen_pos.x - 5.0f, screen_pos.y - 7.0f }, { 11.0f, 12.0f }, color_t{ 255, 255, 255 }, decoy_tex, 2.0f);
             }
         }
     }
