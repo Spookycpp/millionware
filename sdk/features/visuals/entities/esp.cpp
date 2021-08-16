@@ -13,8 +13,11 @@
 #include "../../../engine/render/render.h"
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
+#include "../../../core/util/util.h"
 #include "../world/world.h"
 #include "esp.h"
+
+#include <imgui.h>
 
 using namespace features::visuals::esp;
 
@@ -523,76 +526,149 @@ namespace features::visuals::esp {
     }
 
     void draw_thrown_utility(c_entity *entity) {
+        auto draw_circle = [](const point_t pos, const float radius, const float progress = 1.0f, const float duration = 1.0f) {
+            constexpr float min = math::deg_to_rad(270.0f);
 
-        if (!settings.visuals.world.grenades)
+            const float max = math::deg_to_rad(270.0f + 1.0f + 360.0f * (progress / duration));
+            if (min > max) {
+                return false;
+            }
+
+            const color_t color = settings.visuals.world.grenades_color;
+            const color_t bg_color = color_t::blend({ 33, 33, 33, 255 }, color, 0.3f);
+            
+            render::fill_circle(pos, radius, { 5, 5, 5, 155 });
+
+            ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, 10.0f, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
+            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 255), 0, 2);
+
+            ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, radius - 2.0f, min, max);
+            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
+
+            return true;
+        };
+
+        auto grenade = reinterpret_cast<c_grenade *>(entity);
+        if (grenade->get_networkable()->is_dormant()) {
             return;
-
-        auto grenade = (c_weapon *)entity;
-
-        if (grenade->get_networkable()->is_dormant())
-            return;
+        }
 
         c_client_class *client_class = grenade->get_networkable()->get_client_class();
-
-        if (!client_class)
+        if (!client_class) {
             return;
-
-        bounding_box_t entity_box;
-
-        if (!get_bounding_box(entity, entity_box))
-            return;
-
-        const auto model = grenade->get_renderable()->get_model();
-
-        if (!model)
-            return;
-
-        auto model_name = interfaces::model_info->get_model_name(model);
-
-        if (client_class->class_id == CBaseCSGrenadeProjectile) {
-            if (std::strstr(model_name, xs("fraggrenade")) && grenade->get_explode_effect_tick_begin() < 1) {
-                const auto text_size = render::measure_text(xs("frag"), FONT_TAHOMA_11);
-                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
-
-                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("frag"), FONT_TAHOMA_11);
-            }
-            else if (std::strstr(model_name, xs("flashbang"))) {
-                const auto text_size = render::measure_text(xs("flashbang"), FONT_TAHOMA_11);
-                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
-
-                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("flashbang"), FONT_TAHOMA_11);
-            }
         }
 
-        if (client_class->class_id == CSmokeGrenadeProjectile) {
-            const auto text_size = render::measure_text(xs("smoke"), FONT_TAHOMA_11);
-            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
-
-            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("smoke"), FONT_TAHOMA_11);
+        point_t screen;
+        if (!math::world_to_screen(entity->get_abs_origin(), screen)) {
+            return;
         }
 
-        if (client_class->class_id == CMolotovProjectile) {
-            if (std::strstr(model_name, xs("molotov"))) {
-
-                const auto text_size = render::measure_text(xs("molotov"), FONT_TAHOMA_11);
-                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
-
-                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("molotov"), FONT_TAHOMA_11);
-            }
-            else if (std::strstr(model_name, xs("incendiary"))) {
-
-                const auto text_size = render::measure_text(xs("incendiary"), FONT_TAHOMA_11);
-                const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
-
-                render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("incendiary"), FONT_TAHOMA_11);
-            }
+        c_model *model = grenade->get_renderable()->get_model();
+        if (!model) {
+            return;
         }
 
+        std::string model_name = interfaces::model_info->get_model_name(model);
+        float seconds_until_detonation;
+
+        // decoy
         if (client_class->class_id == CDecoyProjectile) {
-            const auto text_size = render::measure_text(xs("decoy"), FONT_TAHOMA_11);
-            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
+            if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() <= 0.2f) {
+                // stopped moving, draw the decoy from the decoy_started event instead
+                return;
+            }
 
-            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("decoy"), FONT_TAHOMA_11);
+            if (draw_circle(screen, 12.0f)) {
+                static IDirect3DTexture9 *texture = nullptr;
+                if (!texture) {
+                    texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/decoy.svg"));
+                }
+
+                if (texture) {
+                    render::draw_image({ screen.x - 5.0f, screen.y - 7.0f }, { 11.0f, 12.0f }, { 255, 255, 255 }, texture);
+                }
+            }
+        }
+        else if (client_class->class_id == CBaseCSGrenadeProjectile) {
+            seconds_until_detonation = 1.5f - (interfaces::global_vars->current_time - grenade->get_spawn_time());
+            if (seconds_until_detonation <= 0.0f) {
+                return;
+            }
+            
+            if (draw_circle(screen, 12.0f, seconds_until_detonation, 1.5f)) {
+                // HE grenade
+                if (model_name.find(xs("fraggrenade")) != std::string::npos) {
+                    static IDirect3DTexture9 *texture = nullptr;
+                    if (!texture) {
+                        texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/hegrenade.svg"));
+                    }
+
+                    if (texture) {
+                        render::draw_image({screen.x - 4.0f, screen.y - 7.0f}, {8.0f, 12.0f}, {255, 255, 255}, texture);
+                    }
+                }
+                // flashbang
+                else if (model_name.find(xs("flashbang")) != std::string::npos) {
+                    static IDirect3DTexture9 *texture = nullptr;
+                    if (!texture) {
+                        texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/flashbang.svg"));
+                    }
+
+                    if (texture) {
+                        render::draw_image({screen.x - 5.0f, screen.y - 7.0f}, {11.0f, 12.0f}, {255, 255, 255}, texture);
+                    }
+                }
+            }
+        }
+        else if (client_class->class_id == CMolotovProjectile) {
+            static c_convar *detonate_cvar = interfaces::convar_system->find_convar("molotov_throw_detonate_time");
+            const float detonate_time      = detonate_cvar->get_float();
+
+            seconds_until_detonation = detonate_time - (interfaces::global_vars->current_time - grenade->get_spawn_time());
+
+            // molotov
+            //if (model_name.find(xs("molotov")) != std::string::npos) {
+                if (draw_circle(screen, 12.0f, seconds_until_detonation, detonate_time)) {
+                    static IDirect3DTexture9 *texture = nullptr;
+                    if (!texture) {
+                        texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/molotov.svg"));
+                    }
+
+                    if (texture) {
+                        render::draw_image({ screen.x - 5.0f, screen.y - 7.0f }, { 11.0f, 12.0f }, { 255, 255, 255 }, texture);
+                    }
+                }
+            //}
+            // incendiary
+            /*else if (model_name.find(xs("incendiary")) != std::string::npos) {
+                if (draw_circle(screen, 12.0f, true, seconds_until_detonation, detonate_time)) {
+                    static IDirect3DTexture9 *texture = nullptr;
+                    if (!texture) {
+                        texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/incgrenade.svg"));
+                    }
+
+                    if (texture) {
+                        render::draw_image({ screen.x - 3.0f, screen.y - 7.0f }, { 6.0f, 12.0f }, { 255, 255, 255 }, texture);
+                    }
+                }
+            }*/
+        }
+        else if (client_class->class_id == CSmokeGrenadeProjectile) {
+            if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() <= 0.2f) {
+                // stopped moving, draw the decoy from the on_smokegrenade_detonate event instead
+                return;
+            }
+
+            if (draw_circle(screen, 12.0f)) {
+                static IDirect3DTexture9 *texture = nullptr;
+                if (!texture) {
+                    texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/smokegrenade.svg"));
+                }
+
+                if (texture) {
+                    render::draw_image({ screen.x - 2.0f, screen.y - 7.0f }, { 5.0f, 12.0f }, { 255, 255, 255 }, texture);
+                }
+            }
         }
     }
 

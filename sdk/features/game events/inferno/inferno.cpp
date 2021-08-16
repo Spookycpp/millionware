@@ -1,12 +1,10 @@
-#include <vector>
-#include <format>
-
 #include "../../../engine/math/math.h"
 #include "../../../engine/security/xorstr.h"
 #include "../../../engine/render/render.h"
 #include "../../../core/cheat/cheat.h"
 #include "../../../core/util/util.h"
 #include "../../../core/interfaces/interfaces.h"
+#include "../../../core/settings/settings.h"
 #include "../../../source engine/game_events.h"
 
 #include "inferno.h"
@@ -16,15 +14,15 @@
 namespace features::game_events::inferno {
     constexpr float inferno_duration = 7.03125f;
 
-    std::vector<inferno_start_data_t> inferno_vec;
+    std::vector<grenade_detonate_data_t> inferno_vec;
 
-    void on_inferno_startburn(const inferno_start_data_t &data) {
+    void on_inferno_startburn(const grenade_detonate_data_t &data) {
         static c_convar *inferno_flame_lifetime = interfaces::convar_system->find_convar(xs("inferno_flame_lifetime"));
 
         inferno_vec.emplace_back(data);
 
         for (size_t i = 0; i < inferno_vec.size(); ++i) {
-            inferno_start_data_t &inferno = inferno_vec.at(i);
+            grenade_detonate_data_t &inferno = inferno_vec.at(i);
 
             const float delta = interfaces::global_vars->current_time - inferno.start_time;
 
@@ -87,11 +85,19 @@ namespace features::game_events::inferno {
                 continue;
             }
 
-            render::fill_circle(screen_pos, 12.0f, { 5, 5, 5, 175 });
+            render::fill_circle(screen_pos, 12.0f, { 5, 5, 5, 155 });
+
+            // draw progress
+            const color_t color    = settings.visuals.world.grenades_color;
+            const color_t bg_color = color_t::blend({ 33, 33, 33, 255 }, color, 0.3f);
+
+            ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 10.0f, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
+            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 255), 0, 2);
 
             ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 10.0f, min, max);
-            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(119, 227, 40, 255), 0, 2);
+            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
 
+            // draw icon
             static IDirect3DTexture9 *molotov_tex = nullptr;
             static IDirect3DTexture9 *alert_tex = nullptr;
             if (!molotov_tex && !alert_tex) {

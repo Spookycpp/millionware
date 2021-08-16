@@ -9,6 +9,7 @@
 #include "../../lua/lua_game.hpp"
 
 #include "inferno/inferno.h"
+#include "smoke/smoke.h"
 #include "footsteps/footsteps.h"
 #include "damage logs/damage_logs.h"
 
@@ -79,7 +80,7 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
         cheat::disconnect_state = true;
     }
     else if (std::strncmp(game_event->get_name(), xs("inferno_startburn"), 18) == 0) {
-        const inferno_start_data_t data{
+        const grenade_detonate_data_t data{
             game_event->get_int(xs("entityid")),
             vector_t{ game_event->get_float(xs("x")), game_event->get_float(xs("y")), game_event->get_float(xs("z")) },
             interfaces::global_vars->current_time
@@ -87,6 +88,15 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
 
         features::game_events::inferno::on_inferno_startburn(data);
     }
+	else if (std::strncmp(game_event->get_name(), xs("smokegrenade_detonate"), 22) == 0) {
+		const grenade_detonate_data_t data{
+			game_event->get_int(xs("entityid")),
+			vector_t{ game_event->get_float(xs("x")), game_event->get_float(xs("y")), game_event->get_float(xs("z")) },
+			interfaces::global_vars->current_time
+		};
+
+		features::game_events::smoke::on_smokegrenade_detonate(data);
+	}
 
 	lua::callbacks::run_events(game_event);
 }

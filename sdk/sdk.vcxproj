@@ -196,6 +196,7 @@
     <ClCompile Include="features\game events\footsteps\footsteps.cpp" />
     <ClCompile Include="features\game events\game_events.cpp" />
     <ClCompile Include="features\game events\inferno\inferno.cpp" />
+    <ClCompile Include="features\game events\smoke\smoke.cpp" />
     <ClCompile Include="features\hitchance\hitchance.cpp" />
     <ClCompile Include="features\inventory changer\item_definitions.cpp" />
     <ClCompile Include="features\inventory changer\kit_parser.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="features\game events\footsteps\footsteps.h" />
     <ClInclude Include="features\game events\game_events.h" />
     <ClInclude Include="features\game events\inferno\inferno.h" />
+    <ClInclude Include="features\game events\smoke\smoke.h" />
     <ClInclude Include="features\hitchance\hitchance.h" />
     <ClInclude Include="features\inventory changer\item_definitions.h" />
     <ClInclude Include="features\inventory changer\kit_parser.h" />

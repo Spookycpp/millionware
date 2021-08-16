@@ -1,7 +1,7 @@
 #pragma once
 
 namespace features::game_events::inferno {
-	void on_inferno_startburn(const inferno_start_data_t &data);
+	void on_inferno_startburn(const grenade_detonate_data_t &data);
 	void draw();
 
 	std::vector<vector_t> get_points(c_entity *inferno);

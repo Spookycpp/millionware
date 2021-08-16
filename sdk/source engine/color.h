@@ -22,6 +22,15 @@ struct color_t {
     }
 
     bool operator!=(const color_t &src) const {
-        return (src.r != this->r) || (src.g != this->g) || (src.b != this->b) || (src.a != this->a);
+        return src.r != this->r || src.g != this->g || src.b != this->b || src.a != this->a;
+    }
+
+    static color_t blend(const color_t lhs, const color_t rhs, const float t) {
+        return color_t(
+            lhs.r + static_cast<int>(t * (rhs.r - lhs.r)),
+            lhs.g + static_cast<int>(t * (rhs.g - lhs.g)),
+            lhs.b + static_cast<int>(t * (rhs.b - lhs.b)),
+            lhs.a + static_cast<int>(t * (rhs.a - lhs.a))
+        );
     }
 };
