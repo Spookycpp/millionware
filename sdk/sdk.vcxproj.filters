@@ -84,6 +84,7 @@
     <ClCompile Include="engine\render\surface.cpp" />
     <ClCompile Include="hooks\screen_size_changed.cpp" />
     <ClCompile Include="hooks\push_notice.cpp" />
+    <ClCompile Include="features\game events\inferno\inferno.cpp" />
     <ClCompile Include="features\game events\footsteps\footsteps.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +210,8 @@
     <ClInclude Include="source engine\client_mode_shared.h" />
     <ClInclude Include="engine\render\surface.h" />
     <ClInclude Include="lua\tables\lua_input.hpp" />
+    <ClInclude Include="features\game events\inferno\inferno.h" />
+    <ClInclude Include="source engine\filesystem.h" />
     <ClInclude Include="features\game events\footsteps\footsteps.h" />
   </ItemGroup>
 </Project>
