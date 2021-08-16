@@ -28,6 +28,7 @@
 #include "../../source engine/weapon_system.h"
 #include "../../source engine/render_beams.h"
 #include "../../source engine/client_mode_shared.h"
+#include "../../source engine/filesystem.h"
 
 namespace interfaces
 {
@@ -55,7 +56,7 @@ namespace interfaces
 	inline c_prediction			 *prediction;
 	inline c_localize			 *localize;
     inline c_view_render_beams   *render_beams;
-    inline void                  *push_notice;
+	inline c_base_file_system    *file_system;
 								 
 	inline IDirect3DDevice9		 *d3d9_device;
 	inline c_client_mode		 *client_mode;

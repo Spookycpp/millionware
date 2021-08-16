@@ -333,6 +333,7 @@
     <ClInclude Include="source engine\engine_client.h" />
     <ClInclude Include="source engine\engine_sound.h" />
     <ClInclude Include="source engine\entity.h" />
+    <ClInclude Include="source engine\filesystem.h" />
     <ClInclude Include="source engine\game_events.h" />
     <ClInclude Include="source engine\game_events_manager.h" />
     <ClInclude Include="source engine\game_types.h" />

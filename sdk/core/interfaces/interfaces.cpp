@@ -110,6 +110,9 @@ bool interfaces::init() {
     if ((localize = (c_localize *) get_interface(xs("localize.dll"), xs("Localize_001"))) == nullptr)
         return false;
 
+    if ((file_system = (c_base_file_system *)get_interface(xs("filesystem_stdio.dll"), xs("VBaseFileSystem011"))) == nullptr)
+        return false;
+
     if ((d3d9_device = (IDirect3DDevice9 *) patterns::get_d3d9_device()) == nullptr) {
         logging::error(xs("failed to find d3d9 device pattern"));
 
