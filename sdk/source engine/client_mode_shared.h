@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include "macros.h"
 
 class c_hud_chat {

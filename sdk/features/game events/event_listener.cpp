@@ -10,7 +10,7 @@
 
 #include "inferno/inferno.h"
 #include "footsteps/footsteps.h"
-#include "damage logs//damage_logs.h"
+#include "damage logs/damage_logs.h"
 
 // for game event list: https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_Events
 // this also has list of the parameters used
