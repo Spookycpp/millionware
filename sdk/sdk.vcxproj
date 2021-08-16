@@ -192,6 +192,7 @@
     <ClCompile Include="features\discord presence\rpc.cpp" />
     <ClCompile Include="features\fake ping\fake_ping.cpp" />
     <ClCompile Include="features\game events\damage logs\damage_logs.cpp" />
+    <ClCompile Include="features\game events\decoy\decoy.cpp" />
     <ClCompile Include="features\game events\event_listener.cpp" />
     <ClCompile Include="features\game events\footsteps\footsteps.cpp" />
     <ClCompile Include="features\game events\game_events.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="features\discord presence\rpc.h" />
     <ClInclude Include="features\fake ping\fake_ping.h" />
     <ClInclude Include="features\game events\damage logs\damage_logs.h" />
+    <ClInclude Include="features\game events\decoy\decoy.h" />
     <ClInclude Include="features\game events\footsteps\footsteps.h" />
     <ClInclude Include="features\game events\game_events.h" />
     <ClInclude Include="features\game events\inferno\inferno.h" />

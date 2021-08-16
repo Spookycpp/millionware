@@ -87,6 +87,7 @@
     <ClCompile Include="features\game events\inferno\inferno.cpp" />
     <ClCompile Include="features\game events\footsteps\footsteps.cpp" />
     <ClCompile Include="features\game events\smoke\smoke.cpp" />
+    <ClCompile Include="features\game events\decoy\decoy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -215,5 +216,6 @@
     <ClInclude Include="source engine\filesystem.h" />
     <ClInclude Include="features\game events\footsteps\footsteps.h" />
     <ClInclude Include="features\game events\smoke\smoke.h" />
+    <ClInclude Include="features\game events\decoy\decoy.h" />
   </ItemGroup>
 </Project>

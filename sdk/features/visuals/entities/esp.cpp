@@ -573,7 +573,7 @@ namespace features::visuals::esp {
 
         // decoy
         if (client_class->class_id == CDecoyProjectile) {
-            if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() <= 0.2f) {
+            if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() == 0.0f) {
                 // stopped moving, draw the decoy from the decoy_started event instead
                 return;
             }
@@ -654,8 +654,8 @@ namespace features::visuals::esp {
             }*/
         }
         else if (client_class->class_id == CSmokeGrenadeProjectile) {
-            if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() <= 0.2f) {
-                // stopped moving, draw the decoy from the on_smokegrenade_detonate event instead
+            if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() == 0.0f) {
+                // stopped moving, draw the smoke from the on_smokegrenade_detonate event instead
                 return;
             }
 

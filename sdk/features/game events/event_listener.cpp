@@ -10,6 +10,7 @@
 
 #include "inferno/inferno.h"
 #include "smoke/smoke.h"
+#include "decoy/decoy.h"
 #include "footsteps/footsteps.h"
 #include "damage logs/damage_logs.h"
 
@@ -30,6 +31,7 @@ c_event_listener::c_event_listener() {
 	interfaces::game_events->add_listener(this, xs("vote_cast"), false);
 	interfaces::game_events->add_listener(this, xs("player_death"), false);
 	interfaces::game_events->add_listener(this, xs("game_newmap"), false);
+	interfaces::game_events->add_listener(this, xs("decoy_started"), false);
 }
 
 c_event_listener::~c_event_listener() {
@@ -96,6 +98,15 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
 		};
 
 		features::game_events::smoke::on_smokegrenade_detonate(data);
+	}
+	else if (std::strncmp(game_event->get_name(), xs("decoy_started"), 14) == 0) {
+		const grenade_detonate_data_t data{
+			game_event->get_int(xs("entityid")),
+			vector_t{ game_event->get_float(xs("x")), game_event->get_float(xs("y")), game_event->get_float(xs("z")) },
+			interfaces::global_vars->current_time
+		};
+
+		features::game_events::decoy::on_decoy_started(data);
 	}
 
 	lua::callbacks::run_events(game_event);
