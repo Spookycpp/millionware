@@ -42,7 +42,6 @@ namespace interfaces
 	inline c_engine_trace		 *trace;
 	inline c_debug_overlay		 *debug_overlay;
 	inline c_input_system		 *input_system;
-	inline c_game_event_manager	 *game_event_manager;
 	inline c_game_event_manager2 *game_events;
 	inline c_game_types			 *game_types;
 	inline c_panorama_engine	 *panorama;

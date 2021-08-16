@@ -77,9 +77,6 @@ bool interfaces::init() {
     if ((game_types = (c_game_types *) get_interface(xs("matchmaking.dll"), xs("VENGINE_GAMETYPES_VERSION002"))) == nullptr)
         return false;
 
-    if ((game_event_manager = (c_game_event_manager *) get_interface(xs("engine.dll"), xs("GAMEEVENTSMANAGER002"))) == nullptr)
-        return false;
-
     if ((panorama = (c_panorama_engine *) get_interface(xs("panorama.dll"), xs("PanoramaUIEngine001"))) == nullptr)
         return false;
 

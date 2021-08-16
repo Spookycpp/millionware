@@ -14,6 +14,9 @@ namespace features::game_events::footsteps {
 
 	void on_step_event(c_game_event *game_event) {
 
+		if (!settings.visuals.player.footsteps)
+			return;
+
 		const int  user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("userid")));
 		const auto user = (c_player *)interfaces::entity_list->get_entity(user_id);
 
@@ -41,7 +44,7 @@ namespace features::game_events::footsteps {
 				continue;
 
 			render::draw_text({ screen.x, screen.y }, settings.visuals.player.footsteps_color, xs("Step"), FONT_TAHOMA_11);
-
+			
 			footstep.alpha -= int(255.0f / 1.0f * interfaces::global_vars->frame_time);
 		}
 	}

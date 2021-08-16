@@ -43,7 +43,7 @@ bool hooks::init() {
     draw_print_text_original = create_hook((uintptr_t) interfaces::surface, 28, &draw_print_text);
     emit_sound_original = create_hook((uintptr_t) interfaces::engine_sound, 5, &emit_sound);
     enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
-    fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_event_manager, 9, &fire_event_client_side);
+    fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_events, 9, &fire_event_client_side);
     frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
     get_demo_playback_parameters_original = create_hook((uintptr_t) interfaces::engine_client, 218, &get_demo_playback_parameters);
     get_screen_aspect_ratio_original = create_hook((uintptr_t) interfaces::engine_client, 101, &get_screen_aspect_ratio);

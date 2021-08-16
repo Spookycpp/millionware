@@ -79,19 +79,9 @@ class c_game_event_listener2 {
 
 class c_game_event_manager2 {
   public:
-    virtual ~c_game_event_manager2() = 0;
-    virtual int load_events_from_file(const char *file_name) = 0;
-    virtual void reset() = 0;
-    virtual bool add_listener(c_game_event_listener2 *listener, const char *name, bool server_side) = 0;
-    virtual bool find_listener(c_game_event_listener2 *listener, const char *name) = 0;
-    virtual int remove_listener(c_game_event_listener2 *listener) = 0;
-    virtual c_game_event *create_event(const char *name, bool force, unsigned int unknown) = 0;
-    virtual bool fire_event(c_game_event *event, bool dont_broadcast = false) = 0;
-    virtual bool fire_event_clientside(c_game_event *event) = 0;
-    virtual c_game_event *duplicate_event(c_game_event *event) = 0;
-    virtual void free_event(c_game_event *event) = 0;
-    virtual bool serialize_event(c_game_event *event, bf_write *buf) = 0;
-    virtual c_game_event *unserialize_event(bf_read *buf) = 0;
+      DECLARE_VFUNC(3, add_listener(void *listener, const char *event_name, bool server_side), bool(__thiscall *)(void *, void *, const char *, bool))(listener, event_name, server_side);
+      DECLARE_VFUNC(4, find_listener(void *listener, const char *event_name), bool(__thiscall *)(void *, void *, const char *))(listener, event_name);
+      DECLARE_VFUNC(5, remove_listener(void *listener), bool(__thiscall *)(void *, void *))(listener);
 };
 
 class c_event_listener : public c_game_event_listener2 {
