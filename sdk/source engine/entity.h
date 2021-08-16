@@ -316,8 +316,6 @@ class c_entity {
 
     DECLARE_NETVAR(int, flags, "DT_BasePlayer", "m_fFlags");
     DECLARE_NETVAR(int, team_num, "DT_BaseEntity", "m_iTeamNum");
-    DECLARE_NETVAR(int, explode_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nExplodeEffectTickBegin");
-    DECLARE_NETVAR(int, smoke_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nSmokeEffectTickBegin");
 
     DECLARE_NETVAR(vector_t, vec_origin, "DT_BaseEntity", "m_vecOrigin");
     DECLARE_NETVAR(vector_t, mins, "DT_CollisionProperty", "m_vecMins");
@@ -325,6 +323,12 @@ class c_entity {
 
     DECLARE_NETVAR(entity_handle_t, owner_handle, "DT_BaseEntity", "m_hOwnerEntity");
     DECLARE_NETVAR_OFFSET(matrix3x4_t, transformation_matrix, "DT_BaseEntity", "m_CollisionGroup", -48);
+
+    DECLARE_NETVAR(int, fire_count, "DT_Inferno", "m_fireCount");
+    DECLARE_NETVAR_PTR(bool, fire_is_burning, "DT_Inferno", "m_bFireIsBurning");
+    DECLARE_NETVAR_PTR(int, fire_x_delta, "DT_Inferno", "m_fireXDelta");
+    DECLARE_NETVAR_PTR(int, fire_y_delta, "DT_Inferno", "m_fireYDelta");
+    DECLARE_NETVAR_PTR(int, fire_z_delta, "DT_Inferno", "m_fireZDelta");
 
     bool is_grenade();
 
@@ -429,6 +433,14 @@ class c_economy_item : public c_entity {
     DECLARE_NETVAR(int, original_owner_xuid_high, "DT_BaseAttributableItem", "m_OriginalOwnerXuidHigh");
 
     c_econ_item_view *get_econ_item_view();
+};
+
+class c_grenade : public c_entity {
+public:
+    DECLARE_NETVAR(int, explode_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nExplodeEffectTickBegin");
+    DECLARE_NETVAR(int, smoke_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nSmokeEffectTickBegin");
+    DECLARE_NETVAR(vector_t, initial_velocity, "DT_BaseCSGrenadeProjectile", "m_vInitialVelocity");
+    DECLARE_NETVAR_OFFSET(float, spawn_time, "DT_BaseCSGrenadeProjectile", "m_vecExplodeEffectOrigin", 12);
 };
 
 class c_weapon : public c_economy_item {
