@@ -1,4 +1,3 @@
-#include "damage logs/damage_logs.h"
 #include "game_events.h"
 
 #include "../../core/interfaces/interfaces.h"
@@ -8,7 +7,10 @@
 
 #include "../../core/cheat/cheat.h"
 #include "../../lua/lua_game.hpp"
+
+#include "inferno/inferno.h"
 #include "footsteps/footsteps.h"
+#include "damage logs//damage_logs.h"
 
 // for game event list: https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_Events
 // this also has list of the parameters used
@@ -30,7 +32,9 @@ c_event_listener::c_event_listener() {
 }
 
 c_event_listener::~c_event_listener() {
-	//interfaces::game_events->remove_listener(this);
+#ifdef _DEBUG
+    interfaces::game_events->remove_listener(this);
+#endif
 }
 
 void c_event_listener::on_fired_game_event(c_game_event *game_event) {
@@ -54,25 +58,35 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
 	}
 	else if (std::strncmp(game_event->get_name(), xs("player_hurt"), 12) == 0) {
 		features::game_events::on_player_hurt(game_event);
+        
+        // clang-format off
+        const damage_log_event_data_t data{game_event->get_int(xs("userid")),
+            game_event->get_int(xs("attacker")),
+            game_event->get_int(xs("health")),
+            game_event->get_int(xs("armor")),
+            game_event->get_string(xs("weapon")),
+            game_event->get_int(xs("dmg_health")),
+            game_event->get_int(xs("dmg_armor")),
+            game_event->get_int(xs("hitgroup"))};
+        // clang-format on
 
-		// clang-format off
-		const damage_log_event_data_t data{ game_event->get_int(xs("userid")),
-			game_event->get_int(xs("attacker")),
-			game_event->get_int(xs("health")),
-			game_event->get_int(xs("armor")),
-			game_event->get_string(xs("weapon")),
-			game_event->get_int(xs("dmg_health")),
-			game_event->get_int(xs("dmg_armor")),
-			game_event->get_int(xs("hitgroup")) };
-		// clang-format on
-		features::game_events::damage_logs::on_hurt_event(data);
-	}
-	else if (std::strncmp(game_event->get_name(), xs("vote_cast"), 10) == 0) {
-		features::game_events::on_vote_cast(game_event);
-	}
-	else if (std::strncmp(game_event->get_name(), xs("game_newmap"), 10) == 0) {
-		cheat::disconnect_state = true;
-	}
+        features::game_events::damage_logs::on_hurt_event(data);
+    }
+    else if (std::strncmp(game_event->get_name(), xs("vote_cast"), 10) == 0) {
+        features::game_events::on_vote_cast(game_event);
+    }
+    else if (std::strncmp(game_event->get_name(), xs("game_newmap"), 12) == 0) {
+        cheat::disconnect_state = true;
+    }
+    else if (std::strncmp(game_event->get_name(), xs("inferno_startburn"), 18) == 0) {
+        const inferno_start_data_t data{
+            game_event->get_int(xs("entityid")),
+            vector_t{ game_event->get_float(xs("x")), game_event->get_float(xs("y")), game_event->get_float(xs("z")) },
+            interfaces::global_vars->current_time
+        };
+
+        features::game_events::inferno::on_inferno_startburn(data);
+    }
 
 	lua::callbacks::run_events(game_event);
 }

@@ -40,6 +40,12 @@ struct item_purchase_data_t {
     std::string item;
 };
 
+struct inferno_start_data_t {
+    int entity_id;
+    vector_t pos;
+    float start_time;
+};
+
 class c_game_event {
   public:
     DECLARE_VFUNC(1, get_name(), const char *(__thiscall *) (void *) )();
