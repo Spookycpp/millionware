@@ -358,6 +358,10 @@ void render::fill_circle(const point_t &center, float radius, const color_t &col
     draw_list->AddCircleFilled({center.x, center.y}, radius, IM_COL32(color.r, color.g, color.b, color.a), segments);
 }
 
+void render::fill_convex_poly(const point_t *points, int num_points, const color_t &color) {
+    draw_list->AddConvexPolyFilled((ImVec2 *)points, num_points, IM_COL32(color.r, color.g, color.b, color.a));
+}
+
 void render::draw_text(const point_t &position, const color_t &color, const char *text, int font, float wrap_width, float font_size) {
     if (font_size < 0.0f)
         font_size = fonts[font]->FontSize;

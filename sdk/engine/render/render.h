@@ -85,6 +85,7 @@ namespace render {
 	void fill_triangle(const point_t &point1, const point_t &point2, const point_t &point3, const color_t &color);
 	void draw_circle(const point_t &center, float radius, const color_t &color, int segments = 0);
 	void fill_circle(const point_t &center, float radius, const color_t &color, int segments = 0);
+	void fill_convex_poly(const point_t *points, int num_points, const color_t &color);
 	void draw_text(const point_t &position, const color_t &color, const char *text, int font, float wrap_width = 0.0f, float font_size = -1.0f);
 	void draw_text_outlined(const point_t &position, const color_t &color, const color_t &outline_color, const char *text, int font, float wrap_width = 0.0f, float font_size = -1.0f);
     void draw_image(const point_t &position, const point_t &size, const color_t &color, int texture, float rounding = 0.0f, int corners = CORNER_ALL);
