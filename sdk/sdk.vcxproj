@@ -341,7 +341,6 @@
     <ClInclude Include="source engine\entity.h" />
     <ClInclude Include="source engine\filesystem.h" />
     <ClInclude Include="source engine\game_events.h" />
-    <ClInclude Include="source engine\game_events_manager.h" />
     <ClInclude Include="source engine\game_types.h" />
     <ClInclude Include="source engine\globals.h" />
     <ClInclude Include="source engine\glow_object_definition.h" />
