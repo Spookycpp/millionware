@@ -360,7 +360,7 @@ namespace util {
         return ret;
     }
 
-    IDirect3DTexture9 *load_texture_from_vpk(const char *file_path) {
+    IDirect3DTexture9 *load_texture_from_vpk(const char *file_path, float scale) {
         void *file = interfaces::file_system->open(file_path, xs("r"), xs("GAME"));
         if (!file) {
             return nullptr;
@@ -371,7 +371,7 @@ namespace util {
         interfaces::file_system->read(buf.data(), buf.size(), file);
         interfaces::file_system->close(file);
 
-        IDirect3DTexture9 *texture = render::rasterize_vector(buf.data(), 1.0f);
+        IDirect3DTexture9 *texture = render::rasterize_vector(buf.data(), scale);
         if (!texture) {
             return nullptr;
         }

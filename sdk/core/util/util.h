@@ -54,7 +54,7 @@ namespace util {
         return distribution(e2);
     }
 
-    IDirect3DTexture9 *load_texture_from_vpk(const char *file_path);
+    IDirect3DTexture9 *load_texture_from_vpk(const char *file_path, float scale = 1.0f);
 
     void undo();
 } // namespace util
