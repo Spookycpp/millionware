@@ -260,10 +260,10 @@ bool patterns::init() {
     if ((enable_world_fog = get_pattern(xs("client.dll"), xs("55 8B EC 8B 0D ???? 83 EC 0C 8B 01 53"))) == 0u)
         return false;
 
-    if ((game_rules_proxy = get_pattern(xs("client.dll"), xs("A1 ???? 8B 0D ???? 6A 00 68 ???? C6"))) == 0u) // + 1
+    if ((game_rules_proxy = get_pattern(xs("client.dll"), xs("A1 ???? 8B 0D ???? 6A 00 68 ???? C6"))) == 0u)
         return false;
 
-    // if ((relay_cluster = get_pattern(XORSTR("steamnetworkingsockets.dll"), XORSTR("B8 ???? B9 ???? 0F 43"))) == 0u) // + 1
+    // if ((relay_cluster = get_pattern(xs("steamnetworkingsockets.dll"), XORSTR("B8 ???? B9 ???? 0F 43"))) == 0u)
     //    return false;
 
     if ((inventory_unlocker = get_pattern(xs("client.dll"), xs("84 C0 75 04 B0 01 5F"))) == 0u)
@@ -278,10 +278,10 @@ bool patterns::init() {
     if ((find_key = get_pattern(xs("client.dll"), xs("55 8B EC 83 EC 1C 53 8B D9 85 DB"))) == 0u)
         return false;
 
-    if ((set_string = get_pattern(xs("client.dll"), xs("55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01"))) == 0u)
+    if ((set_string = get_pattern(xs("client.dll"), xs("55 8B EC A1 ???? 53 56 57 8B F9 8B 08 8B 01"))) == 0u)
         return false;
 
-    if ((glow_manager = get_pattern(xs("client.dll"), xs("0F 11 05 ? ? ? ? 83 C8 01"))) == 0u)
+    if ((glow_manager = get_pattern(xs("client.dll"), xs("0F 11 05 ???? 83 C8 01"))) == 0u)
         return false;
 
     if ((push_notice = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 B8 ???? E8 ???? 53 8B D9 8B 0D ???? 56 57 81 F9 ???? 75 0C A1 ???? 35 ???? EB 05 8B 01 FF 50 34"))) == 0u)
