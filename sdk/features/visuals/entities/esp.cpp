@@ -81,7 +81,7 @@ namespace features::visuals::esp {
                 continue;
             }
 
-            float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(entity->get_abs_origin());
+            const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(entity->get_abs_origin());
 
             // yandere dev moment
             if (entity->is_weapon() && !entity->get_networkable()->is_dormant()) {
@@ -686,44 +686,46 @@ namespace features::visuals::esp {
             texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/defuser.svg"), 4.0f);
         }
 
-        bounding_box_t entity_box;
-        if (!get_bounding_box(entity, entity_box)) {
-            return;
-        }
-
         c_client_class *client_class = entity->get_networkable()->get_client_class();
         if (!client_class) {
             return;
         }
 
-        if (settings.visuals.world.defusal_kit && client_class->class_id == CEconEntity) {
-            const float radius = 0.5f * std::sqrt(entity_box.width * entity_box.width + entity_box.height * entity_box.height) / 1.5f;
+        if (!settings.visuals.world.defusal_kit || client_class->class_id != CEconEntity) {
             
-            // text
-            const char *defusal_kit_string = xs("DEFUSER");
-            const point_t text_size        = render::measure_text(defusal_kit_string, FONT_SMALL_TEXT);
-            const auto text_pos            = point_t{ entity_box.x + entity_box.width / 2 - text_size.x / 2, entity_box.y + entity_box.height + radius / 2 - text_size.y / 2 };
+        }
 
-            // color
-            color_t icon_color = settings.visuals.world.defusal_kit_color;
-            color_t text_color = { 255, 255, 255 };
-            if (dist_to_local > 250.0f) {
-                icon_color.a *= std::clamp((300.0f - (dist_to_local - 250.0f)) / 300.0f, 0.0f, 1.0f);
-                text_color.a *= std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f);
+        bounding_box_t entity_box;
+        if (!get_bounding_box(entity, entity_box)) {
+            return;
+        }
+
+        const float radius = 0.5f * std::sqrt(entity_box.width * entity_box.width + entity_box.height * entity_box.height) / 1.5f;
+        
+        // text
+        const char *defusal_kit_string = xs("DEFUSER");
+        const point_t text_size        = render::measure_text(defusal_kit_string, FONT_SMALL_TEXT);
+        const auto text_pos            = point_t{ entity_box.x + entity_box.width / 2 - text_size.x / 2, entity_box.y + entity_box.height + radius / 2 - text_size.y / 2 };
+
+        // color
+        color_t icon_color = settings.visuals.world.defusal_kit_color;
+        color_t text_color = { 255, 255, 255 };
+        if (dist_to_local > 250.0f) {
+            icon_color.a *= std::clamp((300.0f - (dist_to_local - 250.0f)) / 300.0f, 0.0f, 1.0f);
+            text_color.a *= std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f);
+        }
+
+        // draw
+        if (icon_color.a > 0) {
+            render::fill_circle({ entity_box.x + entity_box.width / 2, entity_box.y + entity_box.height / 2 }, radius, { 5, 5, 5, icon_color.a / 2 });
+
+            if (texture) {
+                render::draw_image({ entity_box.x + entity_box.width / 2 - radius / 2, entity_box.y + entity_box.height / 2 - radius / 2 }, { radius, radius }, icon_color, texture);
             }
+        }
 
-            // draw
-            if (icon_color.a > 0) {
-                render::fill_circle({ entity_box.x + entity_box.width / 2, entity_box.y + entity_box.height / 2 }, radius, { 5, 5, 5, icon_color.a / 2 });
-
-                if (texture) {
-                    render::draw_image({ entity_box.x + entity_box.width / 2 - radius / 2, entity_box.y + entity_box.height / 2 - radius / 2 }, { radius, radius }, icon_color, texture);
-                }
-            }
-
-            if (text_color.a > 0) {
-                render::draw_text_outlined(text_pos, text_color, { 5, 5, 5, text_color.a / 6 }, defusal_kit_string, FONT_SMALL_TEXT);
-            }
+        if (text_color.a > 0) {
+            render::draw_text_outlined(text_pos, text_color, { 5, 5, 5, text_color.a / 6 }, defusal_kit_string, FONT_SMALL_TEXT);
         }
     }
 
