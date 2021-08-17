@@ -692,7 +692,7 @@ namespace features::visuals::esp {
         }
 
         if (!settings.visuals.world.defusal_kit || client_class->class_id != CEconEntity) {
-            
+            return;
         }
 
         bounding_box_t entity_box;
