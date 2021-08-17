@@ -382,7 +382,7 @@ void render::draw_text_outlined(const point_t &position, const color_t &color, c
 }
 
 void render::draw_image(const point_t &position, const point_t &size, const color_t &color, int texture, float rounding, int corners) {
-    draw_list->AddImageRounded(textures[texture], {position.x, position.y}, {position.x + size.x, position.y + size.y}, {0.0f, 0.0f}, {1.0f, 1.0f}, IM_COL32(color.r, color.g, color.b, color.a),
+    draw_list->AddImageRounded(textures[texture], { floor(position.x), floor(position.y) }, { floor(position.x + size.x), floor(position.y + size.y)}, {0.0f, 0.0f}, {1.0f, 1.0f}, IM_COL32(color.r, color.g, color.b, color.a),
                                rounding, corners);
 }
 
