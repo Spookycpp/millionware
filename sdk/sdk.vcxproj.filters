@@ -146,7 +146,6 @@
     <ClInclude Include="features\assistance\lagcompensation\lag_comp.h" />
     <ClInclude Include="features\miscellaneous\miscellaneous.h" />
     <ClInclude Include="source engine\engine_sound.h" />
-    <ClInclude Include="source engine\game_events_manager.h" />
     <ClInclude Include="source engine\model_render.h" />
     <ClInclude Include="source engine\material.h" />
     <ClInclude Include="features\movement\movement.h" />
