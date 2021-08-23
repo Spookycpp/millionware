@@ -287,5 +287,8 @@ bool patterns::init() {
     if ((push_notice = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 B8 ???? E8 ???? 53 8B D9 8B 0D ???? 56 57 81 F9 ???? 75 0C A1 ???? 35 ???? EB 05 8B 01 FF 50 34"))) == 0u)
         return false;
 
+    if ((is_breakable = get_pattern(xs("client.dll"), xs("55 8B EC 51 56 8B F1 85 F6 74 68"))) == 0u)
+        return false;
+
     return true;
 }
