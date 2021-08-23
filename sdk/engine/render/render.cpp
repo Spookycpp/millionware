@@ -373,10 +373,10 @@ void render::draw_text_outlined(const point_t &position, const color_t &color, c
     if (font_size < 0.0f)
         font_size = fonts[font]->FontSize;
 
-    render::draw_text({ position.x, position.y + 1.0f }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
-    render::draw_text({ position.x, position.y - 1.0f }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
-    render::draw_text({ position.x + 1.0f, position.y }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
-    render::draw_text({ position.x - 1.0f, position.y }, outline_color, text, FONT_SMALL_TEXT, wrap_width);
+    render::draw_text({ position.x, position.y + 1.0f }, outline_color, text, font, wrap_width);
+    render::draw_text({ position.x, position.y - 1.0f }, outline_color, text, font, wrap_width);
+    render::draw_text({ position.x + 1.0f, position.y }, outline_color, text, font, wrap_width);
+    render::draw_text({ position.x - 1.0f, position.y }, outline_color, text, font, wrap_width);
 
     draw_list->AddText(fonts[font], font_size, { position.x, position.y }, IM_COL32(color.r, color.g, color.b, color.a), text, nullptr, wrap_width);
 }
