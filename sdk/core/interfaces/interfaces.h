@@ -13,7 +13,6 @@
 #include "../../source engine/engine_sound.h"
 #include "../../source engine/entity.h"
 #include "../../source engine/game_events.h"
-#include "../../source engine/game_events_manager.h"
 #include "../../source engine/game_types.h"
 #include "../../source engine/globals.h"
 #include "../../source engine/input.h"
