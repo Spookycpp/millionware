@@ -85,7 +85,7 @@ namespace features::visuals::esp {
 
             // yandere dev moment
             if (entity->is_weapon() && !entity->get_networkable()->is_dormant()) {
-                draw_dropped_weapon(entity);
+                draw_dropped_weapon(entity, dist_to_local);
             }
             else if (entity->is_grenade() && !entity->get_networkable()->is_dormant()) {
                 draw_thrown_utility(entity);
@@ -477,56 +477,70 @@ namespace features::visuals::esp {
         }
     }
 
-    void draw_dropped_weapon(c_entity *entity) {
+    void draw_dropped_weapon(c_entity *entity, const float dist_to_local) {
+        auto weapon = reinterpret_cast<c_weapon *>(entity);
 
-        auto weapon = (c_weapon *)entity;
-
-        if (weapon->get_owner_handle() != entity_handle_t())
+        if (weapon->get_owner_handle() != entity_handle_t() || weapon->get_networkable()->is_dormant()) {
             return;
+        }
 
-        if (weapon->get_networkable()->is_dormant())
+        weapon_info_t *weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
+        if (!weapon_info) {
             return;
-
-        auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
-
-        if (!weapon_info)
-            return;
+        }
 
         bounding_box_t entity_box;
-
-        if (!get_bounding_box(entity, entity_box))
+        if (!get_bounding_box(entity, entity_box)) {
             return;
+        }
 
-        auto client_class = entity->get_networkable()->get_client_class();
+        const float radius = 0.5f * std::sqrt(entity_box.width * entity_box.width + entity_box.height * entity_box.height);
 
         if (settings.visuals.world.weapon && weapon->get_item_definition_index() != WEAPON_C4) {
+            // text
+            const wchar_t *localized_name = interfaces::localize->find(weapon_info->hud_name);
 
-            const auto localized_name = interfaces::localize->find(weapon_info->hud_name);
+            std::vector<char> localized_name_buf(32);
+            WideCharToMultiByte(CP_UTF8, 0, localized_name, std::wcslen(localized_name), localized_name_buf.data(), localized_name_buf.size(), nullptr, nullptr);
 
-            char localized_name_buffer[32];
+            const point_t text_size = render::measure_text(localized_name_buf.data(), FONT_SMALL_TEXT);
+            const auto text_pos     = point_t{ entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f, entity_box.y + entity_box.height / 2.0f - text_size.y / 2.0f + 8.0f };
 
-            memset(localized_name_buffer, 0, sizeof(localized_name_buffer));
+            // color
+            color_t icon_color = settings.visuals.world.weapon_color;
+            color_t text_color = { 255, 255, 255 };
 
-            const auto localized_name_length = WideCharToMultiByte(CP_UTF8, 0, localized_name, wcslen(localized_name), localized_name_buffer, sizeof(localized_name_buffer), nullptr, nullptr);
+            text_color.a *= static_cast<int>(std::clamp((1000.0f - (dist_to_local - 500.0f)) / 1000.0f, 0.0f, 1.0f));
+            icon_color.a *= static_cast<int>(std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f));
 
-            for (auto i = 0; i < localized_name_length; i++)
-                localized_name_buffer[i] = std::tolower(localized_name_buffer[i]);
+            //draw
+            if (icon_color.a > 0) {
+                IDirect3DTexture9 *texture = get_weapon_texture(weapon_info->weapon_name, 2.0f);
+                
+                if (texture) {
+                    D3DSURFACE_DESC surface_desc;
+                    texture->GetLevelDesc(0, &surface_desc);
 
-            const auto text_size = render::measure_text(localized_name_buffer, FONT_TAHOMA_11);
-            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
+                    const point_t size     = { static_cast<float>(surface_desc.Width) * 0.25f, static_cast<float>(surface_desc.Height) * 0.25f };
+                    const point_t position = { entity_box.x + entity_box.width / 2.0f - size.x / 2.0f, entity_box.y + entity_box.height / 2.0f - size.y / 2.0f - 4.0f };
+                    
+                    render::draw_image(position + 1.0f, size, { 5, 5, 5, icon_color.a }, texture);
+                    render::draw_image(position, size, icon_color, texture);
+                }
+            }
 
-            render::draw_text(text_pos, settings.visuals.world.weapon_color, localized_name_buffer, FONT_TAHOMA_11);
+            if (text_color.a > 0) {
+                render::draw_text_outlined(text_pos, text_color, { 5, 5, 5, text_color.a }, localized_name_buf.data(), FONT_SMALL_TEXT);
+            }
         }
         else if (settings.visuals.world.dropped_bomb && weapon->get_item_definition_index() == WEAPON_C4) {
 
-            // doing this instead of using localized
-            // name because "c4 explosive" looks stupid
-            const auto bomb_string = xs("dropped bomb");
+            const char *bomb_string = xs("BOMB");
 
-            const auto text_size = render::measure_text(bomb_string, FONT_TAHOMA_11);
-            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
+            const auto text_size = render::measure_text(bomb_string, FONT_SMALL_TEXT);
+            const auto text_pos = point_t{ entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f, entity_box.y + entity_box.height + radius / 2.0f - text_size.y / 2.0f };
 
-            render::draw_text(text_pos, settings.visuals.world.dropped_bomb_color, bomb_string, FONT_TAHOMA_11);
+            render::draw_text(text_pos, settings.visuals.world.dropped_bomb_color, bomb_string, FONT_SMALL_TEXT);
         }
     }
 
@@ -591,8 +605,7 @@ namespace features::visuals::esp {
                 if (!texture) {
                     texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/decoy.svg"));
                 }
-
-                if (texture) {
+                else {
                     render::draw_image({ screen.x - 5.0f, screen.y - 7.0f }, { 11.0f, 12.0f }, { 255, 255, 255 }, texture);
                 }
             }
@@ -610,9 +623,8 @@ namespace features::visuals::esp {
                     if (!texture) {
                         texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/hegrenade.svg"));
                     }
-
-                    if (texture) {
-                        render::draw_image({screen.x - 4.0f, screen.y - 7.0f}, {8.0f, 12.0f}, {255, 255, 255}, texture);
+                    else {
+                        render::draw_image({screen.x - 4.0f, screen.y - 7.0f}, {8.0f, 12.0f}, { 255, 255, 255 }, texture);
                     }
                 }
                 // flashbang
@@ -621,9 +633,8 @@ namespace features::visuals::esp {
                     if (!texture) {
                         texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/flashbang.svg"));
                     }
-
-                    if (texture) {
-                        render::draw_image({screen.x - 5.0f, screen.y - 7.0f}, {11.0f, 12.0f}, {255, 255, 255}, texture);
+                    else {
+                        render::draw_image({screen.x - 5.0f, screen.y - 7.0f}, {11.0f, 12.0f}, { 255, 255, 255 }, texture);
                     }
                 }
             }
@@ -635,31 +646,15 @@ namespace features::visuals::esp {
             seconds_until_detonation = detonate_time - (interfaces::global_vars->current_time - grenade->get_spawn_time());
 
             // molotov
-            //if (model_name.find(xs("molotov")) != std::string::npos) {
-                if (draw_circle(screen, 12.0f, seconds_until_detonation, detonate_time)) {
-                    static IDirect3DTexture9 *texture = nullptr;
-                    if (!texture) {
-                        texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/molotov.svg"));
-                    }
-
-                    if (texture) {
-                        render::draw_image({ screen.x - 5.0f, screen.y - 7.0f }, { 11.0f, 12.0f }, { 255, 255, 255 }, texture);
-                    }
+            if (draw_circle(screen, 12.0f, seconds_until_detonation, detonate_time)) {
+                static IDirect3DTexture9 *texture = nullptr;
+                if (!texture) {
+                    texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/molotov.svg"));
                 }
-            //}
-            // incendiary
-            /*else if (model_name.find(xs("incendiary")) != std::string::npos) {
-                if (draw_circle(screen, 12.0f, true, seconds_until_detonation, detonate_time)) {
-                    static IDirect3DTexture9 *texture = nullptr;
-                    if (!texture) {
-                        texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/incgrenade.svg"));
-                    }
-
-                    if (texture) {
-                        render::draw_image({ screen.x - 3.0f, screen.y - 7.0f }, { 6.0f, 12.0f }, { 255, 255, 255 }, texture);
-                    }
+                else {
+                    render::draw_image({ screen.x - 5.0f, screen.y - 7.0f }, { 11.0f, 12.0f }, { 255, 255, 255 }, texture);
                 }
-            }*/
+            }
         }
         else if (client_class->class_id == CSmokeGrenadeProjectile) {
             if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() == 0.0f) {
@@ -680,7 +675,7 @@ namespace features::visuals::esp {
         }
     }
 
-    void draw_defusal_kit(c_entity *entity, float dist_to_local) {
+    void draw_defusal_kit(c_entity *entity, const float dist_to_local) {
         static IDirect3DTexture9 *texture = nullptr;
         if (!texture) {
             texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/defuser.svg"), 4.0f);
@@ -705,14 +700,14 @@ namespace features::visuals::esp {
         // text
         const char *defusal_kit_string = xs("DEFUSER");
         const point_t text_size        = render::measure_text(defusal_kit_string, FONT_SMALL_TEXT);
-        const auto text_pos            = point_t{ entity_box.x + entity_box.width / 2 - text_size.x / 2, entity_box.y + entity_box.height + radius / 2 - text_size.y / 2 };
+        const auto text_pos            = point_t{ entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f, entity_box.y + entity_box.height + radius / 2.0f - text_size.y / 2.0f };
 
         // color
         color_t icon_color = settings.visuals.world.defusal_kit_color;
         color_t text_color = { 255, 255, 255 };
         if (dist_to_local > 250.0f) {
-            icon_color.a *= std::clamp((300.0f - (dist_to_local - 250.0f)) / 300.0f, 0.0f, 1.0f);
-            text_color.a *= std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f);
+            icon_color.a *= static_cast<int>(std::clamp((300.0f - (dist_to_local - 250.0f)) / 300.0f, 0.0f, 1.0f));
+            text_color.a *= static_cast<int>(std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f));
         }
 
         // draw
