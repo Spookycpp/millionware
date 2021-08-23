@@ -32,7 +32,7 @@ enum e_contents {
     CONTENTS_PLAYERCLIP = 0x10000,
     CONTENTS_MONSTERCLIP = 0x20000,
     CONTENTS_CURRENT_0 = 0x40000,
-    CONTENTS_CURRENT_90 = 0x80000,
+    CONTENTS_GRENADECLIP = 0x80000,
     CONTENTS_CURRENT_180 = 0x100000,
     CONTENTS_CURRENT_270 = 0x200000,
     CONTENTS_CURRENT_UP = 0x400000,
@@ -44,6 +44,32 @@ enum e_contents {
     CONTENTS_TRANSLUCENT = 0x10000000,
     CONTENTS_LADDER = 0x20000000,
     CONTENTS_HITBOX = 0x40000000,
+};
+
+enum e_collision_group {
+    COLLISION_GROUP_NONE = 0,
+    COLLISION_GROUP_DEBRIS,
+    COLLISION_GROUP_DEBRIS_TRIGGER,
+    COLLISION_GROUP_INTERACTIVE_DEBRIS,
+    COLLISION_GROUP_INTERACTIVE,
+    COLLISION_GROUP_PLAYER,
+    COLLISION_GROUP_BREAKABLE_GLASS,
+    COLLISION_GROUP_VEHICLE,
+    COLLISION_GROUP_PLAYER_MOVEMENT,
+    COLLISION_GROUP_NPC,
+    COLLISION_GROUP_IN_VEHICLE,
+    COLLISION_GROUP_WEAPON,
+    COLLISION_GROUP_VEHICLE_CLIP,
+    COLLISION_GROUP_PROJECTILE,
+    COLLISION_GROUP_DOOR_BLOCKER,
+    COLLISION_GROUP_PASSABLE_DOOR,
+    COLLISION_GROUP_DISSOLVING,
+    COLLISION_GROUP_PUSHAWAY,
+    COLLISION_GROUP_NPC_ACTOR,
+    COLLISION_GROUP_NPC_SCRIPTED,
+    COLLISION_GROUP_PZ_CLIP,
+    COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE,
+    LAST_SHARED_COLLISION_GROUP
 };
 
 enum e_contents_mask {
@@ -69,7 +95,7 @@ enum e_contents_mask {
     MASK_NPCWORLDSTATIC = (CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_MONSTERCLIP | CONTENTS_GRATE),
     MASK_NPCWORLDSTATIC_FLUID = (CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_MONSTERCLIP),
     MASK_SPLITAREAPORTAL = (CONTENTS_WATER | CONTENTS_SLIME),
-    MASK_CURRENT = (CONTENTS_CURRENT_0 | CONTENTS_CURRENT_90 | CONTENTS_CURRENT_180 | CONTENTS_CURRENT_270 | CONTENTS_CURRENT_UP | CONTENTS_CURRENT_DOWN),
+    MASK_CURRENT = (CONTENTS_CURRENT_0 | CONTENTS_GRENADECLIP | CONTENTS_CURRENT_180 | CONTENTS_CURRENT_270 | CONTENTS_CURRENT_UP | CONTENTS_CURRENT_DOWN),
     MASK_DEADSOLID = (CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_WINDOW | CONTENTS_GRATE),
 };
 
@@ -176,9 +202,14 @@ typedef bool (*should_hit_func_t)(c_entity *entity, int contents_mask);
 
 class c_trace_filter_simple : public c_trace_filter {
   public:
-    c_trace_filter_simple(const c_entity *passentity, int collisionGroup, should_hit_func_t pExtraShouldHitCheckFn = NULL);
+    c_trace_filter_simple(const c_entity *passentity, int collisionGroup, should_hit_func_t pExtraShouldHitCheckFn = NULL) {
+        m_pPassEnt = passentity;
+        m_collisionGroup = collisionGroup;
+    }
 
-    virtual bool should_hit_entity(c_entity *entity, int contents_mask);
+    virtual bool should_hit_entity(c_entity *entity, int contents_mask) {
+        return entity != m_pPassEnt;
+    }
 
     virtual void SetPassEntity(const c_entity *pPassEntity) {
         m_pPassEnt = pPassEntity;
