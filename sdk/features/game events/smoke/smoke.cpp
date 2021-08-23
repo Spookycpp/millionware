@@ -30,6 +30,10 @@ namespace features::game_events::smoke {
         }
 	}
 
+    void reset() {
+        smoke_vec.clear();
+    }
+
     void draw() {
         if (smoke_vec.empty()) {
             return;

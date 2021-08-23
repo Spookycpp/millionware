@@ -32,6 +32,10 @@ namespace features::game_events::inferno {
         }
     }
 
+    void reset() {
+        inferno_vec.clear();
+    }
+
     void draw() {
         if (inferno_vec.empty()) {
             return;

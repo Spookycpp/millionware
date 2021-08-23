@@ -30,6 +30,10 @@ namespace features::game_events::decoy {
         }
     }
 
+    void reset() {
+        decoy_vec.clear();
+    }
+
     void draw() {
         if (decoy_vec.empty()) {
             return;
