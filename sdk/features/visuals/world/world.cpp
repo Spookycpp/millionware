@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <psapi.h>
 #include <tlhelp32.h>
+#include <format>
 #include <unordered_map>
 
 #include "../../../core/cheat/cheat.h"
@@ -22,8 +23,8 @@
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 #include "../../../source engine/entity.h"
-#include <format>
 #include "../../../engine/render/surface.h"
+#include "../../../ui/ui.h"
 
 namespace features::visuals::world {
 
@@ -217,85 +218,130 @@ namespace features::visuals::world {
         if (!client_class)
             return;
 
-        if (client_class->class_id == CPlantedC4)
+        if (client_class->class_id == CPlantedC4) {
             bomb_timer(entity);
+        }
     }
 
     void bomb_timer(c_entity *entity) {
+        if (!settings.visuals.world.planted_bomb) {
+            return;
+        }
 
-        const auto get_bombsite = [&]() -> std::string {
-            const auto player_res = util::get_player_resource();
+        if (!entity->get_is_bomb_ticking()) {
+            return;
+        }
 
-            if (player_res == nullptr)
-                return xs("<unknown>");
+        const c_player_resource *player_res = util::get_player_resource();
+        if (!player_res) {
+            return;
+        }
 
-            const auto bomb_origin = entity->get_abs_origin();
-            const auto &site_a = player_res->get_bomb_site_center_a();
-            const auto &site_b = player_res->get_bomb_site_center_b();
-
-            const auto dist_to_site_a = bomb_origin.dist(site_a);
-            const auto dist_to_site_b = bomb_origin.dist(site_b);
-
-            if (dist_to_site_a < dist_to_site_b)
-                return xs("A");
-
-            return xs("B");
-        };
-
-        const auto get_bomb_time = [&]() -> std::string {
-            // @note: this is kinda autistic but it works.
-            // i don't know if we should clamp this to mp_c4timer->get_float();
-            // if the mp_c4timer changes while the c4 is planted to something lower than the remaining time
-            // it will clamp it.. (99% sure it won't occur never seen a server that modifies it)
-            // because if we don't sometimes when the round ends the bomb timer will not go away so..
-            const auto mp_c4timer = interfaces::convar_system->find_convar(xs("mp_c4timer"))->get_float();
-            const float time = std::clamp(entity->get_bomb_blow_time() - interfaces::global_vars->current_time, 0.f, mp_c4timer);
-
-            if (time && !entity->get_is_bomb_defused() && entity->get_is_bomb_ticking())
-                return std::format(xs("{}: {:.2f}s"), get_bombsite(), time);
-
-            return {};
-        };
+        const vector_t bomb_origin = entity->get_abs_origin();
 
         const auto get_bomb_damage = [&]() {
-            const vector_t delta = entity->get_renderable()->get_render_origin() - cheat::local_player->get_renderable()->get_render_origin();
+            vector_t src = bomb_origin;
+            src.z += 1.0f;
 
-            const float bomb_damage = 500.0f * std::exp(-(delta.length() * delta.length() / (1750.0f * 0.33333334f * 2.0f * (1750.0f * 0.33333334f))));
-            float damage = bomb_damage;
+            constexpr float bomb_radius = 500.0f; // TODO: radius should be retrieved from the BSP
+            constexpr float sigma = bomb_radius * 3.5f / 3.0f;
 
-            const int armor_value = cheat::local_player->get_armor();
+            const float dist = (cheat::local_player->get_renderable()->get_render_origin() - src).length();
+            const float damage = bomb_radius * std::exp(-dist * dist / (2.0f * sigma * sigma));
 
-            if (armor_value > 0) {
-                damage *= 0.5f;
+            float scaled_damage = damage;
 
-                if ((bomb_damage - damage) * 0.5f > float(armor_value))
-                    damage = bomb_damage - float(armor_value) * (1.0f / 0.5f);
+            // TODO: take into account heavy armor
+            if (const int armor_value = cheat::local_player->get_armor(); armor_value > 0) {
+                float new_damage = damage * 0.5f;
+                float armor = (damage - new_damage) * 0.5f;
+
+                if (armor > static_cast<float>(armor_value)) {
+                    armor = static_cast<float>(armor_value) * 2.0f;
+                    new_damage = damage - armor;
+                }
+
+                scaled_damage = std::max(0.0f, std::floor(new_damage));
             }
 
-            return cheat::local_player->get_health() - int(std::round(damage));
+            return static_cast<int>(scaled_damage);
         };
 
-        if (!settings.visuals.world.planted_bomb)
+        // determine which site the bomb is planted at
+        std::string site;
+       
+        if (bomb_origin.dist(player_res->get_bomb_site_center_a()) < bomb_origin.dist(player_res->get_bomb_site_center_b())) {
+            site = xs("A");
+        }
+        else {
+            site = xs("B");
+        }
+
+        // get bomb time left
+        float time_left = std::max(entity->get_bomb_blow_time() - interfaces::global_vars->current_time, 0.0f);
+
+        if (time_left <= 0.0f) {
             return;
+        }
 
-        const std::string bomb_time = get_bomb_time();
+        const int bomb_damage = get_bomb_damage();
+        const int health_left = cheat::local_player->get_health() - bomb_damage;
 
-        if (bomb_time.empty())
-            return;
+        // draw
+        static c_convar *mp_c4timer  = interfaces::convar_system->find_convar(xs("mp_c4timer"));
+        static c_convar *safezoney   = interfaces::convar_system->find_convar(xs("safezoney"));
+        static c_convar *hud_scaling = interfaces::convar_system->find_convar(xs("hud_scaling"));
 
-        const auto bomb_time_str = get_bomb_time();
-        const auto health_remaining = get_bomb_damage();
-        const auto health_remaining_text = std::format(xs("Health remaining: {} HP"), std::max(health_remaining, 0));
+        const point_t screen_size = render::get_screen_size();
 
-        const auto screen_size = render::get_screen_size();
-        const auto bomb_time_text_size = render::measure_text(bomb_time_str.c_str(), FONT_TAHOMA_11);
-        const auto health_remaining_text_size = render::measure_text(health_remaining_text.c_str(), FONT_TAHOMA_11);
+        float y_pos = 80.0f * hud_scaling->get_float() + (screen_size.y - screen_size.y * safezoney->get_float() + 1.0f) / 2.0f;
 
-        render::draw_text({screen_size.x * 0.5f - bomb_time_text_size.x * 0.5f, screen_size.y * 0.15f}, {255, 255, 255, 255}, bomb_time_str.c_str(), FONT_TAHOMA_11);
+        // timer bar
+        constexpr float bar_width = 250.0f;
+        constexpr float bar_height = 6.0f;
 
-        if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE)
-            render::draw_text({screen_size.x * 0.5f - health_remaining_text_size.x * 0.5f, screen_size.y * 0.15f + bomb_time_text_size.y + 5.f},
-                              health_remaining > 0 ? color_t{33, 255, 33, 235} : color_t{220, 33, 33, 235}, health_remaining_text.c_str(), FONT_TAHOMA_11);
+        render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f - 1.0f, y_pos - 1.0f }, { bar_width + 2.0f, bar_height + 2.0f }, { 34, 34, 34, 170 });
+        render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f, y_pos }, { time_left * bar_width / mp_c4timer->get_float(), bar_height }, ui::get_accent_color());
+
+        const auto defusing_player = reinterpret_cast<c_player *>(entity->get_bomb_defuser().get());
+        if (defusing_player) {
+            std::string defuse_text = xs("Defusing");
+
+            const float defuse_time = std::max(entity->get_defuse_countdown() - interfaces::global_vars->current_time, 0.0f);
+            if (defuse_time <= time_left) {
+                time_left = defuse_time;
+            }
+            else {
+                defuse_text += xs(" (no time left)");
+            }
+
+            const float max_defuse_time = defusing_player->get_has_defuser() ? 5.0f : 10.0f;
+
+            const point_t defuse_text_size = render::measure_text(defuse_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+            render::draw_text_outlined({ screen_size.x / 2.0f - defuse_text_size.x / 2.0f, y_pos - 15.0f }, { 255, 255, 255 }, { 5, 5, 5, 220 }, defuse_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+
+            y_pos += bar_height + 4.0f;
+
+            render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f - 1.0f, y_pos - 1.0f }, { bar_width + 2.0f, bar_height + 2.0f }, { 34, 34, 34, 170 });
+            render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f, y_pos }, { time_left * bar_width / max_defuse_time, bar_height }, { 255, 255, 255 });
+        }
+
+        // text
+        const std::string time_remaining_text   = std::format(xs("{}: {:.2f}s"), site, time_left);
+        const std::string health_remaining_text = std::format(xs("{} HP remaining"), std::max(health_left, 0));
+        const point_t c4_time_left_size         = render::measure_text(time_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+        const point_t hp_left_size              = render::measure_text(health_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+
+        render::gradient_h({ screen_size.x / 2.0f - 80.0f - 4.0f, y_pos + bar_height + 3.0f }, { 80.0f, hp_left_size.y + c4_time_left_size.y + 0.0f }, { 5, 5, 5, 0 }, { 5, 5, 5, 90 });
+        render::gradient_h({ screen_size.x / 2.0f - 4.0f, y_pos + bar_height + 3.0f }, { 80.0f + 4.0f, hp_left_size.y + c4_time_left_size.y + 0.0f }, { 5, 5, 5, 90 }, { 5, 5, 5, 0 });
+
+        render::draw_text_outlined({ screen_size.x / 2.0f - c4_time_left_size.x / 2.0f, y_pos + bar_height + 4.0f }, { 255, 255, 255 }, { 5, 5, 5, 220 }, time_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+
+        const color_t hp_remaining_color = color_t::blend({ 0, 255, 0 }, { 255, 0, 0 }, std::clamp(static_cast<float>(bomb_damage) / static_cast<float>(cheat::local_player->get_health()), 0.0f, 1.0f));
+
+        if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
+            // health remaining
+            render::draw_text_outlined({ screen_size.x / 2.0f - hp_left_size.x / 2.0f, y_pos + bar_height + 3.0f + c4_time_left_size.y }, hp_remaining_color, { 5, 5, 5, 220 }, health_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+        }
     }
-
 } // namespace features::visuals::world
