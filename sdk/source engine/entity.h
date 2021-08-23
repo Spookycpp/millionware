@@ -302,6 +302,7 @@ class c_entity {
 
     DECLARE_VFUNC(3, get_collideable(), c_collideable *(__thiscall *) (void *) )();
     DECLARE_VFUNC(10, get_abs_origin(), vector_t &(__thiscall *) (void *) )();
+    DECLARE_VFUNC(142, get_class_name(), const char *(__thiscall *)(void *))();
     DECLARE_VFUNC(157, is_player(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(165, is_weapon(), bool(__thiscall *)(void *))();
 
@@ -313,6 +314,8 @@ class c_entity {
     DECLARE_NETVAR(bool, is_bomb_ticking, "DT_PlantedC4", "m_bBombTicking");
     DECLARE_NETVAR(bool, is_bomb_defused, "DT_PlantedC4", "m_bBombDefused");
     DECLARE_NETVAR(float, bomb_blow_time, "DT_PlantedC4", "m_flC4Blow");
+    DECLARE_NETVAR(entity_handle_t, bomb_defuser, "DT_PlantedC4", "m_hBombDefuser");
+    DECLARE_NETVAR(float, defuse_countdown, "DT_PlantedC4", "m_flDefuseCountDown");
 
     DECLARE_NETVAR(int, flags, "DT_BasePlayer", "m_fFlags");
     DECLARE_NETVAR(int, team_num, "DT_BaseEntity", "m_iTeamNum");
@@ -358,8 +361,10 @@ class c_player : public c_entity {
     DECLARE_NETVAR(int, shots_fired, "DT_CSLocalPlayerExclusive", "m_iShotsFired");
     DECLARE_NETVAR(int, armor, "DT_CSPlayer", "m_ArmorValue");
     DECLARE_NETVAR(int, health, "DT_BasePlayer", "m_iHealth");
+    DECLARE_NETVAR(int, max_health_n, "DT_BasePlayer", "m_iMaxHealth");
     DECLARE_NETVAR(int, life_state, "DT_BasePlayer", "m_lifeState");
     DECLARE_NETVAR(int, tick_base, "DT_LocalPlayerExclusive", "m_nTickBase");
+    DECLARE_NETVAR(int, collision_group, "DT_BasePlayer", "m_CollisionGroup");
     DECLARE_NETVAR(int, hitbox_set, "DT_BaseAnimating", "m_nHitboxSet");
     DECLARE_NETVAR(int, money, "DT_CSPlayer", "m_iAccount");
     DECLARE_NETVAR(int, observer_mode, "DT_BasePlayer", "m_iObserverMode");
