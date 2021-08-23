@@ -32,10 +32,11 @@ namespace features::visuals::esp {
     void draw_barrel(c_player *player);
 
     void draw_planted_bomb(c_entity* entity);
-    void draw_dropped_weapon(c_entity *entity);
+    void draw_dropped_weapon(c_entity *entity, const float dist_to_local);
     void draw_thrown_utility(c_entity *entity);
     void draw_defusal_kit(c_entity *entity, float dist_to_local);
 
+    IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, float scale = 4.0f);
     void update_dormant_pos(int index, const vector_t &position);
     void update_predicted_money(int index, int money);
 } // namespace features::visuals::esp

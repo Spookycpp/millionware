@@ -717,16 +717,38 @@ namespace features::visuals::esp {
 
         // draw
         if (icon_color.a > 0) {
-            render::fill_circle({ entity_box.x + entity_box.width / 2, entity_box.y + entity_box.height / 2 }, radius, { 5, 5, 5, icon_color.a / 2 });
+            const color_t bg_color = color_t::blend({ 33, 33, 33, icon_color.a / 2 }, icon_color, 0.3f);
+            render::fill_circle({ entity_box.x + entity_box.width / 2.0f, entity_box.y + entity_box.height / 2.0f }, radius, bg_color);
 
             if (texture) {
-                render::draw_image({ entity_box.x + entity_box.width / 2 - radius / 2, entity_box.y + entity_box.height / 2 - radius / 2 }, { radius, radius }, icon_color, texture);
+                render::draw_image({ entity_box.x + entity_box.width / 2.0f - radius / 2.0f, entity_box.y + entity_box.height / 2.0f - radius / 2.0f }, { radius, radius }, icon_color, texture);
             }
         }
 
         if (text_color.a > 0) {
             render::draw_text_outlined(text_pos, text_color, { 5, 5, 5, text_color.a / 6 }, defusal_kit_string, FONT_SMALL_TEXT);
         }
+    }
+
+    IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, const float scale) {
+        static std::vector<std::pair<uint32_t, IDirect3DTexture9 *>> textures;
+
+        const auto it = std::ranges::find_if(textures, [&](const std::pair<uint32_t, IDirect3DTexture9 *> &element) {
+            return element.first == CRC(weapon_name.c_str());
+        });
+
+        if (it != textures.end()) {
+            return it->second; // texture has already been created
+        }
+
+        const std::string path     = std::format(xs("materials/panorama/images/icons/equipment/{}.svg"), weapon_name.substr(7));
+        IDirect3DTexture9 *texture = util::load_texture_from_vpk(path.c_str(), scale);
+
+        if (texture) {
+            textures.emplace_back(CRC(weapon_name.c_str()), texture);
+        }
+
+        return texture;
     }
 
     void update_dormant_pos(int index, const vector_t &position) {
