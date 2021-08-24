@@ -13,9 +13,11 @@ namespace features::visuals::esp {
         vector_t position;
         float fade;
         bool spotted;
+        float bottom_offset;
     };
 
     void frame();
+    void draw_player(int idx, c_entity *entity);
 
     void draw_box(const bounding_box_t &entity_box, c_player *player);
     void draw_name(const bounding_box_t &entity_box, c_player *player);
@@ -34,8 +36,10 @@ namespace features::visuals::esp {
     void draw_thrown_utility(c_entity *entity);
     void draw_defusal_kit(c_entity *entity, float dist_to_local);
 
+    bool get_bounding_box(c_entity *entity, bounding_box_t &out_box);
     IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, float scale = 4.0f);
-    color_t get_dormant_color(c_entity *entity, color_t col);
+    color_t get_color(c_entity *entity, color_t col);
+    bool update_dormancy(int idx, c_entity *entity, float dist_to_local);
     void update_position(int idx, const vector_t &pos);
     void reset_position();
 } // namespace features::visuals::esp
