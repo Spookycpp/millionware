@@ -26,42 +26,40 @@ using namespace features::visuals::esp;
 
 static std::array<float, 65> m_bottom_offset;
 
-//static std::unordered_map<int, entity_esp_t> entity_esp_info;
-//
-//static entity_esp_t &get_entity_info(int index) {
-//    if (entity_esp_info.find(index) == entity_esp_info.end())
-//        entity_esp_info.insert({ index, {} });
-//
-//    return entity_esp_info[index];
-//}
+static bool get_bounding_box(c_entity *entity, bounding_box_t &out_box) {
+    c_collideable *collideable = entity->get_collideable();
+    const vector_t mins        = collideable->get_mins();
+    const vector_t maxs        = collideable->get_maxs();
 
-static bool get_bounding_box(c_entity *entity, features::visuals::esp::bounding_box_t &out_box) {
-    const auto collideable = entity->get_collideable();
-    const auto mins = collideable->get_mins();
-    const auto maxs = collideable->get_maxs();
+    vector_t points[8] = {
+        {mins.x, mins.y, mins.z}, {mins.x, maxs.y, mins.z},
+        {maxs.x, maxs.y, mins.z}, {maxs.x, mins.y, mins.z},
+        {maxs.x, maxs.y, maxs.z}, {mins.x, maxs.y, maxs.z},
+        {mins.x, mins.y, maxs.z}, {maxs.x, mins.y, maxs.z}
+    };
 
-    vector_t points[8] = { {mins.x, mins.y, mins.z}, {mins.x, maxs.y, mins.z}, {maxs.x, maxs.y, mins.z}, {maxs.x, mins.y, mins.z},
-                          {maxs.x, maxs.y, maxs.z}, {mins.x, maxs.y, maxs.z}, {mins.x, mins.y, maxs.z}, {maxs.x, mins.y, maxs.z} };
+    std::ranges::transform(points, std::begin(points), [entity](const auto point) {
+        return math::vector_transform(point, entity->get_transformation_matrix());
+    });
 
-    std::transform(std::begin(points), std::end(points), std::begin(points), [entity](const auto point) { return math::vector_transform(point, entity->get_transformation_matrix()); });
+    std::array<point_t, 8> screen_pos;
 
-    point_t screen_pos[8];
-
-    for (auto i = 0; i < 8; i++) {
-        if (!math::world_to_screen(points[i], screen_pos[i]))
+    for (int i = 0; i < 8; i++) {
+        if (!math::world_to_screen(points[i], screen_pos[i])) {
             return false;
+        }
     }
 
-    auto left = FLT_MAX;
-    auto top = FLT_MIN;
-    auto right = FLT_MIN;
-    auto bottom = FLT_MAX;
+    float left = FLT_MAX;
+    float top = FLT_MIN;
+    float right = FLT_MIN;
+    float bottom = FLT_MAX;
 
-    for (auto i = 0; i < 8; i++) {
-        left = std::min(left, screen_pos[i].x);
-        top = std::max(top, screen_pos[i].y);
-        right = std::max(right, screen_pos[i].x);
-        bottom = std::min(bottom, screen_pos[i].y);
+    for (auto &point : screen_pos) {
+        left = std::min(left, point.x);
+        top = std::max(top, point.y);
+        right = std::max(right, point.x);
+        bottom = std::min(bottom, point.y);
     }
 
     out_box = { left, bottom, right - left, (top - bottom) };
