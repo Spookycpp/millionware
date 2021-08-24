@@ -123,8 +123,6 @@ struct settings_t {
 			bool  head_spot = false;
             color_t head_spot_color = {255, 255, 255};
 
-			bool  barrel = false;
-
 			bool  glow = false;
             color_t glow_color = {222, 102, 122, 150};
 

@@ -100,7 +100,6 @@ namespace features::visuals::esp {
         draw_flags(entity_box, player);
         draw_skeleton(player);
         draw_headspot(player);
-        draw_barrel(player);
     }
 
     void draw_box(const bounding_box_t &entity_box, c_player *player) {
@@ -364,40 +363,6 @@ namespace features::visuals::esp {
 
         const color_t col = get_color(player, settings.visuals.player.head_spot_color);
         render::fill_circle(screen, 2.0f, col);
-    }
-
-    void draw_barrel(c_player *player) {
-        if (!settings.visuals.player.barrel) {
-            return;
-        }
-
-        const auto weapon = reinterpret_cast<c_weapon *>(player->get_active_weapon_handle().get());
-        if (!weapon) {
-            return;
-        }
-
-        const weapon_info_t *weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
-        if (!weapon_info) {
-            return;
-        }
-
-        const vector_t eye_angles = player->get_eye_angles();
-
-        vector_t f;
-        math::angle_to_vector(eye_angles, f);
-        f *= weapon_info->range;
-
-        const vector_t src = player->get_hitbox_pos(HEAD);
-        const vector_t dst = src + f;
-
-        c_trace_filter filter;
-        filter.skip = player;
-
-        trace_t tr;
-        interfaces::trace->trace_ray(ray_t{ src, dst }, MASK_SHOT, &filter, &tr);
-
-        interfaces::debug_overlay->add_line(tr.start_pos, tr.end_pos, { 255, 255, 255 }, false, interfaces::global_vars->interval_per_tick);
-        interfaces::debug_overlay->add_swept_box(tr.end_pos, tr.end_pos, -.9f, .9f, eye_angles, { 255, 255, 255 }, interfaces::global_vars->interval_per_tick);
     }
 
     void draw_planted_bomb(c_entity *entity) {
