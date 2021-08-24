@@ -92,7 +92,7 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
             interfaces::global_vars->current_time
         };
 
-        features::game_events::inferno::on_inferno_startburn(data);
+        //features::game_events::inferno::on_inferno_startburn(data);
     }
 	else if (std::strncmp(game_event->get_name(), xs("smokegrenade_detonate"), 22) == 0) {
 		const grenade_detonate_data_t data{
@@ -101,7 +101,7 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
 			interfaces::global_vars->current_time
 		};
 
-		features::game_events::smoke::on_smokegrenade_detonate(data);
+		//features::game_events::smoke::on_smokegrenade_detonate(data);
 	}
 	else if (std::strncmp(game_event->get_name(), xs("decoy_started"), 14) == 0) {
 		const grenade_detonate_data_t data{
@@ -110,7 +110,7 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
 			interfaces::global_vars->current_time
 		};
 
-		features::game_events::decoy::on_decoy_started(data);
+		//features::game_events::decoy::on_decoy_started(data);
 	}
 
 	lua::callbacks::run_events(game_event);
