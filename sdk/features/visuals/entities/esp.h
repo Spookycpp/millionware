@@ -9,14 +9,6 @@ namespace features::visuals::esp {
         float height;
     };
 
-    /*struct entity_esp_t {
-        int predicted_money;
-        float last_server_update;
-        vector_t position;
-        int last_health;
-        int health_fade;
-    };*/
-
     struct entity_esp_t {
         vector_t position;
         float fade;
@@ -43,6 +35,6 @@ namespace features::visuals::esp {
     void draw_defusal_kit(c_entity *entity, float dist_to_local);
 
     IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, float scale = 4.0f);
-    void update_dormant_pos(int index, const vector_t &position);
-    void update_predicted_money(int index, int money);
+    void update_position(int idx, const vector_t &pos);
+    void reset_position();
 } // namespace features::visuals::esp
