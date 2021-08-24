@@ -70,6 +70,12 @@ namespace lua_internal::tables::client {
         return {col.r, col.g, col.b, col.a};
     }
 
+    inline vec2d screen_size(lua_State *l) {
+        int x, y;
+        interfaces::engine_client->get_screen_size(x, y);
+        return { static_cast<float>(x), static_cast<float>(y) };
+    }
+
     inline bool in_edgebug(lua_State *l) {
         return features::movement::predicted_successful && interfaces::global_vars->tick_count < features::movement::prediction_ticks + features::movement::prediction_timestamp;
     }
@@ -125,6 +131,7 @@ inline void lua_internal::context::lua_client() {
         .addFunction(xs("userid_to_entity"), std::function([this]() { return tables::client::userid_to_entity(l); }))
         .addFunction(xs("find_pattern"), std::function([this]() { return tables::client::find_pattern(l); }))
         .addFunction(xs("accent_color"), std::function([this]() { return tables::client::accent_color(l); }))
+        .addFunction(xs("screen_size"), std::function([this]() { return tables::client::screen_size(l); }))
         .addFunction(xs("in_edgebug"), std::function([this]() { return tables::client::in_edgebug(l); }))
         .addFunction(xs("edgebugged"), std::function([this]() { return tables::client::edgebugged(l); }))
         .addFunction(xs("print_to_chat"), std::function([this]() { tables::client::print_to_chat(l); }))
