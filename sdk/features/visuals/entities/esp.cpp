@@ -70,21 +70,6 @@ static bool get_bounding_box(c_entity *entity, bounding_box_t &out_box) {
 namespace features::visuals::esp {
     std::vector<entity_esp_t> entity_esp;
 
-    void update_position(const int idx, const vector_t &pos) {
-        entity_esp.at(idx).position = pos;
-
-        if (entity_esp.at(idx).fade > 0.0f && entity_esp.at(idx).fade <= 0.3f && entity_esp.at(idx).spotted) {
-            entity_esp.at(idx).fade = 0.3f;
-        }
-    }
-
-    void reset_position() {
-        for (auto &[position, fade, spotted] : entity_esp) {
-            fade = 0.0f;
-            spotted = false;
-        }
-    }
-
     c_entity *get_local_or_spectator() {
         return cheat::local_player;
     }
@@ -867,16 +852,20 @@ namespace features::visuals::esp {
         return texture;
     }
 
-    /*void update_dormant_pos(int index, const vector_t &position) {
-        auto &entity_info = get_entity_info(index);
+    void update_position(const int idx, const vector_t &pos) {
+        auto &[position, fade, spotted] = entity_esp.at(idx);
 
-        entity_info.last_server_update = interfaces::global_vars->current_time;
-        entity_info.position = position;
+        position = pos;
+
+        if (fade > 0.0f && fade <= 0.3f && spotted) {
+            fade = 0.3f;
+        }
     }
 
-    void update_dormant_pos(int index, int money) {
-        auto &entity_info = get_entity_info(index);
-
-        entity_info.predicted_money = money;
-    }*/
+    void reset_position() {
+        for (auto &[position, fade, spotted] : entity_esp) {
+            fade = 0.0f;
+            spotted = false;
+        }
+    }
 } // namespace features::visuals::esp
