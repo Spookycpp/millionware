@@ -89,7 +89,7 @@ namespace lua_internal::tables {
             } break;
 
             case send_prop_type::DPT_Vector: {
-                const auto v = m_entity->get<vector_t>(offset);
+                const auto &v = m_entity->get<vector_t>(offset);
                 table = vec3d{ v.x, v.y, v.z };
             } break;
 

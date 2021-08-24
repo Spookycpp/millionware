@@ -52,12 +52,13 @@ namespace features::game_events::inferno {
             std::vector<vector_t> points = get_points(entity);
             
             for (auto &point : points) {
-                if (point_t screen_pos; math::world_to_screen(point, screen_pos)) {
+                point_t screen_pos;
+                if (math::world_to_screen(point, screen_pos)) {
                     convex_hull_points.emplace_back(screen_pos.x, screen_pos.y);
                 }
             }
 
-            if (points.size() < 3) {
+            if (convex_hull_points.size() < 3) {
                 continue;
             }
 
@@ -93,19 +94,19 @@ namespace features::game_events::inferno {
                 continue;
             }
 
-            render::fill_circle(screen_pos, 12.0f, { 5, 5, 5, 155 });
+            render::fill_circle(convex_hull_points.front(), 12.0f, { 5, 5, 5, 155 });
 
             // draw progress
             const color_t color    = settings.visuals.world.grenades_color;
             const color_t bg_color = color_t::blend({ 33, 33, 33, 255 }, color, 0.3f);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 13.0f, min, max);
+            ImGui::GetOverlayDrawList()->PathArcTo({ convex_hull_points.front().x, convex_hull_points.front().y }, 13.0f, min, max);
             ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 65), 0, 1);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 12.0f, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
+            ImGui::GetOverlayDrawList()->PathArcTo({ convex_hull_points.front().x, convex_hull_points.front().y }, 12.0f, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
             ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 185), 0, 2);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 10.0f, min, max);
+            ImGui::GetOverlayDrawList()->PathArcTo({ convex_hull_points.front().x, convex_hull_points.front().y }, 10.0f, min, max);
             ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
 
             // draw icon
@@ -117,7 +118,7 @@ namespace features::game_events::inferno {
             }
 
             if (molotov_tex && alert_tex) {
-                render::draw_image({ screen_pos.x - 5.0f, screen_pos.y - 7.0f }, { 11.0f, 12.0f }, will_die ? color_t{ 230, 70, 70 } : color_t{ 255, 255, 255 }, will_die ? alert_tex : molotov_tex, 2.0f);
+                render::draw_image({ convex_hull_points.front().x - 5.0f, convex_hull_points.front().y - 7.0f }, { 11.0f, 12.0f }, will_die ? color_t{ 230, 70, 70 } : color_t{ 255, 255, 255 }, will_die ? alert_tex : molotov_tex, 2.0f);
             }
         }
     }

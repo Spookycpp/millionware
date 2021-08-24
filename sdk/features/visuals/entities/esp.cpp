@@ -323,9 +323,7 @@ namespace features::visuals::esp {
         }
 
         std::array<matrix3x4_t, 128> matrices = {};
-
-        memcpy(matrices.data(), player->get_cached_bone_data().get_elements(),
-            player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
+        memcpy(matrices.data(), player->get_cached_bone_data().get_elements(), player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
 
         /*if (!player->get_renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time)) {
             return;
