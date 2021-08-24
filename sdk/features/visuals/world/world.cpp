@@ -294,7 +294,7 @@ namespace features::visuals::world {
 
         const point_t screen_size = render::get_screen_size();
 
-        float y_pos = 80.0f * hud_scaling->get_float() + (screen_size.y - screen_size.y * safezoney->get_float() + 1.0f) / 2.0f;
+        float y_pos = 95.0f * hud_scaling->get_float() + (screen_size.y - screen_size.y * safezoney->get_float() + 1.0f) / 2.0f;
 
         // timer bar
         constexpr float bar_width = 250.0f;
