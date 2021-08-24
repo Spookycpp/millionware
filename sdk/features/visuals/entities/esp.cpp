@@ -343,31 +343,6 @@ namespace features::visuals::esp {
             math::matrix_position(matrices.at(i), child);
             math::matrix_position(matrices.at(bone->parent), parent);
 
-            // this is to fix the neck glitch
-            static const int chest_bone_number = 6;
-            vector_t chest_bone, upper_chest_bone;
-
-            math::matrix_position(matrices.at(chest_bone_number + 1), upper_chest_bone);
-            math::matrix_position(matrices.at(chest_bone_number), chest_bone);
-
-            vector_t upper_direction = upper_chest_bone - chest_bone;
-            vector_t breast_bone = chest_bone + upper_direction / 2.0f;
-
-            vector_t child_delta = child - breast_bone;
-            vector_t parent_delta = parent - breast_bone;
-
-            if (parent_delta.length() < 9 && child_delta.length() < 9) {
-                parent = breast_bone;
-            }
-
-            if (i == chest_bone_number - 1) {
-                child = breast_bone;
-            }
-
-            if (std::abs(child_delta.z) < 5 && (parent_delta.length() < 5 && child_delta.length() < 5) || i == chest_bone_number) {
-                continue;
-            }
-
             if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen)) {
                 continue;
             }
