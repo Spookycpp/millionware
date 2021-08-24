@@ -60,10 +60,10 @@ namespace features::engine_prediction {
     }
 
     void repredict() {
-        if (interfaces::client_state->delta_tick > 0) {
+        /*if (interfaces::client_state->delta_tick > 0) {
             interfaces::prediction->update(interfaces::client_state->delta_tick, interfaces::client_state->delta_tick > 0, interfaces::client_state->last_command_ack,
                                            interfaces::client_state->last_command + interfaces::client_state->choked_commands);
-        }
+        }*/
     }
 
     void engine_prediction::store() {
