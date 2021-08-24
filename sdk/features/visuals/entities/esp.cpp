@@ -179,27 +179,12 @@ namespace features::visuals::esp {
         }
     }
 
-    color_t blend_color(const color_t in, const float progress) {
-        static const color_t clr_gray = { 160, 160, 160, 255 };
-        const int a = in.a;
-
-        color_t ret = color_t::blend(clr_gray, in, 0.1f + progress * 0.9f);
-        ret.a = a;
-        return ret;
-    }
-
     void draw_box(const bounding_box_t &entity_box, c_player *player) {
         if (!settings.visuals.player.bounding_box) {
             return;
         }
 
-        color_t col = settings.visuals.player.bounding_box_color;
-        if (player->get_networkable()->is_dormant()) {
-            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
-
-            col = blend_color(col, anim);
-            col.a *= anim;
-        }
+        const color_t col = get_color(player, settings.visuals.player.bounding_box_color);
 
         const auto box_position = point_t{ entity_box.x, entity_box.y };
         const auto box_size = point_t{ entity_box.width, entity_box.height };
@@ -219,13 +204,7 @@ namespace features::visuals::esp {
         if (!interfaces::engine_client->get_player_info(player->get_networkable()->index(), info))
             return;
 
-        color_t col = settings.visuals.player.player_name_color;
-        if (player->get_networkable()->is_dormant()) {
-            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
-
-            col = blend_color(col, anim);
-            col.a *= anim;
-        }
+        const color_t col = get_color(player, settings.visuals.player.player_name_color);
 
         const auto player_name = info.fake_player ? std::format(xs("BOT {}"), info.name) : info.name;
 
@@ -244,13 +223,7 @@ namespace features::visuals::esp {
         const auto red = std::min((510 * (100 - clamped_health)) / 100, 255);
         const auto green = std::min((510 * clamped_health) / 100, 255);
 
-        color_t col = { red, green, 0, 210 };
-        if (player->get_networkable()->is_dormant()) {
-            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
-
-            col = blend_color(col, anim);
-            col.a *= anim;
-        }
+        const color_t col = get_color(player, { red, green, 0, 210 });
 
         render::fill_rect({ entity_box.x - 6, entity_box.y - 1 }, { 4, entity_box.height + 2 }, { 0, 0, 0, col.a });
         render::fill_rect({ entity_box.x - 5, entity_box.y + (entity_box.height - bar_size) }, { 2, bar_size }, col);
@@ -277,13 +250,7 @@ namespace features::visuals::esp {
         const auto box_multiplier = player->get_armor() / 100.0f;
         const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        color_t col = { 255, 255, 255 };
-        if (player->get_networkable()->is_dormant()) {
-            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
-
-            col = blend_color(col, anim);
-            col.a *= anim;
-        }
+        const color_t col = get_color(player, { 255, 255, 255 });
 
         render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, col.a });
         render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 3.0f }, { box_width, 2.0f }, { 255, 255, 255 });
@@ -320,13 +287,7 @@ namespace features::visuals::esp {
             return;
         }
 
-        color_t col = settings.visuals.player.ammo_color;
-        if (player->get_networkable()->is_dormant()) {
-            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
-
-            col = blend_color(col, anim);
-            col.a *= anim;
-        }
+        const color_t col = get_color(player, settings.visuals.player.ammo_color);
 
         const auto player_index = player->get_networkable()->index();
         const auto reload_layer = &player->animation_overlay().element(1);
@@ -379,13 +340,7 @@ namespace features::visuals::esp {
 
         localized_name_size += point_t{ 1.0f, 1.0f };
 
-        color_t col = { 255, 255, 255 };
-        if (player->get_networkable()->is_dormant()) {
-            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
-
-            col = blend_color(col, anim);
-            col.a *= anim;
-        }
+        color_t col = get_color(player, { 255, 255, 255 });
 
         render::draw_text_outlined({ entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 1.0f }, 
             col, { 5, 5, 5, col.a }, localized_name_buffer, FONT_SMALL_TEXT);
@@ -397,13 +352,7 @@ namespace features::visuals::esp {
         
 
         auto draw_flag = [flag_offset = 0.0f, &entity_box, player](const char *flag_text, const color_t &flag_color) mutable {
-            color_t col = flag_color;
-            if (player->get_networkable()->is_dormant()) {
-                const float anim = entity_esp.at(player->get_networkable()->index()).fade;
-
-                col = blend_color(col, anim);
-                col.a *= anim;
-            }
+            const color_t col = get_color(player, flag_color);
 
             const auto flag_text_size = render::measure_text(flag_text, FONT_SMALL_TEXT);
 
@@ -496,14 +445,8 @@ namespace features::visuals::esp {
             if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen))
                 continue;
 
-            color_t col = settings.visuals.player.skeleton_color;
-            if (player->get_networkable()->is_dormant()) {
-                const float anim = entity_esp.at(player->get_networkable()->index()).fade;
 
-                col = blend_color(col, anim);
-                col.a *= anim;
-            }
-
+            color_t col = get_color(player, settings.visuals.player.skeleton_color);
             render::draw_line(child_screen, parent_screen, col);
         }
     }
@@ -586,7 +529,7 @@ namespace features::visuals::esp {
     void draw_dropped_weapon(c_entity *entity, const float dist_to_local) {
         auto weapon = reinterpret_cast<c_weapon *>(entity);
 
-        if (weapon->get_owner_handle() != entity_handle_t() || weapon->get_networkable()->is_dormant()) {
+        if (weapon->get_owner_handle() != entity_handle_t()) {
             return;
         }
 
@@ -812,8 +755,8 @@ namespace features::visuals::esp {
         color_t icon_color = settings.visuals.world.defusal_kit_color;
         color_t text_color = { 255, 255, 255 };
         if (dist_to_local > 250.0f) {
-            icon_color.a *= static_cast<int>(std::clamp((300.0f - (dist_to_local - 250.0f)) / 300.0f, 0.0f, 1.0f));
-            text_color.a *= static_cast<int>(std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f));
+            icon_color.a *= std::clamp((300.0f - (dist_to_local - 250.0f)) / 300.0f, 0.0f, 1.0f);
+            text_color.a *= std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f);
         }
 
         // draw
@@ -850,6 +793,27 @@ namespace features::visuals::esp {
         }
 
         return texture;
+    }
+
+    color_t get_color(c_entity *entity, color_t col) {
+        const auto blend = [](const color_t in, const float progress) {
+            static const color_t clr_gray = { 160, 160, 160, 255 };
+            const int a = in.a;
+
+            color_t ret = color_t::blend(clr_gray, in, 0.1f + progress * 0.9f);
+            ret.a = a;
+
+            return ret;
+        };
+
+        if (entity->get_networkable()->is_dormant()) {
+            const float anim = entity_esp.at(entity->get_networkable()->index()).fade;
+
+            col = blend(col, anim);
+            col.a *= anim;
+        }
+
+        return col;
     }
 
     void update_position(const int idx, const vector_t &pos) {

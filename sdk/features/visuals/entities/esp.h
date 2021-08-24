@@ -35,6 +35,7 @@ namespace features::visuals::esp {
     void draw_defusal_kit(c_entity *entity, float dist_to_local);
 
     IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, float scale = 4.0f);
+    color_t get_dormant_color(c_entity *entity, color_t col);
     void update_position(int idx, const vector_t &pos);
     void reset_position();
 } // namespace features::visuals::esp
