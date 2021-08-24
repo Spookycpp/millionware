@@ -17,6 +17,10 @@ namespace features::game_events::smoke {
     std::vector<grenade_detonate_data_t> smoke_vec;
 
 	void on_smokegrenade_detonate(const grenade_detonate_data_t &data) {
+        if (!settings.visuals.world.grenades) {
+            return;
+        }
+
         smoke_vec.emplace_back(data);
 	}
 
@@ -25,6 +29,10 @@ namespace features::game_events::smoke {
     }
 
     void draw() {
+        if (!settings.visuals.world.grenades) {
+            return;
+        }
+
         if (smoke_vec.empty()) {
             return;
         }

@@ -17,6 +17,10 @@ namespace features::game_events::decoy {
     std::vector<grenade_detonate_data_t> decoy_vec;
 
     void on_decoy_started(const grenade_detonate_data_t &data) {
+        if (!settings.visuals.world.grenades) {
+            return;
+        }
+
         decoy_vec.emplace_back(data);
     }
 
@@ -25,6 +29,10 @@ namespace features::game_events::decoy {
     }
 
     void draw() {
+        if (!settings.visuals.world.grenades) {
+            return;
+        }
+
         if (decoy_vec.empty()) {
             return;
         }

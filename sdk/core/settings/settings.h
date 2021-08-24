@@ -158,6 +158,8 @@ struct settings_t {
             color_t weapon_color = {255, 255, 255};
 			bool    grenades = false;
             color_t grenades_color = { 119, 227, 40 };
+			bool    molotov_spread = false;
+			color_t molotov_spread_color = { 255, 0, 0, 75 };
 			bool    planted_bomb = false;
             color_t planted_bomb_color = {255, 255, 255};
 			bool    dropped_bomb = false;
