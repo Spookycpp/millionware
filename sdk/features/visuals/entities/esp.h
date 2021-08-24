@@ -9,12 +9,18 @@ namespace features::visuals::esp {
         float height;
     };
 
-    struct entity_esp_t {
+    /*struct entity_esp_t {
         int predicted_money;
         float last_server_update;
         vector_t position;
         int last_health;
         int health_fade;
+    };*/
+
+    struct entity_esp_t {
+        vector_t position;
+        float fade;
+        bool spotted;
     };
 
     void frame();

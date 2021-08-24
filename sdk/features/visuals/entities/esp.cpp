@@ -1,3 +1,6 @@
+// ReSharper disable CppClangTidyClangDiagnosticImplicitIntFloatConversion
+#pragma warning(disable:4244)
+
 #include <algorithm>
 #include <array>
 #include <cctype>
@@ -21,17 +24,16 @@
 
 using namespace features::visuals::esp;
 
-// cringe but ye
 static std::array<float, 65> m_bottom_offset;
 
-static std::unordered_map<int, entity_esp_t> entity_esp_info;
-
-static entity_esp_t &get_entity_info(int index) {
-    if (entity_esp_info.find(index) == entity_esp_info.end())
-        entity_esp_info.insert({ index, {} });
-
-    return entity_esp_info[index];
-}
+//static std::unordered_map<int, entity_esp_t> entity_esp_info;
+//
+//static entity_esp_t &get_entity_info(int index) {
+//    if (entity_esp_info.find(index) == entity_esp_info.end())
+//        entity_esp_info.insert({ index, {} });
+//
+//    return entity_esp_info[index];
+//}
 
 static bool get_bounding_box(c_entity *entity, features::visuals::esp::bounding_box_t &out_box) {
     const auto collideable = entity->get_collideable();
@@ -68,44 +70,89 @@ static bool get_bounding_box(c_entity *entity, features::visuals::esp::bounding_
 }
 
 namespace features::visuals::esp {
+    std::vector<entity_esp_t> entity_esp;
+
+    void update_position(const int idx, const vector_t &pos) {
+        entity_esp.at(idx).position = pos;
+
+        if (entity_esp.at(idx).fade > 0.0f && entity_esp.at(idx).fade <= 0.3f && entity_esp.at(idx).spotted) {
+            entity_esp.at(idx).fade = 0.3f;
+        }
+    }
+
+    void reset_position() {
+        for (auto &[position, fade, spotted] : entity_esp) {
+            fade = 0.0f;
+            spotted = false;
+        }
+    }
+
+    c_entity *get_local_or_spectator() {
+        return cheat::local_player;
+    }
 
     void frame() {
-
-        if (!cheat::local_player || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+        if (!cheat::local_player || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected()) {
             return;
+        }
 
         for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {
-            const auto entity = interfaces::entity_list->get_entity(i);
+            entity_esp.resize(interfaces::entity_list->get_highest_ent_index());
 
+            c_entity *entity = interfaces::entity_list->get_entity(i);
             if (!entity) {
                 continue;
             }
 
             const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(entity->get_abs_origin());
 
-            // yandere dev moment
-            if (entity->is_weapon() && !entity->get_networkable()->is_dormant()) {
-                draw_dropped_weapon(entity, dist_to_local);
-            }
-            else if (entity->is_grenade() && !entity->get_networkable()->is_dormant()) {
-                draw_thrown_utility(entity);
-            }
-            else if (!entity->get_networkable()->is_dormant()) {
-                draw_planted_bomb(entity);
-                draw_defusal_kit(entity, dist_to_local);
-            }
+            // handle dormancy
+            auto &[position, fade, spotted] = entity_esp.at(i);
 
-            features::visuals::world::draw_world(entity);
-
-            if (!entity->is_player())
-                continue;
-
-            auto &entity_info = get_entity_info(i);
+            // dormancy fade
+            constexpr float anim_rate = 1.0f / 0.5f;
+            float rate = interfaces::global_vars->frame_time * anim_rate;
 
             if (!entity->get_networkable()->is_dormant()) {
+                update_position(i, entity->get_renderable()->get_render_origin());
+                fade = fade > 0.0f ? std::clamp(fade + rate, 0.0f, 1.0f) : 0.5f;
+                spotted = true;
+            }
+            else {
+                if (fade < 0.3f && dist_to_local <= 2000.0f) {
+                    rate *= 0.02f;
+                }
+
+                fade = std::clamp(fade -= rate, 0.0f, 1.0f);
+
+                if (fade <= 0.0f) {
+                    spotted = false;
+                    continue;
+                }
+            }
+            
+            if (entity->is_weapon()) {
+                draw_dropped_weapon(entity, dist_to_local);
+            }
+            else if (entity->is_grenade()) {
+                draw_thrown_utility(entity);
+            }
+
+            draw_planted_bomb(entity);
+            draw_defusal_kit(entity, dist_to_local);
+
+            world::draw_world(entity);
+
+            if (!entity->is_player()) {
+                continue;
+            }
+
+            //auto &entity_info = get_entity_info(i);
+
+            /*if (!entity->get_networkable()->is_dormant()) {
                 entity_info.last_server_update = interfaces::global_vars->current_time;
                 entity_info.position = entity->get_vec_origin();
-            }
+            }*/
 
             const auto player = (c_player *)entity;
 
@@ -115,10 +162,10 @@ namespace features::visuals::esp {
             if (player->get_team_num() == cheat::local_player->get_team_num())
                 continue;
 
-            const auto time_since_last_update = interfaces::global_vars->current_time - entity_info.last_server_update;
+            /*const auto time_since_last_update = interfaces::global_vars->current_time - entity_info.last_server_update;
 
             if (time_since_last_update > 0.5f)
-                continue;
+                continue;*/
 
             bounding_box_t entity_box;
 
@@ -149,17 +196,34 @@ namespace features::visuals::esp {
         }
     }
 
-    void draw_box(const bounding_box_t &entity_box, c_player *player) {
+    color_t blend_color(const color_t in, const float progress) {
+        static const color_t clr_gray = { 160, 160, 160, 255 };
+        const int a = in.a;
 
-        if (!settings.visuals.player.bounding_box)
+        color_t ret = color_t::blend(clr_gray, in, 0.1f + progress * 0.9f);
+        ret.a = a;
+        return ret;
+    }
+
+    void draw_box(const bounding_box_t &entity_box, c_player *player) {
+        if (!settings.visuals.player.bounding_box) {
             return;
+        }
+
+        color_t col = settings.visuals.player.bounding_box_color;
+        if (player->get_networkable()->is_dormant()) {
+            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+            col = blend_color(col, anim);
+            col.a *= anim;
+        }
 
         const auto box_position = point_t{ entity_box.x, entity_box.y };
         const auto box_size = point_t{ entity_box.width, entity_box.height };
 
-        render::draw_rect(box_position - 1.0f, box_size + 2.0f, { 0, 0, 0, 210 });
-        render::draw_rect(box_position + 1.0f, box_size - 2.0f, { 0, 0, 0, 210 });
-        render::draw_rect(box_position, box_size, settings.visuals.player.bounding_box_color);
+        render::draw_rect(box_position - 1.0f, box_size + 2.0f, { 0, 0, 0, col.a });
+        render::draw_rect(box_position + 1.0f, box_size - 2.0f, { 0, 0, 0, col.a });
+        render::draw_rect(box_position, box_size, col);
     }
 
     void draw_name(const bounding_box_t &entity_box, c_player *player) {
@@ -172,25 +236,41 @@ namespace features::visuals::esp {
         if (!interfaces::engine_client->get_player_info(player->get_networkable()->index(), info))
             return;
 
+        color_t col = settings.visuals.player.player_name_color;
+        if (player->get_networkable()->is_dormant()) {
+            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+            col = blend_color(col, anim);
+            col.a *= anim;
+        }
+
         const auto player_name = info.fake_player ? std::format(xs("BOT {}"), info.name) : info.name;
 
         const auto text_size = render::measure_text(player_name.c_str(), FONT_VERDANA_12_BOLD);
-        render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2) + 1, entity_box.y - text_size.y - 2 + 1 }, { 5, 5, 5, 220 }, player_name.c_str(), FONT_VERDANA_12_BOLD);
-        render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y - 2 }, settings.visuals.player.player_name_color, player_name.c_str(), FONT_VERDANA_12_BOLD);
+        render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2) + 1, entity_box.y - text_size.y - 2 + 1 }, { 5, 5, 5, col.a }, player_name.c_str(), FONT_VERDANA_12_BOLD);
+        render::draw_text({ entity_box.x + (entity_box.width / 2) - (text_size.x / 2), entity_box.y - text_size.y - 2 }, col, player_name.c_str(), FONT_VERDANA_12_BOLD);
     }
 
     void draw_health(const bounding_box_t &entity_box, c_player *player) {
-
-        if (!settings.visuals.player.health)
+        if (!settings.visuals.player.health) {
             return;
+        }
 
         const auto clamped_health = std::clamp(player->get_health(), 0, player->max_health());
         const auto bar_size = std::clamp((clamped_health * entity_box.height) / 100, 0.f, entity_box.height);
         const auto red = std::min((510 * (100 - clamped_health)) / 100, 255);
         const auto green = std::min((510 * clamped_health) / 100, 255);
 
-        render::fill_rect({ entity_box.x - 6, entity_box.y - 1 }, { 4, entity_box.height + 2 }, { 0, 0, 0, 180 });
-        render::fill_rect({ entity_box.x - 5, entity_box.y + (entity_box.height - bar_size) }, { 2, bar_size }, { red, green, 0, 210 });
+        color_t col = { red, green, 0, 210 };
+        if (player->get_networkable()->is_dormant()) {
+            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+            col = blend_color(col, anim);
+            col.a *= anim;
+        }
+
+        render::fill_rect({ entity_box.x - 6, entity_box.y - 1 }, { 4, entity_box.height + 2 }, { 0, 0, 0, col.a });
+        render::fill_rect({ entity_box.x - 5, entity_box.y + (entity_box.height - bar_size) }, { 2, bar_size }, col);
 
         // don't use clamped health here, because if their health
         // is larger than 100 we want to draw the health amount
@@ -201,19 +281,28 @@ namespace features::visuals::esp {
 
             const auto health_text_size = render::measure_text(health_text_buffer, FONT_SMALL_TEXT);
 
-            render::draw_text_outlined({ entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f }, { 255, 255, 255, 220 }, { 5, 5, 5, 220 }, health_text_buffer, FONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f }, { 255, 255, 255, col.a }, { 5, 5, 5, col.a }, health_text_buffer, FONT_SMALL_TEXT);
         }
     }
 
     void draw_armor(const bounding_box_t &entity_box, c_player *player) {
-        if (!settings.visuals.player.armor)
+        if (!settings.visuals.player.armor) {
             return;
+        }
 
         const auto player_index = player->get_networkable()->index();
         const auto box_multiplier = player->get_armor() / 100.0f;
         const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, 180 });
+        color_t col = { 255, 255, 255 };
+        if (player->get_networkable()->is_dormant()) {
+            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+            col = blend_color(col, anim);
+            col.a *= anim;
+        }
+
+        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, col.a });
         render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 3.0f }, { box_width, 2.0f }, { 255, 255, 255 });
 
         if (player->get_armor() < 90) {
@@ -223,36 +312,46 @@ namespace features::visuals::esp {
 
             const auto armor_text_size = render::measure_text(armor_text_buffer, FONT_SMALL_TEXT);
 
-            render::draw_text_outlined({ entity_box.x + box_width - armor_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] }, { 255, 255, 255, 220 }, { 5, 5, 5, 220 }, armor_text_buffer, FONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x + box_width - armor_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] }, { 255, 255, 255, col.a }, { 5, 5, 5, col.a }, armor_text_buffer, FONT_SMALL_TEXT);
         }
 
         m_bottom_offset[player_index] += 6.0f;
     }
 
     void draw_ammo(const bounding_box_t &entity_box, c_player *player) {
-        if (!settings.visuals.player.ammo)
+        if (!settings.visuals.player.ammo) {
             return;
+        }
 
-        const auto weapon = (c_weapon *)player->get_active_weapon_handle().get();
-
-        if (!weapon)
+        const auto weapon = static_cast<c_weapon *>(player->get_active_weapon_handle().get());
+        if (!weapon) {
             return;
+        }
 
         const auto weapon_data = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
-
-        if (!weapon_data)
+        if (!weapon_data) {
             return;
+        }
 
-        if (weapon_data->max_clip_ammo < 1)
+        if (weapon_data->max_clip_ammo < 1) {
             return;
+        }
+
+        color_t col = settings.visuals.player.ammo_color;
+        if (player->get_networkable()->is_dormant()) {
+            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+            col = blend_color(col, anim);
+            col.a *= anim;
+        }
 
         const auto player_index = player->get_networkable()->index();
         const auto reload_layer = &player->animation_overlay().element(1);
         const auto box_multiplier = player->is_reloading() ? reload_layer->cycle : (weapon->get_ammo1() / (float)weapon_data->max_clip_ammo);
         const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, 180 });
-        render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 3.0f }, { box_width, 2.0f }, settings.visuals.player.ammo_color);
+        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, col.a });
+        render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + m_bottom_offset[player_index] + 3.0f }, { box_width, 2.0f }, col);
 
         if (weapon->get_ammo1() > 0 && weapon->get_ammo1() < weapon_data->max_clip_ammo && !player->is_reloading()) {
             char ammo_text_buffer[8];
@@ -261,7 +360,7 @@ namespace features::visuals::esp {
 
             const auto ammo_text_size = render::measure_text(ammo_text_buffer, FONT_SMALL_TEXT);
 
-            render::draw_text_outlined({ entity_box.x + box_width - ammo_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] - 1.0f }, { 255, 255, 255, 255 }, { 5, 5, 5, 220 }, ammo_text_buffer, FONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x + box_width - ammo_text_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player_index] - 1.0f }, { 255, 255, 255, col.a }, { 5, 5, 5, col.a }, ammo_text_buffer, FONT_SMALL_TEXT);
         }
 
         m_bottom_offset[player_index] += 5.0f;
@@ -297,18 +396,35 @@ namespace features::visuals::esp {
 
         localized_name_size += point_t{ 1.0f, 1.0f };
 
+        color_t col = { 255, 255, 255 };
+        if (player->get_networkable()->is_dormant()) {
+            const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+            col = blend_color(col, anim);
+            col.a *= anim;
+        }
+
         render::draw_text_outlined({ entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + m_bottom_offset[player->get_networkable()->index()] + 1.0f }, 
-            { 255, 255, 255, 255 }, { 5, 5, 5, 220 }, localized_name_buffer, FONT_SMALL_TEXT);
+            col, { 5, 5, 5, col.a }, localized_name_buffer, FONT_SMALL_TEXT);
 
         m_bottom_offset[player->get_networkable()->index()] += localized_name_size.y;
     }
 
     void draw_flags(const bounding_box_t &entity_box, c_player *player) {
+        
 
         auto draw_flag = [flag_offset = 0.0f, &entity_box, player](const char *flag_text, const color_t &flag_color) mutable {
+            color_t col = flag_color;
+            if (player->get_networkable()->is_dormant()) {
+                const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+                col = blend_color(col, anim);
+                col.a *= anim;
+            }
+
             const auto flag_text_size = render::measure_text(flag_text, FONT_SMALL_TEXT);
 
-            render::draw_text_outlined({ entity_box.x + entity_box.width + 3.0f, entity_box.y - 1.0f + flag_offset }, flag_color, { 5, 5, 5, 220 }, flag_text, FONT_SMALL_TEXT);
+            render::draw_text_outlined({ entity_box.x + entity_box.width + 3.0f, entity_box.y - 1.0f + flag_offset }, col.a, { 5, 5, 5, col.a }, flag_text, FONT_SMALL_TEXT);
 
             flag_offset += flag_text_size.y;
         };
@@ -347,7 +463,6 @@ namespace features::visuals::esp {
     }
 
     void draw_skeleton(c_player *player) {
-
         if (!settings.visuals.player.skeleton)
             return;
 
@@ -398,7 +513,15 @@ namespace features::visuals::esp {
             if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen))
                 continue;
 
-            render::draw_line(child_screen, parent_screen, settings.visuals.player.skeleton_color);
+            color_t col = settings.visuals.player.skeleton_color;
+            if (player->get_networkable()->is_dormant()) {
+                const float anim = entity_esp.at(player->get_networkable()->index()).fade;
+
+                col = blend_color(col, anim);
+                col.a *= anim;
+            }
+
+            render::draw_line(child_screen, parent_screen, col);
         }
     }
 
@@ -510,8 +633,8 @@ namespace features::visuals::esp {
             color_t icon_color = settings.visuals.world.weapon_color;
             color_t text_color = { 255, 255, 255 };
 
-            text_color.a *= static_cast<int>(std::clamp((1000.0f - (dist_to_local - 500.0f)) / 1000.0f, 0.0f, 1.0f));
-            icon_color.a *= static_cast<int>(std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f));
+            text_color.a *= std::clamp((1200.0f - (dist_to_local - 500.0f)) / 1200.0f, 0.0f, 1.0f);
+            icon_color.a *= std::clamp((800.0f - (dist_to_local - 250.0f)) / 800.0f, 0.0f, 1.0f);
 
             //draw
             if (icon_color.a > 0) {
@@ -746,7 +869,7 @@ namespace features::visuals::esp {
         return texture;
     }
 
-    void update_dormant_pos(int index, const vector_t &position) {
+    /*void update_dormant_pos(int index, const vector_t &position) {
         auto &entity_info = get_entity_info(index);
 
         entity_info.last_server_update = interfaces::global_vars->current_time;
@@ -757,5 +880,5 @@ namespace features::visuals::esp {
         auto &entity_info = get_entity_info(index);
 
         entity_info.predicted_money = money;
-    }
+    }*/
 } // namespace features::visuals::esp
