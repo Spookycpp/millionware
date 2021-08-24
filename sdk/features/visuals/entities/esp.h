@@ -29,7 +29,6 @@ namespace features::visuals::esp {
 
     void draw_skeleton(c_player *player);
     void draw_headspot(c_player *player);
-    void draw_barrel(c_player *player);
 
     void draw_planted_bomb(c_entity* entity);
     void draw_dropped_weapon(c_entity *entity, const float dist_to_local);
