@@ -1,11 +1,11 @@
 // ReSharper disable CppClangTidyClangDiagnosticImplicitIntFloatConversion
+// ReSharper disable CppClangTidyClangDiagnosticFloatConversion
+// ReSharper disable CppClangTidyCppcoreguidelinesNarrowingConversions
 #pragma warning(disable:4244)
 
 #include <algorithm>
 #include <array>
-#include <cctype>
 #include <cstdint>
-#include <unordered_map>
 
 #include "../../../core/cheat/cheat.h"
 #include "../../../core/interfaces/interfaces.h"
@@ -13,7 +13,6 @@
 #include "../../../engine/input/input.h"
 #include "../../../engine/logging/logging.h"
 #include "../../../engine/math/math.h"
-#include "../../../engine/render/render.h"
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 #include "../../../core/util/util.h"
@@ -26,10 +25,6 @@ using namespace features::visuals::esp;
 
 namespace features::visuals::esp {
     std::vector<entity_esp_t> entity_esp;
-
-    c_entity *get_local_or_spectator() {
-        return cheat::local_player;
-    }
 
     void frame() {
         if (!cheat::local_player || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected()) {
@@ -226,41 +221,33 @@ namespace features::visuals::esp {
     }
 
     void draw_weapon(const bounding_box_t &entity_box, c_player *player) {
-
-        if (!settings.visuals.player.weapon)
+        if (!settings.visuals.player.weapon) {
             return;
+        }
 
-        const auto weapon = (c_weapon *)player->get_active_weapon_handle().get();
-
-        if (!weapon)
+        const auto weapon = reinterpret_cast<c_weapon *>(player->get_active_weapon_handle().get());
+        if (!weapon) {
             return;
+        }
 
-        const auto weapon_data = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
-
-        if (!weapon_data)
+        const weapon_info_t *weapon_data = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
+        if (!weapon_data) {
             return;
+        }
 
-        const auto localized_name = interfaces::localize->find(weapon_data->hud_name);
+        const wchar_t *localized_name = interfaces::localize->find(weapon_data->hud_name);
 
-        char localized_name_buffer[32];
+        std::vector<char> localized_name_buf(32);
+        WideCharToMultiByte(CP_UTF8, 0, localized_name, std::wcslen(localized_name), localized_name_buf.data(), localized_name_buf.size(), nullptr, nullptr);
 
-        memset(localized_name_buffer, 0, sizeof localized_name_buffer);
-
-        const auto localized_name_length = WideCharToMultiByte(CP_UTF8, 0, localized_name, wcslen(localized_name), localized_name_buffer, sizeof localized_name_buffer, nullptr, nullptr);
-
-        for (auto i = 0; i < localized_name_length; i++)
-            localized_name_buffer[i] = std::toupper(localized_name_buffer[i]);
-
-        auto localized_name_size = render::measure_text(localized_name_buffer, FONT_SMALL_TEXT);
-
+        point_t localized_name_size = render::measure_text(localized_name_buf.data(), FONT_SMALL_TEXT);
         localized_name_size += point_t{ 1.0f, 1.0f };
 
-        color_t col = get_color(player, { 255, 255, 255 });
-
-        int idx = player->get_networkable()->index();
+        const color_t col = get_color(player, { 255, 255, 255 });
+        const int idx = player->get_networkable()->index();
 
         render::draw_text_outlined({ entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 1.0f },
-            col, { 5, 5, 5, col.a }, localized_name_buffer, FONT_SMALL_TEXT);
+            col, { 5, 5, 5, col.a }, localized_name_buf.data(), FONT_SMALL_TEXT);
 
         entity_esp.at(idx).bottom_offset += localized_name_size.y;
     }
@@ -318,24 +305,26 @@ namespace features::visuals::esp {
     }
 
     void draw_skeleton(c_player *player) {
-        if (!settings.visuals.player.skeleton)
+        if (!settings.visuals.player.skeleton) {
             return;
+        }
 
         const auto studio_hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
-
-        if (!studio_hdr)
+        if (!studio_hdr) {
             return;
+        }
 
         std::array<matrix3x4_t, 128> matrices = {};
 
-        if (!player->get_renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time))
+        if (!player->get_renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time)) {
             return;
+        }
 
         for (int i = 0; i < studio_hdr->bones_count; ++i) {
             studio_bone_t *bone = studio_hdr->get_bone(i);
-
-            if (!bone || !(bone->flags & 0x100) || bone->parent == -1)
+            if (!bone || !(bone->flags & 0x100) || bone->parent == -1) {
                 continue;
+            }
 
             vector_t child, parent;
             point_t child_screen, parent_screen;
@@ -356,18 +345,21 @@ namespace features::visuals::esp {
             vector_t child_delta = child - breast_bone;
             vector_t parent_delta = parent - breast_bone;
 
-            if (parent_delta.length() < 9 && child_delta.length() < 9)
+            if (parent_delta.length() < 9 && child_delta.length() < 9) {
                 parent = breast_bone;
+            }
 
-            if (i == chest_bone_number - 1)
+            if (i == chest_bone_number - 1) {
                 child = breast_bone;
+            }
 
-            if (abs(child_delta.z) < 5 && (parent_delta.length() < 5 && child_delta.length() < 5) || i == chest_bone_number)
+            if (std::abs(child_delta.z) < 5 && (parent_delta.length() < 5 && child_delta.length() < 5) || i == chest_bone_number) {
                 continue;
+            }
 
-            if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen))
+            if (!math::world_to_screen(child, child_screen) || !math::world_to_screen(parent, parent_screen)) {
                 continue;
-
+            }
 
             color_t col = get_color(player, settings.visuals.player.skeleton_color);
             render::draw_line(child_screen, parent_screen, col);
@@ -375,32 +367,33 @@ namespace features::visuals::esp {
     }
 
     void draw_headspot(c_player *player) {
-
-        if (!settings.visuals.player.head_spot)
+        if (!settings.visuals.player.head_spot) {
             return;
+        }
 
         point_t screen;
-
-        if (!math::world_to_screen(player->get_hitbox_pos(HEAD), screen))
+        if (!math::world_to_screen(player->get_hitbox_pos(HEAD), screen)) {
             return;
+        }
 
-        render::fill_circle(screen, 2.f, settings.visuals.player.head_spot_color);
+        const color_t col = get_color(player, settings.visuals.player.head_spot_color);
+        render::fill_circle(screen, 2.0f, col);
     }
 
     void draw_barrel(c_player *player) {
-
-        if (!settings.visuals.player.barrel)
+        if (!settings.visuals.player.barrel) {
             return;
+        }
 
-        const auto weapon = (c_weapon *)player->get_active_weapon_handle().get();
-
-        if (!weapon)
+        const auto weapon = reinterpret_cast<c_weapon *>(player->get_active_weapon_handle().get());
+        if (!weapon) {
             return;
+        }
 
-        const auto weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
-
-        if (!weapon_info)
+        const weapon_info_t *weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
+        if (!weapon_info) {
             return;
+        }
 
         const vector_t eye_angles = player->get_eye_angles();
 
