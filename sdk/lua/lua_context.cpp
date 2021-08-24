@@ -29,12 +29,12 @@ std::array<luaL_Reg, 7> libs = {{
 }};
 
 void hook(lua_State *l, lua_Debug *dbg) {
-    
+
 }
 
 void lua_internal::context::new_state() {
 	l = luaL_newstate();
-    lua_sethook(l, hook, LUA_MASKCOUNT, 1);
+    lua_sethook(l, hook, LUA_MASKLINE | LUA_MASKCALL | LUA_MASKRET | LUA_MASKCOUNT, 1);
 
 	luabridge::enableExceptions(l);
 
@@ -48,7 +48,7 @@ void lua_internal::context::new_state() {
     // * add correct script directory to package.path *
     lua_getglobal(l, xs("package"));
     lua_getfield(l, -1, xs("path"));
-    std::string current_path = lua_tostring(l, -1); // retrieve current package.path
+    const std::string current_path = lua_tostring(l, -1); // retrieve current package.path
 
     auto game_dir = std::string(interfaces::engine_client->get_game_directory());
     game_dir.erase(game_dir.size() - 5); // remove '/csgo' from the game directory path
@@ -162,8 +162,11 @@ bool lua_internal::context::load(const std::string& path) {
 }
 
 bool lua_internal::context::run() const {
-	if (/*luabridge::LuaException::*/lua_pcall(l, 0, 0, 0)) {
-        logging::error(lua_tostring(l, -1));
+	try {
+		luabridge::LuaException::pcall(l, 0, 0, 0);
+	}
+	catch (luabridge::LuaException &ex) {
+		logging::error(ex.what());
 		lua_pop(l, 1);
 		return false;
 	}

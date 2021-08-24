@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "lua_internal.hpp"
 #include "lua_handler.hpp"
 
@@ -7,15 +9,18 @@
 #include "../source engine/view_setup.h"
 
 namespace lua {
-    inline struct {
+    /*inline struct {
         CRITICAL_SECTION critical_section;
         bool initialized = false;
-    } mutex;
+    } mutex;*/
+
+    inline std::mutex mutex;
 
     inline lua_internal::handler handler;
 
     bool init();
     void reload();
+    void unload();
 
     namespace callbacks {
         void startup();

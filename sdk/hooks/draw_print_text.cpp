@@ -6,7 +6,7 @@
 
 bool __fastcall hooks::draw_print_text(uintptr_t ecx, uintptr_t edx, const wchar_t *text, int text_length, int draw_type) {
     if (wcsncmp(text, xs(L"fps"), 3) == 0) {
-        color_t color = ui::get_accent_color();
+        const color_t color = ui::get_accent_color();
         interfaces::surface->set_text_color(color.r, color.g, color.b, color.a);
 
         auto millionware_string = std::wstring(xs(L"[millionware] "));

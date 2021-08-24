@@ -28,10 +28,10 @@ bool lua::init() {
         }
     }
 
-    if (!mutex.initialized) {
+    /*if (!mutex.initialized) {
         InitializeCriticalSection(&mutex.critical_section);
         mutex.initialized = true;
-    }
+    }*/
 
     // only ran on successful script execution
     callbacks::startup();
@@ -44,12 +44,17 @@ void lua::reload() {
     init();
 }
 
-void lua::callbacks::startup() {
-    if (!mutex.initialized) {
-        return;
-    }
+void lua::unload() {
+    handler.unload();
+}
 
-    EnterCriticalSection(&mutex.critical_section);
+void lua::callbacks::startup() {
+    /*if (!mutex.initialized) {
+        return;
+    }*/
+
+    //EnterCriticalSection(&mutex.critical_section);
+    mutex.lock();
     try {
         for (auto &it : handler.events(CRC("startup"))) {
             // push reference to lua func back onto the stack
@@ -62,7 +67,8 @@ void lua::callbacks::startup() {
     catch (luabridge::LuaException &ex) {
         logging::error(ex.what());
     }
-    LeaveCriticalSection(&mutex.critical_section);
+    //LeaveCriticalSection(&mutex.critical_section);
+    mutex.unlock();
 }
 
 void lua::callbacks::run_events(c_game_event *game_event) {
@@ -134,11 +140,12 @@ void lua::callbacks::run_events(c_game_event *game_event) {
         {("weapon_itemid"), 4},
     }};
 
-    if (!mutex.initialized) {
+    /*if (!mutex.initialized) {
         return;
-    }
+    }*/
 
-    EnterCriticalSection(&mutex.critical_section);
+    //EnterCriticalSection(&mutex.critical_section);
+    mutex.lock();
     try {
         for (auto &it : handler.events()) {
             if (!it.is_game_event) {
@@ -174,22 +181,24 @@ void lua::callbacks::run_events(c_game_event *game_event) {
                 it.ref.push();
 
                 // call the lua function
-                /*luabridge::LuaException::*/ lua_pcall(it.l, 1, 0, 0);
+                luabridge::LuaException::pcall(it.l, 1, 0, 0);
             }
         }
     }
     catch (luabridge::LuaException &ex) {
         logging::error(ex.what());
     }
-    LeaveCriticalSection(&mutex.critical_section);
+    //LeaveCriticalSection(&mutex.critical_section);
+    mutex.unlock();
 }
 
 void lua::callbacks::run_command(c_user_cmd *cmd) {
-    if (!mutex.initialized) {
+    /*if (!mutex.initialized) {
         return;
-    }
+    }*/
 
-    EnterCriticalSection(&mutex.critical_section);
+    //EnterCriticalSection(&mutex.critical_section);
+    mutex.lock();
     try {
         for (auto &it : handler.events(CRC("run_command"))) {
             // push reference to lua func back onto the stack
@@ -203,7 +212,7 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
             it.ref.push();
 
             // call the lua function
-            /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
+            luabridge::LuaException::pcall(it.l, 1, 0, 0);
 
             cmd->command_number = it.ref[("command_number")];
         }
@@ -211,15 +220,17 @@ void lua::callbacks::run_command(c_user_cmd *cmd) {
     catch (luabridge::LuaException &ex) {
         logging::error(ex.what());
     }
-    LeaveCriticalSection(&mutex.critical_section);
+    //LeaveCriticalSection(&mutex.critical_section);
+    mutex.unlock();
 }
 
 void lua::callbacks::setup_command(c_user_cmd *cmd, bool &send_packet) {
-    if (!mutex.initialized) {
+    /*if (!mutex.initialized) {
         return;
-    }
+    }*/
 
-    EnterCriticalSection(&mutex.critical_section);
+    //EnterCriticalSection(&mutex.critical_section);
+    mutex.lock();
     try {
         for (auto &it : handler.events(CRC("setup_command"))) {
             // push reference to lua func back onto the stack
@@ -242,7 +253,7 @@ void lua::callbacks::setup_command(c_user_cmd *cmd, bool &send_packet) {
             it.ref.push();
 
             // call the lua function
-            /*luabridge::LuaException::*/ lua_pcall(it.l, 1, 0, 0);
+            luabridge::LuaException::pcall(it.l, 1, 0, 0);
 
             cmd->command_number = it.ref[("command_number")];
             cmd->view_angles.x = it.ref[("pitch")];
@@ -259,15 +270,17 @@ void lua::callbacks::setup_command(c_user_cmd *cmd, bool &send_packet) {
     catch (luabridge::LuaException &ex) {
         logging::error(ex.what());
     }
-    LeaveCriticalSection(&mutex.critical_section);
+    //LeaveCriticalSection(&mutex.critical_section);
+    mutex.unlock();
 }
 
 void lua::callbacks::override_view(view_setup_t *view_setup) {
-    if (!mutex.initialized) {
+    /*if (!mutex.initialized) {
         return;
-    }
+    }*/
 
-    EnterCriticalSection(&mutex.critical_section);
+    //EnterCriticalSection(&mutex.critical_section);
+    mutex.lock();
     try {
 
         for (auto &it : handler.events(CRC("override_view"))) {
@@ -285,7 +298,7 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
             it.ref.push();
 
             // call the lua function
-            /*luabridge::LuaException::*/lua_pcall(it.l, 1, 0, 0);
+            luabridge::LuaException::pcall(it.l, 1, 0, 0);
 
             view_setup->origin.x = it.ref[("x")];
             view_setup->origin.y = it.ref[("y")];
@@ -296,47 +309,52 @@ void lua::callbacks::override_view(view_setup_t *view_setup) {
     catch (luabridge::LuaException &ex) {
         logging::error(ex.what());
     }
-    LeaveCriticalSection(&mutex.critical_section);
+    //LeaveCriticalSection(&mutex.critical_section);
+    mutex.unlock();
 }
 
 void lua::callbacks::draw() {
-    if (!mutex.initialized) {
+    /*if (!mutex.initialized) {
         return;
-    }
+    }*/
 
-    EnterCriticalSection(&mutex.critical_section);
+    //EnterCriticalSection(&mutex.critical_section);
+    mutex.lock();
     try {
         for (auto &it : handler.events(CRC("draw"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
-
+            
             // call the lua function
-            /*luabridge::LuaException::*/lua_pcall(it.l, 0, 0, 0);
+            luabridge::LuaException::pcall(it.l, 0, 0, 0);
         }
     }
     catch (luabridge::LuaException &ex) {
         logging::error(ex.what());
     }
-    LeaveCriticalSection(&mutex.critical_section);
+    //LeaveCriticalSection(&mutex.critical_section);
+    mutex.unlock();
 }
 
 void lua::callbacks::draw_front() {
-    if (!mutex.initialized) {
+    /*if (!mutex.initialized) {
         return;
-    }
+    }*/
 
-    EnterCriticalSection(&mutex.critical_section);
+    //EnterCriticalSection(&mutex.critical_section);
+    mutex.lock();
     try {
         for (auto &it : handler.events(CRC("draw_front"))) {
             // push reference to lua func back onto the stack
             lua_rawgeti(it.l, LUA_REGISTRYINDEX, it.ref[1]);
 
             // call the lua function
-            /*luabridge::LuaException::*/lua_pcall(it.l, 0, 0, 0);
+            luabridge::LuaException::pcall(it.l, 0, 0, 0);
         }
     }
     catch (luabridge::LuaException &ex) {
         logging::error(ex.what());
     }
-    LeaveCriticalSection(&mutex.critical_section);
+    //LeaveCriticalSection(&mutex.critical_section);
+    mutex.unlock();
 }

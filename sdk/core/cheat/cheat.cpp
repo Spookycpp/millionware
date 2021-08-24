@@ -75,6 +75,7 @@ bool cheat::init() {
 }
 
 bool cheat::undo() {
+    lua::unload();
 
     Discord_ClearPresence();
     Discord_Shutdown();
