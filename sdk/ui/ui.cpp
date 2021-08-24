@@ -247,10 +247,11 @@ void ui::init() {
 
         if (const auto weapons_tab = visual_category->new_tab(FONT_WEAPONS_32, ICON_WEAPON_FIVESEVEN, xs("Weapons"))) {
             if (const auto group = weapons_tab->new_group(xs("Main"))) {
-                group->new_checkbox(xs("Dropped weapons"), settings.visuals.world.weapon)->add_color_picker(settings.visuals.world.weapon_color);
-                group->new_checkbox(xs("Dropped bomb"), settings.visuals.world.dropped_bomb)->add_color_picker(settings.visuals.world.dropped_bomb_color);
-                group->new_checkbox(xs("Dropped defusal kits"), settings.visuals.world.defusal_kit)->add_color_picker(settings.visuals.world.defusal_kit_color);
+                group->new_checkbox(xs("Weapons"), settings.visuals.world.weapon)->add_color_picker(settings.visuals.world.weapon_color);
+                group->new_checkbox(xs("Bomb"), settings.visuals.world.dropped_bomb)->add_color_picker(settings.visuals.world.dropped_bomb_color);
+                group->new_checkbox(xs("Defusal kits"), settings.visuals.world.defusal_kit)->add_color_picker(settings.visuals.world.defusal_kit_color);
                 group->new_checkbox(xs("Grenades"), settings.visuals.world.grenades)->add_color_picker(settings.visuals.world.grenades_color);
+                group->new_checkbox(xs("Fire spread"), settings.visuals.world.molotov_spread)->add_color_picker(settings.visuals.world.molotov_spread_color);
             }
         }
 
