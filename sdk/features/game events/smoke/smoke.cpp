@@ -18,16 +18,6 @@ namespace features::game_events::smoke {
 
 	void on_smokegrenade_detonate(const grenade_detonate_data_t &data) {
         smoke_vec.emplace_back(data);
-
-        for (size_t i = 0; i < smoke_vec.size(); ++i) {
-            grenade_detonate_data_t &smoke = smoke_vec.at(i);
-
-            const float delta = interfaces::global_vars->current_time - smoke.start_time;
-
-            if (std::abs(delta) > smoke_duration) {
-                smoke_vec.erase(smoke_vec.begin() + i);
-            }
-        }
 	}
 
     void reset() {
@@ -37,6 +27,16 @@ namespace features::game_events::smoke {
     void draw() {
         if (smoke_vec.empty()) {
             return;
+        }
+
+        for (size_t i = 0; i < smoke_vec.size(); ++i) {
+            grenade_detonate_data_t &smoke = smoke_vec.at(i);
+
+            const float delta = interfaces::global_vars->current_time - smoke.start_time;
+
+            if (std::abs(delta) > smoke_duration) {
+                smoke_vec.erase(smoke_vec.begin() + i);
+            }
         }
 
         for (auto &smoke : smoke_vec) {

@@ -18,16 +18,6 @@ namespace features::game_events::decoy {
 
     void on_decoy_started(const grenade_detonate_data_t &data) {
         decoy_vec.emplace_back(data);
-
-        for (size_t i = 0; i < decoy_vec.size(); ++i) {
-            grenade_detonate_data_t &decoy = decoy_vec.at(i);
-
-            const float delta = interfaces::global_vars->current_time - decoy.start_time;
-
-            if (std::abs(delta) > decoy_duration) {
-                decoy_vec.erase(decoy_vec.begin() + i);
-            }
-        }
     }
 
     void reset() {
@@ -37,6 +27,16 @@ namespace features::game_events::decoy {
     void draw() {
         if (decoy_vec.empty()) {
             return;
+        }
+
+        for (size_t i = 0; i < decoy_vec.size(); ++i) {
+            grenade_detonate_data_t &decoy = decoy_vec.at(i);
+
+            const float delta = interfaces::global_vars->current_time - decoy.start_time;
+
+            if (std::abs(delta) > decoy_duration) {
+                decoy_vec.erase(decoy_vec.begin() + i);
+            }
         }
 
         for (auto &decoy : decoy_vec) {

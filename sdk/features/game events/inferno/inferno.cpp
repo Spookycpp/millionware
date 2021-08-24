@@ -6,6 +6,7 @@
 #include "../../../core/interfaces/interfaces.h"
 #include "../../../core/settings/settings.h"
 #include "../../../source engine/game_events.h"
+#include "../../../engine/logging/logging.h"
 
 #include "inferno.h"
 
@@ -17,19 +18,7 @@ namespace features::game_events::inferno {
     std::vector<grenade_detonate_data_t> inferno_vec;
 
     void on_inferno_startburn(const grenade_detonate_data_t &data) {
-        static c_convar *inferno_flame_lifetime = interfaces::convar_system->find_convar(xs("inferno_flame_lifetime"));
-
         inferno_vec.emplace_back(data);
-
-        for (size_t i = 0; i < inferno_vec.size(); ++i) {
-            grenade_detonate_data_t &inferno = inferno_vec.at(i);
-
-            const float delta = interfaces::global_vars->current_time - inferno.start_time;
-
-            if (std::abs(delta) > inferno_flame_lifetime->get_float()) {
-                inferno_vec.erase(inferno_vec.begin() + i);
-            }
-        }
     }
 
     void reset() {
@@ -41,9 +30,20 @@ namespace features::game_events::inferno {
             return;
         }
 
+        static c_convar *inferno_flame_lifetime = interfaces::convar_system->find_convar(xs("inferno_flame_lifetime"));
+
+        for (size_t i = 0; i < inferno_vec.size(); ++i) {
+            grenade_detonate_data_t &inferno = inferno_vec.at(i);
+
+            const float delta = interfaces::global_vars->current_time - inferno.start_time;
+
+            if (std::abs(delta) > inferno_flame_lifetime->get_float()) {
+                inferno_vec.erase(inferno_vec.begin() + i);
+            }
+        }
+
         for (auto &inferno : inferno_vec) {
             c_entity *entity = interfaces::entity_list->get_entity(inferno.entity_id);
-
             if (!entity) {
                 continue;
             }
@@ -55,6 +55,10 @@ namespace features::game_events::inferno {
                 if (point_t screen_pos; math::world_to_screen(point, screen_pos)) {
                     convex_hull_points.emplace_back(screen_pos.x, screen_pos.y);
                 }
+            }
+
+            if (points.size() < 3) {
+                continue;
             }
 
             jarvis_march jm{ convex_hull_points };
