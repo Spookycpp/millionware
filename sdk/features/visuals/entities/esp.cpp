@@ -31,6 +31,9 @@ namespace features::visuals::esp {
             return;
         }
 
+        // update dormant positions
+        update_positions();
+
         for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {
             entity_esp.resize(interfaces::entity_list->get_highest_ent_index());
 
@@ -60,7 +63,7 @@ namespace features::visuals::esp {
             return;
         }
 
-        const auto player = static_cast<c_player *>(entity);
+        const auto player = reinterpret_cast<c_player *>(entity);
         if (player->get_life_state() != LIFE_STATE_ALIVE || player->get_health() <= 0) {
             return;
         }
@@ -68,6 +71,11 @@ namespace features::visuals::esp {
         // TODO: team check option
         if (player->get_team_num() == cheat::local_player->get_team_num()) {
             return;
+        }
+
+        if (entity->get_networkable()->is_dormant()) {
+            const vector_t pos = entity_esp.at(idx).position;
+            player->set_absolute_origin({pos.x, pos.y, player->get_abs_origin().z}); // don't ask
         }
 
         bounding_box_t entity_box;
@@ -716,7 +724,7 @@ namespace features::visuals::esp {
 
         std::ranges::transform(points, std::begin(points), [entity](const auto point) {
             return math::vector_transform(point, entity->get_transformation_matrix());
-            });
+        });
 
         std::array<point_t, 8> screen_pos;
 
@@ -793,7 +801,7 @@ namespace features::visuals::esp {
         float rate = interfaces::global_vars->frame_time * anim_rate;
 
         if (!entity->get_networkable()->is_dormant()) {
-            update_position(idx, entity->get_renderable()->get_render_origin());
+            update_position(idx, entity->get_abs_origin());
             fade = fade > 0.0f ? std::clamp(fade + rate, 0.0f, 1.0f) : 0.5f;
             spotted = true;
         }
@@ -813,12 +821,51 @@ namespace features::visuals::esp {
         return true;
     }
 
-    void update_position(const int idx, const vector_t &pos) {
+    void update_positions() {
+        CUtlVector<c_snd_info> sound_info {};
+        interfaces::engine_sound->get_active_sounds(sound_info);
+
+        if (!sound_info.count()) {
+            return;
+        }
+
+        for (int i = 0; i < sound_info.count(); ++i) {
+            c_snd_info &snd = sound_info.get_elements()[i];
+
+            if (!snd.origin) {
+                continue;
+            }
+
+            const int idx = snd.sound_source;
+            c_entity *ent = interfaces::entity_list->get_entity(idx);
+            if (!ent) {
+                continue;
+            }
+
+            if (!ent->is_player()) {
+                continue;
+            }
+
+            if (ent->get_networkable()->is_dormant()) {
+                update_position(idx, *snd.origin, true); // force update
+            }
+            else {
+                static std::array<float, 65> last_time;
+
+                if (std::abs(interfaces::global_vars->current_time - last_time.at(idx)) > 1.0f) {
+                    last_time[idx] = interfaces::global_vars->current_time;
+                    // store sounds for noise esp
+                }
+            }
+        }
+    }
+
+    void update_position(const int idx, const vector_t &pos, const bool force_update) {
         auto &[position, fade, spotted, bottom_offset] = entity_esp.at(idx);
 
         position = pos;
 
-        if (fade > 0.0f && fade <= 0.3f && spotted) {
+        if (fade > 0.0f && fade <= 0.3f && spotted || force_update) {
             fade = 0.3f;
         }
     }

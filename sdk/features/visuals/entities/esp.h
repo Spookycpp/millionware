@@ -39,7 +39,8 @@ namespace features::visuals::esp {
     bool get_bounding_box(c_entity *entity, bounding_box_t &out_box);
     IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, float scale = 4.0f);
     color_t get_color(c_entity *entity, color_t col);
-    bool update_dormancy(int idx, c_entity *entity, float dist_to_local);
-    void update_position(int idx, const vector_t &pos);
+    bool update_dormancy(int idx, c_entity *entity, float dist_to_local);   
+    void update_positions();
+    void update_position(int idx, const vector_t &pos, bool force_update = false);
     void reset_position();
 } // namespace features::visuals::esp
