@@ -686,9 +686,10 @@ namespace features::visuals::esp {
         // draw
         if (icon_color.a > 0) {
             const color_t bg_color = color_t::blend({ 33, 33, 33, icon_color.a / 2 }, icon_color, 0.3f);
-            render::fill_circle({ entity_box.x + entity_box.width / 2.0f, entity_box.y + entity_box.height / 2.0f }, radius, bg_color);
+            // render::fill_circle({ entity_box.x + entity_box.width / 2.0f, entity_box.y + entity_box.height / 2.0f }, radius, bg_color);
 
             if (texture) {
+                render::draw_image({ entity_box.x + entity_box.width / 2.0f - radius / 2.0f + 1.0f, entity_box.y + entity_box.height / 2.0f - radius / 2.0f + 1.0f }, { radius, radius }, { 5, 5, 5, icon_color.a }, texture);
                 render::draw_image({ entity_box.x + entity_box.width / 2.0f - radius / 2.0f, entity_box.y + entity_box.height / 2.0f - radius / 2.0f }, { radius, radius }, icon_color, texture);
             }
         }
