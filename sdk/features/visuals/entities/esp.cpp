@@ -305,7 +305,7 @@ namespace features::visuals::esp {
     }
 
     void draw_skeleton(c_player *player) {
-        if (!settings.visuals.player.skeleton) {
+        if (!settings.visuals.player.skeleton || player->get_networkable()->is_dormant()) {
             return;
         }
 
@@ -316,9 +316,12 @@ namespace features::visuals::esp {
 
         std::array<matrix3x4_t, 128> matrices = {};
 
-        if (!player->get_renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time)) {
+        memcpy(matrices.data(), player->get_cached_bone_data().get_elements(),
+            player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
+
+        /*if (!player->get_renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time)) {
             return;
-        }
+        }*/
 
         for (int i = 0; i < studio_hdr->bones_count; ++i) {
             studio_bone_t *bone = studio_hdr->get_bone(i);
