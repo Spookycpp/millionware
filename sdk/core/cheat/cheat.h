@@ -11,6 +11,8 @@ namespace cheat {
     inline c_user_cmd *user_cmd;     // used for obtaining the user commands
     inline vector_t original_angles; // used for storing the original angles
 
+    inline matrix4x4_t view_matrix;
+
     inline uint32_t unpredicted_flags;       // used for storing unpredicted flags
     inline vector_t unpredicted_velocity;    // used for storing unpredicted velocity
     inline e_move_type unpredicted_movetype; // used for storing unpredicted movetypes

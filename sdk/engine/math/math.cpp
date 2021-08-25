@@ -2,6 +2,7 @@
 
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/patterns/patterns.h"
+#include "../../core/cheat/cheat.h"
 #include "../../source engine/matrix.h"
 #include "../render/render.h"
 
@@ -294,7 +295,7 @@ vector_t math::dist_segment_to_segment(const vector_t s1, const vector_t s2, con
 }
 
 bool math::world_to_screen(const vector_t &world_pos, point_t &screen_pos) {
-
+    /*
     static matrix4x4_t *view = nullptr;
 
     if (!view) {
@@ -302,9 +303,9 @@ bool math::world_to_screen(const vector_t &world_pos, point_t &screen_pos) {
 
         address = (*(uint32_t *) (address + 3)) + 176;
         view = (matrix4x4_t *) address;
-    }
+    }*/
 
-    matrix4x4_t &view_matrix = *view;
+    matrix4x4_t &view_matrix = cheat::view_matrix;
 
     const auto x = view_matrix[0][0] * world_pos.x + view_matrix[0][1] * world_pos.y + view_matrix[0][2] * world_pos.z + view_matrix[0][3];
     const auto y = view_matrix[1][0] * world_pos.x + view_matrix[1][1] * world_pos.y + view_matrix[1][2] * world_pos.z + view_matrix[1][3];

@@ -4,7 +4,24 @@
 
 #include "vector.h"
 
-using matrix4x4_t = float[4][4];
+class matrix4x4_t {
+public:
+    float m[4][4];
+
+    float *operator[](const int i) {
+        return m[i];
+    }
+    const float *operator[](const int i) const {
+        return m[i];
+    }
+
+    float *base() {
+        return &m[0][0];
+    }
+    const float *base() const {
+        return &m[0][0];
+    }
+};
 
 class matrix3x4_t {
   public:
