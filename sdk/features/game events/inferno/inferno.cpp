@@ -65,9 +65,6 @@ namespace features::game_events::inferno {
                     if (math::world_to_screen(point, screen_pos)) {
                         convex_hull_points.emplace_back(screen_pos.x, screen_pos.y);
                     }
-                    else {
-                        convex_hull_points.clear();
-                    }
                 }
 
                 if (convex_hull_points.size() < 3) {
@@ -78,7 +75,7 @@ namespace features::game_events::inferno {
                 std::vector<point_t> convex_hull = jm.compute_hull();
 
 
-                render::fill_convex_poly(convex_hull.data(), convex_hull.size(), settings.visuals.world.molotov_spread_color);
+                render::fill_convex_poly(convex_hull.data(), convex_hull.size(), { settings.visuals.world.molotov_spread_color });
             }
 
             point_t screen_pos;
