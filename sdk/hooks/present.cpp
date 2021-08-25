@@ -10,10 +10,6 @@
 #include "../features/nade prediction/nade_prediction.h"
 #include "../features/visuals/entities/esp.h"
 #include "../features/visuals/world/world.h"
-#include "../features/game events/footsteps/footsteps.h"
-#include "../features/game events/inferno/inferno.h"
-#include "../features/game events/smoke/smoke.h"
-#include "../features/game events/decoy/decoy.h"
 
 #include "../lua/lua_game.hpp"
 
@@ -35,12 +31,6 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
     features::visuals::world::display_spectators();
 
     features::nade_prediction::on_paint_traverse();
-
-    features::game_events::decoy::draw();
-    features::game_events::inferno::draw();
-    features::game_events::smoke::draw();
-
-    features::game_events::footsteps::on_paint();
 
     ui::frame();
 
