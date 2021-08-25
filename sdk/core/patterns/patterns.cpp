@@ -290,9 +290,6 @@ bool patterns::init() {
     if ((is_breakable = get_pattern(xs("client.dll"), xs("55 8B EC 51 56 8B F1 85 F6 74 68"))) == 0u)
         return false;
 
-    if ((c_csplayer = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C")) + 0x45 + 0x2) == 0u)
-        return false;
-
     if ((play_step_sound = get_pattern(xs("client.dll"), xs("55 8B EC 8B 45 18 81 EC"))) == 0u)
         return false;
     

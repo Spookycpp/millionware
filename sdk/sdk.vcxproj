@@ -231,7 +231,6 @@
     <ClCompile Include="hooks\override_config.cpp" />
     <ClCompile Include="hooks\override_mouse_input.cpp" />
     <ClCompile Include="hooks\override_view.cpp" />
-    <ClCompile Include="hooks\player_footstep_sound.cpp" />
     <ClCompile Include="hooks\play_step_sound.cpp" />
     <ClCompile Include="hooks\present.cpp" />
     <ClCompile Include="hooks\push_notice.cpp" />
