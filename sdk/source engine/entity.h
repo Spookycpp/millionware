@@ -338,10 +338,6 @@ class c_entity {
     template <typename T> T &get(const uintptr_t offset) {
         return *reinterpret_cast<T *>(reinterpret_cast<uintptr_t>(this) + offset);
     }
-
-    const char *get_str(const uintptr_t offset) {
-        return reinterpret_cast<const char *>(reinterpret_cast<uintptr_t>(this) + offset);
-    }
 };
 
 class c_player : public c_entity {

@@ -18,6 +18,10 @@ namespace lua_internal::tables {
         entity(c_entity *entity, const int idx)
             : m_entity(entity), m_idx(idx) { }
 
+        bool valid() const {
+            return m_entity ? true : false;
+        }
+
         int index() const {
             if (!m_entity) {
                 return 0;
@@ -65,7 +69,7 @@ namespace lua_internal::tables {
             return info.name;
         }
 
-        luabridge::LuaRef get_prop(lua_State *l) {
+        luabridge::LuaRef get_prop(lua_State *l) const {
             luabridge::LuaRef table = luabridge::newTable(l);
 
             if (!m_entity) {
@@ -74,12 +78,26 @@ namespace lua_internal::tables {
 
             size_t len;
 
-            const uint32_t table_prop_hash = CRC(luaL_checklstring(l, 3, &len), CRC(":", CRC(luaL_checklstring(l, 2, &len))));
-            const size_t offset            = netvars::get(table_prop_hash);
-            const send_prop_type type      = netvars::get_type_from_netvar(table_prop_hash);
+            const std::string prop_table = luaL_checklstring(l, 2, &len);
+            if (prop_table.empty()) {
+                return table;
+            }
 
-            switch (type)
-            {
+            std::string prop = luaL_checklstring(l, 3, &len);
+            if (prop.empty() || prop.length() <= 3) {
+                return table;
+            }
+
+            const uint32_t table_prop_hash = CRC(prop.c_str(), CRC(":", CRC(prop_table.c_str())));
+            const size_t offset = netvars::get(table_prop_hash);
+            send_prop_type type = netvars::get_type_from_netvar(table_prop_hash);
+
+            // typically, if [0] was appended, type would be DPT_Float instead of DPT_Vector
+            if (prop.substr(prop.length() - 3) == xs("[0]")) {
+                type = send_prop_type::DPT_Vector;
+            }
+
+            switch (type) {
             case send_prop_type::DPT_Int: {
                 table = m_entity->get<int>(offset);
             } break;
@@ -99,7 +117,7 @@ namespace lua_internal::tables {
             } break;
 
             case send_prop_type::DPT_String: {
-                table = m_entity->get_str(offset);
+                table = reinterpret_cast<const char *>(reinterpret_cast<uintptr_t>(m_entity) + offset);
             } break;
 
             // do these ever get used?
@@ -114,6 +132,7 @@ namespace lua_internal::tables {
                 table = m_entity->get<int64_t>(offset);
             } break;
 
+            case send_prop_type::DPT_NUMSendPropTypes: break;
             default: break;
             }
 
@@ -168,6 +187,7 @@ inline void lua_internal::context::entity() {
     luabridge::getGlobalNamespace(l)
     .beginClass<tables::entity>("entity")
         .addConstructor<void (*)(c_entity *entity, int idx)>()
+        .addFunction("is_valid", &tables::entity::valid)
         .addFunction("get_index", &tables::entity::index)
         .addFunction("is_alive", &tables::entity::alive)
         .addFunction("is_dormant", &tables::entity::dormant)

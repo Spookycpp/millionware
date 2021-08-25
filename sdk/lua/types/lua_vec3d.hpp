@@ -38,11 +38,19 @@ class vec3d {
     }
 
     float length() const {
-        return sqrt(x * x + y * y + z * z);
+        return std::sqrt(x * x + y * y + z * z);
+    }
+
+    float length_2d() const {
+        return std::sqrtf(x * x + y * y);
     }
 
     float length_sqr() const {
         return x * x + y * y + z * z;
+    }
+
+    float length_2d_sqr() const {
+        return x * x + y * y;
     }
 
     float dot(const vec3d &v) const {
@@ -96,6 +104,8 @@ inline void lua_vec3d(lua_State *l) {
         .addFunction(xs("__len"), &vec3d::length)
         .addFunction(xs("length"), &vec3d::length)
         .addFunction(xs("length_sqr"), &vec3d::length_sqr)
+        .addFunction(xs("length_2d"), &vec3d::length_2d)
+        .addFunction(xs("length_2d_sqr"), &vec3d::length_2d_sqr)
         .addFunction(xs("dot"), &vec3d::dot)
         .addFunction(xs("dist"), &vec3d::dist)
         .addFunction(xs("normalize"), &vec3d::normalize)
