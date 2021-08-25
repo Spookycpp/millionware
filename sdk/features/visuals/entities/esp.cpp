@@ -116,22 +116,18 @@ namespace features::visuals::esp {
             return;
         }
 
-        if (entity->get_networkable()->is_dormant()) {
-            const vector_t pos = entity_esp.at(idx).position;
-            player->set_absolute_origin({pos.x, pos.y, player->get_abs_origin().z}); // don't ask
-        }
-
-        bounding_box_t entity_box;
-        if (!get_bounding_box(entity, entity_box)) {
-            return;
-        }
-
+        const bounding_box_t entity_box = get_bounding_box(entity);
         entity_esp.at(idx).bottom_offset = 0.0f;
 
         const point_t screen_size = render::get_screen_size();
         if (entity_box.x + entity_box.width - 1 < 0 || entity_box.x - 1 >= screen_size.x 
             || entity_box.y + entity_box.height - 1 < 0 || entity_box.y - 1 >= screen_size.y) {
             return;
+        }
+
+        if (entity->get_networkable()->is_dormant()) {
+            const vector_t pos = entity_esp.at(idx).position;
+            player->set_absolute_origin({ pos.x, pos.y, player->get_abs_origin().z }); // don't ask
         }
 
         draw_box(entity_box, player);
@@ -691,6 +687,68 @@ namespace features::visuals::esp {
         }
     }
 
+    bounding_box_t get_bounding_box(c_entity *entity) {
+        auto player = reinterpret_cast<c_player *>(entity);
+
+        point_t min_corner{ FLT_MAX, FLT_MAX };
+        point_t max_corner{ FLT_MIN, FLT_MIN };
+
+        std::array<matrix3x4_t, 128> bone_matrix = {};        
+        memcpy(bone_matrix.data(), player->get_cached_bone_data().get_elements(), player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
+
+        studio_hdr_t *hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
+        for (int i = 0; i < hdr->bones_count; ++i) {
+            studio_bone_t *bone = hdr->get_bone(i);
+
+            if (bone && bone->parent != -1 && bone->flags & 0x100) {
+                matrix3x4_t &matrix = bone_matrix[i];
+                auto hitbox = vector_t(matrix[0][3], matrix[1][3], matrix[2][3]);
+
+                hitbox -= player->get_renderable()->get_render_origin();
+                hitbox += player->get_abs_origin();
+
+                const point_t pos = util::screen_transform(hitbox);
+
+                if (pos.x < min_corner.x) {
+                    min_corner.x = pos.x;
+                }
+
+                if (pos.x > max_corner.x) {
+                    max_corner.x = pos.x;
+                }
+
+                if (pos.y < min_corner.y) {
+                    min_corner.y = pos.y;
+                }
+
+                if (pos.y > max_corner.y) {
+                    max_corner.y = pos.y;
+                }
+            }
+        }
+
+        point_t screen_size = render::get_screen_size();
+        if (max_corner.y > 1 && max_corner.x > 1 && min_corner.y < screen_size.y && min_corner.x < screen_size.x) {
+            vector_t z_offset = player->get_abs_origin();
+            z_offset.z += 10;
+
+            const point_t delta = util::screen_transform(z_offset) - util::screen_transform(player->get_abs_origin());
+
+            min_corner.x += delta.y;
+            max_corner.x -= delta.y;
+
+            min_corner.y += delta.y;
+            max_corner.y -= delta.y;
+        }
+
+        const float x = min_corner.x;
+        const float w = max_corner.x - min_corner.x;
+        const float y = min_corner.y;
+        const float h = max_corner.y - min_corner.y;
+
+        return { x, y, w, h };
+    }
+
     bool get_bounding_box(c_entity *entity, bounding_box_t &out_box) {
         c_collideable *collideable = entity->get_collideable();
         const vector_t mins = collideable->get_mins();
@@ -803,7 +861,18 @@ namespace features::visuals::esp {
     }
 
     void update_positions() {
-        CUtlVector<c_snd_info> sound_info {};
+        static float last_time;
+
+        // only check for sounds every 25ms to save performance
+        if (std::abs(interfaces::global_vars->current_time - last_time) <= 0.025f) {
+            return;
+        }
+
+        last_time = interfaces::global_vars->current_time;
+
+        static CUtlVector<c_snd_info> sound_info {};
+        sound_info.clear();
+
         interfaces::engine_sound->get_active_sounds(sound_info);
 
         if (!sound_info.count()) {
@@ -828,15 +897,18 @@ namespace features::visuals::esp {
             }
 
             if (ent->get_networkable()->is_dormant()) {
+                // force cached bones to update
+                std::array<matrix3x4_t, 128> matrices = {};
+                ent->get_renderable()->setup_bones(matrices.data(), 128, BONE_USED_BY_ANYTHING, 0.0f);
+
                 update_position(idx, *snd.origin, true); // force update
             }
             else {
-                static std::array<float, 65> last_time;
-
-                if (std::abs(interfaces::global_vars->current_time - last_time.at(idx)) > 1.0f) {
-                    last_time[idx] = interfaces::global_vars->current_time;
-                    // store sounds for noise esp
-                }
+                // you can store noises here like footsteps, gunshots, etc
+                /*static std::array<float, 65> last_noise_time;
+                if (std::abs(interfaces::global_vars->current_time - last_noise_time.at(idx)) > 0.1f) {
+                    last_noise_time[idx] = interfaces::global_vars->current_time;
+                }*/
             }
         }
     }
