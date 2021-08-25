@@ -251,7 +251,7 @@ void ui::init() {
                 group->new_checkbox(xs("Bomb"), settings.visuals.world.dropped_bomb)->add_color_picker(settings.visuals.world.dropped_bomb_color);
                 group->new_checkbox(xs("Defusal kits"), settings.visuals.world.defusal_kit)->add_color_picker(settings.visuals.world.defusal_kit_color);
                 group->new_checkbox(xs("Grenades"), settings.visuals.world.grenades)->add_color_picker(settings.visuals.world.grenades_color);
-                group->new_checkbox(xs("Fire spread"), settings.visuals.world.molotov_spread)->add_color_picker(settings.visuals.world.molotov_spread_color);
+                //group->new_checkbox(xs("Fire spread"), settings.visuals.world.molotov_spread)->add_color_picker(settings.visuals.world.molotov_spread_color);
             }
         }
 
