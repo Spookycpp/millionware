@@ -22,8 +22,7 @@ namespace hooks {
     int __fastcall do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, int effect_id);
     void __fastcall draw_model_execute(uintptr_t, uintptr_t, void *ctx, void *state, c_model_render_info *info, matrix3x4_t *matrix);
     bool __fastcall draw_print_text(uintptr_t, uintptr_t, const wchar_t *text, int text_length, int draw_type);
-    void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char *, int, const char *, float, float, int, int, int, const vector_t *, const vector_t *, vector_t *, bool, float,
-                               int, uintptr_t);
+    void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char *, int, const char *, float, float, int, int, int, const vector_t *, const vector_t *, vector_t *, bool, float, int, uintptr_t);
     void __fastcall enable_world_fog();
     void __fastcall engine_paint(uintptr_t, uintptr_t, int);
     bool _fastcall fire_event_client_side(uintptr_t, uintptr_t, c_game_event *event);
@@ -44,7 +43,8 @@ namespace hooks {
     int __fastcall send_datagram(c_net_channel *, uintptr_t *, void *);
     bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
     void __fastcall push_notice(uintptr_t, uintptr_t, const char *, int, const char *);
-
+    void __fastcall play_footstep_sound(uintptr_t ecx, uintptr_t edx, const vector_t &origin, bool left_foot, bool feet_in_water, bool knees_in_water, bool jumping);
+    void __fastcall play_step_sound(c_player *ecx, uintptr_t edx, vector_t &origin, void *surface, float vol, bool force, void *arg);
     long __stdcall present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region);
 
     inline decltype(&create_move) create_move_original;
@@ -72,6 +72,9 @@ namespace hooks {
     inline decltype(&send_datagram) send_datagram_original;
     inline decltype(&write_user_cmd_delta_to_buffer) write_user_cmd_delta_to_buffer_original;
     inline decltype(&push_notice) push_notice_original;
+    inline decltype(&play_footstep_sound) play_footstep_sound_original;
+    inline decltype(&play_step_sound) play_step_sound_original;
 
     inline decltype(&present) present_original;
+    
 } // namespace hooks

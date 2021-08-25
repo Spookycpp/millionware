@@ -1,5 +1,6 @@
 #pragma once
-#include "../../../source engine/vector.h"
+
+#include <mutex>
 
 namespace features::visuals::esp {
     struct bounding_box_t {
@@ -16,7 +17,18 @@ namespace features::visuals::esp {
         float bottom_offset;
     };
 
+    struct footstep_t {
+        vector_t position;
+        float time;
+        float alpha;
+    };
+
+    inline std::vector<footstep_t> footsteps;
+    inline std::mutex footsteps_mutex;
+
     void frame();
+
+    void draw_footsteps();
     void draw_player(int idx, c_entity *entity);
 
     void draw_box(const bounding_box_t &entity_box, c_player *player);

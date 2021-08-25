@@ -42,7 +42,7 @@ c_event_listener::~c_event_listener() {
 
 void c_event_listener::on_fired_game_event(c_game_event *game_event) {
 	if (std::strncmp(game_event->get_name(), xs("player_footstep"), 16) == 0) {
-		features::game_events::footsteps::on_step_event(game_event);
+		//features::game_events::footsteps::on_step_event(game_event);
 	}
 	else if (std::strncmp(game_event->get_name(), xs("item_purchase"), 14) == 0) {
 

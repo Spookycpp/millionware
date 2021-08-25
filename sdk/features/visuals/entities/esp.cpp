@@ -16,6 +16,11 @@
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 #include "../../../core/util/util.h"
+
+#include "../../../features/game events/inferno/inferno.h"
+#include "../../../features/game events/smoke/smoke.h"
+#include "../../../features/game events/decoy/decoy.h"
+
 #include "../world/world.h"
 #include "esp.h"
 
@@ -33,6 +38,12 @@ namespace features::visuals::esp {
 
         // update dormant positions
         update_positions();
+
+        game_events::decoy::draw();
+        game_events::inferno::draw();
+        game_events::smoke::draw();
+
+        draw_footsteps();
 
         for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {
             entity_esp.resize(interfaces::entity_list->get_highest_ent_index());
@@ -55,6 +66,38 @@ namespace features::visuals::esp {
 
             world::draw_world(entity);
             draw_player(i, entity);
+        }
+    }
+
+    void draw_footsteps() {
+        std::unique_lock lock(footsteps_mutex);
+        for (size_t i = 0; i < footsteps.size(); ++i) {
+            auto &[position, time, alpha] = footsteps.at(i);
+
+            const float delta = interfaces::global_vars->current_time - time;
+
+            if (std::abs(delta) > 3.0f) {
+                footsteps.erase(footsteps.begin() + i);
+            }
+
+            const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(position);
+            if (dist_to_local >= 1000.0f) { // footstep not audible, erase
+                footsteps.erase(footsteps.begin() + i);
+                continue;
+            }
+
+            point_t screen_pos;
+            if (!math::world_to_screen(position, screen_pos)) {
+                continue;
+            }
+
+            color_t col = settings.visuals.player.footsteps_color;
+            alpha -= 1.0f / 2.0f * interfaces::global_vars->frame_time;
+            alpha = std::clamp(alpha, 0.0f, 1.0f);
+            col.a = static_cast<int>(alpha * 255.0f);
+
+            auto text = std::format("STEP", dist_to_local);
+            render::draw_text_outlined(screen_pos, col, { 5, 5, 5, col.a }, text.c_str(), FONT_SMALL_TEXT);
         }
     }
 
@@ -662,7 +705,7 @@ namespace features::visuals::esp {
 
         std::ranges::transform(points, std::begin(points), [entity](const auto point) {
             return math::vector_transform(point, entity->get_transformation_matrix());
-        });
+            });
 
         std::array<point_t, 8> screen_pos;
 

@@ -1,4 +1,4 @@
-#include "footsteps.h"
+/*#include "footsteps.h"
 
 #include <vector>
 
@@ -49,3 +49,4 @@ namespace features::game_events::footsteps {
 		}
 	}
 }
+*/

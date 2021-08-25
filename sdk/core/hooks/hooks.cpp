@@ -61,6 +61,8 @@ bool hooks::init() {
     send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t) patterns::send_datagram, (uintptr_t) &send_datagram));
     engine_paint_original = create_hook((uintptr_t) interfaces::vgui_engine, 14, &engine_paint);
     push_notice_original = decltype(&push_notice)(create_hook(patterns::push_notice, (uintptr_t) &push_notice));
+    //play_footstep_sound_original = create_hook(patterns::c_csplayer, 348, &play_footstep_sound);
+    play_step_sound_original = decltype(&play_step_sound)(create_hook(patterns::play_step_sound, (uintptr_t)&play_step_sound));
 
     present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);
 
@@ -94,6 +96,9 @@ bool hooks::init() {
     INIT_HOOK(screen_size_changed_original, "ScreenSizeChanged");
     INIT_HOOK(send_datagram_original, "SendDatagram");
     INIT_HOOK(engine_paint_original, "EnginePaint");
+    INIT_HOOK(push_notice_original, "PushNotice");
+    //INIT_HOOK(play_footstep_sound_original, "PlayFootstepSound");
+    INIT_HOOK(play_step_sound_original, "PlayStepSound");
 
     INIT_HOOK(present_original, "Present");
 

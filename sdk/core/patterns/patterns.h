@@ -74,6 +74,8 @@ namespace patterns {
     inline uintptr_t glow_manager;
     inline uintptr_t push_notice;
     inline uintptr_t is_breakable;
+    inline uintptr_t c_csplayer;
+    inline uintptr_t play_step_sound;
 
     PATTERN_GET(engine_vgui_start_drawing, engine_vgui_start_drawing);
     PATTERN_GET(engine_vgui_finish_drawing, engine_vgui_finish_drawing);
@@ -138,6 +140,8 @@ namespace patterns {
     PATTERN_GET(glow_manager, glow_manager);
     PATTERN_GET(push_notice, push_notice);
     PATTERN_GET(is_breakable, is_breakable);
+    PATTERN_GET(c_csplayer, c_csplayer);
+    PATTERN_GET(play_step_sound, play_step_sound);
 
     uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();

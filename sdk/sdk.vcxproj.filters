@@ -88,6 +88,8 @@
     <ClCompile Include="features\game events\footsteps\footsteps.cpp" />
     <ClCompile Include="features\game events\smoke\smoke.cpp" />
     <ClCompile Include="features\game events\decoy\decoy.cpp" />
+    <ClCompile Include="hooks\player_footstep_sound.cpp" />
+    <ClCompile Include="hooks\play_step_sound.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
