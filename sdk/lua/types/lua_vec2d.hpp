@@ -92,7 +92,7 @@ public:
 };
 
 inline void lua_vec2d(lua_State* l) {
-    luabridge::getGlobalNamespace(l)
+    /*luabridge::getGlobalNamespace(l)
     .beginClass<vec2d>(xs("vec2d"))
         .addConstructor<void(*)(const float&, const float&)>()
         .addData(xs("x"), &vec2d::x)
@@ -111,5 +111,5 @@ inline void lua_vec2d(lua_State* l) {
         .addFunction(xs("empty"), &vec2d::empty)
         .addFunction(xs("valid"), &vec2d::valid)
         .addFunction(xs("zero"), &vec2d::zero)
-	.endClass();
+	.endClass();*/
 }

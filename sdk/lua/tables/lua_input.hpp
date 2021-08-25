@@ -59,7 +59,7 @@ namespace lua_internal::tables::lua_input {
 } // namespace lua_internal::tables::input
 
 inline void lua_internal::context::lua_input() {
-    luabridge::getGlobalNamespace(l)
+    /*luabridge::getGlobalNamespace(l)
         .beginNamespace(xs("input"))
         .addFunction(xs("button_down"), std::function([this]() { return tables::lua_input::button_down(l); }))
         .addFunction(xs("button_pressed"), std::function([this]() { return tables::lua_input::button_pressed(l); }))
@@ -69,5 +69,5 @@ inline void lua_internal::context::lua_input() {
         .addFunction(xs("get_mouse_position"), std::function([this]() { return tables::lua_input::get_mouse_position(l); }))
         .addFunction(xs("get_scroll_wheel"), std::function([this]() { return tables::lua_input::get_scroll_wheel(l); }))
 
-        .endNamespace();
+        .endNamespace();*/
 }

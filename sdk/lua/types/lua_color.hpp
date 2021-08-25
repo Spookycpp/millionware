@@ -51,7 +51,7 @@ struct color {
 };
 
 inline void lua_color(lua_State* l) {
-    luabridge::getGlobalNamespace(l)
+    /*luabridge::getGlobalNamespace(l)
     .beginClass<color>(xs("color"))
         .addConstructor<void(*)(const int&, const int&, const int&, const int&)>()
         .addData(xs("r"), &color::r)
@@ -59,5 +59,5 @@ inline void lua_color(lua_State* l) {
         .addData(xs("b"), &color::b)
         .addData(xs("a"), &color::a)
         .addStaticFunction("hsb", &color::hsb)
-	.endClass();
+	.endClass();*/
 }

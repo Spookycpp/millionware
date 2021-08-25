@@ -133,39 +133,39 @@ namespace lua_internal::tables::draw {
     }
 
     inline void poly_chain(lua_State *l) {
-        if (!luabridge::LuaRef::fromStack(l, 1).isTable()) {
-            return;
-        }
+        //if (!luabridge::LuaRef::fromStack(l, 1).isTable()) {
+        //    return;
+        //}
 
-        std::vector<point_t> points;
+        //std::vector<point_t> points;
 
-        lua_pushvalue(l, 1); // -1 table
-        lua_pushnil(l); // -1 nil, -2 table
+        //lua_pushvalue(l, 1); // -1 table
+        //lua_pushnil(l); // -1 nil, -2 table
 
-        while (lua_next(l, -2)) {
-            // -1 value, -2 key, -3 table
-            lua_pushvalue(l, -2);
-            // -1 key, -2 value, -3 key, -4 table
-            if (luabridge::LuaRef::fromStack(l, -2).isUserdata()) {
-                if (const auto *ptr = reinterpret_cast<point_t *>(
-                    luabridge::detail::Userdata::get<vec2d>(l, -2, true)); ptr) {
-                    points.push_back(*ptr);
-                }
-            }
+        //while (lua_next(l, -2)) {
+        //    // -1 value, -2 key, -3 table
+        //    lua_pushvalue(l, -2);
+        //    // -1 key, -2 value, -3 key, -4 table
+        //    if (luabridge::LuaRef::fromStack(l, -2).isUserdata()) {
+        //        if (const auto *ptr = reinterpret_cast<point_t *>(
+        //            luabridge::detail::Userdata::get<vec2d>(l, -2, true)); ptr) {
+        //            points.push_back(*ptr);
+        //        }
+        //    }
 
-            // pop key and value
-            lua_pop(l, 2);
-        }
+        //    // pop key and value
+        //    lua_pop(l, 2);
+        //}
 
-        // pop table
-        lua_pop(l, 1);
+        //// pop table
+        //lua_pop(l, 1);
 
-        if (points.empty()) {
-            return;
-        }
+        //if (points.empty()) {
+        //    return;
+        //}
 
-        const auto col = user_data_argument<color, color_t>(l, 2);
-        render::draw_poly_line(points.data(), points.size(), col, static_cast<float>(luaL_checknumber(l, 3)));   
+        //const auto col = user_data_argument<color, color_t>(l, 2);
+        //render::draw_poly_line(points.data(), points.size(), col, static_cast<float>(luaL_checknumber(l, 3)));
     }
 
     //@todo: redo this
@@ -317,7 +317,7 @@ inline void lua_internal::context::lua_draw() {
         once = true;
     }
 
-    luabridge::getGlobalNamespace(l)
+    /*luabridge::getGlobalNamespace(l)
     .beginNamespace("draw")
         .addFunction("text", std::function([this]() { tables::draw::text(l); }))
         .addFunction("wrap_text", std::function([this]() { tables::draw::wrap_text(l); }))
@@ -340,5 +340,5 @@ inline void lua_internal::context::lua_draw() {
         .addFunction("image", std::function([this]() { tables::draw::image(l); }))
         .addFunction("gif", std::function([this]() { tables::draw::gif(l); }))
         .addFunction("world_to_screen", std::function([this]() { return tables::draw::world_to_screen(l); }))
-    .endNamespace();
+    .endNamespace();*/
 }

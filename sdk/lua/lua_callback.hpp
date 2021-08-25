@@ -7,7 +7,7 @@ namespace lua_internal {
 	private:
 	public:
 		lua_State* l;
-		luabridge::LuaRef ref;
+		//luabridge::LuaRef ref;
 
 		std::string name;
 		uint32_t hash;

@@ -75,7 +75,7 @@ std::vector<lua_internal::callback> lua_internal::handler::events() {
 std::vector<lua_internal::callback> lua_internal::handler::events(const std::string &name) {
     std::vector<callback> ret;
 
-    for (auto &it : loaded()) {
+    /*for (auto &it : loaded()) {
         if (it.exiting) {
             continue;
         }
@@ -89,7 +89,7 @@ std::vector<lua_internal::callback> lua_internal::handler::events(const std::str
                 ret.push_back(cb);
             }
         }
-    }
+    }*/
 
     return ret;
 }
@@ -97,7 +97,7 @@ std::vector<lua_internal::callback> lua_internal::handler::events(const std::str
 std::vector<lua_internal::callback> lua_internal::handler::events(const uint32_t hash, const std::string &name) {
     std::vector<callback> ret;
 
-    for (auto &it : loaded()) {
+    /*for (auto &it : loaded()) {
         if (it.exiting) {
             continue;
         }
@@ -111,7 +111,7 @@ std::vector<lua_internal::callback> lua_internal::handler::events(const uint32_t
                 ret.push_back(cb);
             }
         }
-    }
+    }*/
 
     return ret;
 }

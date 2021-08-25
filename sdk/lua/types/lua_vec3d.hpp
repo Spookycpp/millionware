@@ -91,7 +91,7 @@ class vec3d {
 };
 
 inline void lua_vec3d(lua_State *l) {
-    luabridge::getGlobalNamespace(l)
+    /*luabridge::getGlobalNamespace(l)
         .beginClass<vec3d>(xs("vec3d"))
         .addConstructor<void (*)(const float &, const float &, const float &)>()
         .addData(xs("x"), &vec3d::x)
@@ -113,5 +113,5 @@ inline void lua_vec3d(lua_State *l) {
         .addFunction(xs("empty"), &vec3d::empty)
         .addFunction(xs("valid"), &vec3d::valid)
         .addFunction(xs("zero"), &vec3d::zero)
-        .endClass();
+        .endClass();*/
 }

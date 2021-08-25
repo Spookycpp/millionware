@@ -98,7 +98,7 @@ namespace lua_internal::tables::client {
         interfaces::client_mode->chat->chat_printf(0, 0, str.c_str());
     }
 
-    inline luabridge::LuaRef get_globals(lua_State *l) {
+    /*inline luabridge::LuaRef get_globals(lua_State *l) {
         luabridge::LuaRef table = luabridge::newTable(l);
         table[("absolute_frame_time")] = interfaces::global_vars->absolute_frame_time;
         table[("current_time")] = interfaces::global_vars->current_time;
@@ -114,14 +114,14 @@ namespace lua_internal::tables::client {
         table[("level_name_short")] = std::string(interfaces::client_state->level_name_short);
         table[("tick_count")] = interfaces::global_vars->tick_count;
 
-        // push to stack
+         push to stack
         table.push();
         return table;
-    }
+    }*/
 } // namespace lua_internal::tables::client
 
 inline void lua_internal::context::lua_client() {
-    luabridge::getGlobalNamespace(l)
+    /*luabridge::getGlobalNamespace(l)
         .beginNamespace(xs("mw"))
         .addFunction(xs("log"), std::function([this]() { tables::client::log(l); }))
         .addFunction(xs("log_to_console"), std::function([this]() { tables::client::log_to_console(l); }))
@@ -138,5 +138,5 @@ inline void lua_internal::context::lua_client() {
         .addFunction(xs("print_to_chat_html"), std::function([this]() { tables::client::print_to_chat_html(l); }))
         .addFunction(xs("get_globals"), std::function([this]() { return tables::client::get_globals(l); }))
 
-        .endNamespace();
+        .endNamespace();*/
 }
