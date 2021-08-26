@@ -17,7 +17,6 @@ namespace lua_internal {
 
     public:
         lua_State *l = nullptr;
-
         std::vector<callback> callbacks;
         std::string script_path;
 

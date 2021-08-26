@@ -33,34 +33,42 @@ void hook(lua_State *l, lua_Debug *dbg) {
 }
 
 void lua_internal::context::new_state() {
+	// create the Lua state. each script has it's own state.
 	l = luaL_newstate();
-    lua_sethook(l, hook, LUA_MASKLINE | LUA_MASKCALL | LUA_MASKRET | LUA_MASKCOUNT, 1);
 
-	//luabridge::enableExceptions(l);
+    auto lua = sol::state_view(l);
 
-	// load standard libraries
-	/*for (auto& [name, func] : libs) {
-		lua_pushcfunction(l, func);
-		lua_pushstring(l, name);
-		lua_call(l, 1, 0);
-	}*/
+	// load select libraries. skipping io, os, debug, ffi
+	lua.open_libraries(
+		sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::math,
+		sol::lib::table, sol::lib::package, sol::lib::jit, sol::lib::bit32
+	);
 
-    // * add correct script directory to package.path *
-    //lua_getglobal(l, xs("package"));
-    //lua_getfield(l, -1, xs("path"));
-    //const std::string current_path = lua_tostring(l, -1); // retrieve current package.path
+    //lua_sethook(l, hook, LUA_MASKLINE | LUA_MASKCALL | LUA_MASKRET | LUA_MASKCOUNT, 1);
 
-    //auto game_dir = std::string(interfaces::engine_client->get_game_directory());
-    //game_dir.erase(game_dir.size() - 5); // remove '/csgo' from the game directory path
+	// add script directory to package.path
+    if (auto game_path = std::string(interfaces::engine_client->get_game_directory()); !game_path.empty()) {
+		game_path.erase(game_path.size() - 5); // remove '/csgo' from the path
 
-    //const std::string new_path = current_path + game_dir + xs("\\mw\\scripts\\?.lua");
+		lua_getglobal(l, xs("package"));
+		sol::stack::get_field(l, xs("path"), -1); // retrieve current package.path
 
-    //lua_pop(l, 1);                       // erase old package.path
-    //lua_pushstring(l, new_path.c_str()); // push new path
-    //lua_setfield(l, -2, xs("path"));     // set package.path to value at the top of the stack
-    //lua_pop(l, 1);                       // pop package
+		const std::string current_path = sol::stack::get<std::string>(l, -1);
+		const std::string new_path = current_path + game_path + xs("\\mw\\scripts\\?.lua");
 
-	setup_tables();
+		sol::stack::pop_n(l, 1);                                    // erase old package.path
+		sol::stack::set_field(l, xs("path"), new_path.c_str(), -2); // set package.path to value at the top of the stack
+		sol::stack::pop_n(l, 1);                                    // pop package
+
+#ifdef LUA_DEBUG
+		lua_getglobal(l, xs("package"));
+		sol::stack::get_field(l, xs("path"), -1);
+
+		logging::console({ 33, 200, 56, 255 }, std::string(sol::stack::get<std::string>(l, -1)).c_str());
+#endif
+	}
+
+	//setup_tables();
 }
 
 void lua_internal::context::setup_tables() {

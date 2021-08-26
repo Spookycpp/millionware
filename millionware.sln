@@ -12,16 +12,19 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "injector", "injector\inject
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		debug_lua|x86 = debug_lua|x86
 		debug|x86 = debug|x86
 		release|x86 = release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{489B84E8-AAAE-4B9B-86BC-8EDD7020DEBB}.debug_lua|x86.ActiveCfg = DebugLua|Win32
+		{489B84E8-AAAE-4B9B-86BC-8EDD7020DEBB}.debug_lua|x86.Build.0 = DebugLua|Win32
 		{489B84E8-AAAE-4B9B-86BC-8EDD7020DEBB}.debug|x86.ActiveCfg = Debug|Win32
 		{489B84E8-AAAE-4B9B-86BC-8EDD7020DEBB}.debug|x86.Build.0 = Debug|Win32
 		{489B84E8-AAAE-4B9B-86BC-8EDD7020DEBB}.release|x86.ActiveCfg = Release|Win32
 		{489B84E8-AAAE-4B9B-86BC-8EDD7020DEBB}.release|x86.Build.0 = Release|Win32
+		{34C0DC43-FF5E-4E21-84DD-1357218603B6}.debug_lua|x86.ActiveCfg = Debug|Win32
 		{34C0DC43-FF5E-4E21-84DD-1357218603B6}.debug|x86.ActiveCfg = Debug|Win32
-		{34C0DC43-FF5E-4E21-84DD-1357218603B6}.debug|x86.Build.0 = Debug|Win32
 		{34C0DC43-FF5E-4E21-84DD-1357218603B6}.release|x86.ActiveCfg = Release|Win32
 		{34C0DC43-FF5E-4E21-84DD-1357218603B6}.release|x86.Build.0 = Release|Win32
 	EndGlobalSection
