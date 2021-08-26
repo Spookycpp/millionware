@@ -32,6 +32,28 @@ void hook(lua_State *l, lua_Debug *dbg) {
 
 }
 
+int exception_handler(lua_State *l, sol::optional<const std::exception &> maybe_exception, sol::string_view description) {
+	// l is the lua state, which you can wrap in a state_view if necessary
+	// maybe_exception will contain exception, if it exists
+	// description will either be the what() of the exception or a description saying that we hit the general-case catch(...)
+	if (maybe_exception) {
+		const std::exception &ex = *maybe_exception;
+		logging::error(ex.what());
+	}
+	else {
+		std::stringstream error;
+		error.write(description.data(), static_cast<std::streamsize>(description.size()));
+
+	    logging::error(error.str());
+	}
+
+	// you must push 1 element onto the stack to be
+	// transported through as the error object in Lua
+	// note that Lua -- and 99.5% of all Lua users and libraries -- expects a string
+	// so we push a single string (in our case, the description of the error)
+	return sol::stack::push(l, description);
+}
+
 void lua_internal::context::new_state() {
 	// create the Lua state. each script has it's own state.
 	l = luaL_newstate();
