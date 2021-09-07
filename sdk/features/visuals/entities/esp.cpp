@@ -502,6 +502,11 @@ namespace features::visuals::esp {
     }
 
     void draw_thrown_utility(c_entity *entity) {
+
+        if (!settings.visuals.world.grenades) {
+            return;
+        }
+
         auto draw_circle = [](const point_t pos, const float radius, const float progress = 1.0f, const float duration = 1.0f) {
             constexpr float min = math::deg_to_rad(270.0f);
 
@@ -637,6 +642,7 @@ namespace features::visuals::esp {
     }
 
     void draw_defusal_kit(c_entity *entity, const float dist_to_local) {
+
         static IDirect3DTexture9 *texture = nullptr;
         if (!texture) {
             texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/defuser.svg"), 4.0f);
