@@ -474,7 +474,7 @@ class c_weapon : public c_economy_item {
         return get_item_definition_index() == WEAPON_AWP;
     }
     inline bool is_scout() {
-        return get_weapon_type() == WEAPON_SSG08;
+        return get_item_definition_index() == WEAPON_SSG08;
     }
     inline bool is_auto() {
         return get_item_definition_index() == WEAPON_SCAR20 || get_item_definition_index() == WEAPON_G3SG1;
