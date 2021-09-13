@@ -122,8 +122,8 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
     cheat::b_predicting = true;
 
     if ((int) roundf(cheat::local_player->get_velocity().z) == 0.0 || (cheat::unpredicted_flags & ENTITY_FLAG_ONGROUND) != 0) {
-        features::movement::predicted_successful = 0;
-        features::movement::prediction_failed = 1;
+        predicted_successful = 0;
+        prediction_failed = 1;
     }
     else if (cheat::unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > cheat::unpredicted_velocity.z && cheat::local_player->get_velocity().z < -6.0 &&
              (cheat::local_player->get_flags() & 1) == 0 && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
@@ -136,12 +136,12 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
         const float gravity_velocity_constant = roundf((-sv_gravity->get_float()) * interfaces::global_vars->interval_per_tick + previous_velocity);
 
         if (gravity_velocity_constant == roundf(cheat::local_player->get_velocity().z)) {
-            features::movement::predicted_successful = 1;
-            features::movement::prediction_failed = 0;
+            predicted_successful = 1;
+            prediction_failed = 0;
         }
         else {
-            features::movement::predicted_successful = 0;
-            features::movement::prediction_failed = 1;
+            predicted_successful = 0;
+            prediction_failed = 1;
         }
     }
 }
@@ -151,16 +151,16 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
     if (!input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
         return;
 
-    if (!features::movement::predicted_successful) {
+    if (!predicted_successful) {
 
         cheat::b_predicting = true;
 
-        features::movement::should_duck = 0;
+        should_duck = 0;
 
         for (auto prediction_ticks_ran = 0; prediction_ticks_ran < 2; ++prediction_ticks_ran) {
 
             if (prediction_ticks_ran == 1) {
-                features::movement::should_duck = 1;
+                should_duck = 1;
                 engine_prediction::apply_edgebug_data(user_cmd);
             }
 
@@ -175,21 +175,21 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
                 }
 
                 if ((cheat::unpredicted_flags & 1) != 0 || cheat::unpredicted_velocity.z > 0.0) {
-                    features::movement::predicted_successful = 0;
+                    predicted_successful = 0;
                     break;
                 }
 
                 predict_edgebug(user_cmd);
 
-                if (features::movement::predicted_successful) {
-                    features::movement::prediction_ticks = radius_checked;
-                    features::movement::prediction_timestamp = interfaces::global_vars->tick_count;
-                    features::movement::mouse_offset = abs(user_cmd->mouse_dx);
+                if (predicted_successful) {
+                    prediction_ticks = radius_checked;
+                    prediction_timestamp = interfaces::global_vars->tick_count;
+                    mouse_offset = abs(user_cmd->mouse_dx);
                     break;
                 }
 
-                if (features::movement::prediction_failed) {
-                    features::movement::prediction_failed = 0;
+                if (prediction_failed) {
+                    prediction_failed = 0;
                     break;
                 }
 
@@ -199,26 +199,26 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
                 }
             }
 
-            if (features::movement::predicted_successful)
+            if (predicted_successful)
                 break;
         }
     }
 
-    if (features::movement::predicted_successful) {
+    if (predicted_successful) {
 
-        if (interfaces::global_vars->tick_count < features::movement::prediction_ticks + features::movement::prediction_timestamp) {
+        if (interfaces::global_vars->tick_count < prediction_ticks + prediction_timestamp) {
             user_cmd->forward_move = 0.0;
             user_cmd->side_move = 0.0;
 
-            if (features::movement::should_duck) {
+            if (should_duck) {
                 user_cmd->buttons |= BUTTON_IN_DUCK;
             }
 
             edgebugging = true;
         }
         else {
-            features::movement::predicted_successful = 0;
-            features::movement::should_duck = 0;
+            predicted_successful = 0;
+            should_duck = 0;
         }
     }
 

@@ -9,7 +9,7 @@ bool __fastcall hooks::draw_print_text(uintptr_t ecx, uintptr_t edx, const wchar
         const color_t color = ui::get_accent_color();
         interfaces::surface->set_text_color(color.r, color.g, color.b, color.a);
 
-        auto millionware_string = std::wstring(xs(L"[millionware] "));
+        const auto millionware_string = std::wstring(xs(L"[millionware] "));
         draw_print_text_original(ecx, edx, millionware_string.data(), millionware_string.length(), draw_type);
 
         interfaces::surface->set_text_color(229, 229, 178, 255); // reset to default color

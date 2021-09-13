@@ -14,8 +14,7 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
                                   float sound_time, int speaker_entity, uintptr_t fds) {
 
 	if (settings.miscellaneous.auto_accept && !std::strcmp(sound_entry, xs("UIPanorama.popup_accept_match_beep"))) {
-        ShowWindow(render::window(), SW_SHOW);
-        SetForegroundWindow(render::window());
+        ShowWindow(render::window(), SW_RESTORE);
 
         util::auto_accept();
 
