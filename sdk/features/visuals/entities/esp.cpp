@@ -44,6 +44,7 @@ namespace features::visuals::esp {
         game_events::smoke::draw();
 
         draw_footsteps();
+        draw_recoil_crosshair();
 
         for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {
             entity_esp.resize(interfaces::entity_list->get_highest_ent_index());
@@ -691,6 +692,37 @@ namespace features::visuals::esp {
         if (text_color.a > 0) {
             render::draw_text_outlined(text_pos, text_color, { 5, 5, 5, text_color.a / 6 }, defusal_kit_string, FONT_SMALL_TEXT);
         }
+    }
+
+    void draw_recoil_crosshair() {
+
+        // forgive me for making this an integer.
+        if (settings.visuals.local.recoil_crosshair != 2)
+            return;
+
+        if (!cheat::local_player->get_shots_fired())
+            return;
+
+        const vector_t punch_angles = cheat::local_player->get_aim_punch_angle() * 2.0f * 0.45f;
+
+        float dx = render::get_screen_size().x / 2.0f;
+        float dy = render::get_screen_size().y / 2.0f;
+
+        if (punch_angles.x < -0.1f) {
+            const float angle_step = static_cast<float>(render::get_screen_size().y) / cheat::fov;
+
+            dx -= punch_angles.y * angle_step;
+            dy += punch_angles.x * angle_step;
+        }
+
+        const auto x = dx;
+        const auto y = dy;
+
+        render::fill_rect({ x - 5.0f, y - 1.0f }, { 11.f , 3.f }, settings.global.accent_color);
+        render::fill_rect({ x - 1.0f, y - 5.0f }, { 3.f, 11.f }, settings.global.accent_color);
+
+        render::fill_rect({ x - 4.0f, y }, { 9.f, 1.f }, settings.global.accent_color);
+        render::fill_rect({ x, y - 4.0f }, { 1.f, 9.f }, settings.global.accent_color);
     }
 
     bounding_box_t get_bounding_box(c_entity *entity) {

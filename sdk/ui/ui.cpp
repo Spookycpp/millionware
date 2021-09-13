@@ -300,7 +300,7 @@ void ui::init() {
                 group->new_slider(xs("Field of view"), settings.visuals.local.override_fov, 50, 130, xs("{}°"));
                 group->new_slider(xs("Aspect ratio"), settings.visuals.local.aspect_ratio, 0.f, 5.f, xs("{:.1f}%"));
                 group->new_slider(xs("Flash alpha"), settings.visuals.local.flash_alpha, 0, 100, xs("{}%"));
-                group->new_checkbox(xs("Recoil crosshair"), settings.visuals.local.recoil_crosshair);
+                group->new_select(xs("Recoil crosshair"), settings.visuals.local.recoil_crosshair, { xs("Disabled"), xs("Engine"), xs("Overlay")});
                 group->new_checkbox(xs("Sniper crosshair"), settings.visuals.local.sniper_crosshair);
                 group->new_checkbox(xs("Grenade prediction"), settings.visuals.local.grenade_prediction)->add_color_picker(settings.visuals.local.grenade_prediction_color);
                 group->new_checkbox(xs("Spectator list"), settings.visuals.local.spectator_list);

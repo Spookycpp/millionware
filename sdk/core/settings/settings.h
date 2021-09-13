@@ -172,7 +172,7 @@ struct settings_t {
 		} world;
 
 		struct {
-			bool recoil_crosshair = false;
+			int recoil_crosshair = 0;
 			bool penetration_crosshair = false;
 			bool sniper_crosshair = false;
 			bool grenade_prediction = false;

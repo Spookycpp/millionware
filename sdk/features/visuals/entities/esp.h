@@ -47,6 +47,8 @@ namespace features::visuals::esp {
     void draw_thrown_utility(c_entity *entity);
     void draw_defusal_kit(c_entity *entity, float dist_to_local);
 
+    void draw_recoil_crosshair();
+
     bounding_box_t get_bounding_box(c_entity *entity);
     bool get_bounding_box(c_entity *entity, bounding_box_t &out_box);
     IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, float scale = 4.0f);

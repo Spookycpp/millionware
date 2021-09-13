@@ -158,7 +158,15 @@ namespace features::miscellaneous {
     void recoil_crosshair() {
         const static auto recoil_crosshair = interfaces::convar_system->find_convar(xs("cl_crosshair_recoil"));
 
-        recoil_crosshair->set_value(settings.visuals.local.recoil_crosshair);
+        if (settings.visuals.local.recoil_crosshair == 0) {
+            recoil_crosshair->set_value(0);
+        }
+        else if (settings.visuals.local.recoil_crosshair == 1) {
+            recoil_crosshair->set_value(1);
+        }
+        else if (settings.visuals.local.recoil_crosshair == 2) {
+            recoil_crosshair->set_value(0);
+        }
     }
 
     void ragdoll_push() {
