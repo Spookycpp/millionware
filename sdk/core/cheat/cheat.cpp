@@ -42,7 +42,7 @@ bool cheat::init() {
     // and type "version" & grab the "Exe version" value
     // remove the dots & you have the build number
     // big bash bosh
-    if (interfaces::engine_client->get_engine_build_number() != 13800) {
+    if (interfaces::engine_client->get_engine_build_number() != 13801) {
         logging::info(xs("tell laine 'big bash bosh'"));
         return false;
     }
