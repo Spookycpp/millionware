@@ -21,13 +21,16 @@
 
 bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float frame_time, c_user_cmd *user_cmd) {
 
-    const auto result = create_move_original(ecx, edx, frame_time, user_cmd);
+    if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+        return create_move_original(ecx, edx, frame_time, user_cmd);
 
-    if (!user_cmd || !user_cmd->command_number || !user_cmd->tick_count)
+    const auto result = create_move_original(ecx, edx, frame_time, user_cmd);
+    
+    if (!user_cmd || !cheat::local_player || !cheat::local_player->is_alive() || !user_cmd->command_number || !frame_time)
         return result;
 
     if (result)
-        interfaces::engine_client->set_view_angles(user_cmd->view_angles);
+        interfaces::prediction->set_local_view_angles(user_cmd->view_angles);
 
     uintptr_t *frame_pointer;
     __asm mov frame_pointer, ebp;
