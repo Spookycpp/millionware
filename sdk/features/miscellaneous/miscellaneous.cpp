@@ -51,7 +51,7 @@ namespace features::miscellaneous {
         const auto weapon = (c_weapon *) cheat::local_player->get_active_weapon_handle().get();
         const auto info = weapon ? interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index()) : nullptr;
 
-        if (!info || info->type != WEAPON_TYPE_PISTOL)
+        if (!info || info->weapon_type != WEAPON_TYPE_PISTOL)
             return;
 
         if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() == WEAPON_REVOLVER) {

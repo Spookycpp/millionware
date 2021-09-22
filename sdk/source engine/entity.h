@@ -303,7 +303,7 @@ class c_entity {
     DECLARE_VFUNC(3, get_collideable(), c_collideable *(__thiscall *) (void *) )();
     DECLARE_VFUNC(10, get_abs_origin(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(142, get_class_name(), const char *(__thiscall *)(void *))();
-    DECLARE_VFUNC(157, is_player(), bool(__thiscall *)(void *))();
+    DECLARE_VFUNC(158, is_player(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(165, is_weapon(), bool(__thiscall *)(void *))();
 
     DECLARE_NETVAR(float, simulation_time, "DT_BaseEntity", "m_flSimulationTime");
@@ -456,8 +456,8 @@ class c_weapon : public c_economy_item {
     DECLARE_NETVAR(int, reserve_ammo_count, "DT_BaseCombatWeapon", "m_iPrimaryReserveAmmoCount");
     DECLARE_NETVAR(int, burst_shots_remaining, "DT_WeaponCSBaseGun", "m_iBurstShotsRemaining");
 
-    DECLARE_VFUNC(452, get_spread(), float(__thiscall *)(void *))();
-    DECLARE_VFUNC(482, get_inaccuracy(), float(__thiscall *)(void *))();
+    DECLARE_VFUNC(453, get_spread(), float(__thiscall *)(void *))();
+    DECLARE_VFUNC(483, get_inaccuracy(), float(__thiscall *)(void *))();
 
     weapon_info_t *get_info();
 
