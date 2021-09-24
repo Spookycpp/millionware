@@ -36,16 +36,14 @@ bool cheat::init() {
 
     if (!interfaces::init())
         return false;
+    /*
+    readd this once we release out of beta.
 
-    // on csgo updates this'll change, anti-crack method i guess
-    // if the cheat doesn't inject open your console in csgo
-    // and type "version" & grab the "Exe version" value
-    // remove the dots & you have the build number
-    // big bash bosh
-    if (interfaces::engine_client->get_engine_build_number() != 13802) {
+    if (interfaces::engine_client->get_engine_build_number() != 13804) {
         logging::info(xs("tell laine 'big bash bosh'"));
         return false;
     }
+    */
 
     netvars::init();
 
