@@ -93,29 +93,23 @@ namespace features::miscellaneous {
         if (!interfaces::engine_client->get_net_channel_info())
             return;
 
-        static bool clear_tag = false;
-        static int tick_count = 0;
+        static bool should_clear = false;
 
-        const int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+        static auto cl_clanid = interfaces::convar_system->find_convar(xs("cl_clanid"));
+        static int cl_clanid_value = cl_clanid->get_int();
 
-        if (!settings.miscellaneous.clantag && clear_tag) {
-            if (interfaces::global_vars->tick_count % 99 == 2) {
-                set_clantag(xs(""));
-                clear_tag = false;
-            }
+        // doing it this way because doing set_value just didn't work so, fuck it.
+        char buffer[256] = {};
+        sprintf_s(buffer, xs("cl_clanid %i"), cl_clanid_value);
+
+        if (!settings.miscellaneous.clantag && should_clear) {
+            interfaces::engine_client->execute_command(buffer);
+            should_clear = false;
         }
-        else if (settings.miscellaneous.clantag && server_time != tick_count) {
-            static std::string clantag = xs("millionware ");
-            std::rotate(clantag.begin(), clantag.begin() + 1, clantag.end());
-            std::string prefix = xs("$ ");
-            prefix.append(clantag);
-
-            set_clantag(prefix);
-            tick_count = server_time;
+        else if (settings.miscellaneous.clantag) {
+            set_clantag(xs("millionware"));
+            should_clear = true;
         }
-
-        if (!settings.miscellaneous.clantag)
-            clear_tag = true;
     }
 
     void post_processing() {
