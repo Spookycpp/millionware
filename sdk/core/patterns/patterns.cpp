@@ -90,10 +90,13 @@ uint32_t get_pattern_internal(std::string_view module_name, std::string_view pat
 uint32_t patterns::get_pattern(std::string_view module_name, std::string_view pattern) {
     const auto result = get_pattern_internal(module_name, pattern);
 
-    if (result != 0u)
+    if (result != 0u) {
         logging::debug(xs("found pattern '{}' in {} at 0x{:08x}"), pattern.data(), module_name.data(), result);
-    else
-        logging::error(xs("couldn't find pattern '{}' in {}"), pattern.data(), module_name.data());
+    }
+    else {
+        logging::debug(xs("couldn't find pattern '{}' in {}"), pattern.data(), module_name.data());
+        logging::error(xs("couldn't find pattern, report this on the forum."));
+    }
 
     return result;
 }
