@@ -32,7 +32,7 @@ namespace patterns {
     inline uintptr_t send_datagram;
     inline uintptr_t load_named_sky;
     inline uintptr_t set_abs_angles;
-    inline uintptr_t get_sequence_activity;
+    inline uintptr_t sequence_activity;
     inline uintptr_t has_bomb;
     inline uintptr_t set_absolute_origin;
     inline uintptr_t report_player;
@@ -97,7 +97,7 @@ namespace patterns {
     PATTERN_GET(send_datagram, send_datagram);
     PATTERN_GET(load_named_sky, load_named_sky);
     PATTERN_GET(set_abs_angles, set_abs_angles);
-    PATTERN_GET(get_sequence_activity, get_sequence_activity);
+    PATTERN_GET(sequence_activity, sequence_activity);
     PATTERN_GET(has_bomb, has_bomb);
     PATTERN_GET(set_absolute_origin, set_absolute_origin);
     PATTERN_GET(report_player, report_player);

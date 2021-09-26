@@ -165,7 +165,7 @@ bool patterns::init() {
     if ((set_abs_angles = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8"))) == 0u)
         return false;
 
-    if ((get_sequence_activity = get_pattern(xs("client.dll"), xs("55 8B EC 53 8B 5D 08 56 8B F1 83"))) == 0u)
+    if ((sequence_activity = get_pattern(xs("client.dll"), xs("55 8B EC 53 8B 5D 08 56 8B F1 83"))) == 0u)
         return false;
 
     if ((has_bomb = get_pattern(xs("client.dll"), xs("56 8B F1 85 F6 74 31"))) == 0u)

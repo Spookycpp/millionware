@@ -139,7 +139,7 @@ int c_player::sequence_activity(int sequence) {
         return -1;
     }
 
-    return reinterpret_cast<int(__fastcall *)(void *, studio_hdr_t *, int)>(patterns::get_sequence_activity)(this, hdr, sequence);
+    return reinterpret_cast<int(__fastcall *)(void *, studio_hdr_t *, int)>(patterns::get_sequence_activity())(this, hdr, sequence);
 }
 
 bool c_player::is_flashed() {
