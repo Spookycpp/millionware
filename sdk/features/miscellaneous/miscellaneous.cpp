@@ -292,6 +292,9 @@ namespace features::miscellaneous {
 
     void preserve_killfeed() {
 
+        if (!settings.miscellaneous.preserve_killfeed)
+            return;
+
         const auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period();
 
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
