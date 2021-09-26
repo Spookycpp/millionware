@@ -2,116 +2,126 @@
 
 struct weapon_info_t {
 public:
-	char* console_name;
-	char		pad_0008[8];
-	void* weapon_def;
-	int			max_clip_ammo;
-	int			max_clip_ammo2;
-	int			default_clip1;
-	int			default_clip2;
-	char		pad_0024[8];
-	char* world_model;
-	char* view_model;
-	char* dropped_model;
-	char		pad_0038[4];
-	char* if_ur_reading_this_czapek_youre_a_bitch;
-	char		pad_0040[56];
-	char* empty_sound;
-	char		pad_007c[4];
-	char* bullet_type;
-	char		pad_0084[4];
-	char* hud_name;
-	char* weapon_name;
-	char		pad_0090[60];
-	int 		weapon_type;
-	int			weapon_price;
-	int			kill_award;
-	char* animation_prefix;
-	float		cycle_time;
-	float		cycle_time_alt;
-	float		time_to_idle;
-	float		idle_interval;
-	bool		full_auto;
-	char		pad_0x00e5[3];
-	int			damage;
-	float		armor_ratio;
-	int			bullets;
-	float		penetration;
-	float		flinch_velocity_modifier_large;
-	float		flinch_velocity_modifier_small;
-	char		pad_0x4[4];
-	float		range;
-	float		range_modifier;
-	float		throw_velocity;
-	char		pad_0x010c[16];
-	bool		has_silencer;
-	char		pad_0x0119[3];
-	char* silencer_model;
-	int			crosshair_min_distance;
-	float		max_player_speed;
-	float		max_player_speed_alt;
-	char		pad_0x0130[4];
-	float		spread;
-	float		spread_alt;
-	float		inaccuracy_crouch;
-	float		inaccuracy_crouch_alt;
-	float		inaccuracy_stand;
-	float		inaccuracy_stand_alt;
-	float		inaccuracy_jump_initial;
-	float		inaccuracy_jump;
-	float		inaccuracy_jump_alt;
-	float		inaccuracy_land;
-	float		inaccuracy_land_alt;
-	float		inaccuracy_ladder;
-	float		inaccuracy_ladder_alt;
-	float		inaccuracy_fire;
-	float		inaccuracy_fire_alt;
-	float		inaccuracy_move;
-	float		inaccuracy_move_alt;
-	float		inaccuracy_reload;
-	int			recoil_seed;
-	float		recoil_angle;
-	float		recoil_angle_alt;
-	float		recoil_angle_variance;
-	float		recoil_angle_variance_alt;
-	float		recoil_magnitude;
-	float		recoil_magnitude_alt;
-	float		recoil_magnitude_variance;
-	float		recoil_magnitude_variance_alt;
-	float		recovery_time_crouch;
-	float		recovery_time_stand;
-	float		recovery_time_crouch_final;
-	float		recovery_time_stand_final;
-	int			recovery_transition_start_bullet;
-	int			recovery_transition_end_bullet;
-	bool		unzoom_after_shot;
-	bool		hide_view_model_zoomed;
-	char		pad_0x01b5[2];
-	char		zoom_levels[3];
-	int			zoom_fov[2];
-	float		zoom_time[3];
-	char* weapon_class;
-	float		addon_scale;
-	char		pad_0x01dc[4];
-	char* eject_brass_effect;
-	char* tracer_effect;
-	int			tracer_frequency;
-	int			tracer_frequency_alt;
-	char* muzzle_flash_effect_1st_person;
-	char		pad_0x01f4[4];
-	char* muzzle_flash_effect_3rd_person;
-	char		pad_0x01fc[4];
-	char* muzzle_smoke_effect;
-	float		heat_per_shot;
-	char* zoom_in_sound;
-	char* zoom_out_sound;
-	float		inaccuracy_pitch_shift;
-	float		inaccuracy_sound_threshold;
-	float		bot_audible_range;
-	char		pad_0x0218[8];
-	char* p_wrong_team_msg;
-	bool		has_burst_mode;
-	char		pad_0x0225[3];
-	bool		is_revolver;
-	bool		cannot_shoot_underwater;
+private:
+    char pad_0000[4];
+
+public:
+    char* weapon_name;
+
+private:
+    char pad_0008[12];
+
+public:
+    int max_clip_ammo;
+
+private:
+    char pad_0018[12];
+
+public:
+    int max_ammo;
+
+private:
+    char pad_0028[4];
+
+public:
+    char* world_model;
+    char* view_model;
+    char* dropped_model;
+
+private:
+    char pad_0038[4];
+    char* N00000010;
+    char pad_0040[56];
+
+public:
+    char* empty_sound;
+
+private:
+    char pad_007C[4];
+
+public:
+    char* ammo_type;
+
+private:
+    char pad_0084[4];
+
+public:
+    char* hud_name;
+    char* weapon_name2;
+
+private:
+    char pad_0090[60];
+
+public:
+    int type;
+    int price;
+    int kill_reward;
+    char* anim_prefix;
+    float cycle_time;
+    float cycle_time_alt;
+    float time_to_idle;
+    float idle_interval;
+    bool full_auto;
+
+private:
+    char pad_00E9[3];
+
+public:
+    int damage;
+    float headshot_multiplier;
+    float armor_ratio;
+
+private:
+    char pad_00F4[4];
+
+public:
+    float penetration;
+
+private:
+    char pad_00FC[8];
+
+public:
+    float range;
+    float range_modifier;
+    float throw_velocity;
+
+private:
+    char pad_010C[12];
+
+public:
+    bool has_silencer;
+
+private:
+    char pad_011D[15];
+
+public:
+    float max_speed;
+    float max_speed_alt;
+    float spread;
+    float spread_alt;
+    float inaccuracy_crouch;
+    float inaccuracy_crouch_alt;
+    float inaccuracy_stand;
+    float inaccuracy_stand_alt;
+    float inaccuracy_jump_start;
+    float inaccuracy_jump;
+    float inaccuracy_jump_alt;
+    float inaccuracy_land;
+    float inaccuracy_land_alt;
+    float inaccuracy_ladder;
+    float inaccuracy_ladder_alt;
+    float inaccuracy_fire;
+    float inaccuracy_fire_alt;
+    float inaccuracy_move;
+    float inaccuracy_move_alt;
+    float inaccuracy_reload;
+    int recoil_seed;
+
+private:
+    char pad_0180[60];
+
+public:
+    int zoom_levels;
+    int zoom_fov1;
+    int zoom_fov2;
 };
