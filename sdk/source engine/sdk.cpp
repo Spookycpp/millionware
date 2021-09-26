@@ -44,13 +44,11 @@ bool c_entity::is_grenade() {
 }
 
 CUtlVector<c_animation_layer> &c_player::animation_overlay() {
-    const static auto offset = netvars::get(CRC_CT("DT_BaseAnimating:m_hLightingOrigin"));
-
-    return *(CUtlVector<c_animation_layer> *) ((uintptr_t) this + offset + 0x3c);
+    return *(CUtlVector<c_animation_layer> *) ((uintptr_t) this + 0x2990);
 }
 
 CUtlVector<matrix3x4_t> &c_player::get_cached_bone_data() {
-    return *(CUtlVector<matrix3x4_t> *) ((uintptr_t) this + 0x290C + sizeof(void *));
+    return *(CUtlVector<matrix3x4_t> *) ((uintptr_t) this + 0x2914);
 }
 
 void c_player::set_abs_angles(const vector_t &angle) {

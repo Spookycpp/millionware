@@ -303,8 +303,8 @@ class c_entity {
     DECLARE_VFUNC(3, get_collideable(), c_collideable *(__thiscall *) (void *) )();
     DECLARE_VFUNC(10, get_abs_origin(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(142, get_class_name(), const char *(__thiscall *)(void *))();
-    DECLARE_VFUNC(158, is_player(), bool(__thiscall *)(void *))();
-    DECLARE_VFUNC(165, is_weapon(), bool(__thiscall *)(void *))();
+    DECLARE_VFUNC(158, is_player(), bool(__thiscall *)(void *))(); // @xref: "effects/nightvision"
+    DECLARE_VFUNC(166, is_weapon(), bool(__thiscall *)(void *))();
 
     DECLARE_NETVAR(float, simulation_time, "DT_BaseEntity", "m_flSimulationTime");
     DECLARE_NETVAR(float, c4_blow, "DT_PlantedC4", "m_flC4Blow");
