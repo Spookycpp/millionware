@@ -233,21 +233,21 @@ enum precipitation_type_t {
 };
 
 class c_animation_layer {
-  public:
-    bool client_blend;
-    float layer_fade_time;
-    void *studio_hdr;
-    int dispatch_sequence_primary;
-    int dispatch_sequence_secondary;
-    int order;
-    int sequence;
-    float prev_cycle;
-    float weight;
-    float weight_delta_rate;
-    float playback_rate;
-    float cycle;
-    void *owner;
-    char pad[4];
+public:
+    bool client_blend;		     //0x0000
+    float blend_in;			     //0x0004
+    void* studio_hdr;			 //0x0008
+    int dispatch_sequence;       //0x000C
+    int dispatch_sequence_2;     //0x0010
+    int order;                   //0x0014
+    int sequence;                //0x0018
+    float prev_cycle;            //0x001C
+    float weight;                //0x0020
+    float weight_delta_rate;     //0x0024
+    float playback_rate;         //0x0028
+    float cycle;                 //0x002C
+    void* owner;                 //0x0030
+    char pad_0038[4];            //0x0034
 };
 
 struct entity_handle_t {
