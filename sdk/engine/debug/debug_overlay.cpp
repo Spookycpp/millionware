@@ -96,11 +96,8 @@ void debug_overlay::draw() {
 		auto pos_x = screen_size.x - overlay_width - 30.0f;
 		auto pos_y = 16.0f + i * (overlay_height + 16.0f);
 
-		auto lowest_time_it = std::min_element(overlay->times.begin(), overlay->times.end());
-		auto highest_time_it = std::max_element(overlay->times.begin(), overlay->times.end());
-
-		auto lowest_time = lowest_time_it == overlay->times.end() ? 0 : *lowest_time_it;
-		auto highest_time = highest_time_it == overlay->times.end() ? 0 : *highest_time_it;
+		auto lowest_time = overlay->times.empty() ? 0 : *std::min_element(overlay->times.begin(), overlay->times.end());
+		auto highest_time = overlay->times.empty() ? 0 : *std::max_element(overlay->times.begin(), overlay->times.end());
 
 		auto lowest_time_txt = std::format(xs("min: {:.2f}ms"), (float)lowest_time / 1000.0f);
 		auto highest_time_txt = std::format(xs("max: {:.2f}ms"), (float)highest_time / 1000.0f);
