@@ -6,7 +6,11 @@
 #include <mutex>
 #include <chrono>
 
+#ifdef _DEBUG
 #define PROFILE_WITH(timer) debug_timer_t timer_{ (debug_overlay::timer).get() };
+#else
+#define PROFILE_WITH(timer);
+#endif
 
 struct debug_overlay_t {
 	uint64_t calls;

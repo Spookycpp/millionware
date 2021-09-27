@@ -76,26 +76,28 @@ debug_timer_t::~debug_timer_t() {
 }
 
 void debug_overlay::init() {
-	create_move = std::make_shared<debug_overlay_t>("create move");
-	do_psfx = std::make_shared<debug_overlay_t>("do psfx");
-	dme = std::make_shared<debug_overlay_t>("dme");
 
-	fsn[0] = std::make_shared<debug_overlay_t>("fsn (start)");
-	fsn[1] = std::make_shared<debug_overlay_t>("fsn (net update start)");
-	fsn[2] = std::make_shared<debug_overlay_t>("fsn (net data start)");
-	fsn[3] = std::make_shared<debug_overlay_t>("fsn (net data end)");
-	fsn[4] = std::make_shared<debug_overlay_t>("fsn (net update end)");
-	fsn[5] = std::make_shared<debug_overlay_t>("fsn (render start)");
-	fsn[6] = std::make_shared<debug_overlay_t>("fsn (render end)");
-	fsn[7] = std::make_shared<debug_overlay_t>("unknown");
+#ifdef _DEBUG
+	create_move = std::make_shared<debug_overlay_t>(xs("create move"));
+	do_psfx = std::make_shared<debug_overlay_t>(xs("do psfx"));
+	dme = std::make_shared<debug_overlay_t>(xs("dme"));
 
-	present[0] = std::make_shared<debug_overlay_t>("present (main)");
-	present[1] = std::make_shared<debug_overlay_t>("present (lua back)");
-	present[2] = std::make_shared<debug_overlay_t>("present (lua front)");
+	fsn[0] = std::make_shared<debug_overlay_t>(xs("fsn (start)"));
+	fsn[1] = std::make_shared<debug_overlay_t>(xs("fsn (net update start)"));
+	fsn[2] = std::make_shared<debug_overlay_t>(xs("fsn (net data start)"));
+	fsn[3] = std::make_shared<debug_overlay_t>(xs("fsn (net data end)"));
+	fsn[4] = std::make_shared<debug_overlay_t>(xs("fsn (net update end)"));
+	fsn[5] = std::make_shared<debug_overlay_t>(xs("fsn (render start)"));
+	fsn[6] = std::make_shared<debug_overlay_t>(xs("fsn (render end)"));
+	fsn[7] = std::make_shared<debug_overlay_t>(xs("unknown"));
 
-	push_notice = std::make_shared<debug_overlay_t>("push notice");
-	send_datagram = std::make_shared<debug_overlay_t>("send datagram");
-	write_user_cmd = std::make_shared<debug_overlay_t>("write user cmd");
+	present[0] = std::make_shared<debug_overlay_t>(xs("present (main)"));
+	present[1] = std::make_shared<debug_overlay_t>(xs("present (lua back)"));
+	present[2] = std::make_shared<debug_overlay_t>(xs("present (lua front)"));
+
+	push_notice = std::make_shared<debug_overlay_t>(xs("push notice"));
+	send_datagram = std::make_shared<debug_overlay_t>(xs("send datagram"));
+	write_user_cmd = std::make_shared<debug_overlay_t>(xs("write user cmd"));
 
 	overlays.insert(overlays.end(),
 		{
@@ -115,6 +117,8 @@ void debug_overlay::init() {
 			send_datagram.get(),
 			write_user_cmd.get(),
 		});
+
+#endif
 }
 
 void debug_overlay::draw() {
