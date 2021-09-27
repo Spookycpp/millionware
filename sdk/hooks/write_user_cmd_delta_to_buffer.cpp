@@ -8,7 +8,7 @@
 
 bool __fastcall hooks::write_user_cmd_delta_to_buffer(uintptr_t ecx, uintptr_t edx, int slot, bf_write *buf, int from, int to, bool new_user_cmd) {
 
-	debug_timer_t wucdtb{ debug_overlay::wucdtb };
+	PROFILE_WITH(write_user_cmd);
 
 	if (!cheat::tick_base_shift)
 		return write_user_cmd_delta_to_buffer_original(ecx, edx, slot, buf, from, to, new_user_cmd);

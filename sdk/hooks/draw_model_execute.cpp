@@ -14,7 +14,7 @@
 
 void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void* ctx, void* state, c_model_render_info* info, matrix3x4_t* matrix) {
 
-    debug_timer_t wucdtb{ debug_overlay::dme };
+    PROFILE_WITH(dme);
 
     static c_material* textured = nullptr;
     static c_material* flat = nullptr;

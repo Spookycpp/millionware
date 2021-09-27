@@ -10,7 +10,7 @@
 
 int __fastcall hooks::send_datagram(c_net_channel* ecx, uintptr_t* edx, void* buffer) {
 
-	debug_timer_t wucdtb{ debug_overlay::send_datagram };
+	PROFILE_WITH(send_datagram);
 
 	if (buffer || !interfaces::engine_client->is_in_game())
 		return send_datagram_original(ecx, edx, buffer);

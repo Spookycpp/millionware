@@ -8,7 +8,7 @@
 #include "../core/cheat/cheat.h"
 
 void __fastcall hooks::push_notice(uintptr_t ecx, uintptr_t edx, const char *text, int len, const char *panel) {
-    debug_timer_t wucdtb{ debug_overlay::push_notice };
+    PROFILE_WITH(push_notice);
 
     if (text == "##" + cheat::notice_text) {
         push_notice_original(ecx, edx, cheat::notice_text.c_str(), cheat::notice_text.length(), cheat::notice_text.c_str());

@@ -22,7 +22,7 @@
 
 bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float frame_time, c_user_cmd *user_cmd) {
 
-    debug_timer_t wucdtb{ debug_overlay::create_move };
+    PROFILE_WITH(create_move);
 
     if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
         return create_move_original(ecx, edx, frame_time, user_cmd);

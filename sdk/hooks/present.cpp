@@ -18,7 +18,7 @@
 
 long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region) {
 
-    debug_timer_t timer{ debug_overlay::present };
+    PROFILE_WITH(present[0]);
 
     render::begin();
 

@@ -8,7 +8,7 @@
 
 int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, int effect_id) {
 
-    debug_timer_t wucdtb{ debug_overlay::do_psfx };
+    PROFILE_WITH(do_psfx);
 
     static void *glow_manager = nullptr;
 

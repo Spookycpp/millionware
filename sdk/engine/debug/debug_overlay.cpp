@@ -2,10 +2,10 @@
 #include "../render/render.h"
 #include "../security/xorstr.h"
 
-constexpr int overlay_height = 60;
-constexpr int overlay_width = overlay_height * 3;
+constexpr int overlay_height = 70;
+constexpr int overlay_width = overlay_height * 4;
 
-static std::vector<debug_overlay_t> overlays;
+static std::vector<debug_overlay_t*> overlays;
 
 debug_overlay_t::debug_overlay_t(std::string name_) {
 	calls = 0;
@@ -17,7 +17,7 @@ debug_overlay_t::debug_overlay_t(std::string name_) {
 }
 
 void debug_overlay_t::add(uint64_t time) {
-	has_pushed = true;
+	std::lock_guard guard{ mutex };
 
 	if (times.size() > overlay_width)
 		times.erase(times.begin());
@@ -67,57 +67,81 @@ debug_timer_t::~debug_timer_t() {
 }
 
 void debug_overlay::init() {
-	overlays.emplace_back(debug_overlay_t{ "create move" });
-	overlays.emplace_back(debug_overlay_t{ "do psfx" });
-	overlays.emplace_back(debug_overlay_t{ "dme" });
-	overlays.emplace_back(debug_overlay_t{ "fsn" });
-	overlays.emplace_back(debug_overlay_t{ "present" });
-	overlays.emplace_back(debug_overlay_t{ "push notice" });
-	overlays.emplace_back(debug_overlay_t{ "send datagram" });
-	overlays.emplace_back(debug_overlay_t{ "wucdtb" });
+	create_move = std::make_shared<debug_overlay_t>("create move");
+	do_psfx = std::make_shared<debug_overlay_t>("do psfx");
+	dme = std::make_shared<debug_overlay_t>("dme");
 
-	create_move = &overlays[0];
-	do_psfx = &overlays[1];
-	dme = &overlays[2];
-	fsn = &overlays[3];
-	present = &overlays[4];
-	push_notice = &overlays[5];
-	send_datagram = &overlays[6];
-	wucdtb = &overlays[7];
+	fsn[0] = std::make_shared<debug_overlay_t>("fsn (start)");
+	fsn[1] = std::make_shared<debug_overlay_t>("fsn (net update start)");
+	fsn[2] = std::make_shared<debug_overlay_t>("fsn (net data start)");
+	fsn[3] = std::make_shared<debug_overlay_t>("fsn (net data end)");
+	fsn[4] = std::make_shared<debug_overlay_t>("fsn (net update end)");
+	fsn[5] = std::make_shared<debug_overlay_t>("fsn (render start)");
+	fsn[6] = std::make_shared<debug_overlay_t>("fsn (render end)");
+	fsn[7] = std::make_shared<debug_overlay_t>("unknown");
+
+	present[0] = std::make_shared<debug_overlay_t>("present (main)");
+	present[1] = std::make_shared<debug_overlay_t>("present (lua back)");
+	present[2] = std::make_shared<debug_overlay_t>("present (lua front)");
+
+	push_notice = std::make_shared<debug_overlay_t>("push notice");
+	send_datagram = std::make_shared<debug_overlay_t>("send datagram");
+	write_user_cmd = std::make_shared<debug_overlay_t>("write user cmd");
+
+	overlays.insert(overlays.end(),
+		{
+			create_move.get(),
+			do_psfx.get(),
+			fsn[0].get(),
+			fsn[1].get(),
+			fsn[2].get(),
+			fsn[3].get(),
+			fsn[4].get(),
+			fsn[5].get(),
+			fsn[6].get(),
+			present[0].get(),
+			present[1].get(),
+			present[2].get(),
+			push_notice.get(),
+			send_datagram.get(),
+			write_user_cmd.get(),
+		});
 }
 
 void debug_overlay::draw() {
 	auto screen_size = render::get_screen_size();
 
-	for (auto i = 0; i < overlays.size(); i++) {
-		auto overlay = &overlays[i];
-		auto text_size = render::measure_text(overlay->name.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
+	auto next_goes_down = false;
+	auto next_pos_x = screen_size.x - overlay_width * 2 - 32.0f;
+	auto next_pos_y = 16.0f;
 
-		auto pos_x = screen_size.x - overlay_width - 30.0f;
-		auto pos_y = 16.0f + i * (overlay_height + 16.0f);
+	for (auto i = 0; i < overlays.size(); i++) {
+		auto overlay = overlays[i];
+
+		std::lock_guard guard{ overlay->mutex };
+
+		auto pos_x = next_pos_x;
+		auto pos_y = next_pos_y;
 
 		auto lowest_time = overlay->times.empty() ? 0 : *std::min_element(overlay->times.begin(), overlay->times.end());
 		auto highest_time = overlay->times.empty() ? 0 : *std::max_element(overlay->times.begin(), overlay->times.end());
 
-		auto lowest_time_txt = std::format(xs("min: {:.2f}ms"), (float)lowest_time / 1000.0f);
-		auto highest_time_txt = std::format(xs("max: {:.2f}ms"), (float)highest_time / 1000.0f);
+		auto text = std::format(xs("{} (min={:.2f}ms, max={:.2f}ms)"), overlay->name, (float)lowest_time / 1000.0f, (float)highest_time / 1000.0f);
+		auto text_size = render::measure_text(text.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
 
-		auto lowest_time_size = render::measure_text(lowest_time_txt.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
-		auto highest_time_size = render::measure_text(highest_time_txt.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
+		render::fill_rect({ pos_x - 4.0f, pos_y - 4.0f }, { overlay_width + 4.0f, overlay_height + 8.0f + text_size.y }, { 0, 0, 0, 100 }, 3.0f);
+		render::draw_text({ pos_x, pos_y }, { 255, 255, 255, 255 }, text.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
 
-		auto widest_text = std::max({ text_size.x, lowest_time_size.x, highest_time_size.x });
+		overlay->draw(pos_x, pos_y + 4.0f);
 
-		render::fill_rect({ pos_x - widest_text - 12.0f, pos_y - 4.0f }, { overlay_width + widest_text + 16.0f, overlay_height + 8.0f }, { 0, 0, 0, 140 });
-		render::draw_rect({ pos_x, pos_y }, { overlay_width, overlay_height }, { 200, 200, 200, 80 });
+		if (next_goes_down) {
+			next_pos_x = screen_size.x - overlay_width * 2 - 32.0f;
+			next_pos_y += overlay_height + 8.0f + text_size.y + 8.0f;
+		}
+		else {
+			next_pos_x += overlay_width + 16.0f;
+		}
 
-		render::draw_text({ pos_x - text_size.x - 8.0f, pos_y }, { 255, 255, 255, 255 }, overlay->name.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
-		render::draw_text({ pos_x - lowest_time_size.x - 8.0f, pos_y + text_size.y + 4.0f }, { 255, 255, 255, 255 }, lowest_time_txt.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
-		render::draw_text({ pos_x - highest_time_size.x - 8.0f, pos_y + text_size.y + lowest_time_size.y + 8.0f }, { 255, 255, 255, 255 }, highest_time_txt.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
-
-		/*if (!overlay->has_pushed)
-			overlay->add(0);*/
-
-		overlay->has_pushed = false;
-		overlay->draw(pos_x, pos_y);
+		next_goes_down ^= 1;
 	}
 }
