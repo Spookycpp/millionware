@@ -26,10 +26,13 @@ void debug_overlay_t::add(uint64_t time) {
 }
 
 void debug_overlay_t::draw(float pos_x, float pos_y) {
+	if (times.empty())
+		return;
+
 	auto times_ptr = times.data();
 	auto max_x = (int)times.size();
 	auto base_x = pos_x + overlay_width - max_x;
-	auto max_y = 0.0f;
+	auto max_y = 16.0f;
 
 	for (auto x = 0; x < overlay_width; x++) {
 		if (x > max_x)
@@ -38,18 +41,24 @@ void debug_overlay_t::draw(float pos_x, float pos_y) {
 		auto y = (float)times_ptr[x] / 1000.0f;
 
 		if (y > max_y)
-			max_y = y + 4.0f;
+			max_y = y;
 	}
+
+	max_y += 6.0f;
 
 	for (auto x = 0; x < overlay_width; x++) {
 		if (x > max_x)
 			break;
 
 		auto y = (float)times_ptr[x] / 1000.0f;
-		auto actual_y = overlay_height - y;
-		auto scaled_y = y / max_y;
+		auto scaled_y = (y + 3.0f) / max_y;
+		auto height = overlay_height * scaled_y;
+		auto actual_y = overlay_height - height;
 
-		render::gradient_v({ base_x + x, pos_y + actual_y }, { 1.0f, scaled_y }, { 200, 200, 200, 150 }, { 200, 200, 200, 0 });
+		render::push_clip({ base_x + x, pos_y + actual_y }, { 1.0f, height });
+		render::gradient_v({ base_x + x, pos_y }, { 1.0f, overlay_height }, { 200, 200, 200, 200 }, { 200, 200, 200, 0 });
+		render::pop_clip();
+
 		render::fill_rect({ base_x + x, pos_y + actual_y }, { 1.0f, 2.0f }, { 255, 255, 255, 255 });
 	}
 }
