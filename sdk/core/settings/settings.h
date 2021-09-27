@@ -98,6 +98,7 @@ struct settings_t {
 
 		struct {
 			int   activation_type = 0;
+			bool  draw_teammates = false;
 			int   hotkey = 0;
 			bool  engine_radar = false;
 

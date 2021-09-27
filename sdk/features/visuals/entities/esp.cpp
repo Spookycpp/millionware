@@ -50,7 +50,7 @@ namespace features::visuals::esp {
             entity_esp.resize(interfaces::entity_list->get_highest_ent_index());
 
             c_entity *entity = interfaces::entity_list->get_entity(i);
-            if (!entity) {
+            if (!entity || entity == cheat::local_player) {
                 continue;
             }
 
@@ -112,10 +112,13 @@ namespace features::visuals::esp {
             return;
         }
 
-        // TODO: team check option
-        if (player->get_team_num() == cheat::local_player->get_team_num()) {
+        const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(xs("mp_teammates_are_enemies"));
+
+        auto is_ffa = mp_teammates_are_enemies->get_bool();
+        auto is_enemy = is_ffa || player->get_team_num() != cheat::local_player->get_team_num();
+
+        if (!is_enemy && !settings.visuals.player.draw_teammates)
             return;
-        }
 
         const bounding_box_t entity_box = get_bounding_box(entity);
         entity_esp.at(idx).bottom_offset = 0.0f;

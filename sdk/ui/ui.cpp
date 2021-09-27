@@ -213,6 +213,7 @@ void ui::init() {
     if (const auto visual_category = main_window->new_category(xs("Visualizations"))) {
         if (const auto players_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_USER, xs("Players"))) {
             if (const auto group = players_tab->new_group(xs("Player ESP"))) {
+                group->new_checkbox(xs("Draw teammates"), settings.visuals.player.draw_teammates);
                 group->new_checkbox(xs("Bounding box"), settings.visuals.player.bounding_box)->add_color_picker(settings.visuals.player.bounding_box_color);
                 group->new_checkbox(xs("Name"), settings.visuals.player.player_name)->add_color_picker(settings.visuals.player.player_name_color);
                 group->new_checkbox(xs("Health"), settings.visuals.player.health);
