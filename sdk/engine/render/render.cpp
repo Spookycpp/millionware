@@ -293,6 +293,7 @@ void render::begin() {
 
 void render::finish() {
     ImGui::GetForegroundDrawList()->ChannelsMerge();
+    ImGui::GetIO().KeyMods = ImGui::GetMergedKeyModFlags();
 
     ImGui::EndFrame();
     ImGui::Render();
