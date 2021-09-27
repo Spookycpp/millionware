@@ -29,7 +29,7 @@ namespace features::game_events::inferno {
         }
 
         static int orientation(const point_t &a, const point_t &b, const point_t &c) {
-            const int value = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+            const auto value = (int)((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y));
 
             if (!value) {
                 return 0; //co-linear
