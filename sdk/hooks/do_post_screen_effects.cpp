@@ -3,9 +3,12 @@
 #include "../core/interfaces/interfaces.h"
 #include "../core/settings/settings.h"
 
+#include "../engine/debug/debug_overlay.h"
 #include "../source engine/glow_object_definition.h"
 
 int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, int effect_id) {
+
+    debug_timer_t wucdtb{ debug_overlay::do_psfx };
 
     static void *glow_manager = nullptr;
 

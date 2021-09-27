@@ -285,14 +285,14 @@ void render::begin() {
 
     ImGui::NewFrame();
 
-    ImGui::GetOverlayDrawList()->ChannelsSplit(8);
-    ImGui::GetOverlayDrawList()->ChannelsSetCurrent(0);
+    ImGui::GetForegroundDrawList()->ChannelsSplit(8);
+    ImGui::GetForegroundDrawList()->ChannelsSetCurrent(0);
 
-    draw_list = ImGui::GetOverlayDrawList();
+    draw_list = ImGui::GetForegroundDrawList();
 }
 
 void render::finish() {
-    ImGui::GetOverlayDrawList()->ChannelsMerge();
+    ImGui::GetForegroundDrawList()->ChannelsMerge();
 
     ImGui::EndFrame();
     ImGui::Render();
@@ -303,7 +303,7 @@ void render::finish() {
 }
 
 void render::set_layer(int index) {
-    ImGui::GetOverlayDrawList()->ChannelsSetCurrent(index);
+    ImGui::GetForegroundDrawList()->ChannelsSetCurrent(index);
 }
 
 void render::push_clip(const point_t &position, const point_t &size, bool intersect) {
@@ -331,13 +331,13 @@ void render::fill_rect(const point_t &position, const point_t &size, const color
 }
 
 void render::gradient_h(const point_t &position, const point_t &size, const color_t &color_start, const color_t &color_end) {
-    ImGui::GetOverlayDrawList()->AddRectFilledMultiColor({position.x, position.y}, {position.x + size.x, position.y + size.y}, IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
+    ImGui::GetForegroundDrawList()->AddRectFilledMultiColor({position.x, position.y}, {position.x + size.x, position.y + size.y}, IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
                                                          IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a),
                                                          IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a));
 }
 
 void render::gradient_v(const point_t &position, const point_t &size, const color_t &color_start, const color_t &color_end) {
-    ImGui::GetOverlayDrawList()->AddRectFilledMultiColor({position.x, position.y}, {position.x + size.x, position.y + size.y}, IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
+    ImGui::GetForegroundDrawList()->AddRectFilledMultiColor({position.x, position.y}, {position.x + size.x, position.y + size.y}, IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
                                                          IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a),
                                                          IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a));
 }

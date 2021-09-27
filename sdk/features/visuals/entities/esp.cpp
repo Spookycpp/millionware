@@ -521,14 +521,14 @@ namespace features::visuals::esp {
             
             render::fill_circle(pos, radius, { 5, 5, 5, 155 });
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, radius + 1.0f, min, max);
-            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 65), 0, 1);
+            ImGui::GetForegroundDrawList()->PathArcTo({ pos.x, pos.y }, radius + 1.0f, min, max);
+            ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 65), 0, 1);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, radius, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
-            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 185), 0, 2);
+            ImGui::GetForegroundDrawList()->PathArcTo({ pos.x, pos.y }, radius, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
+            ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 185), 0, 2);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ pos.x, pos.y }, radius - 2.0f, min, max);
-            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
+            ImGui::GetForegroundDrawList()->PathArcTo({ pos.x, pos.y }, radius - 2.0f, min, max);
+            ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
 
             return true;
         };

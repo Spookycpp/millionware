@@ -2,11 +2,15 @@
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 
+#include "../engine/debug/debug_overlay.h"
+
 #include "../core/util/util.h"
 
 #include "../features/fake ping/fake_ping.h"
 
 int __fastcall hooks::send_datagram(c_net_channel* ecx, uintptr_t* edx, void* buffer) {
+
+	debug_timer_t wucdtb{ debug_overlay::send_datagram };
 
 	if (buffer || !interfaces::engine_client->is_in_game())
 		return send_datagram_original(ecx, edx, buffer);

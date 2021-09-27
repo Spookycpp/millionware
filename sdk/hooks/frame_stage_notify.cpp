@@ -3,6 +3,8 @@
 #include "../core/interfaces/interfaces.h"
 #include "../core/util/util.h"
 
+#include "../engine/debug/debug_overlay.h"
+
 #include "../features/discord presence/rpc.h"
 #include "../features/lagcompensation/lagcompensation.h"
 #include "../features/miscellaneous/miscellaneous.h"
@@ -10,6 +12,8 @@
 #include "../features/visuals/world/world.h"
 
 void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx, e_client_frame_stage frame_stage) {
+	debug_timer_t wucdtb{ debug_overlay::fsn };
+
 	discord_rpc::update();
 	features::miscellaneous::panorama_blur(); // main menu blur can be removed
 

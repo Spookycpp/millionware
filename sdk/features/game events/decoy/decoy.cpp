@@ -73,14 +73,14 @@ namespace features::game_events::decoy {
             const color_t color = settings.visuals.world.grenades_color;
             const color_t bg_color = color_t::blend({ 33, 33, 33, 255 }, color, 0.3f);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 13.0f, min, max);
-            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 65), 0, 1);
+            ImGui::GetForegroundDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 13.0f, min, max);
+            ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 65), 0, 1);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 12.0f, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
-            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 185), 0, 2);
+            ImGui::GetForegroundDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 12.0f, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
+            ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 185), 0, 2);
 
-            ImGui::GetOverlayDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 10.0f, min, max);
-            ImGui::GetOverlayDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
+            ImGui::GetForegroundDrawList()->PathArcTo({ screen_pos.x, screen_pos.y }, 10.0f, min, max);
+            ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
 
             // draw icon
             static IDirect3DTexture9 *decoy_tex = nullptr;

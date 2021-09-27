@@ -5,6 +5,7 @@
 #include "../core/interfaces/interfaces.h"
 #include "../core/settings/settings.h"
 
+#include "../engine/debug/debug_overlay.h"
 #include "../engine/math/math.h"
 
 #include "../features/assistance/lagcompensation/lag_comp.h"
@@ -20,6 +21,8 @@
 #include "../lua/lua_game.hpp"
 
 bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float frame_time, c_user_cmd *user_cmd) {
+
+    debug_timer_t wucdtb{ debug_overlay::create_move };
 
     if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
         return create_move_original(ecx, edx, frame_time, user_cmd);

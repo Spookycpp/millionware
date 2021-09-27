@@ -3,6 +3,7 @@
 #include <windows.h>
 
 #include "core/cheat/cheat.h"
+#include "engine/debug/debug_overlay.h"
 #include "engine/hash/hash.h"
 #include "engine/input/input.h"
 #include "engine/logging/logging.h"
@@ -219,6 +220,7 @@ unsigned long __stdcall initial_thread(void *base_pointer) {
     SymInitialize(GetCurrentProcess(), nullptr, true);
 
     logging::init();
+    debug_overlay::init();
 
     auto i = 0;
 
