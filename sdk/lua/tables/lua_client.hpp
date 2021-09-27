@@ -73,11 +73,12 @@ namespace lua_internal::tables::client {
     inline vec2d screen_size(lua_State *l) {
         int x, y;
         interfaces::engine_client->get_screen_size(x, y);
-        return { static_cast<float>(x), static_cast<float>(y) };
+        return {static_cast<float>(x), static_cast<float>(y)};
     }
 
     inline bool in_edgebug(lua_State *l) {
-        return features::movement::predicted_successful && interfaces::global_vars->tick_count < features::movement::prediction_ticks + features::movement::prediction_timestamp;
+        return features::movement::predicted_successful &&
+               interfaces::global_vars->tick_count < features::movement::prediction_ticks + features::movement::prediction_timestamp;
     }
 
     inline bool edgebugged(lua_State *l) {

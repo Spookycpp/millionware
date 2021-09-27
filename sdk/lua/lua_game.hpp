@@ -2,8 +2,8 @@
 
 #include <mutex>
 
-#include "lua_internal.hpp"
 #include "lua_handler.hpp"
+#include "lua_internal.hpp"
 
 #include "../core/interfaces/interfaces.h"
 #include "../source engine/view_setup.h"
@@ -30,5 +30,5 @@ namespace lua {
         void override_view(view_setup_t *view_setup);
         void draw();
         void draw_front();
-    }
-}
+    } // namespace callbacks
+} // namespace lua

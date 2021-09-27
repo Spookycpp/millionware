@@ -26,16 +26,11 @@ namespace lua_internal::tables::lua_input {
         }
 
         switch (key) {
-        case VK_LBUTTON:
-            return input::get_mouse_click_length(MOUSE_LEFT);
-        case VK_MBUTTON:
-            return input::get_mouse_click_length(MOUSE_MIDDLE);
-        case VK_RBUTTON:
-            return input::get_mouse_click_length(MOUSE_RIGHT);
-        case VK_XBUTTON1:
-            return input::get_mouse_click_length(MOUSE_SIDE1);
-        case VK_XBUTTON2:
-            return input::get_mouse_click_length(MOUSE_SIDE2);
+        case VK_LBUTTON: return input::get_mouse_click_length(MOUSE_LEFT);
+        case VK_MBUTTON: return input::get_mouse_click_length(MOUSE_MIDDLE);
+        case VK_RBUTTON: return input::get_mouse_click_length(MOUSE_RIGHT);
+        case VK_XBUTTON1: return input::get_mouse_click_length(MOUSE_SIDE1);
+        case VK_XBUTTON2: return input::get_mouse_click_length(MOUSE_SIDE2);
         default: break;
         }
 
@@ -50,13 +45,13 @@ namespace lua_internal::tables::lua_input {
     }
 
     inline vec2d get_mouse_position(lua_State *l) {
-        return { input::get_mouse_pos().x, input::get_mouse_pos().y };
+        return {input::get_mouse_pos().x, input::get_mouse_pos().y};
     }
 
     inline float get_scroll_wheel(lua_State *l) {
         return input::get_mouse_wheel();
     }
-} // namespace lua_internal::tables::input
+} // namespace lua_internal::tables::lua_input
 
 inline void lua_internal::context::lua_input() {
     luabridge::getGlobalNamespace(l)

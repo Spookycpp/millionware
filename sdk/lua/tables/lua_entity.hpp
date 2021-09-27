@@ -10,13 +10,13 @@
 
 namespace lua_internal::tables {
     class entity {
-      private:
+    private:
         c_entity *m_entity;
         int m_idx;
 
-      public:
-        entity(c_entity *entity, const int idx)
-            : m_entity(entity), m_idx(idx) { }
+    public:
+        entity(c_entity *entity, const int idx) : m_entity(entity), m_idx(idx) {
+        }
 
         bool valid() const {
             return m_entity ? true : false;
@@ -108,12 +108,12 @@ namespace lua_internal::tables {
 
             case send_prop_type::DPT_Vector: {
                 const auto &v = m_entity->get<vector_t>(offset);
-                table = vec3d{ v.x, v.y, v.z };
+                table = vec3d{v.x, v.y, v.z};
             } break;
 
             case send_prop_type::DPT_VectorXY: {
                 const auto v = m_entity->get<point_t>(offset);
-                table = vec2d{ v.x, v.y };
+                table = vec2d{v.x, v.y};
             } break;
 
             case send_prop_type::DPT_String: {
@@ -142,9 +142,8 @@ namespace lua_internal::tables {
     };
 
     class entity_list {
-      private:
-
-      public:
+    private:
+    public:
         static luabridge::LuaRef get_all(lua_State *l) {
             size_t len;
             const char *class_name = luaL_checklstring(l, 1, &len);
@@ -152,7 +151,7 @@ namespace lua_internal::tables {
             luabridge::LuaRef table = luabridge::newTable(l);
 
             for (auto i = 0; i < interfaces::entity_list->get_highest_ent_index(); i++) {
-               c_entity *entity = interfaces::entity_list->get_entity(i);
+                c_entity *entity = interfaces::entity_list->get_entity(i);
                 if (!entity) {
                     continue;
                 }
@@ -181,12 +180,12 @@ namespace lua_internal::tables {
             return entity(cheat::local_player, cheat::local_player->get_networkable()->index());
         }
     };
-}
+} // namespace lua_internal::tables
 
 inline void lua_internal::context::entity() {
     luabridge::getGlobalNamespace(l)
-    .beginClass<tables::entity>("entity")
-        .addConstructor<void (*)(c_entity *entity, int idx)>()
+        .beginClass<tables::entity>("entity")
+        .addConstructor<void (*)(c_entity * entity, int idx)>()
         .addFunction("is_valid", &tables::entity::valid)
         .addFunction("get_index", &tables::entity::index)
         .addFunction("is_alive", &tables::entity::alive)
@@ -194,15 +193,11 @@ inline void lua_internal::context::entity() {
         .addFunction("get_origin", &tables::entity::origin)
         .addFunction("get_name", &tables::entity::name)
         .addFunction("get_prop", &tables::entity::get_prop)
-    .endClass();
+        .endClass();
 
     luabridge::getGlobalNamespace(l)
-    .beginNamespace("entity_list")
-        .addFunction("get_all", std::function([this]() {
-            return tables::entity_list::get_all(l);
-        }))
-        .addFunction("get_local_player", std::function([this]() {
-            return tables::entity_list::get_local_player(l);
-        }))
-    .endNamespace();
+        .beginNamespace("entity_list")
+        .addFunction("get_all", std::function([this]() { return tables::entity_list::get_all(l); }))
+        .addFunction("get_local_player", std::function([this]() { return tables::entity_list::get_local_player(l); }))
+        .endNamespace();
 }
