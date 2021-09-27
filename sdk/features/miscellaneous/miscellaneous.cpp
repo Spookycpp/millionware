@@ -57,8 +57,7 @@ namespace features::miscellaneous {
         if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() == WEAPON_REVOLVER) {
             if (weapon->get_next_secondary_attack() > cheat::local_player->get_tick_base() * interfaces::global_vars->interval_per_tick)
                 user_cmd->buttons &= ~BUTTON_IN_ATTACK2;
-        }
-        else if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() != WEAPON_REVOLVER) {
+        } else if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() != WEAPON_REVOLVER) {
             if (weapon->get_next_primary_attack() > cheat::local_player->get_tick_base() * interfaces::global_vars->interval_per_tick)
                 user_cmd->buttons &= ~BUTTON_IN_ATTACK;
         }
@@ -105,8 +104,7 @@ namespace features::miscellaneous {
         if (!settings.miscellaneous.clantag && should_clear) {
             interfaces::engine_client->execute_command(buffer);
             should_clear = false;
-        }
-        else if (settings.miscellaneous.clantag) {
+        } else if (settings.miscellaneous.clantag) {
             set_clantag(xs("millionware"));
             should_clear = true;
         }
@@ -136,8 +134,9 @@ namespace features::miscellaneous {
     void force_crosshair() {
         const static auto weapon_debug_spread_show = interfaces::convar_system->find_convar(xs("weapon_debug_spread_show"));
 
-        const auto should_draw_crosshair =
-            settings.visuals.local.sniper_crosshair && cheat::local_player && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE && !cheat::local_player->get_is_scoped();
+        const auto should_draw_crosshair = settings.visuals.local.sniper_crosshair && cheat::local_player &&
+                                           cheat::local_player->get_life_state() == LIFE_STATE_ALIVE &&
+                                           !cheat::local_player->get_is_scoped();
 
         weapon_debug_spread_show->set_value(should_draw_crosshair ? 3 : 0);
     }
@@ -154,11 +153,9 @@ namespace features::miscellaneous {
 
         if (settings.visuals.local.recoil_crosshair == 0) {
             recoil_crosshair->set_value(0);
-        }
-        else if (settings.visuals.local.recoil_crosshair == 1) {
+        } else if (settings.visuals.local.recoil_crosshair == 1) {
             recoil_crosshair->set_value(1);
-        }
-        else if (settings.visuals.local.recoil_crosshair == 2) {
+        } else if (settings.visuals.local.recoil_crosshair == 2) {
             recoil_crosshair->set_value(0);
         }
     }
@@ -169,8 +166,7 @@ namespace features::miscellaneous {
         if (settings.miscellaneous.ragdoll_push) {
             phys_pushscale->callbacks.clear();
             phys_pushscale->set_value(3000);
-        }
-        else {
+        } else {
             phys_pushscale->set_value(1);
         }
     }
@@ -181,8 +177,7 @@ namespace features::miscellaneous {
         if (settings.miscellaneous.ragdoll_float) {
             cl_ragdoll_gravity->callbacks.clear();
             cl_ragdoll_gravity->set_value(-100);
-        }
-        else {
+        } else {
             cl_ragdoll_gravity->set_value(600);
         }
     }
@@ -209,7 +204,8 @@ namespace features::miscellaneous {
         //    ("bom"), ("tyo"), ("lux"), ("ams"), ("limc"), ("man"), ("waw"), ("sgp"), ("jnb"), ("mad"),
         //    ("sto"), ("lhr"), ("atl"), ("ord"), ("lax"),  ("mwh"), ("okc"), ("sea"), ("iad")};
 
-        // static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9 ? ? ? ? 0F 43") + 1);
+        // static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9 ? ? ? ?
+        // 0F 43") + 1);
         //*relay_cluster = "lax";
     }
 
@@ -295,7 +291,8 @@ namespace features::miscellaneous {
         if (!settings.miscellaneous.preserve_killfeed)
             return;
 
-        const auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period();
+        const auto game_rules = c_game_rules::get();
+        !game_rules || game_rules->get_freeze_period();
 
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
             death_notice = nullptr;
@@ -356,8 +353,7 @@ namespace features::miscellaneous {
                 old_x = viewmodel_offset_x->get_float();
                 old_y = viewmodel_offset_y->get_float();
                 old_z = viewmodel_offset_z->get_float();
-            }
-            else {
+            } else {
                 viewmodel_offset_x->set_value(old_x);
                 viewmodel_offset_y->set_value(old_y);
                 viewmodel_offset_z->set_value(old_z);

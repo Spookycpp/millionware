@@ -22,7 +22,8 @@ namespace hooks {
     int __fastcall do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, int effect_id);
     void __fastcall draw_model_execute(uintptr_t, uintptr_t, void *ctx, void *state, c_model_render_info *info, matrix3x4_t *matrix);
     bool __fastcall draw_print_text(uintptr_t, uintptr_t, const wchar_t *text, int text_length, int draw_type);
-    void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char *, int, const char *, float, float, int, int, int, const vector_t *, const vector_t *, vector_t *, bool, float, int, uintptr_t);
+    void __fastcall emit_sound(uintptr_t, uintptr_t, uintptr_t, int, int, const char *, int, const char *, float, float, int, int, int,
+                               const vector_t *, const vector_t *, vector_t *, bool, float, int, uintptr_t);
     void __fastcall enable_world_fog();
     void __fastcall engine_paint(uintptr_t, uintptr_t, int);
     bool _fastcall fire_event_client_side(uintptr_t, uintptr_t, c_game_event *event);
@@ -34,7 +35,8 @@ namespace hooks {
     bool __fastcall is_playing_demo(c_engine_client *ecx, uintptr_t edx);
     void __fastcall level_init_post_entity(c_base_client_dll *ecx, uintptr_t edx);
     void __fastcall level_shutdown_pre_entity(c_base_client_dll *ecx, uintptr_t edx);
-    int __fastcall list_leaves_in_box(uintptr_t ecx, uintptr_t edx, const vector_t &mins, const vector_t &maxs, void *leaves_list, int max_leaves);
+    int __fastcall list_leaves_in_box(uintptr_t ecx, uintptr_t edx, const vector_t &mins, const vector_t &maxs, void *leaves_list,
+                                      int max_leaves);
     void __fastcall lock_cursor(c_vgui_surface *ecx, uintptr_t edx);
     bool __fastcall override_config(uintptr_t, uintptr_t, material_system_config_t *, bool);
     void __fastcall override_mouse_input(c_client_mode *ecx, uintptr_t edx, float *x, float *y);

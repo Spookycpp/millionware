@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <string_view>
 
-#define PATTERN_GET(p, a)                                                                                                                                                                              \
-    inline auto get_##p() {                                                                                                                                                                            \
-        return p == 0u ? 0u : (a);                                                                                                                                                                     \
+#define PATTERN_GET(p, a)                                                                                                                  \
+    inline auto get_##p() {                                                                                                                \
+        return p == 0u ? 0u : (a);                                                                                                         \
     }
 
 class c_player;

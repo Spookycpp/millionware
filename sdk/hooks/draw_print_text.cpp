@@ -1,8 +1,8 @@
-#include <string>
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 #include "../engine/security/xorstr.h"
 #include "../ui/ui.h"
+#include <string>
 
 bool __fastcall hooks::draw_print_text(uintptr_t ecx, uintptr_t edx, const wchar_t *text, int text_length, int draw_type) {
     if (wcsncmp(text, xs(L"fps"), 3) == 0) {

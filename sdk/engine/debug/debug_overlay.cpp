@@ -8,161 +8,160 @@
 constexpr int overlay_height = 70;
 constexpr int overlay_width = overlay_height * 4;
 
-static std::vector<debug_overlay_t*> overlays;
+static std::vector<debug_overlay_t *> overlays;
 
 debug_overlay_t::debug_overlay_t(std::string name_) {
-	calls = 0;
-	avg_per_sec = 0;
-	name = name_;
+    calls = 0;
+    avg_per_sec = 0;
+    name = name_;
 
-	times.reserve((int)(overlay_width * 1.25f));
-	times.clear();
+    times.reserve((int) (overlay_width * 1.25f));
+    times.clear();
 }
 
 void debug_overlay_t::add(uint64_t time) {
-	std::lock_guard guard{ mutex };
+    std::lock_guard guard{mutex};
 
-	if (times.size() > overlay_width)
-		times.erase(times.begin());
+    if (times.size() > overlay_width)
+        times.erase(times.begin());
 
-	times.push_back(time);
+    times.push_back(time);
 }
 
 void debug_overlay_t::draw(float pos_x, float pos_y) {
-	if (times.empty())
-		return;
+    if (times.empty())
+        return;
 
-	auto times_ptr = times.data();
-	auto max_x = (int)times.size();
-	auto base_x = pos_x + overlay_width - max_x;
-	auto max_y = 16.0f;
+    auto times_ptr = times.data();
+    auto max_x = (int) times.size();
+    auto base_x = pos_x + overlay_width - max_x;
+    auto max_y = 16.0f;
 
-	for (auto x = 0; x < overlay_width; x++) {
-		if (x > max_x)
-			break;
+    for (auto x = 0; x < overlay_width; x++) {
+        if (x > max_x)
+            break;
 
-		auto y = (float)times_ptr[x] / 1000.0f;
+        auto y = (float) times_ptr[x] / 1000.0f;
 
-		if (y > max_y)
-			max_y = y;
-	}
+        if (y > max_y)
+            max_y = y;
+    }
 
-	max_y += 6.0f;
+    max_y += 6.0f;
 
-	for (auto x = 0; x < overlay_width; x++) {
-		if (x > max_x)
-			break;
+    for (auto x = 0; x < overlay_width; x++) {
+        if (x > max_x)
+            break;
 
-		auto y = (float)times_ptr[x] / 1000.0f;
-		auto scaled_y = (y + 3.0f) / max_y;
-		auto height = overlay_height * scaled_y;
-		auto actual_y = overlay_height - height;
+        auto y = (float) times_ptr[x] / 1000.0f;
+        auto scaled_y = (y + 3.0f) / max_y;
+        auto height = overlay_height * scaled_y;
+        auto actual_y = overlay_height - height;
 
-		render::push_clip({ base_x + x, pos_y + actual_y }, { 1.0f, height });
-		render::gradient_v({ base_x + x, pos_y }, { 1.0f, overlay_height }, { 200, 200, 200, 200 }, { 200, 200, 200, 0 });
-		render::pop_clip();
+        render::push_clip({base_x + x, pos_y + actual_y}, {1.0f, height});
+        render::gradient_v({base_x + x, pos_y}, {1.0f, overlay_height}, {200, 200, 200, 200}, {200, 200, 200, 0});
+        render::pop_clip();
 
-		render::fill_rect({ base_x + x, pos_y + actual_y }, { 1.0f, 2.0f }, { 255, 255, 255, 255 });
-	}
+        render::fill_rect({base_x + x, pos_y + actual_y}, {1.0f, 2.0f}, {255, 255, 255, 255});
+    }
 }
 
-debug_timer_t::debug_timer_t(debug_overlay_t* overlay_) {
-	overlay = overlay_;
-	start = std::chrono::steady_clock::now();
+debug_timer_t::debug_timer_t(debug_overlay_t *overlay_) {
+    overlay = overlay_;
+    start = std::chrono::steady_clock::now();
 }
 
 debug_timer_t::~debug_timer_t() {
-	auto end = std::chrono::steady_clock::now();
-	auto diff = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    auto end = std::chrono::steady_clock::now();
+    auto diff = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-	overlay->add(diff.count());
+    overlay->add(diff.count());
 }
 
 void debug_overlay::init() {
 
 #ifdef _DEBUG
 
-	create_move = std::make_shared<debug_overlay_t>(xs("create move"));
-	do_psfx = std::make_shared<debug_overlay_t>(xs("do psfx"));
-	dme = std::make_shared<debug_overlay_t>(xs("dme"));
+    create_move = std::make_shared<debug_overlay_t>(xs("create move"));
+    do_psfx = std::make_shared<debug_overlay_t>(xs("do psfx"));
+    dme = std::make_shared<debug_overlay_t>(xs("dme"));
 
-	fsn[0] = std::make_shared<debug_overlay_t>(xs("fsn (start)"));
-	fsn[1] = std::make_shared<debug_overlay_t>(xs("fsn (net update start)"));
-	fsn[2] = std::make_shared<debug_overlay_t>(xs("fsn (net data start)"));
-	fsn[3] = std::make_shared<debug_overlay_t>(xs("fsn (net data end)"));
-	fsn[4] = std::make_shared<debug_overlay_t>(xs("fsn (net update end)"));
-	fsn[5] = std::make_shared<debug_overlay_t>(xs("fsn (render start)"));
-	fsn[6] = std::make_shared<debug_overlay_t>(xs("fsn (render end)"));
-	fsn[7] = std::make_shared<debug_overlay_t>(xs("unknown"));
+    fsn[0] = std::make_shared<debug_overlay_t>(xs("fsn (start)"));
+    fsn[1] = std::make_shared<debug_overlay_t>(xs("fsn (net update start)"));
+    fsn[2] = std::make_shared<debug_overlay_t>(xs("fsn (net data start)"));
+    fsn[3] = std::make_shared<debug_overlay_t>(xs("fsn (net data end)"));
+    fsn[4] = std::make_shared<debug_overlay_t>(xs("fsn (net update end)"));
+    fsn[5] = std::make_shared<debug_overlay_t>(xs("fsn (render start)"));
+    fsn[6] = std::make_shared<debug_overlay_t>(xs("fsn (render end)"));
+    fsn[7] = std::make_shared<debug_overlay_t>(xs("unknown"));
 
-	present[0] = std::make_shared<debug_overlay_t>(xs("present (main)"));
-	present[1] = std::make_shared<debug_overlay_t>(xs("present (lua back)"));
-	present[2] = std::make_shared<debug_overlay_t>(xs("present (lua front)"));
+    present[0] = std::make_shared<debug_overlay_t>(xs("present (main)"));
+    present[1] = std::make_shared<debug_overlay_t>(xs("present (lua back)"));
+    present[2] = std::make_shared<debug_overlay_t>(xs("present (lua front)"));
 
-	push_notice = std::make_shared<debug_overlay_t>(xs("push notice"));
-	send_datagram = std::make_shared<debug_overlay_t>(xs("send datagram"));
-	write_user_cmd = std::make_shared<debug_overlay_t>(xs("write user cmd"));
+    push_notice = std::make_shared<debug_overlay_t>(xs("push notice"));
+    send_datagram = std::make_shared<debug_overlay_t>(xs("send datagram"));
+    write_user_cmd = std::make_shared<debug_overlay_t>(xs("write user cmd"));
 
-	overlays.insert(overlays.end(),
-		{
-			create_move.get(),
-			do_psfx.get(),
-			fsn[0].get(),
-			fsn[1].get(),
-			fsn[2].get(),
-			fsn[3].get(),
-			fsn[4].get(),
-			fsn[5].get(),
-			fsn[6].get(),
-			present[0].get(),
-			present[1].get(),
-			present[2].get(),
-			push_notice.get(),
-			send_datagram.get(),
-			write_user_cmd.get(),
-		});
+    overlays.insert(overlays.end(), {
+                                        create_move.get(),
+                                        do_psfx.get(),
+                                        fsn[0].get(),
+                                        fsn[1].get(),
+                                        fsn[2].get(),
+                                        fsn[3].get(),
+                                        fsn[4].get(),
+                                        fsn[5].get(),
+                                        fsn[6].get(),
+                                        present[0].get(),
+                                        present[1].get(),
+                                        present[2].get(),
+                                        push_notice.get(),
+                                        send_datagram.get(),
+                                        write_user_cmd.get(),
+                                    });
 
 #endif
 }
 
 void debug_overlay::draw() {
 
-	if (!settings.global.debug_overlay)
+    if (!settings.global.debug_overlay)
         return;
 
-	auto screen_size = render::get_screen_size();
+    auto screen_size = render::get_screen_size();
 
-	auto next_goes_down = false;
-	auto next_pos_x = screen_size.x - overlay_width * 2 - 32.0f;
-	auto next_pos_y = 16.0f;
+    auto next_goes_down = false;
+    auto next_pos_x = screen_size.x - overlay_width * 2 - 32.0f;
+    auto next_pos_y = 16.0f;
 
-	for (auto i = 0; i < overlays.size(); i++) {
-		auto overlay = overlays[i];
+    for (auto i = 0; i < overlays.size(); i++) {
+        auto overlay = overlays[i];
 
-		std::lock_guard guard{ overlay->mutex };
+        std::lock_guard guard{overlay->mutex};
 
-		auto pos_x = next_pos_x;
-		auto pos_y = next_pos_y;
+        auto pos_x = next_pos_x;
+        auto pos_y = next_pos_y;
 
-		auto lowest_time = overlay->times.empty() ? 0 : *std::min_element(overlay->times.begin(), overlay->times.end());
-		auto highest_time = overlay->times.empty() ? 0 : *std::max_element(overlay->times.begin(), overlay->times.end());
+        auto lowest_time = overlay->times.empty() ? 0 : *std::min_element(overlay->times.begin(), overlay->times.end());
+        auto highest_time = overlay->times.empty() ? 0 : *std::max_element(overlay->times.begin(), overlay->times.end());
 
-		auto text = std::format(xs("{} (min={:.2f}ms, max={:.2f}ms)"), overlay->name, (float)lowest_time / 1000.0f, (float)highest_time / 1000.0f);
-		auto text_size = render::measure_text(text.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
+        auto text = std::format(xs("{} (min={:.2f}ms, max={:.2f}ms)"), overlay->name, (float) lowest_time / 1000.0f,
+                                (float) highest_time / 1000.0f);
+        auto text_size = render::measure_text(text.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
 
-		render::fill_rect({ pos_x - 4.0f, pos_y - 4.0f }, { overlay_width + 4.0f, overlay_height + 8.0f + text_size.y }, { 0, 0, 0, 100 }, 3.0f);
-		render::draw_text({ pos_x, pos_y }, { 255, 255, 255, 255 }, text.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
+        render::fill_rect({pos_x - 4.0f, pos_y - 4.0f}, {overlay_width + 4.0f, overlay_height + 8.0f + text_size.y}, {0, 0, 0, 100}, 3.0f);
+        render::draw_text({pos_x, pos_y}, {255, 255, 255, 255}, text.c_str(), FONT_CEREBRI_SANS_MEDIUM_14);
 
-		overlay->draw(pos_x, pos_y + 4.0f);
+        overlay->draw(pos_x, pos_y + 4.0f);
 
-		if (next_goes_down) {
-			next_pos_x = screen_size.x - overlay_width * 2 - 32.0f;
-			next_pos_y += overlay_height + 8.0f + text_size.y + 8.0f;
-		}
-		else {
-			next_pos_x += overlay_width + 16.0f;
-		}
+        if (next_goes_down) {
+            next_pos_x = screen_size.x - overlay_width * 2 - 32.0f;
+            next_pos_y += overlay_height + 8.0f + text_size.y + 8.0f;
+        } else {
+            next_pos_x += overlay_width + 16.0f;
+        }
 
-		next_goes_down ^= 1;
-	}
+        next_goes_down ^= 1;
+    }
 }

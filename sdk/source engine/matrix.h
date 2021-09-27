@@ -24,10 +24,11 @@ public:
 };
 
 class matrix3x4_t {
-  public:
+public:
     matrix3x4_t() = default;
 
-    matrix3x4_t(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23) {
+    matrix3x4_t(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22,
+                float m23) {
         m_mat_val[0][0] = m00;
         m_mat_val[0][1] = m01;
         m_mat_val[0][2] = m02;

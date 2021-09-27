@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "../../../source engine/client_dll.h"
 #include "../../../source engine/entity.h"

@@ -145,8 +145,7 @@ namespace features::legitbot::lag_comp {
                 while (!records[idx].empty() && static_cast<int>(records[idx].size()) > TIME_TO_TICKS(1.0f)) {
                     records[idx].pop_back();
                 }
-            }
-            else {
+            } else {
                 records[i].clear();
             }
         }

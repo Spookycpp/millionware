@@ -6,7 +6,7 @@ private:
     char pad_0000[4];
 
 public:
-    char* weapon_name;
+    char *weapon_name;
 
 private:
     char pad_0008[12];
@@ -24,30 +24,30 @@ private:
     char pad_0028[4];
 
 public:
-    char* world_model;
-    char* view_model;
-    char* dropped_model;
+    char *world_model;
+    char *view_model;
+    char *dropped_model;
 
 private:
     char pad_0038[4];
-    char* N00000010;
+    char *N00000010;
     char pad_0040[56];
 
 public:
-    char* empty_sound;
+    char *empty_sound;
 
 private:
     char pad_007C[4];
 
 public:
-    char* ammo_type;
+    char *ammo_type;
 
 private:
     char pad_0084[4];
 
 public:
-    char* hud_name;
-    char* weapon_name2;
+    char *hud_name;
+    char *weapon_name2;
 
 private:
     char pad_0090[60];
@@ -56,7 +56,7 @@ public:
     int type;
     int price;
     int kill_reward;
-    char* anim_prefix;
+    char *anim_prefix;
     float cycle_time;
     float cycle_time_alt;
     float time_to_idle;

@@ -4,8 +4,8 @@
 #include "../engine/debug/debug_overlay.h"
 #include "../engine/security/xorstr.h"
 
-#include "../engine/logging/logging.h"
 #include "../core/cheat/cheat.h"
+#include "../engine/logging/logging.h"
 
 void __fastcall hooks::push_notice(uintptr_t ecx, uintptr_t edx, const char *text, int len, const char *panel) {
     PROFILE_WITH(push_notice);

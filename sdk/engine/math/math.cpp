@@ -1,8 +1,8 @@
 #include "math.h"
 
+#include "../../core/cheat/cheat.h"
 #include "../../core/interfaces/interfaces.h"
 #include "../../core/patterns/patterns.h"
-#include "../../core/cheat/cheat.h"
 #include "../../source engine/matrix.h"
 #include "../render/render.h"
 

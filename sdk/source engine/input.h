@@ -84,10 +84,10 @@ enum e_move_type {
 };
 
 class c_user_cmd {
-  private:
+private:
     char padding0[0x4];
 
-  public:
+public:
     int command_number;
     int tick_count;
     vector_t view_angles;
@@ -98,41 +98,41 @@ class c_user_cmd {
     int buttons;
     unsigned char impulse;
 
-  private:
+private:
     char padding1[0x9];
 
-  public:
+public:
     int random_seed;
     short mouse_dx;
     short mouse_dy;
     bool has_been_predicted;
 
-  private:
+private:
     char padding2[0x18];
 };
 
 class c_input {
-  public:
+public:
     DECLARE_VFUNC(8, get_user_cmd(int slot, int sequence_number), c_user_cmd *(__thiscall *) (void *, int, int) )(slot, sequence_number);
 
-  private:
+private:
     char padding0[0xc];
 
-  public:
+public:
     bool track_ir_available;
     bool mouse_init;
     bool mouse_active;
 
-  private:
+private:
     char padding1[0x9e];
 
-  public:
+public:
     bool camera_in_third_person;
     bool camera_moving_with_mouse;
     vector_t camera_offset;
 };
 
 class c_input_system {
-  public:
+public:
     DECLARE_VFUNC(11, enable_input(bool enable), void(__thiscall *)(void *, bool))(enable);
 };

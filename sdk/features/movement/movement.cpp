@@ -71,8 +71,7 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
         if (ej_lj_duck != -1) {
             if (interfaces::global_vars->tick_count - ej_lj_duck < 2) {
                 user_cmd->buttons |= BUTTON_IN_DUCK;
-            }
-            else {
+            } else {
                 ej_lj_duck = -1;
             }
         }
@@ -89,8 +88,7 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
         if (lj_tick != -1) {
             if (interfaces::global_vars->tick_count - lj_tick < 2) {
                 user_cmd->buttons |= BUTTON_IN_DUCK;
-            }
-            else {
+            } else {
                 lj_tick = -1;
             }
         }
@@ -107,8 +105,7 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
         if (ej_lj_tick != -1) {
             if (interfaces::global_vars->tick_count - ej_lj_tick < 2) {
                 user_cmd->buttons |= BUTTON_IN_DUCK;
-            }
-            else {
+            } else {
                 ej_lj_tick = -1;
             }
         }
@@ -124,22 +121,22 @@ void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
     if ((int) roundf(cheat::local_player->get_velocity().z) == 0.0 || (cheat::unpredicted_flags & ENTITY_FLAG_ONGROUND) != 0) {
         predicted_successful = 0;
         prediction_failed = 1;
-    }
-    else if (cheat::unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > cheat::unpredicted_velocity.z && cheat::local_player->get_velocity().z < -6.0 &&
-             (cheat::local_player->get_flags() & 1) == 0 && cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
+    } else if (cheat::unpredicted_velocity.z < -6.0 && cheat::local_player->get_velocity().z > cheat::unpredicted_velocity.z &&
+               cheat::local_player->get_velocity().z < -6.0 && (cheat::local_player->get_flags() & 1) == 0 &&
+               cheat::local_player->get_move_type() != MOVE_TYPE_NOCLIP && cheat::local_player->get_move_type() != MOVE_TYPE_LADDER) {
         const auto previous_velocity = cheat::local_player->get_velocity().z;
 
         engine_prediction::start_prediction();
         engine_prediction::end_prediction();
 
         static auto sv_gravity = interfaces::convar_system->find_convar(xs("sv_gravity"));
-        const float gravity_velocity_constant = roundf((-sv_gravity->get_float()) * interfaces::global_vars->interval_per_tick + previous_velocity);
+        const float gravity_velocity_constant =
+            roundf((-sv_gravity->get_float()) * interfaces::global_vars->interval_per_tick + previous_velocity);
 
         if (gravity_velocity_constant == roundf(cheat::local_player->get_velocity().z)) {
             predicted_successful = 1;
             prediction_failed = 0;
-        }
-        else {
+        } else {
             predicted_successful = 0;
             prediction_failed = 1;
         }
@@ -215,8 +212,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
             }
 
             edgebugging = true;
-        }
-        else {
+        } else {
             predicted_successful = 0;
             should_duck = 0;
         }
@@ -230,7 +226,9 @@ void features::movement::edgebug_detection(c_user_cmd *user_cmd) {
     if (!features::movement::predicted_successful)
         return;
 
-    if ((cheat::local_player->get_velocity().z >= -6.0 || cheat::local_player->get_move_type() == MOVE_TYPE_NOCLIP || cheat::local_player->get_move_type() == MOVE_TYPE_LADDER) && !edgebugged) {
+    if ((cheat::local_player->get_velocity().z >= -6.0 || cheat::local_player->get_move_type() == MOVE_TYPE_NOCLIP ||
+         cheat::local_player->get_move_type() == MOVE_TYPE_LADDER) &&
+        !edgebugged) {
         last_known_velocity = cheat::local_player->get_velocity();
         return;
     }
@@ -263,33 +261,28 @@ void features::movement::slide_walk(c_user_cmd *user_cmd) {
     if (move_type != MOVE_TYPE_NOCLIP && move_type != MOVE_TYPE_LADDER) {
         if (user_cmd->forward_move < 0.0f) {
             user_cmd->buttons |= BUTTON_IN_FORWARD;
-        }
-        else if (user_cmd->forward_move > 0.0f) {
+        } else if (user_cmd->forward_move > 0.0f) {
             user_cmd->buttons |= BUTTON_IN_BACK;
         }
 
         if (user_cmd->side_move < 0.0f) {
             user_cmd->buttons |= BUTTON_IN_MOVE_RIGHT;
             user_cmd->buttons |= BUTTON_IN_RIGHT;
-        }
-        else if (user_cmd->side_move > 0.0f) {
+        } else if (user_cmd->side_move > 0.0f) {
             user_cmd->buttons |= BUTTON_IN_MOVE_LEFT;
             user_cmd->buttons |= BUTTON_IN_LEFT;
         }
-    }
-    else {
+    } else {
         if (user_cmd->forward_move > 0.0f) {
             user_cmd->buttons |= BUTTON_IN_FORWARD;
-        }
-        else if (user_cmd->forward_move < 0.0f) {
+        } else if (user_cmd->forward_move < 0.0f) {
             user_cmd->buttons |= BUTTON_IN_BACK;
         }
 
         if (user_cmd->side_move > 0.0f) {
             user_cmd->buttons |= BUTTON_IN_MOVE_RIGHT;
             user_cmd->buttons |= BUTTON_IN_RIGHT;
-        }
-        else if (user_cmd->side_move < 0.0f) {
+        } else if (user_cmd->side_move < 0.0f) {
             user_cmd->buttons |= BUTTON_IN_MOVE_LEFT;
             user_cmd->buttons |= BUTTON_IN_LEFT;
         }
@@ -307,20 +300,25 @@ void features::movement::strafe_optimizer(c_user_cmd *user_cmd, int pre_flags, i
         vector_t velocity = cheat::local_player->get_velocity();
 
         float m_speed = velocity.length_2d();
-        float m_ideal = (m_speed > 0.f) ? math::rad_to_deg(std::asin(settings.miscellaneous.movement.strafe_optimizer_max_gain / 100.f) * 30.f) / m_speed : 0.f;
+        float m_ideal =
+            (m_speed > 0.f)
+                ? math::rad_to_deg(std::asin(settings.miscellaneous.movement.strafe_optimizer_max_gain / 100.f) * 30.f) / m_speed
+                : 0.f;
 
         auto yaw_delta = math::strafe_opti_normalize_angle(user_cmd->view_angles.y - old_yaw, 180);
 
         auto absolute_yaw_delta = fabsf(yaw_delta);
         auto ideal_strafe = std::copysignf(m_ideal, yaw_delta);
 
-        if (!(pre_flags & ENTITY_FLAG_ONGROUND) && !(post_flags & ENTITY_FLAG_ONGROUND) && fabsf(yaw_delta) > 0.f && m_speed > 150.f && absolute_yaw_delta > (fabsf(m_ideal) / 10.f)) {
+        if (!(pre_flags & ENTITY_FLAG_ONGROUND) && !(post_flags & ENTITY_FLAG_ONGROUND) && fabsf(yaw_delta) > 0.f && m_speed > 150.f &&
+            absolute_yaw_delta > (fabsf(m_ideal) / 10.f)) {
 
             if (m_speed >= settings.miscellaneous.movement.strafe_optimizer_max_velocity)
                 return;
 
             auto error_margin = ideal_strafe - yaw_delta;
-            float target_angle = old_yaw + yaw_delta + (error_margin * settings.miscellaneous.movement.strafe_optimizer_pull_amount / 100.f);
+            float target_angle =
+                old_yaw + yaw_delta + (error_margin * settings.miscellaneous.movement.strafe_optimizer_pull_amount / 100.f);
             yaw_delta = target_angle - old_yaw;
             auto moused_x = floor(floor((yaw_delta / sensitivity->get_float()) / 0.022));
 
@@ -389,8 +387,7 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
                 user_cmd->side_move = 0.0f;
                 util::movement_fix(angle, user_cmd);
             }
-        }
-        else {
+        } else {
             // blocking
             vector_t angle = math::calc_angle(cheat::local_player->get_abs_origin(), closest_teammate->get_abs_origin());
 

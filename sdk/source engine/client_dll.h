@@ -19,13 +19,15 @@ enum class e_client_frame_stage {
 };
 
 class c_base_client_dll {
-  public:
+public:
     DECLARE_VFUNC(8, get_all_classes(), c_client_class *(__thiscall *) (void *) )();
-    DECLARE_VFUNC(38, dispatch_user_msg(int msg_type, int arg1, int length, void *data = nullptr), bool(__thiscall *)(void *, int, int, int, void *))(msg_type, arg1, length, data);
+    DECLARE_VFUNC(38, dispatch_user_msg(int msg_type, int arg1, int length, void *data = nullptr),
+                  bool(__thiscall *)(void *, int, int, int, void *))
+    (msg_type, arg1, length, data);
 };
 
 class c_entity_list {
-  public:
+public:
     DECLARE_VFUNC(3, get_entity(int index), c_entity *(__thiscall *) (void *, int) )(index);
     DECLARE_VFUNC(4, get_entity_from_handle(uintptr_t handle), c_entity *(__thiscall *) (void *, uintptr_t))(handle);
     DECLARE_VFUNC(6, get_highest_ent_index(), int(__thiscall *)(void *))();

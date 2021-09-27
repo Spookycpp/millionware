@@ -16,7 +16,8 @@
 
 #include "../ui/ui.h"
 
-long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region) {
+long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override,
+                              RGNDATA *dirty_region) {
 
     PROFILE_WITH(present[0]);
 

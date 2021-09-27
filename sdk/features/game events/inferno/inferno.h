@@ -1,11 +1,11 @@
 #pragma once
 
 namespace features::game_events::inferno {
-	void on_inferno_startburn(const grenade_detonate_data_t &data);
+    void on_inferno_startburn(const grenade_detonate_data_t &data);
     void reset();
-	void draw();
+    void draw();
 
-	std::vector<vector_t> get_points(c_entity *inferno);
+    std::vector<vector_t> get_points(c_entity *inferno);
 
     // https://github.com/darshan3105/Convex-Hull---Jarvis-March-Graham-Scan-Kirkpatrick-Seidel-Algorithm/blob/master/classes/JarvisMarch.h
     // read this shit https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
@@ -29,10 +29,10 @@ namespace features::game_events::inferno {
         }
 
         static int orientation(const point_t &a, const point_t &b, const point_t &c) {
-            const auto value = (int)((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y));
+            const auto value = (int) ((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y));
 
             if (!value) {
-                return 0; //co-linear
+                return 0; // co-linear
             }
 
             if (value > 0) {
@@ -70,4 +70,4 @@ namespace features::game_events::inferno {
             return hull;
         }
     };
-}
+} // namespace features::game_events::inferno

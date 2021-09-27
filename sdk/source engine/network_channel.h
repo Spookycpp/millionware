@@ -3,7 +3,7 @@
 #include "macros.h"
 
 class c_net_channel_info {
-  public:
+public:
     DECLARE_VFUNC(0, get_name(), const char *(__thiscall *) (void *) )();
     DECLARE_VFUNC(1, get_address(), const char *(__thiscall *) (void *) )();
     DECLARE_VFUNC(6, is_loopback(), bool(__thiscall *)(void *))();

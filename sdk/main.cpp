@@ -12,10 +12,10 @@
 #include "engine/security/xorstr.h"
 
 #include <DbgHelp.h>
-#include <winternl.h>
-#include <locale>
 #include <codecvt>
 #include <format>
+#include <locale>
+#include <winternl.h>
 
 // shoutout navewindre 4 dis one
 // i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
@@ -33,18 +33,19 @@
 // why is this still here
 // im in love with laine
 
-// fuck you duxe u pasting fucking retard i want to fucking slap your fucking mother so god damn hard for not drowning you at birth you stupid dumb fucking rat bastard im going to literally shut your
-// fucking power off and then make ur fridge run down the street
+// fuck you duxe u pasting fucking retard i want to fucking slap your fucking mother so god damn hard for not drowning you at birth you
+// stupid dumb fucking rat bastard im going to literally shut your fucking power off and then make ur fridge run down the street
 
 // https://i.imgur.com/xD24aJu.jpg
 
 // this cheats going to have my unironic suicide note in it one day
 
-// if this source gets leaked, this is all of our real notes, this is from no one else this is purely our thoughts and nothing else why would u even remotely suspect that we would be lying about such
-// things you are a fake and a lame and a snake and a opp u gonna get smoked on ur own set if you keep talking shit im going to send duxe after you with his pink egirl gaming chair and he'll run u
-// over in his bmw that he somehow bought from pasting a dogshit rust hack that fucking bluescreened my pc 9 times in 1 sitting using that shitty remote desktop bypass as well fucking aids as fuck
-// shoutout daum 4 the cerb bypass tho was fun raging w/o any fkn bans for like a week str8 miss those days ngl
-// nigga
+// if this source gets leaked, this is all of our real notes, this is from no one else this is purely our thoughts and nothing else why
+// would u even remotely suspect that we would be lying about such things you are a fake and a lame and a snake and a opp u gonna get smoked
+// on ur own set if you keep talking shit im going to send duxe after you with his pink egirl gaming chair and he'll run u over in his bmw
+// that he somehow bought from pasting a dogshit rust hack that fucking bluescreened my pc 9 times in 1 sitting using that shitty remote
+// desktop bypass as well fucking aids as fuck shoutout daum 4 the cerb bypass tho was fun raging w/o any fkn bans for like a week str8 miss
+// those days ngl nigga
 
 // i should be writing this hack but i can't think of anything to do rn i cbf to finish inventory changer man
 // gonna be on a fbi watchlist if this gets out ngl
@@ -64,17 +65,17 @@
 // day 39, eternity is back.
 // day 61, gui coming along, loader coming along. coming along.
 
-//⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⠀⠀⠀⢰⡿⠋⠁⠀⠀⠈⠉⠙⠻⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⠀⠀⢀⣿⠇⠀⢀⣴⣶⡾⠿⠿⠿⢿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⣀⣀⣸⡿⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠙⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⣾⡟⠛⣿⡇⠀⠀⢸⣿⣿⣷⣤⣤⣤⣤⣶⣶⣿⠇⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀  
-//⢀⣿⠀⢀⣿⡇⠀⠀⠀⠻⢿⣿⣿⣿⣿⣿⠿⣿⡏⠀⠀⠀⠀⢴⣶⣶⣿⣿⣿⣆  
-//⢸⣿⠀⢸⣿⡇⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⣿⡇⣀⣠⣴⣾⣮⣝⠿⠿⠿⣻⡟  
-//⢸⣿⠀⠘⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠉⠀  
-//⠸⣿⠀⠀⣿⡇⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠉⠀⠀⠀⠀  
-//⠀⠻⣷⣶⣿⣇⠀⠀⠀⢠⣼⣿⣿⣿⣿⣿⣿⣿⣛⣛⣻⠉⠁⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⠀⠀⢸⣿⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀  
+//⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⠀⠀⠀⢰⡿⠋⠁⠀⠀⠈⠉⠙⠻⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⠀⠀⢀⣿⠇⠀⢀⣴⣶⡾⠿⠿⠿⢿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⣀⣀⣸⡿⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠙⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⣾⡟⠛⣿⡇⠀⠀⢸⣿⣿⣷⣤⣤⣤⣤⣶⣶⣿⠇⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀
+//⢀⣿⠀⢀⣿⡇⠀⠀⠀⠻⢿⣿⣿⣿⣿⣿⠿⣿⡏⠀⠀⠀⠀⢴⣶⣶⣿⣿⣿⣆
+//⢸⣿⠀⢸⣿⡇⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⣿⡇⣀⣠⣴⣾⣮⣝⠿⠿⠿⣻⡟
+//⢸⣿⠀⠘⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠉⠀
+//⠸⣿⠀⠀⣿⡇⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠉⠀⠀⠀⠀
+//⠀⠻⣷⣶⣿⣇⠀⠀⠀⢠⣼⣿⣿⣿⣿⣿⣿⣿⣛⣛⣻⠉⠁⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⠀⠀⢸⣿⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀
 //⠀⠀⠀⠀⢸⣿⣀⣀⣀⣼⡿⢿⣿⣿⣿⣿⣿⡿⣿⣿⣿
 
 //     when million, doesnt million.
@@ -132,7 +133,8 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
         if (address >= module_start && address <= module_start + nt_headers->OptionalHeader.SizeOfImage) {
             std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 
-            return std::make_pair(module_start, converter.to_bytes(entry->BaseDllName.Buffer, entry->BaseDllName.Buffer + entry->BaseDllName.Length / 2));
+            return std::make_pair(module_start,
+                                  converter.to_bytes(entry->BaseDllName.Buffer, entry->BaseDllName.Buffer + entry->BaseDllName.Length / 2));
         }
     }
 
@@ -142,8 +144,7 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
 
     if ((DWORD64) address >= (DWORD64) mbi.BaseAddress && (DWORD64) address <= (DWORD64) mbi.BaseAddress + mbi.RegionSize) {
         return std::make_pair((uint64_t) mbi.BaseAddress, xs("<cheat>"));
-    }
-    else {
+    } else {
         return std::make_pair((uint64_t) mbi.BaseAddress, std::format(xs("<unknown module {:#x}>"), (DWORD64) mbi.BaseAddress));
     }
 
@@ -169,12 +170,12 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
 
         if (SymFromAddr(GetCurrentProcess(), (DWORD64) info->ExceptionRecord->ExceptionAddress, &displacement, symbol)) {
             symbol_info = std::format(xs("{}!{} + {:#x}"), module_name, symbol->Name, displacement);
-        }
-        else {
+        } else {
             symbol_info = std::format(xs("{} + {:#x}"), module_name, (DWORD64) info->ExceptionRecord->ExceptionAddress - module_base);
         }
 
-        auto message = std::format(xs("Exception code: {:#x}\nException information: {}\n"), (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
+        auto message = std::format(xs("Exception code: {:#x}\nException information: {}\n"),
+                                   (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
 
         if (info->ContextRecord->Ebp != 0) {
             message += xs("\n");
@@ -197,8 +198,7 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
 
                 if (SymFromAddr(GetCurrentProcess(), (DWORD64) eip, &displacement, symbol)) {
                     message += std::format(xs("> {}!{} + {:#x}\n"), module_name, symbol->Name, displacement);
-                }
-                else {
+                } else {
                     message += std::format(xs("> {} + {:#x}\n"), module_name, (DWORD64) eip - module_base);
                 }
             }
@@ -227,13 +227,13 @@ unsigned long __stdcall initial_thread(void *base_pointer) {
     while (pe::get_module(xs("serverbrowser.dll")) == 0u) {
         if (++i == 5) {
             logging::error(xs("couldn't find the 'serverbrowser.dll' module"));
-    
+
             goto load_failed;
         }
-    
+
         Sleep(1000);
     }
-    
+
     if (!cheat::init())
         goto load_failed;
 

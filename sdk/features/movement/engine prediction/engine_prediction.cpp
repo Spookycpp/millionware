@@ -20,8 +20,7 @@ namespace features::engine_prediction {
         if (last_command) {
             if (last_command->has_been_predicted) {
                 correct_tickbase = cheat::local_player->get_tick_base();
-            }
-            else {
+            } else {
                 ++correct_tickbase;
             }
         }
@@ -61,8 +60,8 @@ namespace features::engine_prediction {
 
     void repredict() {
         /*if (interfaces::client_state->delta_tick > 0) {
-            interfaces::prediction->update(interfaces::client_state->delta_tick, interfaces::client_state->delta_tick > 0, interfaces::client_state->last_command_ack,
-                                           interfaces::client_state->last_command + interfaces::client_state->choked_commands);
+            interfaces::prediction->update(interfaces::client_state->delta_tick, interfaces::client_state->delta_tick > 0,
+        interfaces::client_state->last_command_ack, interfaces::client_state->last_command + interfaces::client_state->choked_commands);
         }*/
     }
 

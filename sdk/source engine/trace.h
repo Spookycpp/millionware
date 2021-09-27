@@ -95,18 +95,19 @@ enum e_contents_mask {
     MASK_NPCWORLDSTATIC = (CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_MONSTERCLIP | CONTENTS_GRATE),
     MASK_NPCWORLDSTATIC_FLUID = (CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_MONSTERCLIP),
     MASK_SPLITAREAPORTAL = (CONTENTS_WATER | CONTENTS_SLIME),
-    MASK_CURRENT = (CONTENTS_CURRENT_0 | CONTENTS_GRENADECLIP | CONTENTS_CURRENT_180 | CONTENTS_CURRENT_270 | CONTENTS_CURRENT_UP | CONTENTS_CURRENT_DOWN),
+    MASK_CURRENT = (CONTENTS_CURRENT_0 | CONTENTS_GRENADECLIP | CONTENTS_CURRENT_180 | CONTENTS_CURRENT_270 | CONTENTS_CURRENT_UP |
+                    CONTENTS_CURRENT_DOWN),
     MASK_DEADSOLID = (CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_WINDOW | CONTENTS_GRATE),
 };
 
 class c_base_trace_filter {
-  public:
+public:
     virtual bool should_hit_entity(c_entity *entity, int contents_mask) = 0;
     virtual int get_trace_type() const = 0;
 };
 
 class c_trace_filter : public c_base_trace_filter {
-  public:
+public:
     void *skip;
     char *ignore = nullptr;
 
@@ -131,7 +132,7 @@ class c_trace_filter : public c_base_trace_filter {
 };
 
 class c_trace_filter_skip_entity : public c_trace_filter {
-  public:
+public:
     void *skip;
 
     c_trace_filter_skip_entity(c_entity *entity) {
@@ -148,7 +149,7 @@ class c_trace_filter_skip_entity : public c_trace_filter {
 };
 
 class c_trace_filter_entities_only : public c_trace_filter {
-  public:
+public:
     bool should_hit_entity(c_entity *entity, int contents_mask) override {
         return true;
     }
@@ -159,7 +160,7 @@ class c_trace_filter_entities_only : public c_trace_filter {
 };
 
 class c_trace_filter_world_only : public c_trace_filter {
-  public:
+public:
     bool should_hit_entity(c_entity *entity, int contents_mask) override {
         return false;
     }
@@ -170,7 +171,7 @@ class c_trace_filter_world_only : public c_trace_filter {
 };
 
 class c_trace_filter_world_and_props_only : public c_trace_filter {
-  public:
+public:
     bool should_hit_entity(c_entity *entity, int contents_mask) override {
         return false;
     }
@@ -181,7 +182,7 @@ class c_trace_filter_world_and_props_only : public c_trace_filter {
 };
 
 class c_trace_filter_players_only_skip_one : public c_trace_filter {
-  public:
+public:
     c_trace_filter_players_only_skip_one(c_entity *ent) {
         pEnt = ent;
     }
@@ -194,14 +195,14 @@ class c_trace_filter_players_only_skip_one : public c_trace_filter {
         return TRACE_TYPE_ENTITIES_ONLY;
     }
 
-  private:
+private:
     c_entity *pEnt;
 };
 
 typedef bool (*should_hit_func_t)(c_entity *entity, int contents_mask);
 
 class c_trace_filter_simple : public c_trace_filter {
-  public:
+public:
     c_trace_filter_simple(const c_entity *passentity, int collisionGroup, should_hit_func_t pExtraShouldHitCheckFn = NULL) {
         m_pPassEnt = passentity;
         m_collisionGroup = collisionGroup;
@@ -223,18 +224,18 @@ class c_trace_filter_simple : public c_trace_filter {
         return m_pPassEnt;
     }
 
-  private:
+private:
     const c_entity *m_pPassEnt;
     int m_collisionGroup;
     should_hit_func_t m_pExtraShouldHitCheckFunction;
 };
 
 class c_trace_filter_skip_two_entities : public c_trace_filter {
-  private:
+private:
     c_entity *m_ent1;
     c_entity *m_ent2;
 
-  public:
+public:
     c_trace_filter_skip_two_entities(c_entity *ent1, c_entity *ent2) {
         m_ent1 = ent1;
         m_ent2 = ent2;
@@ -250,14 +251,15 @@ class c_trace_filter_skip_two_entities : public c_trace_filter {
 };
 
 class c_trace_filter_hit_all : public c_trace_filter {
-  public:
+public:
     bool should_hit_entity(c_entity *entity, int contents_mask) override {
         return true;
     }
 };
 
 struct __declspec(align(16)) vector_aligned_t : vector_t {
-    inline vector_aligned_t() {}
+    inline vector_aligned_t() {
+    }
 
     inline vector_aligned_t(float X, float Y, float Z) {
         x = X;
@@ -291,8 +293,8 @@ struct __declspec(align(16)) vector_aligned_t : vector_t {
 };
 
 struct ray_t {
-  private:
-  public:
+private:
+public:
     vector_aligned_t start;
     vector_aligned_t delta;
     vector_aligned_t start_offset;
@@ -301,13 +303,15 @@ struct ray_t {
     bool is_ray;
     bool is_swept;
 
-    ray_t() : world_axis_transform(nullptr), is_ray{false}, is_swept{false} {}
+    ray_t() : world_axis_transform(nullptr), is_ray{false}, is_swept{false} {
+    }
 
     ray_t(const vector_t &start, const vector_t &end) {
         init(start, end);
     }
 
-    ray_t(const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs) : world_axis_transform(nullptr), is_ray{false}, is_swept{false} {
+    ray_t(const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs)
+        : world_axis_transform(nullptr), is_ray{false}, is_swept{false} {
         delta = end - start;
         world_axis_transform = nullptr;
         is_swept = delta.length() != 0.0f;
@@ -359,7 +363,7 @@ struct csurface_t {
 };
 
 class c_base_trace {
-  public:
+public:
     // these members are aligned!!
     vector_t start_pos; // start position
     vector_t end_pos;   // final position
@@ -373,12 +377,14 @@ class c_base_trace {
     bool m_allsolid;  // if true, plane is not valid
     bool start_solid; // if true, the initial point was in a solid area
 
-    c_base_trace() {}
+    c_base_trace() {
+    }
 };
 
 class c_game_trace : public c_base_trace {
-  public:
-    int get_entity_index() const {}
+public:
+    int get_entity_index() const {
+    }
 
     bool did_hit() const {
         return fraction < 1 || m_allsolid || start_solid;
@@ -388,7 +394,7 @@ class c_game_trace : public c_base_trace {
         return fraction > 0.97f;
     }
 
-  public:
+public:
     float m_fractionleftsolid;            // time we left a solid, only valid if we started in solid
     csurface_t surface;                   // surface hit (impact surface)
     int hit_group;                        // 0 == generic, non-zero is specific body part
@@ -397,13 +403,15 @@ class c_game_trace : public c_base_trace {
     c_entity *hit_ent;
     int m_hitbox; // box hit by trace in studio
 
-    c_game_trace() {}
+    c_game_trace() {
+    }
 
-  private:
+private:
     // No copy constructors allowed
     c_game_trace(const c_game_trace &other)
-        : m_fractionleftsolid(other.m_fractionleftsolid), surface(other.surface), hit_group(other.hit_group), m_physicsbone(other.m_physicsbone), m_world_surface_index(other.m_world_surface_index),
-          hit_ent(other.hit_ent), m_hitbox(other.m_hitbox) {
+        : m_fractionleftsolid(other.m_fractionleftsolid), surface(other.surface), hit_group(other.hit_group),
+          m_physicsbone(other.m_physicsbone), m_world_surface_index(other.m_world_surface_index), hit_ent(other.hit_ent),
+          m_hitbox(other.m_hitbox) {
         start_pos = other.start_pos;
         end_pos = other.end_pos;
         plane = other.plane;
@@ -418,15 +426,23 @@ class c_game_trace : public c_base_trace {
 typedef c_game_trace trace_t;
 
 class c_engine_trace {
-  public:
-    DECLARE_VFUNC(0, get_point_contents(const vector_t &position, int contents_mask = MASK_ALL, c_entity **entity = nullptr), int(__thiscall *)(void *, const vector_t &, int, c_entity **))
+public:
+    DECLARE_VFUNC(0, get_point_contents(const vector_t &position, int contents_mask = MASK_ALL, c_entity **entity = nullptr),
+                  int(__thiscall *)(void *, const vector_t &, int, c_entity **))
     (position, contents_mask, entity);
-    DECLARE_VFUNC(1, get_point_contents_world_only(const vector_t &position, int contents_mask = MASK_ALL), int(__thiscall *)(void *, const vector_t &, int))(position, contents_mask);
-    DECLARE_VFUNC(2, get_point_contents_collideable(c_collideable *collideable, const vector_t &position), int(__thiscall *)(void *, c_collideable *, const vector_t &))(collideable, position);
-    DECLARE_VFUNC(3, clip_ray_to_entity(const ray_t &ray, int mask, c_entity *entity, c_base_trace *trace), void(__thiscall *)(void *, const ray_t &, int, c_entity *, c_base_trace *))
+    DECLARE_VFUNC(1, get_point_contents_world_only(const vector_t &position, int contents_mask = MASK_ALL),
+                  int(__thiscall *)(void *, const vector_t &, int))
+    (position, contents_mask);
+    DECLARE_VFUNC(2, get_point_contents_collideable(c_collideable *collideable, const vector_t &position),
+                  int(__thiscall *)(void *, c_collideable *, const vector_t &))
+    (collideable, position);
+    DECLARE_VFUNC(3, clip_ray_to_entity(const ray_t &ray, int mask, c_entity *entity, c_base_trace *trace),
+                  void(__thiscall *)(void *, const ray_t &, int, c_entity *, c_base_trace *))
     (ray, mask, entity, trace);
-    DECLARE_VFUNC(4, clip_ray_to_collideable(const ray_t &ray, int mask, vector_t *collideable, c_base_trace *trace), void(__thiscall *)(void *, const ray_t &, int, vector_t *, c_base_trace *))
+    DECLARE_VFUNC(4, clip_ray_to_collideable(const ray_t &ray, int mask, vector_t *collideable, c_base_trace *trace),
+                  void(__thiscall *)(void *, const ray_t &, int, vector_t *, c_base_trace *))
     (ray, mask, collideable, trace);
-    DECLARE_VFUNC(5, trace_ray(const ray_t &ray, int mask, c_base_trace_filter *filter, c_game_trace *trace), void(__thiscall *)(void *, const ray_t &, int, c_base_trace_filter *, c_game_trace *))
+    DECLARE_VFUNC(5, trace_ray(const ray_t &ray, int mask, c_base_trace_filter *filter, c_game_trace *trace),
+                  void(__thiscall *)(void *, const ray_t &, int, c_base_trace_filter *, c_game_trace *))
     (ray, mask, filter, trace);
 };

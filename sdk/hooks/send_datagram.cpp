@@ -8,25 +8,25 @@
 
 #include "../features/fake ping/fake_ping.h"
 
-int __fastcall hooks::send_datagram(c_net_channel* ecx, uintptr_t* edx, void* buffer) {
+int __fastcall hooks::send_datagram(c_net_channel *ecx, uintptr_t *edx, void *buffer) {
 
-	PROFILE_WITH(send_datagram);
+    PROFILE_WITH(send_datagram);
 
-	if (buffer || !interfaces::engine_client->is_in_game())
-		return send_datagram_original(ecx, edx, buffer);
-	
-	if (interfaces::client_state->delta_tick <= 0) 
-		return send_datagram_original(ecx, edx, buffer);
+    if (buffer || !interfaces::engine_client->is_in_game())
+        return send_datagram_original(ecx, edx, buffer);
 
-	const int backup_sequence = ecx->in_sequence_num;
-	const int backup_reliable = ecx->in_reliable_state;
+    if (interfaces::client_state->delta_tick <= 0)
+        return send_datagram_original(ecx, edx, buffer);
 
-	features::fake_ping::on_send_datagram(ecx);
+    const int backup_sequence = ecx->in_sequence_num;
+    const int backup_reliable = ecx->in_reliable_state;
 
-	const int ret = send_datagram_original(ecx, edx, buffer);
+    features::fake_ping::on_send_datagram(ecx);
 
-	ecx->in_sequence_num = backup_sequence;
-	ecx->in_reliable_state = backup_reliable;
+    const int ret = send_datagram_original(ecx, edx, buffer);
 
-	return ret;
+    ecx->in_sequence_num = backup_sequence;
+    ecx->in_reliable_state = backup_reliable;
+
+    return ret;
 }

@@ -78,8 +78,7 @@ namespace features::legitbot {
             }
 
             assist((c_player *) interfaces::entity_list->get_entity(target_idx), x, y);
-        }
-        else {
+        } else {
             cur_time = 0.0f;
         }
     }
@@ -142,7 +141,8 @@ namespace features::legitbot {
         const auto target_idx = std::get<0>(target);
 
         if (target_idx != -1) {
-            if (user_cmd->buttons & BUTTON_IN_ATTACK && cheat::local_player->get_shots_fired() == 0 && cheat::local_player->can_shoot(weapon)) {
+            if (user_cmd->buttons & BUTTON_IN_ATTACK && cheat::local_player->get_shots_fired() == 0 &&
+                cheat::local_player->can_shoot(weapon)) {
                 flick_to_target(target, user_cmd, weapon, settings_lbot->flick_bot.enabled == 2);
                 flicked = true;
             }
@@ -169,8 +169,9 @@ namespace features::legitbot {
                 return;
             }
 
-            vector_t compensated_angs = {settings_lbot->rcs.x > 0.0f ? (aim_punch.x - old_aim_punch.x) * (2.0f * (settings_lbot->rcs.x / 100.0f)) : 0.0f,
-                                         settings_lbot->rcs.y > 0.0f ? (aim_punch.y - old_aim_punch.y) * (2.0f * (settings_lbot->rcs.y / 100.0f)) : 0.0f, 0.0f};
+            vector_t compensated_angs = {
+                settings_lbot->rcs.x > 0.0f ? (aim_punch.x - old_aim_punch.x) * (2.0f * (settings_lbot->rcs.x / 100.0f)) : 0.0f,
+                settings_lbot->rcs.y > 0.0f ? (aim_punch.y - old_aim_punch.y) * (2.0f * (settings_lbot->rcs.y / 100.0f)) : 0.0f, 0.0f};
 
             if (!math::normalize_angles(compensated_angs)) {
                 old_aim_punch = aim_punch;
@@ -197,8 +198,7 @@ namespace features::legitbot {
             }
 
             old_aim_punch = aim_punch;
-        }
-        else {
+        } else {
             old_aim_punch.init(0.0f, 0.0f, 0.0f);
         }
     }
@@ -210,27 +210,20 @@ namespace features::legitbot {
         if (settings.global.weapon_groups) {
             if (weapon->is_heavy_pistol()) {
                 settings_lbot = &settings.lbot_hpistols;
-            }
-            else if (weapon->is_pistol()) {
+            } else if (weapon->is_pistol()) {
                 settings_lbot = &settings.lbot_pistols;
-            }
-            else if (weapon->is_rifle()) {
+            } else if (weapon->is_rifle()) {
                 settings_lbot = &settings.lbot_rifles;
-            }
-            else if (weapon->is_awp()) {
+            } else if (weapon->is_awp()) {
                 settings_lbot = &settings.lbot_awp;
-            }
-            else if (weapon->is_scout()) {
+            } else if (weapon->is_scout()) {
                 settings_lbot = &settings.lbot_scout;
-            }
-            else if (weapon->is_auto()) {
+            } else if (weapon->is_auto()) {
                 settings_lbot = &settings.lbot_auto;
-            }
-            else {
+            } else {
                 settings_lbot = &settings.lbot_other;
             }
-        }
-        else {
+        } else {
             settings_lbot = &settings.lbot_global;
         }
 
@@ -382,26 +375,14 @@ namespace features::legitbot {
 
         if (method == 0) {
             switch (settings_lbot->hitbox) {
-            case 0:
-                best_hitbox = HEAD;
-                break;
-            case 1:
-                best_hitbox = NECK;
-                break;
-            case 2:
-                best_hitbox = U_CHEST;
-                break;
-            case 3:
-                best_hitbox = L_CHEST;
-                break;
-            case 4:
-                best_hitbox = STOMACH;
-                break;
-            default:
-                return -1;
+            case 0: best_hitbox = HEAD; break;
+            case 1: best_hitbox = NECK; break;
+            case 2: best_hitbox = U_CHEST; break;
+            case 3: best_hitbox = L_CHEST; break;
+            case 4: best_hitbox = STOMACH; break;
+            default: return -1;
             }
-        }
-        else if (method == 1) {
+        } else if (method == 1) {
             static std::vector<int> hitboxes = {HEAD, NECK, PELVIS, L_CHEST, U_CHEST};
 
             const vector_t local_pos = cheat::local_player->get_eye_pos();

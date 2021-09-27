@@ -297,7 +297,7 @@ using create_client_class_fn = c_networkable *(*) (int, int);
 using create_event_fn = c_networkable *(*) ();
 
 class c_client_class {
-  public:
+public:
     create_client_class_fn create;
     create_event_fn create_event;
     const char *class_name;

@@ -5,7 +5,7 @@
 #include "../core/patterns/patterns.h"
 
 class c_key_values {
-  public:
+public:
     c_key_values *init(const char *name) {
         using ctor_t = c_key_values *(__thiscall *) (void *, const char *);
 

@@ -7,9 +7,9 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <format>
 #include <psapi.h>
 #include <tlhelp32.h>
-#include <format>
 #include <unordered_map>
 
 #include "../../../core/cheat/cheat.h"
@@ -29,10 +29,10 @@ namespace features::visuals::world {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
-                nightmode();
-            }
-            default: ;
+        case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
+            nightmode();
+        }
+        default:;
         }
     }
 
@@ -71,8 +71,11 @@ namespace features::visuals::world {
 
             last_on_ground = on_ground;
 
-            const auto color = vel == last_velocity ? settings.visuals.local.velocity_color_1 : vel < last_velocity ? settings.visuals.local.velocity_color_2 : settings.visuals.local.velocity_color_3;
-            const auto should_draw_takeoff = (!on_ground || (take_off_time > interfaces::global_vars->current_time)) && settings.visuals.local.indicators & (1 << 1);
+            const auto color = vel == last_velocity  ? settings.visuals.local.velocity_color_1
+                               : vel < last_velocity ? settings.visuals.local.velocity_color_2
+                                                     : settings.visuals.local.velocity_color_3;
+            const auto should_draw_takeoff =
+                (!on_ground || (take_off_time > interfaces::global_vars->current_time)) && settings.visuals.local.indicators & (1 << 1);
 
             char buffer[32];
 
@@ -89,16 +92,20 @@ namespace features::visuals::world {
             }
         }
 
-        if (settings.visuals.local.indicators & (1 << 2) && settings.miscellaneous.movement.jump_bug && input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey))
+        if (settings.visuals.local.indicators & (1 << 2) && settings.miscellaneous.movement.jump_bug &&
+            input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey))
             draw_indicator(xs("jb"), {255, 255, 255, 220});
 
-        if (settings.visuals.local.indicators & (1 << 4) && settings.miscellaneous.movement.edge_bug_assist && input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
+        if (settings.visuals.local.indicators & (1 << 4) && settings.miscellaneous.movement.edge_bug_assist &&
+            input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey))
             draw_indicator(xs("eb"), {255, 255, 255, 220});
 
-        if (settings.visuals.local.indicators & (1 << 5) && settings.miscellaneous.movement.edge_jump && input::is_key_down(settings.miscellaneous.movement.edge_jump_hotkey))
+        if (settings.visuals.local.indicators & (1 << 5) && settings.miscellaneous.movement.edge_jump &&
+            input::is_key_down(settings.miscellaneous.movement.edge_jump_hotkey))
             draw_indicator(xs("ej"), {255, 255, 255, 220});
 
-        if (settings.visuals.local.indicators & (1 << 6) && settings.miscellaneous.movement.long_jump && input::is_key_down(settings.miscellaneous.movement.long_jump_hotkey))
+        if (settings.visuals.local.indicators & (1 << 6) && settings.miscellaneous.movement.long_jump &&
+            input::is_key_down(settings.miscellaneous.movement.long_jump_hotkey))
             draw_indicator(xs("lj"), {255, 255, 255, 220});
     }
 
@@ -106,7 +113,8 @@ namespace features::visuals::world {
         static bool toggled = false;
         static float last_darkness = 0.f;
 
-        auto do_nightmode = settings.visuals.world.nightmode != toggled || last_darkness != settings.visuals.world.nightmode_darkness || cheat::disconnect_state;
+        auto do_nightmode = settings.visuals.world.nightmode != toggled || last_darkness != settings.visuals.world.nightmode_darkness ||
+                            cheat::disconnect_state;
 
         if (!do_nightmode)
             return;
@@ -127,7 +135,8 @@ namespace features::visuals::world {
         draw_specific_static_prop->set_value(settings.visuals.world.nightmode ? 0 : -1);
 
         // iterate material handles.
-        for (auto handle = interfaces::material_system->first_material(); handle != interfaces::material_system->invalid_material(); handle = interfaces::material_system->next_material(handle)) {
+        for (auto handle = interfaces::material_system->first_material(); handle != interfaces::material_system->invalid_material();
+             handle = interfaces::material_system->next_material(handle)) {
 
             // get material from handle.
             c_material *material = interfaces::material_system->get_material(handle);
@@ -206,7 +215,8 @@ namespace features::visuals::world {
                 const auto screen_size = render::get_screen_size();
                 const auto text_size = render::measure_text(string.c_str(), FONT_TAHOMA_11);
 
-                render::draw_text({screen_size.x - text_size.x - 4.0f, 4.0f + y++ * 16.0f}, {255, 255, 255, 255}, string.c_str(), FONT_TAHOMA_11);
+                render::draw_text({screen_size.x - text_size.x - 4.0f, 4.0f + y++ * 16.0f}, {255, 255, 255, 255}, string.c_str(),
+                                  FONT_TAHOMA_11);
             }
         }
     }
@@ -268,11 +278,10 @@ namespace features::visuals::world {
 
         // determine which site the bomb is planted at
         std::string site;
-       
+
         if (bomb_origin.dist(player_res->get_bomb_site_center_a()) < bomb_origin.dist(player_res->get_bomb_site_center_b())) {
             site = xs("A");
-        }
-        else {
+        } else {
             site = xs("B");
         }
 
@@ -287,8 +296,8 @@ namespace features::visuals::world {
         const int health_left = cheat::local_player->get_health() - bomb_damage;
 
         // draw
-        static c_convar *mp_c4timer  = interfaces::convar_system->find_convar(xs("mp_c4timer"));
-        static c_convar *safezoney   = interfaces::convar_system->find_convar(xs("safezoney"));
+        static c_convar *mp_c4timer = interfaces::convar_system->find_convar(xs("mp_c4timer"));
+        static c_convar *safezoney = interfaces::convar_system->find_convar(xs("safezoney"));
         static c_convar *hud_scaling = interfaces::convar_system->find_convar(xs("hud_scaling"));
 
         const point_t screen_size = render::get_screen_size();
@@ -299,8 +308,10 @@ namespace features::visuals::world {
         constexpr float bar_width = 250.0f;
         constexpr float bar_height = 6.0f;
 
-        render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f - 1.0f, y_pos - 1.0f }, { bar_width + 2.0f, bar_height + 2.0f }, { 34, 34, 34, 170 });
-        render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f, y_pos }, { time_left * bar_width / mp_c4timer->get_float(), bar_height }, ui::get_accent_color());
+        render::fill_rect({screen_size.x / 2.0f - bar_width / 2.0f - 1.0f, y_pos - 1.0f}, {bar_width + 2.0f, bar_height + 2.0f},
+                          {34, 34, 34, 170});
+        render::fill_rect({screen_size.x / 2.0f - bar_width / 2.0f, y_pos}, {time_left * bar_width / mp_c4timer->get_float(), bar_height},
+                          ui::get_accent_color());
 
         const auto defusing_player = reinterpret_cast<c_player *>(entity->get_bomb_defuser().get());
         if (defusing_player) {
@@ -309,38 +320,46 @@ namespace features::visuals::world {
             const float defuse_time = std::max(entity->get_defuse_countdown() - interfaces::global_vars->current_time, 0.0f);
             if (defuse_time <= time_left) {
                 time_left = defuse_time;
-            }
-            else {
+            } else {
                 defuse_text += xs(" (no time left)");
             }
 
             const float max_defuse_time = defusing_player->get_has_defuser() ? 5.0f : 10.0f;
 
             const point_t defuse_text_size = render::measure_text(defuse_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
-            render::draw_text_outlined({ screen_size.x / 2.0f - defuse_text_size.x / 2.0f, y_pos - 15.0f }, { 255, 255, 255 }, { 5, 5, 5, 220 }, defuse_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+            render::draw_text_outlined({screen_size.x / 2.0f - defuse_text_size.x / 2.0f, y_pos - 15.0f}, {255, 255, 255}, {5, 5, 5, 220},
+                                       defuse_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
 
             y_pos += bar_height + 4.0f;
 
-            render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f - 1.0f, y_pos - 1.0f }, { bar_width + 2.0f, bar_height + 2.0f }, { 34, 34, 34, 170 });
-            render::fill_rect({ screen_size.x / 2.0f - bar_width / 2.0f, y_pos }, { time_left * bar_width / max_defuse_time, bar_height }, { 255, 255, 255 });
+            render::fill_rect({screen_size.x / 2.0f - bar_width / 2.0f - 1.0f, y_pos - 1.0f}, {bar_width + 2.0f, bar_height + 2.0f},
+                              {34, 34, 34, 170});
+            render::fill_rect({screen_size.x / 2.0f - bar_width / 2.0f, y_pos}, {time_left * bar_width / max_defuse_time, bar_height},
+                              {255, 255, 255});
         }
 
         // text
-        const std::string time_remaining_text   = std::format(xs("{}: {:.2f}s"), site, time_left);
+        const std::string time_remaining_text = std::format(xs("{}: {:.2f}s"), site, time_left);
         const std::string health_remaining_text = std::format(xs("{} HP remaining"), std::max(health_left, 0));
-        const point_t c4_time_left_size         = render::measure_text(time_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
-        const point_t hp_left_size              = render::measure_text(health_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+        const point_t c4_time_left_size = render::measure_text(time_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+        const point_t hp_left_size = render::measure_text(health_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
 
-        render::gradient_h({ screen_size.x / 2.0f - 80.0f - 4.0f, y_pos + bar_height + 3.0f }, { 80.0f, hp_left_size.y + c4_time_left_size.y + 0.0f }, { 5, 5, 5, 0 }, { 5, 5, 5, 90 });
-        render::gradient_h({ screen_size.x / 2.0f - 4.0f, y_pos + bar_height + 3.0f }, { 80.0f + 4.0f, hp_left_size.y + c4_time_left_size.y + 0.0f }, { 5, 5, 5, 90 }, { 5, 5, 5, 0 });
+        render::gradient_h({screen_size.x / 2.0f - 80.0f - 4.0f, y_pos + bar_height + 3.0f},
+                           {80.0f, hp_left_size.y + c4_time_left_size.y + 0.0f}, {5, 5, 5, 0}, {5, 5, 5, 90});
+        render::gradient_h({screen_size.x / 2.0f - 4.0f, y_pos + bar_height + 3.0f},
+                           {80.0f + 4.0f, hp_left_size.y + c4_time_left_size.y + 0.0f}, {5, 5, 5, 90}, {5, 5, 5, 0});
 
-        render::draw_text_outlined({ screen_size.x / 2.0f - c4_time_left_size.x / 2.0f, y_pos + bar_height + 4.0f }, { 255, 255, 255 }, { 5, 5, 5, 220 }, time_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+        render::draw_text_outlined({screen_size.x / 2.0f - c4_time_left_size.x / 2.0f, y_pos + bar_height + 4.0f}, {255, 255, 255},
+                                   {5, 5, 5, 220}, time_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
 
-        const color_t hp_remaining_color = color_t::blend({ 0, 255, 0 }, { 255, 0, 0 }, std::clamp(static_cast<float>(bomb_damage) / static_cast<float>(cheat::local_player->get_health()), 0.0f, 1.0f));
+        const color_t hp_remaining_color =
+            color_t::blend({0, 255, 0}, {255, 0, 0},
+                           std::clamp(static_cast<float>(bomb_damage) / static_cast<float>(cheat::local_player->get_health()), 0.0f, 1.0f));
 
         if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
             // health remaining
-            render::draw_text_outlined({ screen_size.x / 2.0f - hp_left_size.x / 2.0f, y_pos + bar_height + 3.0f + c4_time_left_size.y }, hp_remaining_color, { 5, 5, 5, 220 }, health_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
+            render::draw_text_outlined({screen_size.x / 2.0f - hp_left_size.x / 2.0f, y_pos + bar_height + 3.0f + c4_time_left_size.y},
+                                       hp_remaining_color, {5, 5, 5, 220}, health_remaining_text.c_str(), FONT_CEREBRI_SANS_BOLD_13);
         }
     }
 } // namespace features::visuals::world

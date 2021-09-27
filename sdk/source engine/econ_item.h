@@ -23,7 +23,16 @@ enum item_quality {
     ITEM_QUALITY_TOURNAMENT
 };
 
-enum item_rarity { ITEM_RARITY_DEFAULT, ITEM_RARITY_CONSUMER, ITEM_RARITY_INDUSTRIAL, ITEM_RARITY_MILSPEC, ITEM_RARITY_RESTRICTED, ITEM_RARITY_CLASSIFIED, ITEM_RARITY_COVERT, ITEM_RARITY_CONTRABAND };
+enum item_rarity {
+    ITEM_RARITY_DEFAULT,
+    ITEM_RARITY_CONSUMER,
+    ITEM_RARITY_INDUSTRIAL,
+    ITEM_RARITY_MILSPEC,
+    ITEM_RARITY_RESTRICTED,
+    ITEM_RARITY_CLASSIFIED,
+    ITEM_RARITY_COVERT,
+    ITEM_RARITY_CONTRABAND
+};
 
 class c_econ_item;
 
@@ -62,7 +71,7 @@ class c_econ_item {
         return reinterpret_cast<unsigned short *>(this + 0x26);
     }
 
-  public:
+public:
     uint32_t *get_account_id() {
         return reinterpret_cast<uint32_t *>(this + 0x1C);
     }
@@ -144,7 +153,8 @@ class c_econ_item {
         if (!address)
             return;
 
-        static auto set_custom_name_fn = reinterpret_cast<c_econ_item *(__thiscall *) (void *, const char *)>(*reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
+        static auto set_custom_name_fn = reinterpret_cast<c_econ_item *(__thiscall *) (void *, const char *)>(
+            *reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
 
         if (!set_custom_name_fn)
             return;
@@ -159,7 +169,8 @@ class c_econ_item {
         if (!address)
             return;
 
-        static auto set_custom_description_fn = reinterpret_cast<c_econ_item *(__thiscall *) (void *, const char *)>(*reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
+        static auto set_custom_description_fn = reinterpret_cast<c_econ_item *(__thiscall *) (void *, const char *)>(
+            *reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
 
         if (!set_custom_description_fn)
             return;
@@ -167,13 +178,15 @@ class c_econ_item {
         set_custom_description_fn(this, name);
     }
 
-    template <typename type> void set_attribute_value(const int index, type val) {
+    template <typename type>
+    void set_attribute_value(const int index, type val) {
 
         const auto v15 = reinterpret_cast<uint32_t *>(get_item_schema());
         const auto v16 = *reinterpret_cast<uint32_t *>(v15[72] + 4 * index);
 
         static auto set_dynamic_attribute_value_addr = patterns::get_attribute_value();
-        static auto set_dynamic_attribute_value_fn = reinterpret_cast<int(__thiscall *)(c_econ_item *, uint32_t, void *)>(set_dynamic_attribute_value_addr);
+        static auto set_dynamic_attribute_value_fn =
+            reinterpret_cast<int(__thiscall *)(c_econ_item *, uint32_t, void *)>(set_dynamic_attribute_value_addr);
 
         if (!set_dynamic_attribute_value_fn)
             return;
@@ -194,7 +207,7 @@ class c_econ_item {
 };
 
 class c_econ_item_definition {
-  public:
+public:
     /*std::vector<AttributeInfo> GetAttributes( )
     {
         std::vector<AttributeInfo> attributes;
@@ -235,12 +248,10 @@ class c_econ_item_definition {
 
     /*std::string get_localized_weapon_name( )
     {
-        static const auto V_UCS2ToUTF8 = reinterpret_cast< int( * )( const wchar_t *ucs2, char *utf8, int len ) >( GetProcAddress( GetModuleHandle( "vstdlib.dll" ), "V_UCS2ToUTF8" ) );
-        auto wname = *reinterpret_cast< const char ** >( uintptr_t( this ) + 0x4C );
-        const auto wide_name = g_Valve.g_ILocalize->Find( wname );
-        char name [ 256 ];
-        V_UCS2ToUTF8( wide_name, name, sizeof( name ) );
-        return std::string( name );
+        static const auto V_UCS2ToUTF8 = reinterpret_cast< int( * )( const wchar_t *ucs2, char *utf8, int len ) >( GetProcAddress(
+    GetModuleHandle( "vstdlib.dll" ), "V_UCS2ToUTF8" ) ); auto wname = *reinterpret_cast< const char ** >( uintptr_t( this ) + 0x4C ); const
+    auto wide_name = g_Valve.g_ILocalize->Find( wname ); char name [ 256 ]; V_UCS2ToUTF8( wide_name, name, sizeof( name ) ); return
+    std::string( name );
     }*/
 
     //@todo: add keyvalues later
@@ -250,7 +261,8 @@ class c_econ_item_definition {
     //}
 
     const char *get_inventory_image() {
-        return reinterpret_cast<const char *>((*reinterpret_cast<int(__thiscall **)(int)>(*reinterpret_cast<uint32_t *>(uintptr_t(this)) + 0x14))(uintptr_t(this)));
+        return reinterpret_cast<const char *>(
+            (*reinterpret_cast<int(__thiscall **)(int)>(*reinterpret_cast<uint32_t *>(uintptr_t(this)) + 0x14))(uintptr_t(this)));
     }
 
     int get_item_definition_index() {
@@ -303,7 +315,7 @@ class c_econ_item_definition {
 };
 
 class c_econ_item_view {
-  public:
+public:
     char pad_0001[0x194];          // 0x0
     __int32 item_definition_index; // 0x194
     __int32 entity_quality;        // 0x198

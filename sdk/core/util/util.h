@@ -5,10 +5,10 @@
 #include "../../source engine/input.h"
 #include "../../source engine/vector.h"
 
+#include <d3d9.h>
 #include <optional>
 #include <random>
 #include <string>
-#include <d3d9.h>
 
 extern int TIME_TO_TICKS(float dt);
 extern float TICKS_TO_TIME(int tick);
@@ -43,10 +43,12 @@ namespace util {
 
     uintptr_t *find_hud_element(const char *name);
 
-    std::optional<vector_t> get_intersection(const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs, float radius);
+    std::optional<vector_t> get_intersection(const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs,
+                                             float radius);
     std::string sanitize_string(const std::string &str);
 
-    template <typename type> type get_random_float_range(const type &min, const type &max) {
+    template <typename type>
+    type get_random_float_range(const type &min, const type &max) {
         std::random_device rd;
         std::mt19937 e2(rd());
         std::uniform_real_distribution<type> distribution(min, max);

@@ -10,8 +10,8 @@
 
 #include "../../engine/math/math.h"
 
-#include <algorithm>
 #include "../movement/engine prediction/engine_prediction.h"
+#include <algorithm>
 
 namespace features::lag_compensation {
     std::array<std::deque<render_record_t>, 65> records = {};
@@ -87,7 +87,8 @@ namespace features::lag_compensation {
             if (settings.miscellaneous.fake_ping.enabled)
                 return std::abs(delta) < 0.150f;
 
-            const float backtrack_time = settings_lbot->backtrack.enabled ? static_cast<float>(settings_lbot->backtrack.time) : static_cast<float>(settings_lbot->triggerbot.backtrack.time);
+            const float backtrack_time = settings_lbot->backtrack.enabled ? static_cast<float>(settings_lbot->backtrack.time)
+                                                                          : static_cast<float>(settings_lbot->triggerbot.backtrack.time);
 
             return std::abs(delta) <= backtrack_time * 0.001f;
         };
@@ -103,13 +104,14 @@ namespace features::lag_compensation {
         auto &data = records[idx];
 
         for (auto it = data.rbegin(); it != data.rend(); ++it) {
-            if (it + 1 != data.rend() && !is_time_valid(it->simulation_time) && (it + 1)->simulation_time != ent->get_simulation_time() + util::get_lerp_time())
+            if (it + 1 != data.rend() && !is_time_valid(it->simulation_time) &&
+                (it + 1)->simulation_time != ent->get_simulation_time() + util::get_lerp_time())
                 continue;
 
             if (it->origin.dist(ent->get_vec_origin()) < 1.0f)
                 return false;
 
-            //if (features::engine_prediction::is_breaking_lc(ent->get_networkable()->index()))
+            // if (features::engine_prediction::is_breaking_lc(ent->get_networkable()->index()))
             //	return false;
 
             const auto next_record = it + 1;

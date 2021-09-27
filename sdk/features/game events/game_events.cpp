@@ -11,7 +11,7 @@
 namespace features::game_events {
     void on_player_hurt(c_game_event *game_event) {
         const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("userid")));
-        const auto user = (c_player*)interfaces::entity_list->get_entity(user_id);
+        const auto user = (c_player *) interfaces::entity_list->get_entity(user_id);
 
         if (!user)
             return;
@@ -120,7 +120,7 @@ namespace features::game_events {
             return;
 
         int vote = game_event->get_int(xs("vote_option"));
-        int id   = game_event->get_int(xs("entityid"));
+        int id = game_event->get_int(xs("entityid"));
 
         player_info_t player_info;
         interfaces::engine_client->get_player_info(id, player_info);

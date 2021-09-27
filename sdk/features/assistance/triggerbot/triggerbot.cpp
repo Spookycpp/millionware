@@ -7,9 +7,9 @@
 #include "../../../core/settings/settings.h"
 #include "../../../core/util/util.h"
 
+#include "../../../engine/input/input.h"
 #include "../../../engine/math/math.h"
 #include "../../../engine/security/xorstr.h"
-#include "../../../engine/input/input.h"
 
 #include "../../../ui/ui.h"
 
@@ -38,9 +38,13 @@ namespace features::legitbot::triggerbot {
     }
 
     void think(c_user_cmd *user_cmd, c_weapon *weapon) {
-        const auto send_attack = [&]() -> void { user_cmd->buttons |= weapon->get_item_definition_index() != WEAPON_REVOLVER ? BUTTON_IN_ATTACK : BUTTON_IN_ATTACK2; };
+        const auto send_attack = [&]() -> void {
+            user_cmd->buttons |= weapon->get_item_definition_index() != WEAPON_REVOLVER ? BUTTON_IN_ATTACK : BUTTON_IN_ATTACK2;
+        };
 
-        const auto unsend_attack = [&]() -> void { user_cmd->buttons &= weapon->get_item_definition_index() != WEAPON_REVOLVER ? ~BUTTON_IN_ATTACK : ~BUTTON_IN_ATTACK2; };
+        const auto unsend_attack = [&]() -> void {
+            user_cmd->buttons &= weapon->get_item_definition_index() != WEAPON_REVOLVER ? ~BUTTON_IN_ATTACK : ~BUTTON_IN_ATTACK2;
+        };
 
         const auto weapon_info = weapon ? interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index()) : nullptr;
         ;
@@ -65,7 +69,8 @@ namespace features::legitbot::triggerbot {
             return;
         }
 
-        const bool should_shoot = !settings_lbot->triggerbot.backtrack.enabled ? trace_to_target(weapon, src, dst) : trace_to_backtracked_target(user_cmd, weapon, src, dst);
+        const bool should_shoot = !settings_lbot->triggerbot.backtrack.enabled ? trace_to_target(weapon, src, dst)
+                                                                               : trace_to_backtracked_target(user_cmd, weapon, src, dst);
 
         if (should_shoot) {
             if (settings_lbot->triggerbot.delay > 0) {
@@ -75,8 +80,7 @@ namespace features::legitbot::triggerbot {
                     delayed_time = current_time + settings_lbot->triggerbot.delay;
                     send_attack();
                 }
-            }
-            else {
+            } else {
                 send_attack();
             }
         }
@@ -98,7 +102,8 @@ namespace features::legitbot::triggerbot {
             if (!math::normalize_angles(aim_angs))
                 return false;
 
-            if (!hit_chance::can_hit(static_cast<c_player *>(tr.hit_ent), weapon, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox))
+            if (!hit_chance::can_hit(static_cast<c_player *>(tr.hit_ent), weapon, aim_angs, settings_lbot->triggerbot.hit_chance,
+                                     tr.m_hitbox))
                 return false;
         }
 
@@ -111,7 +116,8 @@ namespace features::legitbot::triggerbot {
         if (settings.miscellaneous.fake_ping.enabled)
             max_latency = 0.300f + interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING);
         else
-            max_latency = static_cast<float>(settings_lbot->triggerbot.backtrack.time) * 0.001f + interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING);
+            max_latency = static_cast<float>(settings_lbot->triggerbot.backtrack.time) * 0.001f +
+                          interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING);
 
         vector_t aim_angs = math::vector_angles(start_pos, end_pos);
 
@@ -168,7 +174,8 @@ namespace features::legitbot::triggerbot {
                         if (settings_lbot->triggerbot.hit_chance > 0) {
                             auto hit_ent = static_cast<c_player *>(tr.hit_ent);
 
-                            if (hit_ent->is_valid() && !hit_chance::can_hit(hit_ent, weapon, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox))
+                            if (hit_ent->is_valid() &&
+                                !hit_chance::can_hit(hit_ent, weapon, aim_angs, settings_lbot->triggerbot.hit_chance, tr.m_hitbox))
                                 continue;
                         }
 

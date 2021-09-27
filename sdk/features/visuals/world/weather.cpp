@@ -15,11 +15,11 @@ namespace features::visuals::weather {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
-                update_weather();
-                do_fog();
-            }
-            default: ;
+        case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
+            update_weather();
+            do_fog();
+        }
+        default:;
         }
     }
 
@@ -38,7 +38,8 @@ namespace features::visuals::weather {
     void update_weather() {
 
         if (!precipitation) {
-            for (auto client_class = interfaces::client_dll->get_all_classes(); client_class && !precipitation; client_class = client_class->next) {
+            for (auto client_class = interfaces::client_dll->get_all_classes(); client_class && !precipitation;
+                 client_class = client_class->next) {
                 if (client_class->class_id == CPrecipitation)
                     precipitation = client_class;
             }
@@ -66,8 +67,7 @@ namespace features::visuals::weather {
 
                 created_rain = true;
             }
-        }
-        else if (created_rain && !settings.visuals.world.weather && last_state) {
+        } else if (created_rain && !settings.visuals.world.weather && last_state) {
             reset_weather();
         }
 

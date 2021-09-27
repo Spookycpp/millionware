@@ -161,8 +161,9 @@ enum observer_mode_t {
     OBS_MODE_FIXED,     // view from a fixed camera position
     OBS_MODE_IN_EYE,    // follow a player in first person view
     OBS_MODE_CHASE,     // follow a player in third person view
-    OBS_MODE_POI,       // PASSTIME point of interest - game objective, big fight, anything interesting; added in the middle of the enum due to tons of hard-coded "<ROAMING" enum compares
-    OBS_MODE_ROAMING,   // free roaming
+    OBS_MODE_POI, // PASSTIME point of interest - game objective, big fight, anything interesting; added in the middle of the enum due to
+                  // tons of hard-coded "<ROAMING" enum compares
+    OBS_MODE_ROAMING, // free roaming
 
     NUM_OBSERVER_MODES,
 };
@@ -234,28 +235,30 @@ enum precipitation_type_t {
 
 class c_animation_layer {
 public:
-    bool client_blend;		     //0x0000
-    float blend_in;			     //0x0004
-    void* studio_hdr;			 //0x0008
-    int dispatch_sequence;       //0x000C
-    int dispatch_sequence_2;     //0x0010
-    int order;                   //0x0014
-    int sequence;                //0x0018
-    float prev_cycle;            //0x001C
-    float weight;                //0x0020
-    float weight_delta_rate;     //0x0024
-    float playback_rate;         //0x0028
-    float cycle;                 //0x002C
-    void* owner;                 //0x0030
-    char pad_0038[4];            //0x0034
+    bool client_blend;       // 0x0000
+    float blend_in;          // 0x0004
+    void *studio_hdr;        // 0x0008
+    int dispatch_sequence;   // 0x000C
+    int dispatch_sequence_2; // 0x0010
+    int order;               // 0x0014
+    int sequence;            // 0x0018
+    float prev_cycle;        // 0x001C
+    float weight;            // 0x0020
+    float weight_delta_rate; // 0x0024
+    float playback_rate;     // 0x0028
+    float cycle;             // 0x002C
+    void *owner;             // 0x0030
+    char pad_0038[4];        // 0x0034
 };
 
 struct entity_handle_t {
     uintptr_t handle;
 
-    constexpr entity_handle_t() : handle(0xFFFFFFFF) {}
+    constexpr entity_handle_t() : handle(0xFFFFFFFF) {
+    }
 
-    constexpr entity_handle_t(unsigned long handle) : handle(handle) {}
+    constexpr entity_handle_t(unsigned long handle) : handle(handle) {
+    }
 
     class c_entity *get() const;
 
@@ -267,13 +270,13 @@ struct entity_handle_t {
 };
 
 class c_collideable {
-  public:
+public:
     DECLARE_VFUNC(1, get_mins(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(2, get_maxs(), vector_t &(__thiscall *) (void *) )();
 };
 
 class c_networkable {
-  public:
+public:
     DECLARE_VFUNC(1, release(), void(__thiscall *)(void *))();
     DECLARE_VFUNC(2, get_client_class(), c_client_class *(__thiscall *) (void *) )();
     DECLARE_VFUNC(4, on_pre_data_changed(int type), void(__thiscall *)(void *, int))(type);
@@ -285,24 +288,25 @@ class c_networkable {
 };
 
 class c_renderable {
-  public:
+public:
     DECLARE_VFUNC(1, get_render_origin(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(2, get_render_angles(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(3, should_draw(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(8, get_model(), c_model *(__thiscall *) (void *) )();
-    DECLARE_VFUNC(13, setup_bones(matrix3x4_t *bone_to_world_out, int max_bones, int bone_mask, float current_time), bool(__thiscall *)(void *, matrix3x4_t *, int, int, float))
+    DECLARE_VFUNC(13, setup_bones(matrix3x4_t *bone_to_world_out, int max_bones, int bone_mask, float current_time),
+                  bool(__thiscall *)(void *, matrix3x4_t *, int, int, float))
     (bone_to_world_out, max_bones, bone_mask, current_time);
 };
 
 class c_entity {
-  public:
+public:
     // networked variables
     DECLARE_OFFSET(get_renderable(), (c_renderable *) ((uintptr_t) this + 0x4));
     DECLARE_OFFSET(get_networkable(), (c_networkable *) ((uintptr_t) this + 0x8));
 
     DECLARE_VFUNC(3, get_collideable(), c_collideable *(__thiscall *) (void *) )();
     DECLARE_VFUNC(10, get_abs_origin(), vector_t &(__thiscall *) (void *) )();
-    DECLARE_VFUNC(142, get_class_name(), const char *(__thiscall *)(void *))();
+    DECLARE_VFUNC(142, get_class_name(), const char *(__thiscall *) (void *) )();
     DECLARE_VFUNC(158, is_player(), bool(__thiscall *)(void *))(); // @xref: "effects/nightvision"
     DECLARE_VFUNC(166, is_weapon(), bool(__thiscall *)(void *))();
 
@@ -335,13 +339,14 @@ class c_entity {
 
     bool is_grenade();
 
-    template <typename T> T &get(const uintptr_t offset) {
+    template <typename T>
+    T &get(const uintptr_t offset) {
         return *reinterpret_cast<T *>(reinterpret_cast<uintptr_t>(this) + offset);
     }
 };
 
 class c_player : public c_entity {
-  public:
+public:
     DECLARE_NETVAR(bool, has_defuser, "DT_CSPlayer", "m_bHasDefuser");
     DECLARE_NETVAR(bool, has_gun_game_immunity, "DT_CSPlayer", "m_bGunGameImmunity");
     DECLARE_NETVAR(bool, has_helmet, "DT_CSPlayer", "m_bHasHelmet");
@@ -412,17 +417,17 @@ class c_player : public c_entity {
 };
 
 class i_client_unknown {
-  public:
+public:
     DECLARE_VFUNC(6, get_base_entity(), c_entity *(__thiscall *) (i_client_unknown *) )();
 };
 
 class i_client_renderable {
-  public:
+public:
     DECLARE_VFUNC(0, get_i_client_unknown(), i_client_unknown *(__thiscall *) (i_client_renderable *) )();
 };
 
 class c_economy_item : public c_entity {
-  public:
+public:
     DECLARE_NETVAR(short, item_definition_index, "DT_ScriptCreatedItem", "m_iItemDefinitionIndex");
     DECLARE_NETVAR(bool, is_initialized, "DT_ScriptCreatedItem", "m_bInitialized");
     DECLARE_NETVAR(int, entity_level, "DT_ScriptCreatedItem", "m_iEntityLevel");
@@ -445,7 +450,7 @@ public:
 };
 
 class c_weapon : public c_economy_item {
-  public:
+public:
     DECLARE_NETVAR(bool, is_burst_mode, "DT_WeaponCSBase", "m_bBurstMode");
     DECLARE_NETVAR(float, next_primary_attack, "DT_LocalActiveWeaponData", "m_flNextPrimaryAttack");
     DECLARE_NETVAR(float, next_secondary_attack, "DT_LocalActiveWeaponData", "m_flNextSecondaryAttack");
@@ -505,14 +510,14 @@ class c_weapon : public c_economy_item {
 };
 
 class c_base_grenade : public c_weapon {
-  public:
+public:
     DECLARE_NETVAR(bool, pin_pulled, "DT_BaseCSGrenade", "m_bPinPulled");
     DECLARE_NETVAR(float, throw_time, "DT_BaseCSGrenade", "m_fThrowTime");
     DECLARE_NETVAR(float, throw_strength, "DT_BaseCSGrenade", "m_flThrowStrength");
 };
 
 class c_game_rules {
-  public:
+public:
     DECLARE_NETVAR(bool, freeze_period, "DT_CSGameRules", "m_bFreezePeriod");
 
     static c_game_rules *get() {
@@ -521,7 +526,7 @@ class c_game_rules {
 };
 
 class c_player_resource {
-  public:
+public:
     bool is_c4_carrier(int index) {
         const static auto offset = netvars::get(CRC_CT("DT_CSPlayerResource:m_iPlayerC4"));
 
@@ -539,6 +544,6 @@ class c_player_resource {
 };
 
 class c_precipitation_entity : public c_entity {
-  public:
+public:
     DECLARE_NETVAR(int, precip_type, "DT_Precipitation", "m_nPrecipType");
 };

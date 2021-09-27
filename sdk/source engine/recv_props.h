@@ -20,7 +20,7 @@ enum class send_prop_type {
 };
 
 class c_recv_prop {
-  public:
+public:
     const char *prop_name;
     send_prop_type prop_type;
     int prop_flags;
@@ -39,7 +39,7 @@ class c_recv_prop {
 };
 
 class c_recv_table {
-  public:
+public:
     c_recv_prop *props;
     int props_count;
     void *decoder_ptr;

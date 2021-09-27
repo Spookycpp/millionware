@@ -12,7 +12,7 @@
 #include "util_vector.h"
 
 class CSharedObjectTypeCache {
-  public:
+public:
     DECLARE_VFUNC(1, add_object(void *object), void(__thiscall *)(void *, void *))(object);
     DECLARE_VFUNC(3, remove_object(void *object), void(__thiscall *)(void *, void *))(object);
 
@@ -36,7 +36,7 @@ class CSharedObjectTypeCache {
 class c_player_inventory;
 
 class c_inventory_manager {
-  public:
+public:
     /*c_player_inventory *get_local_player_inventory( )
     {
         static uintptr_t offset = pattern::find( fnv_( "client.dll" ), xorstr_( "8B 8B ? ? ? ? E8 ? ? ? ? 89 44 24 18" ) );
@@ -56,7 +56,8 @@ class c_inventory_manager {
 
     bool equip_item_in_loadout(const int team, const int slot, const uint64_t id) {
         static auto equip_item_in_loadout_addr = patterns::get_equip_item_in_loadout();
-        static auto equip_item_in_loadout_fn = reinterpret_cast<bool(__thiscall *)(void *, int, int, uint64_t, bool)>(equip_item_in_loadout_addr);
+        static auto equip_item_in_loadout_fn =
+            reinterpret_cast<bool(__thiscall *)(void *, int, int, uint64_t, bool)>(equip_item_in_loadout_addr);
 
         if (!equip_item_in_loadout_fn) {
             logging::info(xs("Failed to get EquipItemInLoadout"));
@@ -68,7 +69,8 @@ class c_inventory_manager {
 
     c_econ_item_view *find_or_create_reference_econ_item(const uint64_t id) {
         static auto find_or_create_reference_econ_addr = patterns::get_find_or_create_reference_econ_item();
-        static auto find_or_create_reference_econ_item = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, int64_t)>(find_or_create_reference_econ_addr);
+        static auto find_or_create_reference_econ_item =
+            reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, int64_t)>(find_or_create_reference_econ_addr);
 
         if (!find_or_create_reference_econ_item) {
             logging::info(xs("Failed to get FindOrCreateReferenceEconItem"));
@@ -92,7 +94,7 @@ class c_inventory_manager {
 };
 
 class c_player_inventory {
-  public:
+public:
     c_econ_item *add_item(const int index, const inventory_item_t &item, c_inventory_manager *manager) {
         if (item.definition <= 0 || item.paint_kit <= 0) {
 
@@ -129,8 +131,7 @@ class c_player_inventory {
         if (is_item_knife || is_item_glove) {
             econ_item->set_rarity(ITEM_RARITY_COVERT);
             econ_item->set_quality(ITEM_QUALITY_UNUSUAL);
-        }
-        else {
+        } else {
             econ_item->set_rarity(item.rarity);
             econ_item->set_quality(item.quality);
 
@@ -234,18 +235,13 @@ class c_player_inventory {
         }
 
         switch (auto_equip) {
-        case 1:
-            manager->equip_item_in_loadout(2, item_data->get_loadout_slot(), id);
-            break;
-        case 2:
-            manager->equip_item_in_loadout(3, item_data->get_loadout_slot(), id);
-            break;
+        case 1: manager->equip_item_in_loadout(2, item_data->get_loadout_slot(), id); break;
+        case 2: manager->equip_item_in_loadout(3, item_data->get_loadout_slot(), id); break;
         case 3:
             manager->equip_item_in_loadout(2, item_data->get_loadout_slot(), id);
             manager->equip_item_in_loadout(3, item_data->get_loadout_slot(), id);
             break;
-        default:
-            break;
+        default: break;
         }
     }
 
@@ -257,7 +253,7 @@ class c_player_inventory {
         return reinterpret_cast<CUtlVector<c_econ_item_view *> *>(this + 0x2C);
     }
 
-  private:
+private:
     void remove_item(const uint64_t id) {
         static auto remove_item_addr = patterns::get_remove_item();
         static auto remove_item_fn = reinterpret_cast<int(__thiscall *)(void *, int64_t)>(remove_item_addr);
@@ -272,7 +268,8 @@ class c_player_inventory {
 
     CSharedObjectTypeCache *base_type_cache() {
         static auto find_shared_object_cache_addr = patterns::get_base_type_cache();
-        static auto find_shared_object_cache_fn = reinterpret_cast<uintptr_t(__thiscall *)(uintptr_t, uint64_t, uint64_t, bool)>(find_shared_object_cache_addr);
+        static auto find_shared_object_cache_fn =
+            reinterpret_cast<uintptr_t(__thiscall *)(uintptr_t, uint64_t, uint64_t, bool)>(find_shared_object_cache_addr);
 
         if (!find_shared_object_cache_fn) {
             logging::info(xs("Failed to get FindSharedObjectCache"));
@@ -280,7 +277,8 @@ class c_player_inventory {
         }
 
         static auto create_base_type_cache_addr = patterns::get_base_type_cache();
-        static auto create_base_type_cache_fn = reinterpret_cast<CSharedObjectTypeCache *(__thiscall *) (uintptr_t, int)>(create_base_type_cache_addr);
+        static auto create_base_type_cache_fn =
+            reinterpret_cast<CSharedObjectTypeCache *(__thiscall *) (uintptr_t, int)>(create_base_type_cache_addr);
 
         if (!create_base_type_cache_fn) {
             logging::info(xs("Failed to get CreateBaseTypeCache"));
@@ -294,7 +292,8 @@ class c_player_inventory {
             return nullptr;
         }
 
-        const auto cache = find_shared_object_cache_fn(gc_client_system + 0x70, *reinterpret_cast<uint64_t *>(this + 0x8), *reinterpret_cast<uint64_t *>(this + 0x10), false);
+        const auto cache = find_shared_object_cache_fn(gc_client_system + 0x70, *reinterpret_cast<uint64_t *>(this + 0x8),
+                                                       *reinterpret_cast<uint64_t *>(this + 0x10), false);
 
         if (!cache) {
             logging::info(xs("Failed to create shared object cache"));
@@ -310,7 +309,8 @@ class c_player_inventory {
 
     c_econ_item_view *get_inventory_item_by_item_id(const uint64_t id) {
         static auto get_inventory_item_by_item_id_addr = patterns::get_inventory_item_by_item_id();
-        static auto get_inventory_item_by_item_id_fn = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, uint64_t)>(get_inventory_item_by_item_id_addr);
+        static auto get_inventory_item_by_item_id_fn =
+            reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, uint64_t)>(get_inventory_item_by_item_id_addr);
 
         if (!get_inventory_item_by_item_id_fn) {
             logging::info(xs("Failed to get GetInventoryItemByItemID"));
@@ -328,7 +328,8 @@ class c_player_inventory {
 
     c_econ_item *add_econ_item(c_econ_item *item, const int a3, const int a4, const char a5) {
         static auto add_econ_item_addr = patterns::get_add_econ_item();
-        static auto add_econ_item_fn = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, c_econ_item *, int, int, char)>(add_econ_item_addr);
+        static auto add_econ_item_fn =
+            reinterpret_cast<c_econ_item_view *(__thiscall *) (void *, c_econ_item *, int, int, char)>(add_econ_item_addr);
 
         if (!add_econ_item_fn) {
             logging::info(xs("Failed to get AddEconItem"));
@@ -352,8 +353,7 @@ class c_player_inventory {
             if (item_view) {
                 *reinterpret_cast<bool *>(uintptr_t(item_view) + 0xA1) = true;
             }
-        }
-        else {
+        } else {
             return nullptr;
         }
 

@@ -14,26 +14,26 @@ void lua_internal::handler::add_script(const std::vector<std::string> &paths) {
 }
 
 auto lua_internal::handler::loaded() -> std::vector<lua_internal::context> {
-	std::vector<context> ret;
+    std::vector<context> ret;
 
-	for (auto &it : scripts) {
+    for (auto &it : scripts) {
         if (it->ctx.exiting) {
             continue;
         }
 
-		if (!it->loaded) {
+        if (!it->loaded) {
             unload(it->filename());
-			continue;
-		}
+            continue;
+        }
 
-		ret.push_back(it->ctx);
-	}
+        ret.push_back(it->ctx);
+    }
 
-	return ret;
+    return ret;
 }
 
 void lua_internal::handler::unload(const std::string &name) {
-	std::erase_if(scripts, [name](std::unique_ptr<script> &it) {
+    std::erase_if(scripts, [name](std::unique_ptr<script> &it) {
         if (it->filename() != name) {
             return false;
         }
@@ -53,23 +53,23 @@ void lua_internal::handler::unload() {
         }
     }
 
-	scripts.clear();
+    scripts.clear();
 }
 
 std::vector<lua_internal::callback> lua_internal::handler::events() {
-	std::vector<callback> ret;
+    std::vector<callback> ret;
 
-	for (auto& it : loaded()) {
+    for (auto &it : loaded()) {
         if (it.exiting) {
             continue;
         }
 
-		for (auto& cb : it.callbacks) {
-			ret.push_back(cb);
-		}
-	}
+        for (auto &cb : it.callbacks) {
+            ret.push_back(cb);
+        }
+    }
 
-	return ret;
+    return ret;
 }
 
 std::vector<lua_internal::callback> lua_internal::handler::events(const std::string &name) {

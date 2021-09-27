@@ -3,7 +3,8 @@
 struct material_handle_t {
     unsigned short handle;
 
-    explicit constexpr material_handle_t(unsigned short handle) : handle(handle) {}
+    explicit constexpr material_handle_t(unsigned short handle) : handle(handle) {
+    }
 
     struct material_t *get() const;
 

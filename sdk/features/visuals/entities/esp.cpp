@@ -1,7 +1,7 @@
 // ReSharper disable CppClangTidyClangDiagnosticImplicitIntFloatConversion
 // ReSharper disable CppClangTidyClangDiagnosticFloatConversion
 // ReSharper disable CppClangTidyCppcoreguidelinesNarrowingConversions
-#pragma warning(disable:4244)
+#pragma warning(disable : 4244)
 
 #include <algorithm>
 #include <array>
@@ -10,16 +10,16 @@
 #include "../../../core/cheat/cheat.h"
 #include "../../../core/interfaces/interfaces.h"
 #include "../../../core/settings/settings.h"
+#include "../../../core/util/util.h"
 #include "../../../engine/input/input.h"
 #include "../../../engine/logging/logging.h"
 #include "../../../engine/math/math.h"
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
-#include "../../../core/util/util.h"
 
+#include "../../../features/game events/decoy/decoy.h"
 #include "../../../features/game events/inferno/inferno.h"
 #include "../../../features/game events/smoke/smoke.h"
-#include "../../../features/game events/decoy/decoy.h"
 
 #include "../world/world.h"
 #include "esp.h"
@@ -59,10 +59,10 @@ namespace features::visuals::esp {
             if (!update_dormancy(i, entity, dist_to_local)) {
                 continue;
             }
-            
+
             draw_dropped_weapon(entity, dist_to_local);
             draw_defusal_kit(entity, dist_to_local);
-            draw_thrown_utility(entity);         
+            draw_thrown_utility(entity);
             draw_planted_bomb(entity);
 
             world::draw_world(entity);
@@ -102,7 +102,7 @@ namespace features::visuals::esp {
             col.a = static_cast<int>(alpha * 255.0f);
 
             auto text = std::format("STEP", dist_to_local);
-            render::draw_text_outlined(screen_pos, col, { 5, 5, 5, col.a }, text.c_str(), FONT_SMALL_TEXT);
+            render::draw_text_outlined(screen_pos, col, {5, 5, 5, col.a}, text.c_str(), FONT_SMALL_TEXT);
         }
     }
 
@@ -128,14 +128,14 @@ namespace features::visuals::esp {
         entity_esp.at(idx).bottom_offset = 0.0f;
 
         const point_t screen_size = render::get_screen_size();
-        if (entity_box.x + entity_box.width - 1 < 0 || entity_box.x - 1 >= screen_size.x 
-            || entity_box.y + entity_box.height - 1 < 0 || entity_box.y - 1 >= screen_size.y) {
+        if (entity_box.x + entity_box.width - 1 < 0 || entity_box.x - 1 >= screen_size.x || entity_box.y + entity_box.height - 1 < 0 ||
+            entity_box.y - 1 >= screen_size.y) {
             return;
         }
 
         if (entity->get_networkable()->is_dormant()) {
             const vector_t pos = entity_esp.at(idx).position;
-            player->set_absolute_origin({ pos.x, pos.y, player->get_abs_origin().z }); // don't ask
+            player->set_absolute_origin({pos.x, pos.y, player->get_abs_origin().z}); // don't ask
         }
 
         draw_box(entity_box, player);
@@ -156,11 +156,11 @@ namespace features::visuals::esp {
 
         const color_t col = get_color(player, settings.visuals.player.bounding_box_color);
 
-        const auto box_position = point_t{ entity_box.x, entity_box.y };
-        const auto box_size = point_t{ entity_box.width, entity_box.height };
+        const auto box_position = point_t{entity_box.x, entity_box.y};
+        const auto box_size = point_t{entity_box.width, entity_box.height};
 
-        render::draw_rect(box_position - 1.0f, box_size + 2.0f, { 0, 0, 0, col.a });
-        render::draw_rect(box_position + 1.0f, box_size - 2.0f, { 0, 0, 0, col.a });
+        render::draw_rect(box_position - 1.0f, box_size + 2.0f, {0, 0, 0, col.a});
+        render::draw_rect(box_position + 1.0f, box_size - 2.0f, {0, 0, 0, col.a});
         render::draw_rect(box_position, box_size, col);
     }
 
@@ -179,8 +179,10 @@ namespace features::visuals::esp {
         const std::string player_name = info.fake_player ? std::format(xs("BOT {}"), info.name) : info.name;
         const auto text_size = render::measure_text(player_name.c_str(), FONT_VERDANA_12_BOLD);
 
-        render::draw_text({ entity_box.x + entity_box.width / 2 - text_size.x / 2 + 1, entity_box.y - text_size.y - 2 + 1 }, { 5, 5, 5, col.a }, player_name.c_str(), FONT_VERDANA_12_BOLD);
-        render::draw_text({ entity_box.x + entity_box.width / 2 - text_size.x / 2, entity_box.y - text_size.y - 2 }, col, player_name.c_str(), FONT_VERDANA_12_BOLD);
+        render::draw_text({entity_box.x + entity_box.width / 2 - text_size.x / 2 + 1, entity_box.y - text_size.y - 2 + 1}, {5, 5, 5, col.a},
+                          player_name.c_str(), FONT_VERDANA_12_BOLD);
+        render::draw_text({entity_box.x + entity_box.width / 2 - text_size.x / 2, entity_box.y - text_size.y - 2}, col, player_name.c_str(),
+                          FONT_VERDANA_12_BOLD);
     }
 
     void draw_health(const bounding_box_t &entity_box, c_player *player) {
@@ -189,22 +191,24 @@ namespace features::visuals::esp {
         }
 
         const auto clamped_health = std::clamp(player->get_health(), 0, player->max_health());
-        const auto bar_size       = std::clamp(clamped_health * entity_box.height / 100, 0.0f, entity_box.height);
-        const auto red            = std::min(510 * (100 - clamped_health) / 100, 255);
-        const auto green          = std::min(510 * clamped_health / 100, 255);
+        const auto bar_size = std::clamp(clamped_health * entity_box.height / 100, 0.0f, entity_box.height);
+        const auto red = std::min(510 * (100 - clamped_health) / 100, 255);
+        const auto green = std::min(510 * clamped_health / 100, 255);
 
-        const color_t col = get_color(player, { red, green, 0, 210 });
+        const color_t col = get_color(player, {red, green, 0, 210});
 
-        render::fill_rect({ entity_box.x - 6, entity_box.y - 1 }, { 4, entity_box.height + 2 }, { 0, 0, 0, col.a });
-        render::fill_rect({ entity_box.x - 5, entity_box.y + (entity_box.height - bar_size) }, { 2, bar_size }, col);
+        render::fill_rect({entity_box.x - 6, entity_box.y - 1}, {4, entity_box.height + 2}, {0, 0, 0, col.a});
+        render::fill_rect({entity_box.x - 5, entity_box.y + (entity_box.height - bar_size)}, {2, bar_size}, col);
 
         // don't use clamped health here, because if their health
         // is larger than 100 we want to draw the health amount
         if (player->get_health() <= 90 || player->get_health() > 100) {
-            const std::string health_text  = std::format(xs("{}"), player->get_health());
+            const std::string health_text = std::format(xs("{}"), player->get_health());
             const point_t health_text_size = render::measure_text(health_text.c_str(), FONT_SMALL_TEXT);
 
-            render::draw_text_outlined({ entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f }, { 255, 255, 255, col.a }, { 5, 5, 5, col.a }, health_text.c_str(), FONT_SMALL_TEXT);
+            render::draw_text_outlined(
+                {entity_box.x - 4.0f - health_text_size.x * 0.5f, entity_box.y + (entity_box.height - bar_size) - 6.0f},
+                {255, 255, 255, col.a}, {5, 5, 5, col.a}, health_text.c_str(), FONT_SMALL_TEXT);
         }
     }
 
@@ -213,20 +217,24 @@ namespace features::visuals::esp {
             return;
         }
 
-        const auto idx             = player->get_networkable()->index();
+        const auto idx = player->get_networkable()->index();
         const float box_multiplier = static_cast<float>(player->get_armor()) / 100.0f;
-        const float box_width      = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
+        const float box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        const color_t col = get_color(player, { 255, 255, 255 });
+        const color_t col = get_color(player, {255, 255, 255});
 
-        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, col.a });
-        render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 3.0f }, { box_width, 2.0f }, { 255, 255, 255, col.a });
+        render::fill_rect({entity_box.x - 1.0f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 2.0f},
+                          {entity_box.width + 2.0f, 4.0f}, {0, 0, 0, col.a});
+        render::fill_rect({entity_box.x, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 3.0f}, {box_width, 2.0f},
+                          {255, 255, 255, col.a});
 
         if (player->get_armor() < 90) {
             const std::string armor_text = std::format(xs("{}"), player->get_armor());
             const point_t armor_text_size = render::measure_text(armor_text.c_str(), FONT_SMALL_TEXT);
 
-            render::draw_text_outlined({ entity_box.x + box_width - armor_text_size.x * 0.5f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset }, { 255, 255, 255, col.a }, { 5, 5, 5, col.a }, armor_text.c_str(), FONT_SMALL_TEXT);
+            render::draw_text_outlined(
+                {entity_box.x + box_width - armor_text_size.x * 0.5f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset},
+                {255, 255, 255, col.a}, {5, 5, 5, col.a}, armor_text.c_str(), FONT_SMALL_TEXT);
         }
 
         entity_esp.at(idx).bottom_offset += 6.0f;
@@ -253,13 +261,17 @@ namespace features::visuals::esp {
 
         const color_t col = get_color(player, settings.visuals.player.ammo_color);
 
-        const auto idx            = player->get_networkable()->index();
-        const auto reload_layer   = &player->animation_overlay().element(1);
-        const auto box_multiplier = player->is_reloading() ? reload_layer->cycle : static_cast<float>(weapon->get_ammo1()) / static_cast<float>(weapon_data->max_clip_ammo);
-        const auto box_width      = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
+        const auto idx = player->get_networkable()->index();
+        const auto reload_layer = &player->animation_overlay().element(1);
+        const auto box_multiplier = player->is_reloading()
+                                        ? reload_layer->cycle
+                                        : static_cast<float>(weapon->get_ammo1()) / static_cast<float>(weapon_data->max_clip_ammo);
+        const auto box_width = std::clamp(entity_box.width * box_multiplier, 0.0f, entity_box.width);
 
-        render::fill_rect({ entity_box.x - 1.0f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 2.0f }, { entity_box.width + 2.0f, 4.0f }, { 0, 0, 0, col.a });
-        render::fill_rect({ entity_box.x, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 3.0f }, { box_width, 2.0f }, col);
+        render::fill_rect({entity_box.x - 1.0f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 2.0f},
+                          {entity_box.width + 2.0f, 4.0f}, {0, 0, 0, col.a});
+        render::fill_rect({entity_box.x, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 3.0f}, {box_width, 2.0f},
+                          col);
 
         if (weapon->get_ammo1() > 0 && weapon->get_ammo1() < weapon_data->max_clip_ammo && !player->is_reloading()) {
             char ammo_text_buffer[8];
@@ -268,7 +280,9 @@ namespace features::visuals::esp {
 
             const auto ammo_text_size = render::measure_text(ammo_text_buffer, FONT_SMALL_TEXT);
 
-            render::draw_text_outlined({ entity_box.x + box_width - ammo_text_size.x * 0.5f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset - 1.0f }, { 255, 255, 255, col.a }, { 5, 5, 5, col.a }, ammo_text_buffer, FONT_SMALL_TEXT);
+            render::draw_text_outlined({entity_box.x + box_width - ammo_text_size.x * 0.5f,
+                                        entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset - 1.0f},
+                                       {255, 255, 255, col.a}, {5, 5, 5, col.a}, ammo_text_buffer, FONT_SMALL_TEXT);
         }
 
         entity_esp.at(idx).bottom_offset += 5.0f;
@@ -292,16 +306,18 @@ namespace features::visuals::esp {
         const wchar_t *localized_name = interfaces::localize->find(weapon_data->hud_name);
 
         std::vector<char> localized_name_buf(32);
-        WideCharToMultiByte(CP_UTF8, 0, localized_name, std::wcslen(localized_name), localized_name_buf.data(), localized_name_buf.size(), nullptr, nullptr);
+        WideCharToMultiByte(CP_UTF8, 0, localized_name, std::wcslen(localized_name), localized_name_buf.data(), localized_name_buf.size(),
+                            nullptr, nullptr);
 
         point_t localized_name_size = render::measure_text(localized_name_buf.data(), FONT_SMALL_TEXT);
-        localized_name_size += point_t{ 1.0f, 1.0f };
+        localized_name_size += point_t{1.0f, 1.0f};
 
-        const color_t col = get_color(player, { 255, 255, 255 });
+        const color_t col = get_color(player, {255, 255, 255});
         const int idx = player->get_networkable()->index();
 
-        render::draw_text_outlined({ entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 1.0f },
-            col, { 5, 5, 5, col.a }, localized_name_buf.data(), FONT_SMALL_TEXT);
+        render::draw_text_outlined({entity_box.x + entity_box.width * 0.5f - localized_name_size.x * 0.5f,
+                                    entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 1.0f},
+                                   col, {5, 5, 5, col.a}, localized_name_buf.data(), FONT_SMALL_TEXT);
 
         entity_esp.at(idx).bottom_offset += localized_name_size.y;
     }
@@ -311,50 +327,51 @@ namespace features::visuals::esp {
             const color_t col = get_color(player, flag_color);
 
             const point_t flag_text_size = render::measure_text(flag_text, FONT_SMALL_TEXT);
-            render::draw_text_outlined({ entity_box.x + entity_box.width + 3.0f, entity_box.y - 1.0f + flag_offset }, col, { 5, 5, 5, col.a }, flag_text, FONT_SMALL_TEXT);
+            render::draw_text_outlined({entity_box.x + entity_box.width + 3.0f, entity_box.y - 1.0f + flag_offset}, col, {5, 5, 5, col.a},
+                                       flag_text, FONT_SMALL_TEXT);
 
             flag_offset += flag_text_size.y;
         };
 
         if (settings.visuals.player.flags & 1 << 0) {
-            draw_flag(player->get_has_helmet() ? xs("HK") : xs("K"), { 255, 255, 255, 200 });
+            draw_flag(player->get_has_helmet() ? xs("HK") : xs("K"), {255, 255, 255, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 1 && player->get_is_scoped()) {
-            draw_flag(xs("SCOPE"), { 255, 255, 255, 200 });
+            draw_flag(xs("SCOPE"), {255, 255, 255, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 2 && player->is_reloading()) {
-            draw_flag(xs("RELOAD"), { 80, 200, 240, 200 });
+            draw_flag(xs("RELOAD"), {80, 200, 240, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 3 && player->is_flashed()) {
-            draw_flag(xs("FLASH"), { 255, 255, 255, 200 });
+            draw_flag(xs("FLASH"), {255, 255, 255, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 4 && player->has_bomb()) {
-            draw_flag(xs("C4"), { 255, 100, 100, 200 });
+            draw_flag(xs("C4"), {255, 100, 100, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 5 && player->get_is_defusing()) {
-            draw_flag(xs("DEFUSE"), { 255, 100, 100, 200 });
+            draw_flag(xs("DEFUSE"), {255, 100, 100, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 6 && player->is_smoked()) {
-            draw_flag(xs("SMOKE"), { 255, 255, 255, 200 });
+            draw_flag(xs("SMOKE"), {255, 255, 255, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 7 && player->get_health() == 1) {
-            draw_flag(xs("FLASH KILL"), { 255, 255, 255, 200 });
+            draw_flag(xs("FLASH KILL"), {255, 255, 255, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 8) {
             const std::string flag_string = std::format(xs("${}"), player->get_money());
-            draw_flag(flag_string.c_str(), { 135, 240, 60, 200 });
+            draw_flag(flag_string.c_str(), {135, 240, 60, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 9 && player->get_has_defuser()) {
-            draw_flag(xs("KIT"), { 255, 255, 255, 200 });
+            draw_flag(xs("KIT"), {255, 255, 255, 200});
         }
     }
 
@@ -369,7 +386,8 @@ namespace features::visuals::esp {
         }
 
         std::array<matrix3x4_t, 128> matrices = {};
-        memcpy(matrices.data(), player->get_cached_bone_data().get_elements(), player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
+        memcpy(matrices.data(), player->get_cached_bone_data().get_elements(),
+               player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
 
         /*if (!player->get_renderable()->setup_bones(matrices.data(), matrices.size(), 0x100, interfaces::global_vars->current_time)) {
             return;
@@ -432,7 +450,8 @@ namespace features::visuals::esp {
 
         if (client_class->class_id == CPlantedC4) {
             const auto text_size = render::measure_text(xs("planted c4"), FONT_TAHOMA_11);
-            const auto text_pos = point_t{ entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f, entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f };
+            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f,
+                                          entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
 
             render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("planted c4"), FONT_TAHOMA_11);
         }
@@ -466,44 +485,47 @@ namespace features::visuals::esp {
             const wchar_t *localized_name = interfaces::localize->find(weapon_info->hud_name);
 
             std::vector<char> localized_name_buf(32);
-            WideCharToMultiByte(CP_UTF8, 0, localized_name, std::wcslen(localized_name), localized_name_buf.data(), localized_name_buf.size(), nullptr, nullptr);
+            WideCharToMultiByte(CP_UTF8, 0, localized_name, std::wcslen(localized_name), localized_name_buf.data(),
+                                localized_name_buf.size(), nullptr, nullptr);
 
             const point_t text_size = render::measure_text(localized_name_buf.data(), FONT_SMALL_TEXT);
-            const auto text_pos     = point_t{ entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f, entity_box.y + entity_box.height / 2.0f - text_size.y / 2.0f + 8.0f };
+            const auto text_pos = point_t{entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f,
+                                          entity_box.y + entity_box.height / 2.0f - text_size.y / 2.0f + 8.0f};
 
             // color
             color_t icon_color = settings.visuals.world.weapon_color;
-            color_t text_color = { 255, 255, 255 };
+            color_t text_color = {255, 255, 255};
 
             text_color.a *= std::clamp((1200.0f - (dist_to_local - 500.0f)) / 1200.0f, 0.0f, 1.0f);
             icon_color.a *= std::clamp((800.0f - (dist_to_local - 250.0f)) / 800.0f, 0.0f, 1.0f);
 
-            //draw
+            // draw
             if (icon_color.a > 0) {
                 IDirect3DTexture9 *texture = get_weapon_texture(weapon_info->weapon_name, 2.0f);
-                
+
                 if (texture) {
                     D3DSURFACE_DESC surface_desc;
                     texture->GetLevelDesc(0, &surface_desc);
 
-                    const point_t size     = { static_cast<float>(surface_desc.Width) * 0.25f, static_cast<float>(surface_desc.Height) * 0.25f };
-                    const point_t position = { entity_box.x + entity_box.width / 2.0f - size.x / 2.0f, entity_box.y + entity_box.height / 2.0f - size.y / 2.0f - 4.0f };
-                    
-                    render::draw_image(position + 1.0f, size, { 5, 5, 5, icon_color.a }, texture);
+                    const point_t size = {static_cast<float>(surface_desc.Width) * 0.25f, static_cast<float>(surface_desc.Height) * 0.25f};
+                    const point_t position = {entity_box.x + entity_box.width / 2.0f - size.x / 2.0f,
+                                              entity_box.y + entity_box.height / 2.0f - size.y / 2.0f - 4.0f};
+
+                    render::draw_image(position + 1.0f, size, {5, 5, 5, icon_color.a}, texture);
                     render::draw_image(position, size, icon_color, texture);
                 }
             }
 
             if (text_color.a > 0) {
-                render::draw_text_outlined(text_pos, text_color, { 5, 5, 5, text_color.a }, localized_name_buf.data(), FONT_SMALL_TEXT);
+                render::draw_text_outlined(text_pos, text_color, {5, 5, 5, text_color.a}, localized_name_buf.data(), FONT_SMALL_TEXT);
             }
-        }
-        else if (settings.visuals.world.dropped_bomb && weapon->get_item_definition_index() == WEAPON_C4) {
+        } else if (settings.visuals.world.dropped_bomb && weapon->get_item_definition_index() == WEAPON_C4) {
 
             const char *bomb_string = xs("BOMB");
 
             const auto text_size = render::measure_text(bomb_string, FONT_SMALL_TEXT);
-            const auto text_pos = point_t{ entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f, entity_box.y + entity_box.height + radius / 2.0f - text_size.y / 2.0f };
+            const auto text_pos = point_t{entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f,
+                                          entity_box.y + entity_box.height + radius / 2.0f - text_size.y / 2.0f};
 
             render::draw_text(text_pos, settings.visuals.world.dropped_bomb_color, bomb_string, FONT_SMALL_TEXT);
         }
@@ -524,17 +546,17 @@ namespace features::visuals::esp {
             }
 
             const color_t color = settings.visuals.world.grenades_color;
-            const color_t bg_color = color_t::blend({ 33, 33, 33, 255 }, color, 0.3f);
-            
-            render::fill_circle(pos, radius, { 5, 5, 5, 155 });
+            const color_t bg_color = color_t::blend({33, 33, 33, 255}, color, 0.3f);
 
-            ImGui::GetForegroundDrawList()->PathArcTo({ pos.x, pos.y }, radius + 1.0f, min, max);
+            render::fill_circle(pos, radius, {5, 5, 5, 155});
+
+            ImGui::GetForegroundDrawList()->PathArcTo({pos.x, pos.y}, radius + 1.0f, min, max);
             ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 65), 0, 1);
 
-            ImGui::GetForegroundDrawList()->PathArcTo({ pos.x, pos.y }, radius, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
+            ImGui::GetForegroundDrawList()->PathArcTo({pos.x, pos.y}, radius, math::deg_to_rad(0.0f), math::deg_to_rad(360.0f));
             ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(bg_color.r, bg_color.g, bg_color.b, 185), 0, 2);
 
-            ImGui::GetForegroundDrawList()->PathArcTo({ pos.x, pos.y }, radius - 2.0f, min, max);
+            ImGui::GetForegroundDrawList()->PathArcTo({pos.x, pos.y}, radius - 2.0f, min, max);
             ImGui::GetForegroundDrawList()->PathStroke(IM_COL32(color.r, color.g, color.b, 255), 0, 2);
 
             return true;
@@ -578,27 +600,24 @@ namespace features::visuals::esp {
                 static IDirect3DTexture9 *texture = nullptr;
                 if (!texture) {
                     texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/decoy.svg"));
-                }
-                else {
-                    render::draw_image({ screen.x - 5.0f, screen.y - 7.0f }, { 11.0f, 12.0f }, { 255, 255, 255 }, texture);
+                } else {
+                    render::draw_image({screen.x - 5.0f, screen.y - 7.0f}, {11.0f, 12.0f}, {255, 255, 255}, texture);
                 }
             }
-        }
-        else if (client_class->class_id == CBaseCSGrenadeProjectile) {
+        } else if (client_class->class_id == CBaseCSGrenadeProjectile) {
             seconds_until_detonation = 1.5f - (interfaces::global_vars->current_time - grenade->get_spawn_time());
             if (seconds_until_detonation <= 0.0f) {
                 return;
             }
-            
+
             if (draw_circle(screen, 12.0f, seconds_until_detonation, 1.5f)) {
                 // HE grenade
                 if (model_name.find(xs("fraggrenade")) != std::string::npos) {
                     static IDirect3DTexture9 *texture = nullptr;
                     if (!texture) {
                         texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/hegrenade.svg"));
-                    }
-                    else {
-                        render::draw_image({screen.x - 4.0f, screen.y - 7.0f}, {8.0f, 12.0f}, { 255, 255, 255 }, texture);
+                    } else {
+                        render::draw_image({screen.x - 4.0f, screen.y - 7.0f}, {8.0f, 12.0f}, {255, 255, 255}, texture);
                     }
                 }
                 // flashbang
@@ -606,16 +625,14 @@ namespace features::visuals::esp {
                     static IDirect3DTexture9 *texture = nullptr;
                     if (!texture) {
                         texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/flashbang.svg"));
-                    }
-                    else {
-                        render::draw_image({screen.x - 5.0f, screen.y - 7.0f}, {11.0f, 12.0f}, { 255, 255, 255 }, texture);
+                    } else {
+                        render::draw_image({screen.x - 5.0f, screen.y - 7.0f}, {11.0f, 12.0f}, {255, 255, 255}, texture);
                     }
                 }
             }
-        }
-        else if (client_class->class_id == CMolotovProjectile) {
+        } else if (client_class->class_id == CMolotovProjectile) {
             static c_convar *detonate_cvar = interfaces::convar_system->find_convar("molotov_throw_detonate_time");
-            const float detonate_time      = detonate_cvar->get_float();
+            const float detonate_time = detonate_cvar->get_float();
 
             seconds_until_detonation = detonate_time - (interfaces::global_vars->current_time - grenade->get_spawn_time());
 
@@ -624,13 +641,11 @@ namespace features::visuals::esp {
                 static IDirect3DTexture9 *texture = nullptr;
                 if (!texture) {
                     texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/molotov.svg"));
-                }
-                else {
-                    render::draw_image({ screen.x - 5.0f, screen.y - 7.0f }, { 11.0f, 12.0f }, { 255, 255, 255 }, texture);
+                } else {
+                    render::draw_image({screen.x - 5.0f, screen.y - 7.0f}, {11.0f, 12.0f}, {255, 255, 255}, texture);
                 }
             }
-        }
-        else if (client_class->class_id == CSmokeGrenadeProjectile) {
+        } else if (client_class->class_id == CSmokeGrenadeProjectile) {
             if (reinterpret_cast<c_player *>(entity)->get_velocity().length_2d() == 0.0f) {
                 // stopped moving, draw the smoke from the on_smokegrenade_detonate event instead
                 return;
@@ -643,7 +658,7 @@ namespace features::visuals::esp {
                 }
 
                 if (texture) {
-                    render::draw_image({ screen.x - 2.0f, screen.y - 7.0f }, { 5.0f, 12.0f }, { 255, 255, 255 }, texture);
+                    render::draw_image({screen.x - 2.0f, screen.y - 7.0f}, {5.0f, 12.0f}, {255, 255, 255}, texture);
                 }
             }
         }
@@ -671,15 +686,16 @@ namespace features::visuals::esp {
         }
 
         const float radius = 0.5f * std::sqrt(entity_box.width * entity_box.width + entity_box.height * entity_box.height) / 1.5f;
-        
+
         // text
         const char *defusal_kit_string = xs("DEFUSER");
-        const point_t text_size        = render::measure_text(defusal_kit_string, FONT_SMALL_TEXT);
-        const auto text_pos            = point_t{ entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f, entity_box.y + entity_box.height + radius / 2.0f - text_size.y / 2.0f };
+        const point_t text_size = render::measure_text(defusal_kit_string, FONT_SMALL_TEXT);
+        const auto text_pos = point_t{entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f,
+                                      entity_box.y + entity_box.height + radius / 2.0f - text_size.y / 2.0f};
 
         // color
         color_t icon_color = settings.visuals.world.defusal_kit_color;
-        color_t text_color = { 255, 255, 255 };
+        color_t text_color = {255, 255, 255};
         if (dist_to_local > 250.0f) {
             icon_color.a *= std::clamp((300.0f - (dist_to_local - 250.0f)) / 300.0f, 0.0f, 1.0f);
             text_color.a *= std::clamp((600.0f - (dist_to_local - 250.0f)) / 600.0f, 0.0f, 1.0f);
@@ -687,17 +703,21 @@ namespace features::visuals::esp {
 
         // draw
         if (icon_color.a > 0) {
-            const color_t bg_color = color_t::blend({ 33, 33, 33, icon_color.a / 2 }, icon_color, 0.3f);
+            const color_t bg_color = color_t::blend({33, 33, 33, icon_color.a / 2}, icon_color, 0.3f);
             // render::fill_circle({ entity_box.x + entity_box.width / 2.0f, entity_box.y + entity_box.height / 2.0f }, radius, bg_color);
 
             if (texture) {
-                render::draw_image({ entity_box.x + entity_box.width / 2.0f - radius / 2.0f + 1.0f, entity_box.y + entity_box.height / 2.0f - radius / 2.0f + 1.0f }, { radius, radius }, { 5, 5, 5, icon_color.a }, texture);
-                render::draw_image({ entity_box.x + entity_box.width / 2.0f - radius / 2.0f, entity_box.y + entity_box.height / 2.0f - radius / 2.0f }, { radius, radius }, icon_color, texture);
+                render::draw_image({entity_box.x + entity_box.width / 2.0f - radius / 2.0f + 1.0f,
+                                    entity_box.y + entity_box.height / 2.0f - radius / 2.0f + 1.0f},
+                                   {radius, radius}, {5, 5, 5, icon_color.a}, texture);
+                render::draw_image(
+                    {entity_box.x + entity_box.width / 2.0f - radius / 2.0f, entity_box.y + entity_box.height / 2.0f - radius / 2.0f},
+                    {radius, radius}, icon_color, texture);
             }
         }
 
         if (text_color.a > 0) {
-            render::draw_text_outlined(text_pos, text_color, { 5, 5, 5, text_color.a / 6 }, defusal_kit_string, FONT_SMALL_TEXT);
+            render::draw_text_outlined(text_pos, text_color, {5, 5, 5, text_color.a / 6}, defusal_kit_string, FONT_SMALL_TEXT);
         }
     }
 
@@ -725,21 +745,22 @@ namespace features::visuals::esp {
         const auto x = dx;
         const auto y = dy;
 
-        render::fill_rect({ x - 5.0f, y - 1.0f }, { 11.f , 3.f }, settings.global.accent_color);
-        render::fill_rect({ x - 1.0f, y - 5.0f }, { 3.f, 11.f }, settings.global.accent_color);
+        render::fill_rect({x - 5.0f, y - 1.0f}, {11.f, 3.f}, settings.global.accent_color);
+        render::fill_rect({x - 1.0f, y - 5.0f}, {3.f, 11.f}, settings.global.accent_color);
 
-        render::fill_rect({ x - 4.0f, y }, { 9.f, 1.f }, settings.global.accent_color);
-        render::fill_rect({ x, y - 4.0f }, { 1.f, 9.f }, settings.global.accent_color);
+        render::fill_rect({x - 4.0f, y}, {9.f, 1.f}, settings.global.accent_color);
+        render::fill_rect({x, y - 4.0f}, {1.f, 9.f}, settings.global.accent_color);
     }
 
     bounding_box_t get_bounding_box(c_entity *entity) {
         auto player = reinterpret_cast<c_player *>(entity);
 
-        point_t min_corner{ FLT_MAX, FLT_MAX };
-        point_t max_corner{ FLT_MIN, FLT_MIN };
+        point_t min_corner{FLT_MAX, FLT_MAX};
+        point_t max_corner{FLT_MIN, FLT_MIN};
 
-        std::array<matrix3x4_t, 128> bone_matrix = {};        
-        memcpy(bone_matrix.data(), player->get_cached_bone_data().get_elements(), player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
+        std::array<matrix3x4_t, 128> bone_matrix = {};
+        memcpy(bone_matrix.data(), player->get_cached_bone_data().get_elements(),
+               player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
 
         studio_hdr_t *hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
         for (int i = 0; i < hdr->bones_count; ++i) {
@@ -791,7 +812,7 @@ namespace features::visuals::esp {
         const float y = min_corner.y;
         const float h = max_corner.y - min_corner.y;
 
-        return { x, y, w, h };
+        return {x, y, w, h};
     }
 
     bool get_bounding_box(c_entity *entity, bounding_box_t &out_box) {
@@ -799,16 +820,11 @@ namespace features::visuals::esp {
         const vector_t mins = collideable->get_mins();
         const vector_t maxs = collideable->get_maxs();
 
-        vector_t points[8] = {
-            {mins.x, mins.y, mins.z}, {mins.x, maxs.y, mins.z},
-            {maxs.x, maxs.y, mins.z}, {maxs.x, mins.y, mins.z},
-            {maxs.x, maxs.y, maxs.z}, {mins.x, maxs.y, maxs.z},
-            {mins.x, mins.y, maxs.z}, {maxs.x, mins.y, maxs.z}
-        };
+        vector_t points[8] = {{mins.x, mins.y, mins.z}, {mins.x, maxs.y, mins.z}, {maxs.x, maxs.y, mins.z}, {maxs.x, mins.y, mins.z},
+                              {maxs.x, maxs.y, maxs.z}, {mins.x, maxs.y, maxs.z}, {mins.x, mins.y, maxs.z}, {maxs.x, mins.y, maxs.z}};
 
-        std::ranges::transform(points, std::begin(points), [entity](const auto point) {
-            return math::vector_transform(point, entity->get_transformation_matrix());
-            });
+        std::ranges::transform(points, std::begin(points),
+                               [entity](const auto point) { return math::vector_transform(point, entity->get_transformation_matrix()); });
 
         std::array<point_t, 8> screen_pos;
 
@@ -830,7 +846,7 @@ namespace features::visuals::esp {
             bottom = std::min(bottom, point.y);
         }
 
-        out_box = { left, bottom, right - left, (top - bottom) };
+        out_box = {left, bottom, right - left, (top - bottom)};
 
         return true;
     }
@@ -838,15 +854,14 @@ namespace features::visuals::esp {
     IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, const float scale) {
         static std::vector<std::pair<uint32_t, IDirect3DTexture9 *>> textures;
 
-        const auto it = std::ranges::find_if(textures, [&](const std::pair<uint32_t, IDirect3DTexture9 *> &element) {
-            return element.first == CRC(weapon_name.c_str());
-        });
+        const auto it = std::ranges::find_if(
+            textures, [&](const std::pair<uint32_t, IDirect3DTexture9 *> &element) { return element.first == CRC(weapon_name.c_str()); });
 
         if (it != textures.end()) {
             return it->second; // texture has already been created
         }
 
-        const std::string path     = std::format(xs("materials/panorama/images/icons/equipment/{}.svg"), weapon_name.substr(7));
+        const std::string path = std::format(xs("materials/panorama/images/icons/equipment/{}.svg"), weapon_name.substr(7));
         IDirect3DTexture9 *texture = util::load_texture_from_vpk(path.c_str(), scale);
 
         if (texture) {
@@ -858,7 +873,7 @@ namespace features::visuals::esp {
 
     color_t get_color(c_entity *entity, color_t col) {
         const auto blend = [](const color_t in, const float progress) {
-            static const color_t clr_gray = { 160, 160, 160, 255 };
+            static const color_t clr_gray = {160, 160, 160, 255};
             const int a = in.a;
 
             color_t ret = color_t::blend(clr_gray, in, 0.1f + progress * 0.9f);
@@ -888,8 +903,7 @@ namespace features::visuals::esp {
             update_position(idx, entity->get_abs_origin());
             fade = fade > 0.0f ? std::clamp(fade + rate, 0.0f, 1.0f) : 0.5f;
             spotted = true;
-        }
-        else {
+        } else {
             if (fade < 0.3f && dist_to_local <= 2000.0f) {
                 rate *= 0.02f;
             }
@@ -915,7 +929,7 @@ namespace features::visuals::esp {
 
         last_time = interfaces::global_vars->current_time;
 
-        static CUtlVector<c_snd_info> sound_info {};
+        static CUtlVector<c_snd_info> sound_info{};
         sound_info.clear();
 
         interfaces::engine_sound->get_active_sounds(sound_info);
@@ -947,8 +961,7 @@ namespace features::visuals::esp {
                 ent->get_renderable()->setup_bones(matrices.data(), 128, BONE_USED_BY_ANYTHING, 0.0f);
 
                 update_position(idx, *snd.origin, true); // force update
-            }
-            else {
+            } else {
                 // you can store noises here like footsteps, gunshots, etc
                 /*static std::array<float, 65> last_noise_time;
                 if (std::abs(interfaces::global_vars->current_time - last_noise_time.at(idx)) > 0.1f) {

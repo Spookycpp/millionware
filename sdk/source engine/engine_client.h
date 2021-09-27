@@ -18,14 +18,15 @@ struct player_info_t {
     bool fake_player;
     bool hltv;
 
-  private:
+private:
     char padding_[25];
 };
 
 class c_engine_client {
-  public:
+public:
     DECLARE_VFUNC(5, get_screen_size(int &width, int &height), void(__thiscall *)(void *, int &width, int &height))(width, height);
-    DECLARE_VFUNC(8, get_player_info(int ent_index, player_info_t &buffer), bool(__thiscall *)(void *, int, player_info_t &))(ent_index, buffer);
+    DECLARE_VFUNC(8, get_player_info(int ent_index, player_info_t &buffer), bool(__thiscall *)(void *, int, player_info_t &))
+    (ent_index, buffer);
     DECLARE_VFUNC(9, get_player_for_user_id(int user_id), int(__thiscall *)(void *, int))(user_id);
     DECLARE_VFUNC(12, get_local_player(), int(__thiscall *)(void *))();
     DECLARE_VFUNC(18, get_view_angles(vector_t &angles), void(__thiscall *)(void *, vector_t &))(angles);

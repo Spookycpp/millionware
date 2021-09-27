@@ -46,7 +46,9 @@ namespace features::fake_ping {
             return;
 
         const float cur_time = interfaces::global_vars->current_time;
-        const float latency = 0.15f - (interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING) + interfaces::global_vars->frame_time) - TICK_INTERVAL();
+        const float latency =
+            0.15f - (interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING) + interfaces::global_vars->frame_time) -
+            TICK_INTERVAL();
 
         for (auto &it : sequences) {
             const float delta = cur_time - it.current_time;

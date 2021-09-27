@@ -28,7 +28,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         return create_move_original(ecx, edx, frame_time, user_cmd);
 
     const auto result = create_move_original(ecx, edx, frame_time, user_cmd);
-    
+
     if (!user_cmd || !cheat::local_player || !cheat::local_player->is_alive() || !user_cmd->command_number || !frame_time)
         return result;
 
