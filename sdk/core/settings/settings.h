@@ -11,6 +11,7 @@ struct settings_t {
 	struct {
         color_t accent_color = {222, 102, 122, 255};
 		bool weapon_groups	 = false;
+		bool debug_overlay	 = false;
 		int  sound_fx_volume = 100;
 	} global;
 

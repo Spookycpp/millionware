@@ -1,4 +1,7 @@
 #include "debug_overlay.h"
+
+#include "../../core/settings/settings.h"
+
 #include "../render/render.h"
 #include "../security/xorstr.h"
 
@@ -78,6 +81,7 @@ debug_timer_t::~debug_timer_t() {
 void debug_overlay::init() {
 
 #ifdef _DEBUG
+
 	create_move = std::make_shared<debug_overlay_t>(xs("create move"));
 	do_psfx = std::make_shared<debug_overlay_t>(xs("do psfx"));
 	dme = std::make_shared<debug_overlay_t>(xs("dme"));
@@ -122,6 +126,10 @@ void debug_overlay::init() {
 }
 
 void debug_overlay::draw() {
+
+	if (!settings.global.debug_overlay)
+        return;
+
 	auto screen_size = render::get_screen_size();
 
 	auto next_goes_down = false;
