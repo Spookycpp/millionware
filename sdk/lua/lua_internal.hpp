@@ -1,7 +1,9 @@
 #pragma once
 
-#include <LuaBridge/LuaBridge.h>
+// clang-format off
 #include <luajit/lua.hpp>
+#include <LuaBridge/LuaBridge.h>
+// clang-format on
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
