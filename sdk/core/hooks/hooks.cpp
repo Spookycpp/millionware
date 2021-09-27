@@ -25,7 +25,8 @@ static uintptr_t *get_vtable(uintptr_t instance) {
     return *(uintptr_t **) instance;
 }
 
-template <typename F> F create_hook(uintptr_t instance, int index, F to) {
+template <typename F>
+F create_hook(uintptr_t instance, int index, F to) {
     const auto vtable = get_vtable(instance);
 
     return (F) create_hook(vtable[index], (uintptr_t) to);
@@ -61,16 +62,16 @@ bool hooks::init() {
     send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t) patterns::send_datagram, (uintptr_t) &send_datagram));
     engine_paint_original = create_hook((uintptr_t) interfaces::vgui_engine, 14, &engine_paint);
     push_notice_original = decltype(&push_notice)(create_hook(patterns::push_notice, (uintptr_t) &push_notice));
-    play_step_sound_original = decltype(&play_step_sound)(create_hook(patterns::play_step_sound, (uintptr_t)&play_step_sound));
+    play_step_sound_original = decltype(&play_step_sound)(create_hook(patterns::play_step_sound, (uintptr_t) &play_step_sound));
 
     present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);
 
     cheat::run_command = get_vfunc<uintptr_t>(interfaces::prediction, 19);
 
-#define INIT_HOOK(h, n)                                                                                                                                                                                \
-    if (h == 0) {                                                                                                                                                                                      \
-        logging::error(xs("failed to initialize hook " n));                                                                                                                                            \
-        return false;                                                                                                                                                                                  \
+#define INIT_HOOK(h, n)                                                                                                                    \
+    if (h == 0) {                                                                                                                          \
+        logging::error(xs("failed to initialize hook " n));                                                                                \
+        return false;                                                                                                                      \
     }
 
     INIT_HOOK(create_move_original, "CreateMove");

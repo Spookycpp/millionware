@@ -43,7 +43,6 @@ namespace hooks {
     int __fastcall send_datagram(c_net_channel *, uintptr_t *, void *);
     bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
     void __fastcall push_notice(uintptr_t, uintptr_t, const char *, int, const char *);
-    void __fastcall play_footstep_sound(uintptr_t ecx, uintptr_t edx, const vector_t &origin, bool left_foot, bool feet_in_water, bool knees_in_water, bool jumping);
     void __fastcall play_step_sound(c_player *ecx, uintptr_t edx, vector_t &origin, void *surface, float vol, bool force, void *arg);
     long __stdcall present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region);
 
@@ -72,9 +71,8 @@ namespace hooks {
     inline decltype(&send_datagram) send_datagram_original;
     inline decltype(&write_user_cmd_delta_to_buffer) write_user_cmd_delta_to_buffer_original;
     inline decltype(&push_notice) push_notice_original;
-    inline decltype(&play_footstep_sound) play_footstep_sound_original;
     inline decltype(&play_step_sound) play_step_sound_original;
 
     inline decltype(&present) present_original;
-    
+
 } // namespace hooks

@@ -23,7 +23,6 @@
 #include "../../../engine/render/render.h"
 #include "../../../engine/security/xorstr.h"
 #include "../../../source engine/entity.h"
-#include "../../../engine/render/surface.h"
 #include "../../../ui/ui.h"
 
 namespace features::visuals::world {
