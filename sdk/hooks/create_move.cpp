@@ -33,7 +33,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         return result;
 
     if (result)
-        interfaces::prediction->set_local_view_angles(user_cmd->view_angles);
+        interfaces::engine_client->set_view_angles(user_cmd->view_angles);
 
     uintptr_t *frame_pointer;
     __asm mov frame_pointer, ebp;
