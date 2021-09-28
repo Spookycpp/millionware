@@ -42,7 +42,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     cheat::user_cmd = user_cmd;
     cheat::original_angles = user_cmd->view_angles;
 
-    //lua::callbacks::setup_command(user_cmd, send_packet);
+    lua::callbacks::setup_command(user_cmd, send_packet);
 
     features::fake_ping::on_create_move();
 
@@ -90,7 +90,7 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 
     features::movement::blockbot(user_cmd);
 
-    //lua::callbacks::run_command(user_cmd);
+    lua::callbacks::run_command(user_cmd);
 
     math::normalize_angles(user_cmd->view_angles);
     math::clamp_angles(user_cmd->view_angles);
