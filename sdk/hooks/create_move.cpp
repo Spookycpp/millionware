@@ -1,4 +1,6 @@
 #include <mutex>
+#include <intrin.h>
+
 
 #include "../core/cheat/cheat.h"
 #include "../core/hooks/hooks.h"
@@ -24,23 +26,21 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
 
     PROFILE_WITH(create_move);
 
-    if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
+    if (!user_cmd || !cheat::local_player || !cheat::local_player->is_alive() || user_cmd->command_number == 0)
         return create_move_original(ecx, edx, frame_time, user_cmd);
 
-    const auto result = create_move_original(ecx, edx, frame_time, user_cmd);
+    if (create_move_original(ecx, edx, frame_time, user_cmd))
+        interfaces::prediction->set_local_view_angles(user_cmd->view_angles);
 
-    if (!user_cmd || !cheat::local_player || !cheat::local_player->is_alive() || !user_cmd->command_number || !frame_time)
-        return result;
+    cheat::user_cmd = user_cmd;
+    cheat::original_angles = user_cmd->view_angles;
 
-    if (result)
-        interfaces::engine_client->set_view_angles(user_cmd->view_angles);
+    if (interfaces::client_state == nullptr)
+        return create_move_original(ecx, edx, frame_time, user_cmd);
 
     uintptr_t *frame_pointer;
     __asm mov frame_pointer, ebp;
     bool &send_packet = *reinterpret_cast<bool *>(*frame_pointer - 0x1C);
-
-    cheat::user_cmd = user_cmd;
-    cheat::original_angles = user_cmd->view_angles;
 
     lua::callbacks::setup_command(user_cmd, send_packet);
 
@@ -95,5 +95,5 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     math::normalize_angles(user_cmd->view_angles);
     math::clamp_angles(user_cmd->view_angles);
 
-    return false;
+    return true;
 }
