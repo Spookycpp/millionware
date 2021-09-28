@@ -467,7 +467,7 @@ void ui::init() {
                 group->new_button(xs("Name spam"), features::miscellaneous::name_spam);
                 group->new_button(xs("Unlock hidden convars"), features::miscellaneous::unlock_hidden_convars);
 
-#ifdef _DEBUG
+#ifdef MW_DEBUG
                 group->new_checkbox(xs("Show debug overlay"), settings.global.debug_overlay);
 #endif
                 // group->new_text_input("Example text input", text_input_value1);
