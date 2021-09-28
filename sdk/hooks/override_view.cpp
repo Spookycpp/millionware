@@ -30,7 +30,7 @@ int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setu
         }
     }
 
-    lua::callbacks::override_view(view_setup);
+    //lua::callbacks::override_view(view_setup);
 
     return override_view_original(ecx, edx, view_setup);
 }
