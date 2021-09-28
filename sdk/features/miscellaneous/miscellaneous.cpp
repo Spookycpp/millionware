@@ -75,6 +75,10 @@ namespace features::miscellaneous {
     }
 
     void override_fov(view_setup_t *view_setup) {
+
+        if (settings.visuals.local.override_fov == 90)
+            return;
+
         if (cheat::local_player && !cheat::local_player->get_is_scoped() && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE)
             view_setup->fov = (float) settings.visuals.local.override_fov;
     }
