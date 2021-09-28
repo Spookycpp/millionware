@@ -298,5 +298,8 @@ bool patterns::init() {
     if ((play_step_sound = get_pattern(xs("client.dll"), xs("55 8B EC 8B 45 18 81 EC"))) == 0u)
         return false;
 
+    if ((calc_view = get_pattern(xs("client.dll"), xs("55 8B EC 83 EC 14 53 56 57 FF 75 18"))) == 0u)
+        return false;
+
     return true;
 }

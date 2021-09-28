@@ -89,6 +89,7 @@
     <ClCompile Include="features\game events\decoy\decoy.cpp" />
     <ClCompile Include="hooks\play_step_sound.cpp" />
     <ClCompile Include="engine\debug\debug_overlay.cpp" />
+    <ClCompile Include="hooks\calc_view.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />

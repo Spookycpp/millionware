@@ -339,9 +339,19 @@ public:
 
     bool is_grenade();
 
-    template <typename T>
-    T &get(const uintptr_t offset) {
-        return *reinterpret_cast<T *>(reinterpret_cast<uintptr_t>(this) + offset);
+	template <typename t>
+    __forceinline t &get(size_t offset) {
+        return *(t *) ((uintptr_t) this + offset);
+    }
+
+    template <typename t>
+    __forceinline void set(size_t offset, const t &val) {
+        *(t *) ((uintptr_t) this + offset) = val;
+    }
+
+    template <typename t>
+    __forceinline t as() {
+        return (t) this;
     }
 };
 

@@ -38,13 +38,13 @@ bool hooks::init() {
     if (interfaces::engine_client->is_in_game())
         cheat::local_player = (c_player *) interfaces::entity_list->get_entity(interfaces::engine_client->get_local_player());
 
+    calc_view_original = decltype(&calc_view)(create_hook((uintptr_t) patterns::calc_view, (uintptr_t) &calc_view));
     create_move_original = create_hook((uintptr_t) interfaces::client_mode, 24, &create_move);
     do_post_screen_effects_original = create_hook((uintptr_t) interfaces::client_mode, 44, &do_post_screen_effects);
     draw_model_execute_original = create_hook((uintptr_t) interfaces::model_render, 21, &draw_model_execute);
     draw_print_text_original = create_hook((uintptr_t) interfaces::surface, 28, &draw_print_text);
     emit_sound_original = create_hook((uintptr_t) interfaces::engine_sound, 5, &emit_sound);
-    enable_world_fog_original =
-        decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
+    enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
     fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_events, 9, &fire_event_client_side);
     frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
     get_demo_playback_parameters_original = create_hook((uintptr_t) interfaces::engine_client, 218, &get_demo_playback_parameters);
@@ -75,6 +75,7 @@ bool hooks::init() {
         return false;                                                                                                                      \
     }
 
+    INIT_HOOK(calc_view_original, "Calculate view");
     INIT_HOOK(create_move_original, "CreateMove");
     INIT_HOOK(do_post_screen_effects_original, "DoPostScreenEffects");
     INIT_HOOK(draw_model_execute_original, "DrawModelExecute");
