@@ -79,8 +79,19 @@ namespace features::miscellaneous {
         if (settings.visuals.local.override_fov == 90)
             return;
 
-        if (cheat::local_player && !cheat::local_player->get_is_scoped() && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE)
+        if (!cheat::local_player)
+            return;
+
+        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
+            auto obs_mode = cheat::local_player->get_observer_mode();
+            auto obs_target = (c_player *) cheat::local_player->get_observer_target().get();
+
+            if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && !obs_target->get_is_scoped())
+                view_setup->fov = (float) settings.visuals.local.override_fov;
+        } 
+        else if (!cheat::local_player->get_is_scoped()) {
             view_setup->fov = (float) settings.visuals.local.override_fov;
+        }
     }
 
     void clantag() {
@@ -208,8 +219,8 @@ namespace features::miscellaneous {
         //    ("bom"), ("tyo"), ("lux"), ("ams"), ("limc"), ("man"), ("waw"), ("sgp"), ("jnb"), ("mad"),
         //    ("sto"), ("lhr"), ("atl"), ("ord"), ("lax"),  ("mwh"), ("okc"), ("sea"), ("iad")};
 
-        // static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9 ? ? ? ?
-        // 0F 43") + 1);
+        // static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9
+        // ? ? ? ? 0F 43") + 1);
         //*relay_cluster = "lax";
     }
 
