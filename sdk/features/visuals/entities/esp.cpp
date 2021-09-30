@@ -54,7 +54,7 @@ namespace features::visuals::esp {
                 continue;
             }
 
-            const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(entity->get_abs_origin());
+            const float dist_to_local = cheat::local_player->get_vec_origin().dist_2d(entity->get_vec_origin());
 
             if (!update_dormancy(i, entity, dist_to_local)) {
                 continue;
