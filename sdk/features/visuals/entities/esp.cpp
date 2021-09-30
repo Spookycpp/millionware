@@ -139,7 +139,9 @@ namespace features::visuals::esp {
         }
 
         if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
-            if (cheat::local_player->get_observer_target().get() == player)
+            auto obs_mode = cheat::local_player->get_observer_mode();
+
+            if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && cheat::local_player->get_observer_target().get() == player)
                 return;
         }
 
