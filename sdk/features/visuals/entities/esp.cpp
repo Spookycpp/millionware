@@ -138,6 +138,11 @@ namespace features::visuals::esp {
             player->set_absolute_origin({pos.x, pos.y, player->get_abs_origin().z}); // don't ask
         }
 
+        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
+            if (cheat::local_player->get_observer_target().get() == player)
+                return;
+        }
+
         draw_box(entity_box, player);
         draw_name(entity_box, player);
         draw_health(entity_box, player);
