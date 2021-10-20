@@ -113,11 +113,10 @@ namespace features::miscellaneous {
         static int cl_clanid_value = cl_clanid->get_int();
 
         // doing it this way because doing set_value just didn't work so, fuck it.
-        char buffer[256] = {};
-        sprintf_s(buffer, xs("cl_clanid %i"), cl_clanid_value);
+        auto tag = std::format(xs("cl_clanid %i"), cl_clanid_value);
 
         if (!settings.miscellaneous.clantag && should_clear) {
-            interfaces::engine_client->execute_command(buffer);
+            interfaces::engine_client->execute_command(tag.c_str());
             should_clear = false;
         } else if (settings.miscellaneous.clantag) {
             set_clantag(xs("millionware"));
@@ -166,6 +165,7 @@ namespace features::miscellaneous {
     void recoil_crosshair() {
         const static auto recoil_crosshair = interfaces::convar_system->find_convar(xs("cl_crosshair_recoil"));
 
+        // lord forgive me
         if (settings.visuals.local.recoil_crosshair == 0) {
             recoil_crosshair->set_value(0);
         } else if (settings.visuals.local.recoil_crosshair == 1) {

@@ -266,9 +266,25 @@ void ui::init() {
                 group->new_select(xs("Material"), settings.visuals.player.chams.material, {xs("Textured"), xs("Flat")});
                 group->new_checkbox(xs("Player"), settings.visuals.player.chams.visible)
                     ->add_color_picker(settings.visuals.player.chams.visible_color);
+
                 group->new_checkbox(xs("Player (behind walls)"), settings.visuals.player.chams.invisible)
                     ->add_color_picker(settings.visuals.player.chams.invisible_color);
+
                 group->new_checkbox(xs("Visualize backtrack"), settings.visuals.player.chams.backtrack);
+            }
+
+            if (const auto group = players_tab->new_group(xs("Viewmodel"))) {
+                group->new_select(xs("Arm material"), settings.visuals.local.chams.arms_material, {xs("Textured"), xs("Flat")});
+                group->new_checkbox(xs("Arm chams"), settings.visuals.local.chams.arms)
+                    ->add_color_picker(settings.visuals.local.chams.arms_color);
+
+                group->new_select(xs("Weapon material"), settings.visuals.local.chams.weapon_material, {xs("Textured"), xs("Flat")});
+                group->new_checkbox(xs("Weapon chams"), settings.visuals.local.chams.weapon)
+                    ->add_color_picker(settings.visuals.local.chams.weapon_color);
+
+                group->new_select(xs("Sleeve material"), settings.visuals.local.chams.sleeve_material, {xs("Textured"), xs("Flat")});
+                group->new_checkbox(xs("Sleeve chams"), settings.visuals.local.chams.sleeve)
+                    ->add_color_picker(settings.visuals.local.chams.sleeve_color);
             }
         }
 
