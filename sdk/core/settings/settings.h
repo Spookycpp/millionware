@@ -214,6 +214,20 @@ struct settings_t {
                 float distance = 80.0f;
             } third_person;
 
+            struct {
+                bool arms = false;
+                int  arms_material = 0;
+                color_t arms_color = {56, 159, 252};
+
+                bool weapon = false;
+                int weapon_material = 0;
+                color_t weapon_color = {28, 99, 214};
+
+                bool sleeve = false;
+                int sleeve_material = 0;
+                color_t sleeve_color = {150, 130, 255};
+            } chams;
+
         } local;
     } visuals;
 

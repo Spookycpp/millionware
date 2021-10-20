@@ -131,6 +131,9 @@ namespace features::legitbot {
     void flick_bot(c_user_cmd *user_cmd, c_weapon *weapon) {
         flicked = false;
 
+        if (!settings_lbot->enabled)
+            return;
+
         if (!settings_lbot->flick_bot.enabled)
             return;
 

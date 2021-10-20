@@ -12,6 +12,7 @@
 #include "../source engine/material.h"
 #include "../source engine/material_handle.h"
 
+
 void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ctx, void *state, c_model_render_info *info,
                                           matrix3x4_t *matrix) {
 
@@ -33,6 +34,58 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
 
         util::disable_model_occlusion();
     }
+
+    const auto weapon_color = settings.visuals.local.chams.weapon_color;
+    const auto arm_color = settings.visuals.local.chams.arms_color;
+    const auto sleeve_color = settings.visuals.local.chams.sleeve_color;
+
+    const auto weapon_material = settings.visuals.local.chams.weapon_material == 0 ? textured : flat;
+    const auto arm_material = settings.visuals.local.chams.arms_material == 0 ? textured : flat;
+    const auto sleeve_material = settings.visuals.local.chams.sleeve_material == 0 ? textured : flat;
+
+    if (settings.visuals.local.chams.weapon) {
+        if (!strstr(info->model->name, xs("sleeve")),
+            strstr(info->model->name, xs("models/weapons/v_")) && !strstr(info->model->name, xs("arms"))) {
+            weapon_material->set_color(weapon_color);
+            weapon_material->set_alpha(weapon_color.a);
+            weapon_material->set_flag(MATERIAL_FLAG_IGNORE_Z, true);
+
+            interfaces::model_render->force_material_override(weapon_material);
+            draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+            interfaces::model_render->force_material_override(nullptr);
+            return;
+        }
+    }
+
+    if (settings.visuals.local.chams.arms) {
+        if (strstr(info->model->name, xs("arm")) && !strstr(info->model->name, xs("v_sleeve"))) {
+            arm_material->set_color(arm_color);
+            arm_material->set_alpha(arm_color.a);
+            arm_material->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
+
+            interfaces::model_render->force_material_override(arm_material);
+            draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+            interfaces::model_render->force_material_override(nullptr);
+            return;
+        }
+    }
+
+    if (settings.visuals.local.chams.sleeve) {
+        if (strstr(info->model->name, xs("v_sleeve"))) {
+            sleeve_material->set_color(sleeve_color);
+            sleeve_material->set_alpha(sleeve_color.a);
+            sleeve_material->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
+
+            interfaces::model_render->force_material_override(sleeve_material);
+            draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+            return;
+        };
+    }
+
+    if (interfaces::model_render->is_forced_material_override())
+        return draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+
+    // do any player model related chams below.
 
     if (info->flags != 1 || strstr(info->model->name, xs("models/player")) == nullptr) {
         draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
