@@ -140,7 +140,7 @@ namespace util {
     void play_sound(const char *file_path, int volume) {
 
         if (volume == -1)
-            volume = settings.global.sound_fx_volume;
+            volume = 100;
 
         char buffer[256] = {};
         sprintf_s(buffer, xs("playvol \"%s\" \"%s\""), file_path, std::to_string(static_cast<float>(volume) / 100.0f).c_str());

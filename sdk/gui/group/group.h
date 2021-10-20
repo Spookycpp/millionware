@@ -8,6 +8,7 @@
 #include "../base_element.h"
 #include "../button/button.h"
 #include "../checkbox/checkbox.h"
+#include "../label/label.h"
 #include "../select/select.h"
 #include "../slider/slider.h"
 #include "../text_input/text_input.h"
@@ -23,6 +24,7 @@ class c_group : public c_element {
 public:
     c_group(std::string_view title);
 
+    std::shared_ptr<c_element> new_label(std::string_view title);
     std::shared_ptr<c_element> new_button(std::string_view title, std::function<void()> callback, std::string_view icon, int icon_font);
     std::shared_ptr<c_element> new_button(std::string_view title, std::function<void()> callback);
     std::shared_ptr<c_element> new_checkbox(std::string_view title, bool &value);

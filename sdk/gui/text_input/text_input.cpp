@@ -44,7 +44,7 @@ static char STB_TEXTEDIT_GETCHAR(const STB_TEXTEDIT_STRING *obj, int idx) {
 }
 
 static void STB_TEXTEDIT_DELETECHARS(STB_TEXTEDIT_STRING *obj, int pos, int n) {
-    obj->str->erase(pos, pos + n);
+    obj->str->erase(pos, n);
 }
 
 static bool STB_TEXTEDIT_INSERTCHARS(STB_TEXTEDIT_STRING *obj, int pos, const char *new_text, int new_text_len) {
@@ -142,7 +142,13 @@ void c_text_input::render() {
         text_scroll_ = 0.0f;
         cursor_blink_ = 0.0f;
 
+        stb_textedit_string_wrapper str{&value_.get()};
+
         stb_textedit_initialize_state(&text_edit_state_, true);
+        
+        const auto mouse_offset = input::get_mouse_pos() - value_pos;
+
+        stb_textedit_click(&str, &text_edit_state_, mouse_offset.x, mouse_offset.y);
     } else if (active) {
         stb_textedit_string_wrapper str{&value_.get()};
 
@@ -179,8 +185,14 @@ void c_text_input::render() {
 
     cursor_blink_ += render::get_frame_time();
 
-    if (active && (cursor_blink_ <= 0.0f || std::fmod(cursor_blink_, 1.2f) <= 0.6f))
-        render::draw_line(value_pos + point_t(0.0f, 2.0f), value_pos + point_t(0.0f, value_size.y - 1.0f), {255, 255, 255});
+    if (active && (cursor_blink_ <= 0.0f || std::fmod(cursor_blink_, 1.2f) <= 0.6f)) {
+        auto cursor_pos_chars = text_edit_state_.cursor;
+        auto string_n_chars =
+            render::measure_text(value_.get().substr(0, cursor_pos_chars).data(), FONT_CEREBRI_SANS_MEDIUM_18, value_wrap_width_);
+
+        render::draw_line(value_pos + point_t(string_n_chars.x, 2.0f), value_pos + point_t(string_n_chars.x, value_size.y - 1.0f),
+                          {255, 255, 255});
+    }
 
     title_wrap_width_ = root_size.x;
     value_wrap_width_ = box_size.x - 16.0f;

@@ -6,6 +6,14 @@ c_group::c_group(std::string_view title) {
     title_ = title;
 }
 
+std::shared_ptr<c_element> c_group::new_label(std::string_view title) {
+    const auto label = std::make_shared<c_label>(title);
+
+    children_.push_back(label);
+
+    return label;
+}
+
 std::shared_ptr<c_element> c_group::new_button(std::string_view title, std::function<void()> callback, std::string_view icon,
                                                int icon_font) {
     const auto button = std::make_shared<c_button>(title, callback, icon, icon_font);

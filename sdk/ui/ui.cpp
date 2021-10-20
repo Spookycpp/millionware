@@ -486,14 +486,20 @@ void ui::init() {
         const auto inventory_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_WALLET, xs("Inventory"));
 
         if (const auto presets_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_COGS, xs("Settings"))) {
-            if (const auto group = presets_tab->new_group(xs("YADA"))) {
-                static bool test;
+            if (const auto group = presets_tab->new_group(xs("General"))) {
+                group->new_label(xs("Accent color"))->add_color_picker(ui::get_accent_color(), false);
+                group->new_text_input(xs("Config name"), settings.global.config_name);
+
+                group->new_button(xs("Save"), []() { settings.save(); });
+                group->new_button(xs("Load"), []() { settings.load(); });
+
+                // static bool test;
                 // add raw text.
-                group->new_checkbox(xs("niggers"), test)->add_color_picker(ui::get_accent_color(), false);
+                // group->new_checkbox(xs("niggers"), test)->add_color_picker(ui::get_accent_color(), false);
             }
 
-            if (const auto group = presets_tab->new_group(xs("BADA"))) {
-            }
+            // if (const auto group = presets_tab->new_group(xs("BADA"))) {
+            // }
 
             set_active_tab(presets_tab);
         }

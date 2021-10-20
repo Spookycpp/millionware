@@ -249,6 +249,7 @@
     <ClCompile Include="features\visuals\entities\esp.cpp" />
     <ClCompile Include="features\visuals\world\weather.cpp" />
     <ClCompile Include="features\visuals\world\world.cpp" />
+    <ClCompile Include="gui\label\label.cpp" />
     <ClCompile Include="hooks\calc_view.cpp" />
     <ClCompile Include="hooks\create_move.cpp" />
     <ClCompile Include="hooks\do_post_screen_effects.cpp" />
@@ -344,6 +345,7 @@
     <ClInclude Include="features\visuals\entities\esp.h" />
     <ClInclude Include="features\visuals\world\weather.h" />
     <ClInclude Include="features\visuals\world\world.h" />
+    <ClInclude Include="gui\label\label.h" />
     <ClInclude Include="lua\lua_internal.hpp" />
     <ClInclude Include="lua\lua_game.hpp" />
     <ClInclude Include="lua\lua_callback.hpp" />

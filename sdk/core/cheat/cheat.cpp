@@ -70,6 +70,11 @@ bool cheat::init() {
 
     lua::init();
 
+    if (!std::filesystem::exists(xs(".\\mw\\configs\\default.json")))
+        settings.save();
+    else
+        settings.load();
+
     return true;
 }
 
