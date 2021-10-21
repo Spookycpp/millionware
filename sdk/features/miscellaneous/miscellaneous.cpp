@@ -113,7 +113,7 @@ namespace features::miscellaneous {
         static int cl_clanid_value = cl_clanid->get_int();
 
         // doing it this way because doing set_value just didn't work so, fuck it.
-        auto tag = std::format(xs("cl_clanid %i"), cl_clanid_value);
+        auto tag = std::format(xs("cl_clanid {}"), cl_clanid_value);
 
         if (!settings.miscellaneous.clantag && should_clear) {
             interfaces::engine_client->execute_command(tag.c_str());
