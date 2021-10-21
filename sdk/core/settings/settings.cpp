@@ -181,6 +181,8 @@ static config_item_t items[] = {
     config_item_t{settings.visuals.player.chams.invisible_color, CONFIG_ITEM_COLOR, xs("visuals"), xs("player"), xs("chams"), xs("invisible_color")},
     config_item_t{settings.visuals.player.chams.smoke, CONFIG_ITEM_BOOL, xs("visuals"), xs("player"), xs("chams"), xs("smoke")},
     config_item_t{settings.visuals.player.chams.backtrack, CONFIG_ITEM_BOOL, xs("visuals"), xs("player"), xs("chams"), xs("backtrack")},
+    config_item_t{settings.visuals.player.chams.glow, CONFIG_ITEM_BOOL, xs("visuals"), xs("player"), xs("chams"), xs("glow")},
+    config_item_t{settings.visuals.player.chams.glow_color, CONFIG_ITEM_COLOR, xs("visuals"), xs("player"), xs("chams"), xs("glow_color")},
     // Visuals world
     config_item_t{settings.visuals.world.skybox, CONFIG_ITEM_INT, xs("visuals"), xs("world"), xs("skybox")},
     config_item_t{settings.visuals.world.nightmode, CONFIG_ITEM_BOOL, xs("visuals"), xs("world"), xs("nightmode")},

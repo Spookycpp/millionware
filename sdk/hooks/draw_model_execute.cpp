@@ -22,7 +22,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
     static c_material *flat = nullptr;
     static c_material *glow = nullptr;
 
-    if (!textured || !flat) {
+    if (!textured || !flat || !glow) {
         textured = interfaces::material_system->find_material(xs("debug/debugambientcube"));
         flat = interfaces::material_system->find_material(xs("debug/debugdrawflat"));
         glow = interfaces::material_system->find_material(xs("dev/glow_armsrace"));
@@ -134,6 +134,26 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
     } else {
         interfaces::model_render->force_material_override(nullptr);
 
+        draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+    }
+
+    const auto glow_color = settings.visuals.player.chams.glow_color;
+    if (settings.visuals.player.chams.glow) {
+        float rgba[] = {(float) glow_color.r / 255.f, (float) glow_color.g / 255.f, (float) glow_color.b / 255.f, (float) glow_color.a / 255.f};
+
+        auto tint = glow->find_var(xs("$envmaptint"), nullptr);
+        if (tint)
+            tint->set(rgba[0], rgba[1], rgba[2]);
+
+        auto alpha = glow->find_var(xs("$alpha"), nullptr);
+        if (alpha)
+            alpha->set(rgba[3]);
+
+        auto envmap = glow->find_var(xs("$envmapfresnelminmaxexp"), nullptr);
+        if (envmap)
+            envmap->set(0.f, 1.f, 8.0f);
+
+        interfaces::model_render->force_material_override(glow);
         draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
     }
 

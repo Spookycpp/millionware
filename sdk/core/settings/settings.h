@@ -144,6 +144,8 @@ struct settings_t {
                 color_t invisible_color = {222, 7, 208, 255};
                 bool smoke = false;
                 bool backtrack = false;
+                bool glow = false;
+                color_t glow_color = {222, 102, 122, 255};
             } chams;
         } player;
 

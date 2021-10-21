@@ -270,7 +270,7 @@ void ui::init() {
                 group->new_checkbox(xs("Player (behind walls)"), settings.visuals.player.chams.invisible)
                     ->add_color_picker(settings.visuals.player.chams.invisible_color);
 
-                group->new_checkbox(xs("Visualize backtrack"), settings.visuals.player.chams.backtrack);
+                group->new_checkbox(xs("Add glow"), settings.visuals.player.chams.glow)->add_color_picker(settings.visuals.player.chams.glow_color);
             }
 
             if (const auto group = players_tab->new_group(xs("Viewmodel"))) {
