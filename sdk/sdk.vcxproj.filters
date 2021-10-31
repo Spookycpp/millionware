@@ -91,6 +91,8 @@
     <ClCompile Include="engine\debug\debug_overlay.cpp" />
     <ClCompile Include="hooks\calc_view.cpp" />
     <ClCompile Include="gui\label\label.cpp" />
+    <ClCompile Include="hooks\get_color_modulation.cpp" />
+    <ClCompile Include="hooks\is_using_static_prop_debug_modes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />

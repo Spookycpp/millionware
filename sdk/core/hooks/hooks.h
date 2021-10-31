@@ -28,11 +28,13 @@ namespace hooks {
     void __fastcall engine_paint(uintptr_t, uintptr_t, int);
     bool _fastcall fire_event_client_side(uintptr_t, uintptr_t, c_game_event *event);
     void __fastcall frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx, e_client_frame_stage stage);
+    void __fastcall get_color_modulation(uintptr_t, uintptr_t, float &r, float &g, float &b);
     c_demo_playback_paramaters *__fastcall get_demo_playback_parameters(uintptr_t, uintptr_t);
     float __fastcall get_screen_aspect_ratio(uintptr_t, uintptr_t, int, int);
     bool __fastcall get_player_info(c_engine_client *ecx, uintptr_t edx, int ent_index, player_info_t &buffer);
     bool __fastcall is_connected(c_engine_client *ecx, uintptr_t edx);
     bool __fastcall is_playing_demo(c_engine_client *ecx, uintptr_t edx);
+    bool __stdcall is_using_static_prop_debug_modes();
     void __fastcall level_init_post_entity(c_base_client_dll *ecx, uintptr_t edx);
     void __fastcall level_shutdown_pre_entity(c_base_client_dll *ecx, uintptr_t edx);
     int __fastcall list_leaves_in_box(uintptr_t ecx, uintptr_t edx, const vector_t &mins, const vector_t &maxs, void *leaves_list, int max_leaves);
@@ -57,11 +59,13 @@ namespace hooks {
     inline decltype(&engine_paint) engine_paint_original;
     inline decltype(&fire_event_client_side) fire_event_client_side_original;
     inline decltype(&frame_stage_notify) frame_stage_notify_original;
+    inline decltype(&get_color_modulation) get_color_modulation_original;
     inline decltype(&get_demo_playback_parameters) get_demo_playback_parameters_original;
     inline decltype(&get_screen_aspect_ratio) get_screen_aspect_ratio_original;
     inline decltype(&get_player_info) get_player_info_original;
     inline decltype(&is_connected) is_connected_original;
     inline decltype(&is_playing_demo) is_playing_demo_original;
+    inline decltype(&is_using_static_prop_debug_modes) is_using_static_prop_debug_modes_original;
     inline decltype(&level_init_post_entity) level_init_post_entity_original;
     inline decltype(&level_shutdown_pre_entity) level_shutdown_pre_entity_original;
     inline decltype(&list_leaves_in_box) list_leaves_in_box_original;

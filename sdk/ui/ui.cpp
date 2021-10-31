@@ -304,10 +304,10 @@ void ui::init() {
 
         if (const auto world_tab = visual_category->new_tab(FONT_FA_SOLID_32, ICON_FA_GLOBE_AMERICAS, xs("World"))) {
             if (const auto group = world_tab->new_group(xs("Main"))) {
-                group->new_checkbox(xs("Nightmode"), settings.visuals.world.nightmode)
-                    ->add_color_picker(settings.visuals.world.nightmode_color);
+                group->new_checkbox(xs("Nightmode"), settings.visuals.world.nightmode);
                 group->new_slider(xs("Intensity"), settings.visuals.world.nightmode_darkness, 0.f, 100.f, xs("{:.0f}%"))
                     ->add_dependency(settings.visuals.world.nightmode);
+
                 group->new_checkbox(xs("Fullbright"), settings.visuals.world.fullbright);
                 group->new_checkbox(xs("Weather"), settings.visuals.world.weather);
 

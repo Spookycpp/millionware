@@ -27,14 +27,7 @@
 
 namespace features::visuals::world {
 
-    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
-        switch (frame_stage) {
-        case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
-            nightmode();
-        }
-        default:;
-        }
-    }
+    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {}
 
     void indicators() {
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
@@ -107,56 +100,6 @@ namespace features::visuals::world {
         if (settings.visuals.local.indicators & (1 << 6) && settings.miscellaneous.movement.long_jump &&
             input::is_key_down(settings.miscellaneous.movement.long_jump_hotkey))
             draw_indicator(xs("lj"), {255, 255, 255, 220});
-    }
-
-    void nightmode() {
-        static bool toggled = false;
-        static float last_darkness = 0.f;
-
-        auto do_nightmode = settings.visuals.world.nightmode != toggled || last_darkness != settings.visuals.world.nightmode_darkness ||
-                            cheat::disconnect_state;
-
-        if (!do_nightmode)
-            return;
-
-        toggled = settings.visuals.world.nightmode;
-        last_darkness = settings.visuals.world.nightmode_darkness;
-
-        if (!cheat::local_player || !interfaces::engine_client->is_in_game())
-            return;
-
-        cheat::disconnect_state = false;
-
-        const static auto draw_specific_static_prop = interfaces::convar_system->find_convar(xs("r_DrawSpecificStaticProp"));
-
-        const float world_darkness = settings.visuals.world.nightmode ? 1.f - (settings.visuals.world.nightmode_darkness / 100.f) : 1.f;
-        const float prop_darkness = settings.visuals.world.nightmode ? 1.3f - (settings.visuals.world.nightmode_darkness / 100.f) : 1.f;
-
-        draw_specific_static_prop->set_value(settings.visuals.world.nightmode ? 0 : -1);
-
-        // iterate material handles.
-        for (auto handle = interfaces::material_system->first_material(); handle != interfaces::material_system->invalid_material();
-             handle = interfaces::material_system->next_material(handle)) {
-
-            // get material from handle.
-            c_material *material = interfaces::material_system->get_material(handle);
-            if (!material)
-                continue;
-
-            // if (material->is_error_material())
-            //    continue;
-
-            // modulate world materials.
-            if (strncmp(material->get_group_name(), xs("World textures"), 14) == 0)
-                material->set_color(world_darkness, world_darkness, world_darkness);
-            // modulate props materials.
-            else if (strncmp(material->get_group_name(), xs("StaticProp textures"), 19) == 0)
-                material->set_color(prop_darkness, prop_darkness, prop_darkness);
-
-            auto cl_csm_shadows = interfaces::convar_system->find_convar(xs("cl_csm_shadows"));
-            if (cl_csm_shadows->get_int() != 0)
-                cl_csm_shadows->set_value(0);
-        }
     }
 
     void display_spectators() {

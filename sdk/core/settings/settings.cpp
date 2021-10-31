@@ -187,7 +187,6 @@ static config_item_t items[] = {
     config_item_t{settings.visuals.world.skybox, CONFIG_ITEM_INT, xs("visuals"), xs("world"), xs("skybox")},
     config_item_t{settings.visuals.world.nightmode, CONFIG_ITEM_BOOL, xs("visuals"), xs("world"), xs("nightmode")},
     config_item_t{settings.visuals.world.nightmode_darkness, CONFIG_ITEM_FLOAT, xs("visuals"), xs("world"), xs("nightmode_darkness")},
-    config_item_t{settings.visuals.world.nightmode_color, CONFIG_ITEM_COLOR, xs("visuals"), xs("world"), xs("nightmode_color")},
     config_item_t{settings.visuals.world.fullbright, CONFIG_ITEM_BOOL, xs("visuals"), xs("world"), xs("fullbright")},
     config_item_t{settings.visuals.world.fog, CONFIG_ITEM_BOOL, xs("visuals"), xs("world"), xs("fog")},
     config_item_t{settings.visuals.world.fog_length, CONFIG_ITEM_INT, xs("visuals"), xs("world"), xs("fog_length")},

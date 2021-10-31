@@ -76,6 +76,8 @@ namespace patterns {
     inline uintptr_t is_breakable;
     inline uintptr_t play_step_sound;
     inline uintptr_t calc_view;
+    inline uintptr_t get_color_modulation;
+    inline uintptr_t is_using_static_prop_debug_modes;
 
     PATTERN_GET(engine_vgui_start_drawing, engine_vgui_start_drawing);
     PATTERN_GET(engine_vgui_finish_drawing, engine_vgui_finish_drawing);
@@ -142,6 +144,8 @@ namespace patterns {
     PATTERN_GET(is_breakable, is_breakable);
     PATTERN_GET(play_step_sound, play_step_sound);
     PATTERN_GET(calc_view, calc_view);
+    PATTERN_GET(get_color_modulation, get_color_modulation);
+    PATTERN_GET(is_using_static_prop_debug_modes, is_using_static_prop_debug_modes);
 
     uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
     bool init();

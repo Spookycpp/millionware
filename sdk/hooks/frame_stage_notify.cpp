@@ -2,8 +2,10 @@
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 #include "../core/util/util.h"
+#include "../core/settings/settings.h"
 
 #include "../engine/debug/debug_overlay.h"
+#include "../engine/security/xorstr.h"
 
 #include "../features/discord presence/rpc.h"
 #include "../features/lagcompensation/lagcompensation.h"
@@ -19,6 +21,15 @@ void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx,
 
     if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
         return frame_stage_notify_original(ecx, edx, frame_stage);
+
+    if (frame_stage == e_client_frame_stage::FRAME_STAGE_RENDER_START) {
+        static auto cl_csm_shadows = interfaces::convar_system->find_convar(xs("cl_csm_shadows"));
+
+        if (settings.visuals.world.nightmode && cl_csm_shadows->get_int() == 1)
+            cl_csm_shadows->set_value(0);
+        else if (!settings.visuals.world.nightmode && cl_csm_shadows->get_int() == 0)
+            cl_csm_shadows->set_value(1);
+    }
 
     if (frame_stage == e_client_frame_stage::FRAME_STAGE_START) {
         cheat::view_matrix = interfaces::engine_client->world_to_screen_matrix();

@@ -299,6 +299,12 @@ bool patterns::init() {
         return false;
 
     if ((calc_view = get_pattern(xs("client.dll"), xs("55 8B EC 83 EC 14 53 56 57 FF 75 18"))) == 0u)
+        return false; 
+    
+    if ((get_color_modulation = get_pattern(xs("materialsystem.dll"), xs("55 8B EC 83 EC ? 56 8B F1 8A 46"))) == 0u)
+        return false;
+
+    if ((is_using_static_prop_debug_modes = get_pattern(xs("engine.dll"), xs("8B 0D ???? 81 F9 ???? 75 ? A1 ???? 35 ???? EB ? 8B 01 FF 50 ? 83 F8 ? 0F 85 ???? 8B 0D"))) == 0u)
         return false;
 
     return true;

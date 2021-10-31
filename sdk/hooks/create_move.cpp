@@ -83,8 +83,6 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         features::movement::slide_walk(user_cmd);
     }
 
-    features::visuals::world::nightmode();
-
     features::miscellaneous::rank_reveal(user_cmd);
     features::miscellaneous::preserve_killfeed();
 

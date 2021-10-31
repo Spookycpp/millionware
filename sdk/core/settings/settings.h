@@ -152,8 +152,7 @@ struct settings_t {
         struct {
             int skybox = 0;
             bool nightmode = false;
-            float nightmode_darkness = 0.f;
-            color_t nightmode_color = {38, 34, 34};
+            float nightmode_darkness = 80.f;
             bool fullbright = false;
             bool fog = false;
             int fog_length = 5000;

@@ -47,11 +47,13 @@ bool hooks::init() {
     enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
     fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_events, 9, &fire_event_client_side);
     frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
+    get_color_modulation_original = decltype(&get_color_modulation)(create_hook(patterns::get_color_modulation, (uintptr_t) &get_color_modulation));
     get_demo_playback_parameters_original = create_hook((uintptr_t) interfaces::engine_client, 218, &get_demo_playback_parameters);
     get_screen_aspect_ratio_original = create_hook((uintptr_t) interfaces::engine_client, 101, &get_screen_aspect_ratio);
     get_player_info_original = create_hook((uintptr_t) interfaces::engine_client, 8, &get_player_info);
     is_connected_original = create_hook((uintptr_t) interfaces::engine_client, 27, &is_connected);
     is_playing_demo_original = create_hook((uintptr_t) interfaces::engine_client, 82, &is_playing_demo);
+    is_using_static_prop_debug_modes_original = decltype(&is_using_static_prop_debug_modes)(create_hook(patterns::is_using_static_prop_debug_modes, (uintptr_t) &is_using_static_prop_debug_modes));
     level_init_post_entity_original = create_hook((uintptr_t) interfaces::client_dll, 6, &level_init_post_entity);
     level_shutdown_pre_entity_original = create_hook((uintptr_t) interfaces::client_dll, 7, &level_shutdown_pre_entity);
     list_leaves_in_box_original = create_hook((uintptr_t) interfaces::engine_client->get_bsp_tree_query(), 6, &list_leaves_in_box);

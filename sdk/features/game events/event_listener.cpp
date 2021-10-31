@@ -73,8 +73,6 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
     } else if (std::strncmp(game_event->get_name(), xs("vote_cast"), 10) == 0) {
         features::game_events::on_vote_cast(game_event);
     } else if (std::strncmp(game_event->get_name(), xs("game_newmap"), 12) == 0) {
-        cheat::disconnect_state = true;
-
         features::game_events::inferno::reset();
         features::game_events::smoke::reset();
         features::game_events::decoy::reset();

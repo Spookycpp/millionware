@@ -10,7 +10,6 @@ namespace features::visuals::world {
 
     void on_frame_stage_notify(e_client_frame_stage frame_stage);
 
-    void nightmode();
     void indicators();
 
     void display_spectators();

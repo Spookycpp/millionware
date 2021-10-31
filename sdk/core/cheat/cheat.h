@@ -20,7 +20,6 @@ namespace cheat {
 
     inline bool b_predicting;             // used for preventing land sound spam
     inline bool created_rain = false;     // used for weather sanity
-    inline bool disconnect_state = false; // used to stop nightmode sanity
     inline uintptr_t run_command;         // used for lua run command
     inline int tick_base_shift;           // used for tickbase manipulation
     inline float fov;                     // used for rendered recoil crosshair
