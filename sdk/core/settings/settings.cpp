@@ -436,6 +436,9 @@ void settings_t::load() {
             continue;
         }
 
+        if (value.is_null())
+            continue;
+        
         if (item.type == CONFIG_ITEM_BOOL) {
             *(bool *) item.pointer = value.get<bool>();
         } else if (item.type == CONFIG_ITEM_INT) {
