@@ -15,7 +15,11 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
                                   bool update_positions, float sound_time, int speaker_entity, uintptr_t fds) {
 
     if (settings.miscellaneous.auto_accept && !std::strcmp(sound_entry, xs("UIPanorama.popup_accept_match_beep"))) {
-        ShowWindow(render::window(), SW_RESTORE);
+
+        auto window = FindWindowW(xs(L"Valve001"), NULL);
+        FLASHWINFO flash{sizeof(FLASHWINFO), window, FLASHW_TRAY | FLASHW_TIMERNOFG, 0, 0};
+        FlashWindowEx(&flash);
+        ShowWindow(window, SW_RESTORE);
 
         util::auto_accept();
 

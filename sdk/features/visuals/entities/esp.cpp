@@ -85,7 +85,10 @@ namespace features::visuals::esp {
                 footsteps.erase(footsteps.begin() + i);
             }
 
-            const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(position);
+            if (cheat::local_player->get_observer_mode() == OBS_MODE_DEATHCAM)
+                continue;
+
+            const float dist_to_local = cheat::local_player->get_vec_origin().dist_2d(position);
             if (dist_to_local >= 1000.0f) { // footstep not audible, erase
                 footsteps.erase(footsteps.begin() + i);
                 continue;
@@ -112,6 +115,10 @@ namespace features::visuals::esp {
         }
 
         const auto player = reinterpret_cast<c_player *>(entity);
+
+        if (!player || player == cheat::local_player || !player->is_valid())
+            return;
+
         if (player->get_life_state() != LIFE_STATE_ALIVE || player->get_health() <= 0) {
             return;
         }
@@ -140,8 +147,9 @@ namespace features::visuals::esp {
 
         if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
             auto obs_mode = cheat::local_player->get_observer_mode();
+            auto obs_target = cheat::local_player->get_observer_target().get();
 
-            if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && cheat::local_player->get_observer_target().get() == player)
+            if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && obs_target == player || obs_target == cheat::local_player)
                 return;
         }
 
@@ -365,7 +373,7 @@ namespace features::visuals::esp {
         }
 
         if (settings.visuals.player.flags & 1 << 6 && player->is_smoked()) {
-            draw_flag(xs("SMOKE"), {255, 255, 255, 200});
+            draw_flag(xs("SMOKED"), {255, 255, 255, 200});
         }
 
         if (settings.visuals.player.flags & 1 << 7 && player->get_health() == 1) {

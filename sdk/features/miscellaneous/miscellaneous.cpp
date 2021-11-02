@@ -327,6 +327,9 @@ namespace features::miscellaneous {
 
                 static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
 
+                if (!clear_notices)
+                    return;
+
                 clear_notices((uintptr_t) death_notice - 0x14);
             }
         }

@@ -15,13 +15,12 @@ void __fastcall hooks::get_color_modulation(uintptr_t ecx, uintptr_t edx, float 
     if (!material || material->is_error_material())
         return;
 
-    auto group = material->get_group_name();
+	auto group = CRC(material->get_group_name());
 
-    // exclude stuff we dont want modulated
-    if (strcmp(group, xs("World textures")) && strcmp(group, xs("StaticProp textures")) && strcmp(group, xs("SkyBox textures")))
-        return;
+    if (group != CRC_CT("World textures") && group != CRC_CT("StaticProp textures") && (group != CRC_CT("SkyBox textures")))
+        return; 
 
-    bool is_prop = strcmp(group, xs("StaticProp textures")) == 0;
+	bool is_prop = (group == CRC_CT("StaticProp textures"));
 
     r *= 1.0f - (is_prop ? 0.6f : 0.93f) * (settings.visuals.world.nightmode_darkness / 100.0f);
     g *= 1.0f - (is_prop ? 0.6f : 0.93f) * (settings.visuals.world.nightmode_darkness / 100.0f);
