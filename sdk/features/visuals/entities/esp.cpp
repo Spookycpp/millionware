@@ -770,6 +770,9 @@ namespace features::visuals::esp {
     bounding_box_t get_bounding_box(c_entity *entity) {
         auto player = reinterpret_cast<c_player *>(entity);
 
+        if (!player)
+            return {};
+
         point_t min_corner{FLT_MAX, FLT_MAX};
         point_t max_corner{FLT_MIN, FLT_MIN};
 
@@ -778,6 +781,10 @@ namespace features::visuals::esp {
                player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
 
         studio_hdr_t *hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
+
+        if (!hdr)
+            return {};
+
         for (int i = 0; i < hdr->bones_count; ++i) {
             studio_bone_t *bone = hdr->get_bone(i);
 
@@ -832,6 +839,10 @@ namespace features::visuals::esp {
 
     bool get_bounding_box(c_entity *entity, bounding_box_t &out_box) {
         c_collideable *collideable = entity->get_collideable();
+
+        if (!collideable)
+            return false;
+
         const vector_t mins = collideable->get_mins();
         const vector_t maxs = collideable->get_maxs();
 

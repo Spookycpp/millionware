@@ -133,6 +133,9 @@ namespace features::legitbot::lag_comp {
                 if (ent->get_renderable()->setup_bones(record.matrices.data(), record.matrices.size(), 0x100, 0.0f)) {
                     const auto collidable = ent->get_collideable();
 
+                    if (!collidable)
+                        return;
+
                     record.position = pos;
                     record.aimbot_position = aimbot_pos;
                     record.tick_count = TIME_TO_TICKS(ent->get_simulation_time());

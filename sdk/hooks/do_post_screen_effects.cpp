@@ -38,6 +38,9 @@ int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, 
         if (!entity || entity->get_team_num() == cheat::local_player->get_team_num())
             continue;
 
+        if (entity->get_networkable()->get_client_class()->class_id != CCSPlayer)
+            continue;
+
         auto index = entity->get_glow_index();
 
         // clang-format off
