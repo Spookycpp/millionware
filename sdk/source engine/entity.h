@@ -401,6 +401,11 @@ public:
     CUtlVector<c_animation_layer> &animation_overlay();
     CUtlVector<matrix3x4_t> &get_cached_bone_data();
 
+    std::array<int, 5> &player_patch_econ_indices() {
+        static uint32_t _offset = netvars::get(CRC_CT("DT_CSPlayer:m_vecPlayerPatchEconIndices"));
+        return *(std::array<int, 5> *) ((uintptr_t) this + _offset);
+    }
+
     void set_abs_angles(const vector_t &angle);
     void set_absolute_origin(const vector_t &new_origin);
 
