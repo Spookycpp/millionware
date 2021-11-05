@@ -50,7 +50,7 @@ namespace features::legitbot {
 
         const auto weapon = (c_weapon *) cheat::local_player->get_active_weapon_handle().get();
 
-        if (!weapon || !cheat::local_player->can_shoot(weapon) || !update_settings(weapon))
+        if (!weapon || !update_settings(weapon))
             return;
 
         static float old_time = interfaces::global_vars->current_time;
@@ -431,6 +431,9 @@ namespace features::legitbot {
             return false;
 
         if (cheat::local_player->get_shots_fired() < settings_lbot->start_bullets)
+            return false;
+
+        if (!cheat::local_player->can_shoot())
             return false;
 
         return true;
