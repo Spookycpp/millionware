@@ -37,7 +37,7 @@ void features::movement::pre_prediction(c_user_cmd *user_cmd) {
 void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags) {
 
     if (settings.miscellaneous.movement.jump_bug && input::is_key_down(settings.miscellaneous.movement.jump_bug_hotkey)) {
-        cheat::b_predicting = true;
+        cheat::impact_sound = true;
 
         if (!(pre_flags & ENTITY_FLAG_ONGROUND) && post_flags & ENTITY_FLAG_ONGROUND) {
             user_cmd->buttons |= BUTTON_IN_DUCK;
@@ -46,8 +46,6 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
         if (post_flags & ENTITY_FLAG_ONGROUND) {
             user_cmd->buttons &= ~BUTTON_IN_JUMP;
         }
-
-        cheat::b_predicting = false;
     }
 
     if (settings.miscellaneous.movement.edge_bug && input::is_key_down(settings.miscellaneous.movement.edge_bug_hotkey)) {
@@ -116,7 +114,7 @@ void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, in
 }
 
 void features::movement::predict_edgebug(c_user_cmd *user_cmd) {
-    cheat::b_predicting = true;
+    cheat::predicting = true;
 
     if ((int) roundf(cheat::local_player->get_velocity().z) == 0.0 || (cheat::unpredicted_flags & ENTITY_FLAG_ONGROUND) != 0) {
         predicted_successful = 0;
@@ -150,7 +148,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
 
     if (!predicted_successful) {
 
-        cheat::b_predicting = true;
+        cheat::predicting = true;
 
         should_duck = 0;
 
@@ -218,7 +216,7 @@ void features::movement::edgebug_assist(c_user_cmd *user_cmd) {
         }
     }
 
-    cheat::b_predicting = false;
+    cheat::predicting = false;
 }
 
 void features::movement::edgebug_detection(c_user_cmd *user_cmd) {

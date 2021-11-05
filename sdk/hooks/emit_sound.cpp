@@ -27,7 +27,20 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
             volume = 0.0f;
     }
 
-    if (cheat::b_predicting)
+    if (entity_index == interfaces::engine_client->get_local_player()) {
+        if (std::strstr(sample_name, xs("land")) && cheat::impact_sound) {
+            cheat::impact_sound = false;
+            cheat::landed = true;
+            return;
+        }
+
+        if (std::strstr(sample_name, xs("suit")) && cheat::landed) {
+            cheat::landed = false;
+            return;
+        }
+    }
+
+    if (cheat::predicting)
         volume = 0.f;
 
     emit_sound_original(ecx, edx, filter, entity_index, channel, sound_entry, sound_entry_hash, sample_name, volume, attenuation, seed,

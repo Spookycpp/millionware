@@ -13,6 +13,4 @@ void __fastcall hooks::level_init_post_entity(c_base_client_dll *ecx, uintptr_t 
     logging::debug(xs("Detected level initialization"));
 
     cheat::local_player = (c_player *) interfaces::entity_list->get_entity(interfaces::engine_client->get_local_player());
-
-    util::on_map_load();
 }
