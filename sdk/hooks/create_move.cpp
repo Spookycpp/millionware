@@ -91,5 +91,5 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     math::normalize_angles(user_cmd->view_angles);
     math::clamp_angles(user_cmd->view_angles);
 
-    return true;
+    return false;
 }
