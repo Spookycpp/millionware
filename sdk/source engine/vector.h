@@ -37,7 +37,16 @@ struct vector_t {
     }
 
     inline float length_2d() const {
-        return std::sqrtf(x * x + y * y);
+        float root = 0.0f;
+        float sqst = x * x + y * y;
+
+        __asm
+        {
+			sqrtss xmm0, sqst
+			movss root, xmm0
+        }
+
+        return root;
     }
 
     inline float length_2d_square() const {

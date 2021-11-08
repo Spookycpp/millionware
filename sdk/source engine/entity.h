@@ -161,10 +161,8 @@ enum observer_mode_t {
     OBS_MODE_FIXED,     // view from a fixed camera position
     OBS_MODE_IN_EYE,    // follow a player in first person view
     OBS_MODE_CHASE,     // follow a player in third person view
-    OBS_MODE_POI, // PASSTIME point of interest - game objective, big fight, anything interesting; added in the middle of the enum due to
-                  // tons of hard-coded "<ROAMING" enum compares
-    OBS_MODE_ROAMING, // free roaming
-
+    OBS_MODE_POI,       // PASSTIME point of interest - game objective, big fight, anything interesting; added in the middle of the enum due to tons of hard-coded "<ROAMING" enum compares
+    OBS_MODE_ROAMING,   // free roaming
     NUM_OBSERVER_MODES,
 };
 
@@ -201,8 +199,8 @@ enum e_player_hitboxes : int {
 enum e_bone_mask_t {
     BONE_USED_MASK = 0x0007FF00,
     BONE_USED_BY_ANYTHING = 0x0007FF00,
-    BONE_USED_BY_HITBOX = 0x00000100,     // bone (or child) is used by a hit box
-    BONE_USED_BY_ATTACHMENT = 0x00000200, // bone (or child) is used by an attachment point
+    BONE_USED_BY_HITBOX = 0x00000100,      // bone (or child) is used by a hit box
+    BONE_USED_BY_ATTACHMENT = 0x00000200,  // bone (or child) is used by an attachment point
     BONE_USED_BY_VERTEX_MASK = 0x0003FC00,
     BONE_USED_BY_VERTEX_LOD0 = 0x00000400, // bone (or child) is used by the toplevel model via skinned vertex
     BONE_USED_BY_VERTEX_LOD1 = 0x00000800,
@@ -212,7 +210,7 @@ enum e_bone_mask_t {
     BONE_USED_BY_VERTEX_LOD5 = 0x00008000,
     BONE_USED_BY_VERTEX_LOD6 = 0x00010000,
     BONE_USED_BY_VERTEX_LOD7 = 0x00020000,
-    BONE_USED_BY_BONE_MERGE = 0x00040000 // bone is available for bone merge to occur against it
+    BONE_USED_BY_BONE_MERGE = 0x00040000   // bone is available for bone merge to occur against it
 };
 
 // How many bits to use to encode an edict.
@@ -293,9 +291,8 @@ public:
     DECLARE_VFUNC(2, get_render_angles(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(3, should_draw(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(8, get_model(), c_model *(__thiscall *) (void *) )();
-    DECLARE_VFUNC(13, setup_bones(matrix3x4_t *bone_to_world_out, int max_bones, int bone_mask, float current_time),
-                  bool(__thiscall *)(void *, matrix3x4_t *, int, int, float))
-    (bone_to_world_out, max_bones, bone_mask, current_time);
+    DECLARE_VFUNC(13, setup_bones(matrix3x4_t *bone_to_world_out, int max_bones, int bone_mask, float current_time), bool(__thiscall *)
+    (void *, matrix3x4_t *, int, int, float)) (bone_to_world_out, max_bones, bone_mask, current_time);
 };
 
 class c_entity {

@@ -54,20 +54,12 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
         if (settings.miscellaneous.movement.edge_bug_assist_hotkey)
             features::engine_prediction::create_edgebug_entry(user_cmd);
 
-        features::engine_prediction::repredict();
-
         features::movement::pre_prediction(user_cmd);
         const auto pre_flags = cheat::local_player->get_flags();
 
         features::engine_prediction::start_prediction();
-        features::engine_prediction::end_prediction();
-
-        const auto post_flags = cheat::local_player->get_flags();
-        features::movement::strafe_optimizer(user_cmd, pre_flags, post_flags);
-        features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
         c_weapon *local_weapon = (c_weapon *) cheat::local_player->get_active_weapon_handle().get();
-
         if (local_weapon) {
             if (features::legitbot::update_settings(local_weapon)) {
                 features::legitbot::lag_comp::on_create_move(user_cmd);
@@ -78,6 +70,12 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
             features::nade_prediction::on_create_move(user_cmd, local_weapon);
             features::miscellaneous::on_create_move(user_cmd, local_weapon);
         }
+
+        features::engine_prediction::end_prediction();
+
+        const auto post_flags = cheat::local_player->get_flags();
+        features::movement::strafe_optimizer(user_cmd, pre_flags, post_flags);
+        features::movement::post_prediction(user_cmd, pre_flags, post_flags);
 
         util::movement_fix(user_cmd);
         features::movement::slide_walk(user_cmd);

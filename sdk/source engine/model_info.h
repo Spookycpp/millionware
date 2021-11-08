@@ -29,6 +29,8 @@ struct c_model_render_info {
     unsigned short instance;
 };
 
+struct c_draw_model_state;
+
 class c_model_info {
 public:
     DECLARE_VFUNC(1, get_model(int index), c_model *(__thiscall *) (void *, int) )(index);

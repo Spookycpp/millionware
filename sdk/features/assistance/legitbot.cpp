@@ -182,8 +182,7 @@ namespace features::legitbot {
             }
 
             if (shots_fired > 2) {
-                vector_t view_angs;
-                interfaces::engine_client->get_view_angles(view_angs);
+                vector_t view_angs = interfaces::engine_client->get_view_angles();
 
                 if (!math::normalize_angles(view_angs)) {
                     old_aim_punch = aim_punch;
@@ -433,8 +432,9 @@ namespace features::legitbot {
         if (cheat::local_player->get_shots_fired() < settings_lbot->start_bullets)
             return false;
 
-        if (!cheat::local_player->can_shoot())
-            return false;
+        // can't really use this, find better solution.
+        // if (!cheat::local_player->can_shoot())
+        //    return false;
 
         return true;
     }

@@ -40,4 +40,10 @@ public:
     DECLARE_VFUNC(78, get_net_channel_info(), c_net_channel_info *(__thiscall *) (void *) )();
     DECLARE_VFUNC(108, execute_command(const char *command), void(__thiscall *)(void *, const char *))(command);
     DECLARE_VFUNC(104, get_engine_build_number(), int(__thiscall *)(void *))();
+
+    vector_t get_view_angles() { // yea dont ask.
+        vector_t ret;
+        this->get_view_angles(ret);
+        return ret;
+    }
 };
