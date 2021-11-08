@@ -69,7 +69,8 @@ namespace features::visuals::esp {
             draw_player(i, entity);
 
             if (settings.visuals.player.engine_radar && entity->is_player()) {
-                entity->get_is_spotted() = true;
+                if (!entity->get_is_spotted())
+                    entity->get_is_spotted() = true;
             }
         }
     }
