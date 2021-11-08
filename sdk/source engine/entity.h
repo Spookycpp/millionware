@@ -411,6 +411,7 @@ public:
     vector_t get_hitbox_pos(int idx);
 
     float get_flash_time();
+    float &spawn_time();
 
     int max_health();
     int sequence_activity(int sequence);

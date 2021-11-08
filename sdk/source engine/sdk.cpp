@@ -118,6 +118,11 @@ float c_player::get_flash_time() {
     return *reinterpret_cast<float *>(uintptr_t(this) + patterns::get_flash_time());
 }
 
+float &c_player::spawn_time() {
+    static auto m_iAddonBits = netvars::get(CRC_CT("DT_CSPlayer:m_iAddonBits"));
+    return *(float *) (uintptr_t(this) + m_iAddonBits - 4);
+}
+
 int c_player::max_health() {
 
     // dangerzone check

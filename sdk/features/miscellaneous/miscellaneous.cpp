@@ -299,15 +299,10 @@ namespace features::miscellaneous {
         // clang-format on
     }
 
-    static uintptr_t *death_notice = nullptr;
-
     void preserve_killfeed() {
 
-        if (!settings.miscellaneous.preserve_killfeed)
-            return;
-
-        const auto game_rules = c_game_rules::get();
-        !game_rules || game_rules->get_freeze_period();
+        static auto clear_death_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
+        static auto death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
 
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
             death_notice = nullptr;
@@ -323,14 +318,10 @@ namespace features::miscellaneous {
             if (local_death_notice)
                 *local_death_notice = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
 
-            if (game_rules->get_freeze_period()) {
-
-                static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
-
-                if (!clear_notices)
-                    return;
-
-                clear_notices((uintptr_t) death_notice - 0x14);
+            static float last_spawn = cheat::local_player->spawn_time();
+            if (last_spawn != cheat::local_player->spawn_time()) {
+                clear_death_notices((uintptr_t) death_notice - 0x14);
+                last_spawn = cheat::local_player->spawn_time();
             }
         }
     }
