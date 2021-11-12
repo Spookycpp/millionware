@@ -27,7 +27,7 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 
     debug_overlay::draw();
 
-    lua::callbacks::draw();
+    //lua::callbacks::draw();
 
     features::visuals::esp::frame();
 
@@ -39,7 +39,7 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 
     ui::frame();
 
-    lua::callbacks::draw_front();
+    //lua::callbacks::draw_front();
 
     render::finish();
 
