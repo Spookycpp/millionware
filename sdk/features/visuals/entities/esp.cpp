@@ -80,16 +80,16 @@ namespace features::visuals::esp {
         for (size_t i = 0; i < footsteps.size(); ++i) {
             auto &[position, time, alpha] = footsteps.at(i);
 
+            if (!cheat::local_player || cheat::local_player->get_observer_mode() == OBS_MODE_DEATHCAM)
+                continue;
+
             const float delta = interfaces::global_vars->current_time - time;
 
             if (std::abs(delta) > 3.0f) {
                 footsteps.erase(footsteps.begin() + i);
             }
 
-            if (cheat::local_player->get_observer_mode() == OBS_MODE_DEATHCAM)
-                continue;
-
-            const float dist_to_local = cheat::local_player->get_vec_origin().dist_2d(position);
+            const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(position);
             if (dist_to_local >= 1000.0f) { // footstep not audible, erase
                 footsteps.erase(footsteps.begin() + i);
                 continue;
