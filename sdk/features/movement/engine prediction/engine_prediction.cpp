@@ -72,6 +72,10 @@ namespace features::engine_prediction {
     }
 
     void create_edgebug_entry(c_user_cmd *user_cmd) {
+
+        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
+            return;
+
         features::movement::fall_velocity = cheat::local_player->get_fall_velocity();
         features::movement::flags = cheat::local_player->get_flags();
         features::movement::origin = cheat::local_player->get_vec_origin();
