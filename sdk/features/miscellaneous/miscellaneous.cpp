@@ -88,8 +88,7 @@ namespace features::miscellaneous {
 
             if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && !obs_target->get_is_scoped())
                 view_setup->fov = (float) settings.visuals.local.override_fov;
-        } 
-        else if (!cheat::local_player->get_is_scoped()) {
+        } else if (!cheat::local_player->get_is_scoped()) {
             view_setup->fov = (float) settings.visuals.local.override_fov;
         }
     }
@@ -301,27 +300,38 @@ namespace features::miscellaneous {
 
     void preserve_killfeed() {
 
-        static auto clear_death_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
-        static auto death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
+        static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
+        static auto death_notice_hud = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
 
-        if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
-            death_notice = nullptr;
+        if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE || !interfaces::engine_client->is_in_game()) {
+            death_notice_hud = nullptr;
             return;
         }
 
-        if (!death_notice)
-            death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
+        if (!c_game_rules::get())
+            return;
 
-        if (death_notice) {
-            auto local_death_notice = (float *) ((uintptr_t) death_notice + 0x50);
+        if (!death_notice_hud)
+            death_notice_hud = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
 
-            if (local_death_notice)
-                *local_death_notice = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
+        if (death_notice_hud) {
+            if (settings.miscellaneous.preserve_killfeed) {
+                if (!c_game_rules::get()->get_freeze_period() && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
+                    auto local_death_notice = (float *) ((uintptr_t) death_notice_hud + 0x50);
 
-            static float last_spawn = cheat::local_player->spawn_time();
-            if (last_spawn != cheat::local_player->spawn_time()) {
-                clear_death_notices((uintptr_t) death_notice - 0x14);
-                last_spawn = cheat::local_player->spawn_time();
+                    if (local_death_notice)
+                        *local_death_notice = 300.f;
+                }
+            }
+
+            static float LastSpawnTime = 0.0f;
+            float flSpawnTime = cheat::local_player->spawn_time();
+            auto local_death_notice = (float *) ((uintptr_t) death_notice_hud + 0x50);
+
+            if (*(float *) (local_death_notice) > 1.5f && (!settings.miscellaneous.preserve_killfeed || LastSpawnTime != flSpawnTime)) {
+                *(float *) (local_death_notice) = 1.5f;
+                clear_notices((uintptr_t) death_notice_hud - 0x14);
+                LastSpawnTime = flSpawnTime;
             }
         }
     }
