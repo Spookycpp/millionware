@@ -66,9 +66,9 @@ bool cheat::init() {
         return false;
 
     logging::info(xs("successfully initialized"));
-    logging::info(xs("executing lua scripts..."));
+    //logging::info(xs("executing lua scripts..."));
 
-    lua::init();
+    //lua::init();
 
     if (!std::filesystem::exists(xs(".\\mw\\configs\\default.json")))
         settings.save();
@@ -79,7 +79,7 @@ bool cheat::init() {
 }
 
 bool cheat::undo() {
-    lua::unload();
+    //lua::unload();
 
     Discord_ClearPresence();
     Discord_Shutdown();
