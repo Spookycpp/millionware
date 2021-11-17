@@ -88,8 +88,8 @@ namespace features::miscellaneous {
 
             if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && !obs_target->get_is_scoped())
                 view_setup->fov = (float) settings.visuals.local.override_fov;
-        } else if (!cheat::local_player->get_is_scoped()) {
-            view_setup->fov = (float) settings.visuals.local.override_fov;
+            else if (!cheat::local_player->get_is_scoped())
+                view_setup->fov = (float) settings.visuals.local.override_fov;
         }
     }
 
