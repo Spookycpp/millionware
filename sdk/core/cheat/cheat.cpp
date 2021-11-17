@@ -31,6 +31,16 @@
 #include <windows.h>
 
 bool cheat::init() {
+
+    if (!std::filesystem::exists(xs(".\\mw")))
+        std::filesystem::create_directories(xs(".\\mw"));
+
+    if (!std::filesystem::exists(xs(".\\mw\\scripts")))
+        std::filesystem::create_directories(xs(".\\mw\\scripts"));
+
+    if (!std::filesystem::exists(xs(".\\mw\\configs")))
+        std::filesystem::create_directories(xs(".\\mw\\configs"));
+
     if (!patterns::init())
         return false;
 
