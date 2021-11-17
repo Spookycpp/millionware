@@ -36,6 +36,8 @@ namespace util {
     void movement_fix(c_user_cmd *user_cmd);
     void movement_fix(const vector_t &old_angles, c_user_cmd *user_cmd);
     void disable_model_occlusion();
+    void open_settings_folder();
+    void open_lua_folder();
 
     point_t screen_transform(const vector_t &world);
 

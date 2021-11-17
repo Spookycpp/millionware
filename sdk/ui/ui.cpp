@@ -4,6 +4,7 @@
 #include "../resources/font_awesome.h"
 
 #include "../core/settings/settings.h"
+#include "../core/util/util.h"
 
 #include "../engine/input/input.h"
 #include "../engine/render/render.h"
@@ -495,6 +496,7 @@ void ui::init() {
             }
 
             if (const auto group = scripts_tab->new_group(xs("Lua"))) {
+                group->new_button(xs("Open lua folder"), util::open_lua_folder);
                 group->new_button(xs("Reload active scripts"), lua::reload);
             }
         }
@@ -506,6 +508,7 @@ void ui::init() {
                 group->new_label(xs("Accent color"))->add_color_picker(ui::get_accent_color(), false);
                 group->new_text_input(xs("Config name"), settings.global.config_name);
 
+                group->new_button(xs("Open settings folder"), util::open_settings_folder);
                 group->new_button(xs("Save"), []() { settings.save(); });
                 group->new_button(xs("Load"), []() { settings.load(); });
 

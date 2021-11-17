@@ -233,6 +233,16 @@ namespace util {
         }
     }
 
+    void open_settings_folder() {
+        const std::string path = xs(".\\mw\\configs");
+        ShellExecuteA(NULL, NULL, path.data(), NULL, NULL, SW_SHOWNORMAL);
+    }
+
+    void open_lua_folder() {
+        const std::string path = xs(".\\mw\\scripts");
+        ShellExecuteA(NULL, NULL, path.data(), NULL, NULL, SW_SHOWNORMAL);
+    }
+
     point_t screen_transform(const vector_t &world) {
 
         const auto screen_transform = [&](const vector_t &in, point_t &out) -> bool {
