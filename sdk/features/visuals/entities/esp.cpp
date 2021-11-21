@@ -68,7 +68,7 @@ namespace features::visuals::esp {
             world::draw_world(entity);
             draw_player(i, entity);
 
-            if (settings.visuals.player.engine_radar && entity->is_player()) {
+            if (settings.visuals.player.engine_radar) {
                 if (!entity->get_is_spotted())
                     entity->get_is_spotted() = true;
             }
