@@ -181,19 +181,35 @@ IDirect3DTexture9 *render::rasterize_vector(char *data, const float scale) {
     const int w = (int) (image->width * scale);
     const int h = (int) (image->height * scale);
 
-    const auto bytes = new unsigned char[w * h * 4];
+    auto bytes = std::make_unique<uint8_t[]>(w * h * 4);
 
-    nsvgRasterize(rasterizer, image, 0, 0, scale, bytes, w, h, w * 4);
+    nsvgRasterize(rasterizer, image, 0, 0, scale, bytes.get(), w, h, w * 4);
 
-    int len;
-    unsigned char *buf = stbi_write_png_to_mem(bytes, w * 4, w, h, 4, &len);
-    if (!buf) {
-        delete[] bytes;
+    IDirect3DTexture9 *texture;
+
+    if (d3d9_device->CreateTexture(w, h, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texture, NULL) < 0)
         return nullptr;
+
+    D3DLOCKED_RECT tex_locked_rect;
+
+    if (texture->LockRect(0, &tex_locked_rect, NULL, 0) != D3D_OK)
+        return nullptr;
+
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            const unsigned char *source_pixel = bytes.get() + w * 4 * y + x * 4;
+            unsigned char *destination_pixel = static_cast<unsigned char *>(tex_locked_rect.pBits) + tex_locked_rect.Pitch * y + x * 4;
+
+            destination_pixel[0] = source_pixel[2];
+            destination_pixel[1] = source_pixel[1];
+            destination_pixel[2] = source_pixel[0];
+            destination_pixel[3] = source_pixel[3];
+        }
     }
 
-    delete[] bytes;
-    return create_from_png(buf, len);
+    texture->UnlockRect(0);
+
+    return texture;
 }
 
 void render::init(HWND window, IDirect3DDevice9 *device) {
