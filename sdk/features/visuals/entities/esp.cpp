@@ -117,7 +117,7 @@ namespace features::visuals::esp {
 
         const auto player = reinterpret_cast<c_player *>(entity);
 
-        if (!player || player == cheat::local_player || !player->is_valid())
+        if (!player || player == cheat::local_player)
             return;
 
         if (player->get_life_state() != LIFE_STATE_ALIVE || player->get_health() <= 0) {
