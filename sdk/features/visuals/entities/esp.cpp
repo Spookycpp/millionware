@@ -738,7 +738,7 @@ namespace features::visuals::esp {
         if (settings.visuals.local.recoil_crosshair != 2)
             return;
 
-        if (!cheat::local_player->get_shots_fired())
+        if (!cheat::local_player->get_shots_fired() || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
             return;
 
         const vector_t punch_angles = cheat::local_player->get_aim_punch_angle() * 2.0f * 0.45f;
