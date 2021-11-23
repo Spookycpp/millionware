@@ -344,7 +344,7 @@ namespace features::visuals::esp {
             flag_offset += flag_text_size.y;
         };
 
-        if (settings.visuals.player.flags & 1 << 0) {
+        if (settings.visuals.player.flags & 1 << 0 && player->get_armor() > 0) {
             draw_flag(player->get_has_helmet() ? xs("HK") : xs("K"), {255, 255, 255, 200});
         }
 
