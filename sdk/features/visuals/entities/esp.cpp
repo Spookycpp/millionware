@@ -124,12 +124,7 @@ namespace features::visuals::esp {
             return;
         }
 
-        const static auto mp_teammates_are_enemies = interfaces::convar_system->find_convar(xs("mp_teammates_are_enemies"));
-
-        auto is_ffa = mp_teammates_are_enemies->get_bool();
-        auto is_enemy = is_ffa || player->get_team_num() != cheat::local_player->get_team_num();
-
-        if (!is_enemy && !settings.visuals.player.draw_teammates)
+        if (!player->is_enemy() && !settings.visuals.player.draw_teammates)
             return;
 
         const bounding_box_t entity_box = get_bounding_box(entity);
