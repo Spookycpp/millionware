@@ -22,6 +22,7 @@ namespace cheat {
     inline bool landed;               // used for suit 
     inline bool predicting;           // used for preventing land sound spam
     inline bool created_rain = false; // used for weather sanity
+    inline bool reset_bomb = false;
     inline uintptr_t run_command;     // used for lua run command
     inline int tick_base_shift;       // used for tickbase manipulation
     inline float fov;                 // used for rendered recoil crosshair

@@ -459,12 +459,42 @@ namespace features::visuals::esp {
         if (!get_bounding_box(entity, entity_box))
             return;
 
-        if (client_class->class_id == CPlantedC4) {
-            const auto text_size = render::measure_text(xs("planted c4"), FONT_TAHOMA_11);
-            const auto text_pos = point_t{entity_box.x + entity_box.width * 0.5f - text_size.x * 0.5f,
-                                          entity_box.y + entity_box.height * 0.5f - text_size.y * 0.5f};
+        if (client_class->class_id == CPlantedC4 && planted_bomb->get_is_bomb_ticking()) {
+            // text
+            const auto bomb_text = xs("PLANTED C4");
 
-            render::draw_text(text_pos, settings.visuals.world.grenades_color, xs("planted c4"), FONT_TAHOMA_11);
+            const point_t text_size = render::measure_text(bomb_text, FONT_SMALL_TEXT);
+            const auto text_pos = point_t{entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f,
+                                          entity_box.y + entity_box.height / 2.0f - text_size.y / 2.0f + 8.0f};
+
+            // color
+            color_t icon_color = settings.visuals.world.dropped_bomb_color;
+            color_t text_color = {255, 255, 255};
+
+            // draw@
+            if (icon_color.a > 0) {
+
+                static IDirect3DTexture9 *texture = nullptr;
+                if (!texture) {
+                    texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/c4.svg"));
+                }
+
+                if (texture) {
+                    D3DSURFACE_DESC surface_desc;
+                    texture->GetLevelDesc(0, &surface_desc);
+
+                    const point_t size = {static_cast<float>(surface_desc.Width) * 0.25f, static_cast<float>(surface_desc.Height) * 0.25f};
+                    const point_t position = {entity_box.x + entity_box.width / 2.0f - size.x / 2.0f,
+                                              entity_box.y + entity_box.height / 2.0f - size.y / 2.0f - 4.0f};
+
+                    render::draw_image(position + 1.0f, size, {5, 5, 5, icon_color.a}, texture);
+                    render::draw_image(position, size, icon_color, texture);
+                }
+            }
+
+            if (text_color.a > 0) {
+                render::draw_text_outlined(text_pos, text_color, {5, 5, 5, text_color.a}, bomb_text, FONT_SMALL_TEXT);
+            }
         }
     }
 
@@ -531,14 +561,38 @@ namespace features::visuals::esp {
                 render::draw_text_outlined(text_pos, text_color, {5, 5, 5, text_color.a}, localized_name_buf.data(), FONT_SMALL_TEXT);
             }
         } else if (settings.visuals.world.dropped_bomb && weapon->get_item_definition_index() == WEAPON_C4) {
+            // text
+            const auto bomb_text = xs("BOMB");
 
-            const char *bomb_string = xs("BOMB");
-
-            const auto text_size = render::measure_text(bomb_string, FONT_SMALL_TEXT);
+            const point_t text_size = render::measure_text(bomb_text, FONT_SMALL_TEXT);
             const auto text_pos = point_t{entity_box.x + entity_box.width / 2.0f - text_size.x / 2.0f,
-                                          entity_box.y + entity_box.height + radius / 2.0f - text_size.y / 2.0f};
+                                          entity_box.y + entity_box.height / 2.0f - text_size.y / 2.0f + 8.0f};
 
-            render::draw_text(text_pos, settings.visuals.world.dropped_bomb_color, bomb_string, FONT_SMALL_TEXT);
+            // color
+            color_t icon_color = settings.visuals.world.dropped_bomb_color;
+            color_t text_color = {255, 255, 255};
+
+            // draw@
+            if (icon_color.a > 0) {
+                // IDirect3DTexture9 *texture = util::load_texture_from_vpk(xs("materials/panorama/images/icons/equipment/c4.svg"));
+                IDirect3DTexture9 *texture = get_weapon_texture(weapon_info->weapon_name, 2.f);
+
+                if (texture) {
+                    D3DSURFACE_DESC surface_desc;
+                    texture->GetLevelDesc(0, &surface_desc);
+
+                    const point_t size = {static_cast<float>(surface_desc.Width) * 0.25f, static_cast<float>(surface_desc.Height) * 0.25f};
+                    const point_t position = {entity_box.x + entity_box.width / 2.0f - size.x / 2.0f,
+                                              entity_box.y + entity_box.height / 2.0f - size.y / 2.0f - 4.0f};
+
+                    render::draw_image(position + 1.0f, size, {5, 5, 5, icon_color.a}, texture);
+                    render::draw_image(position, size, icon_color, texture);
+                }
+            }
+
+            if (text_color.a > 0) {
+                render::draw_text_outlined(text_pos, text_color, {5, 5, 5, text_color.a}, bomb_text, FONT_SMALL_TEXT);
+            }
         }
     }
 

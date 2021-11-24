@@ -180,7 +180,7 @@ namespace features::visuals::world {
             return;
         }
 
-        if (!entity->get_is_bomb_ticking()) {
+        if (!entity->get_is_bomb_ticking() && cheat::reset_bomb == true) {
             return;
         }
 
@@ -278,7 +278,7 @@ namespace features::visuals::world {
             render::fill_rect({screen_size.x / 2.0f - bar_width / 2.0f - 1.0f, y_pos - 1.0f}, {bar_width + 2.0f, bar_height + 2.0f},
                               {34, 34, 34, 170});
             render::fill_rect({screen_size.x / 2.0f - bar_width / 2.0f, y_pos}, {time_left * bar_width / max_defuse_time, bar_height},
-                              {255, 255, 255});
+                              {119, 164, 237});
         }
 
         // text
