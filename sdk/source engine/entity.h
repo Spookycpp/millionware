@@ -360,12 +360,14 @@ public:
     DECLARE_NETVAR(bool, is_scoped, "DT_CSPlayer", "m_bIsScoped");
     DECLARE_NETVAR(bool, is_defusing, "DT_CSPlayer", "m_bIsDefusing");
     DECLARE_NETVAR(bool, has_heavy_armor, "DT_CSPlayer", "m_bHasHeavyArmor");
+
     DECLARE_NETVAR(float, flash_duration, "DT_CSPlayer", "m_flFlashDuration");
     DECLARE_NETVAR(float, flash_alpha, "DT_CSPlayer", "m_flFlashMaxAlpha");
     DECLARE_NETVAR(float, lower_body_yaw, "DT_CSPlayer", "m_flLowerBodyYawTarget");
     DECLARE_NETVAR(float, health_shot_boost_time, "DT_CSPlayer", "m_flHealthShotBoostExpirationTime");
     DECLARE_NETVAR(float, next_attack, "DT_BCCLocalPlayerExclusive", "m_flNextAttack");
     DECLARE_NETVAR(float, fall_velocity, "DT_Local", "m_flFallVelocity");
+
     DECLARE_NETVAR(int, shots_fired, "DT_CSLocalPlayerExclusive", "m_iShotsFired");
     DECLARE_NETVAR(int, armor, "DT_CSPlayer", "m_ArmorValue");
     DECLARE_NETVAR(int, health, "DT_BasePlayer", "m_iHealth");
@@ -377,11 +379,13 @@ public:
     DECLARE_NETVAR(int, money, "DT_CSPlayer", "m_iAccount");
     DECLARE_NETVAR(int, observer_mode, "DT_BasePlayer", "m_iObserverMode");
     DECLARE_NETVAR(int, survival_team, "DT_BasePlayer", "m_nSurvivalTeam");
+
     DECLARE_NETVAR(vector_t, eye_angles, "DT_CSPlayer", "m_angEyeAngles[0]");
     DECLARE_NETVAR(vector_t, punch_angle, "DT_Local", "m_viewPunchAngle");
     DECLARE_NETVAR(vector_t, aim_punch_angle, "DT_Local", "m_aimPunchAngle");
     DECLARE_NETVAR(vector_t, velocity, "DT_LocalPlayerExclusive", "m_vecVelocity[0]");
     DECLARE_NETVAR(vector_t, view_offset, "DT_LocalPlayerExclusive", "m_vecViewOffset[0]");
+
     DECLARE_NETVAR(entity_handle_t, observer_target, "DT_BasePlayer", "m_hObserverTarget");
     DECLARE_NETVAR(entity_handle_t, active_weapon_handle, "DT_BaseCombatCharacter", "m_hActiveWeapon");
     DECLARE_NETVAR(entity_handle_t, view_model_handle, "DT_BasePlayer", "m_hViewModel[0]");
@@ -442,7 +446,9 @@ public:
 class c_economy_item : public c_entity {
 public:
     DECLARE_NETVAR(short, item_definition_index, "DT_ScriptCreatedItem", "m_iItemDefinitionIndex");
+
     DECLARE_NETVAR(bool, is_initialized, "DT_ScriptCreatedItem", "m_bInitialized");
+
     DECLARE_NETVAR(int, entity_level, "DT_ScriptCreatedItem", "m_iEntityLevel");
     DECLARE_NETVAR(int, account_id, "DT_ScriptCreatedItem", "m_iAccountID");
     DECLARE_NETVAR(int, item_id_low, "DT_ScriptCreatedItem", "m_iItemIDLow");
@@ -458,17 +464,21 @@ class c_grenade : public c_entity {
 public:
     DECLARE_NETVAR(int, explode_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nExplodeEffectTickBegin");
     DECLARE_NETVAR(int, smoke_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nSmokeEffectTickBegin");
+
     DECLARE_NETVAR(vector_t, initial_velocity, "DT_BaseCSGrenadeProjectile", "m_vInitialVelocity");
+
     DECLARE_NETVAR_OFFSET(float, spawn_time, "DT_BaseCSGrenadeProjectile", "m_vecExplodeEffectOrigin", 12);
 };
 
 class c_weapon : public c_economy_item {
 public:
     DECLARE_NETVAR(bool, is_burst_mode, "DT_WeaponCSBase", "m_bBurstMode");
+
     DECLARE_NETVAR(float, next_primary_attack, "DT_LocalActiveWeaponData", "m_flNextPrimaryAttack");
     DECLARE_NETVAR(float, next_secondary_attack, "DT_LocalActiveWeaponData", "m_flNextSecondaryAttack");
     DECLARE_NETVAR(float, ready_time, "DT_WeaponCSBase", "m_flPostponeFireReadyTime");
     DECLARE_NETVAR(float, recoil_index, "DT_WeaponCSBase", "m_flRecoilIndex");
+
     DECLARE_NETVAR(int, ammo1, "DT_BaseCombatWeapon", "m_iClip1");
     DECLARE_NETVAR(int, ammo2, "DT_BaseCombatWeapon", "m_iClip2");
     DECLARE_NETVAR(int, reserve_ammo_count, "DT_BaseCombatWeapon", "m_iPrimaryReserveAmmoCount");
