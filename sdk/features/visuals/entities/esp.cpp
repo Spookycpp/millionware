@@ -77,23 +77,26 @@ namespace features::visuals::esp {
 
     void draw_footsteps() {
         std::unique_lock lock(footsteps_mutex);
-        for (size_t i = 0; i < footsteps.size(); ++i) {
-            auto &[position, time, alpha] = footsteps.at(i);
 
-            if (!cheat::local_player || cheat::local_player->get_observer_mode() == OBS_MODE_DEATHCAM)
-                continue;
+        footsteps.erase(std::remove_if(footsteps.begin(), footsteps.end(), [](const auto &data) {
+            auto &[position, time, alpha] = data;
 
             const float delta = interfaces::global_vars->current_time - time;
 
             if (std::abs(delta) > 3.0f) {
-                footsteps.erase(footsteps.begin() + i);
+                return true;
             }
 
             const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(position);
             if (dist_to_local >= 1000.0f) { // footstep not audible, erase
-                footsteps.erase(footsteps.begin() + i);
-                continue;
+                return true;
             }
+
+            return false;
+        }) ,footsteps.end());
+
+        for (size_t i = 0; i < footsteps.size(); ++i) {
+            auto &[position, time, alpha] = footsteps.at(i);
 
             point_t screen_pos;
             if (!math::world_to_screen(position, screen_pos)) {
@@ -105,6 +108,7 @@ namespace features::visuals::esp {
             alpha = std::clamp(alpha, 0.0f, 1.0f);
             col.a = static_cast<int>(alpha * 255.0f);
 
+            const float dist_to_local = cheat::local_player->get_abs_origin().dist_2d(position);
             auto text = std::format("STEP", dist_to_local);
             render::draw_text_outlined(screen_pos, col, {5, 5, 5, col.a}, text.c_str(), FONT_SMALL_TEXT);
         }
