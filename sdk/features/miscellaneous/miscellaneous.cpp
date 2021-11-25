@@ -22,7 +22,7 @@ namespace features::miscellaneous {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            // clang-format off
+        // clang-format off
             case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
                 post_processing();
 
@@ -88,8 +88,8 @@ namespace features::miscellaneous {
 
             if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && !obs_target->get_is_scoped())
                 view_setup->fov = (float) settings.visuals.local.override_fov;
-            else if (!cheat::local_player->get_is_scoped())
-                view_setup->fov = (float) settings.visuals.local.override_fov;
+        } else if (!cheat::local_player->get_is_scoped()) {
+            view_setup->fov = (float) settings.visuals.local.override_fov;
         }
     }
 
