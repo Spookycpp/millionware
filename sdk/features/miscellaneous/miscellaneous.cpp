@@ -224,7 +224,9 @@ namespace features::miscellaneous {
     }
 
     void skybox_changer(const int skybox) {
-        if (!interfaces::engine_client->is_in_game())
+
+        // kek
+        if (settings.visuals.world.skybox == 0 || !interfaces::engine_client->is_in_game()) 
             return;
 
         static auto sv_skyname = interfaces::convar_system->find_convar(xs("sv_skyname"));
