@@ -132,6 +132,12 @@ namespace features::visuals::esp {
             return;
 
         const bounding_box_t entity_box = get_bounding_box(entity);
+
+        if (!entity_box.valid()) {
+            //logging::debug("entity_box not valid");
+            return;
+        }
+
         entity_esp.at(idx).bottom_offset = 0.0f;
 
         const point_t screen_size = render::get_screen_size();

@@ -101,11 +101,11 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
         features::game_events::decoy::on_decoy_started(data);
     } else if (std::strncmp(game_event->get_name(), xs("round_start"), 12) == 0) {
         cheat::reset_bomb = false;
-        logging::debug(xs("round_start"));
+        //logging::debug(xs("round_start"));
     }
     else if (std::strncmp(game_event->get_name(), xs("round_end"), 10) == 0) {
         cheat::reset_bomb = true;
-        logging::debug(xs("round_end"));
+        //logging::debug(xs("round_end"));
     }
 
     lua::callbacks::run_events(game_event);
