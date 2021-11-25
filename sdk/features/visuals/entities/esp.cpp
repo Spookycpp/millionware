@@ -32,7 +32,7 @@ namespace features::visuals::esp {
     std::vector<entity_esp_t> entity_esp;
 
     void frame() {
-        if (!cheat::local_player || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected()) {
+        if (!cheat::local_player || !interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected() || cheat::local_player->get_observer_target().get() == cheat::local_player) {
             return;
         }
 
@@ -115,7 +115,7 @@ namespace features::visuals::esp {
     }
 
     void draw_player(const int idx, c_entity *entity) {
-        if (!entity->is_player()) {
+        if (!entity || !entity->is_player()) {
             return;
         }
 

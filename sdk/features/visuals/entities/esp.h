@@ -8,6 +8,10 @@ namespace features::visuals::esp {
         float y;
         float width;
         float height;
+
+        bool valid() const {
+            return x != -100.0f && y != 100.0f;
+        }
     };
 
     struct entity_esp_t {
