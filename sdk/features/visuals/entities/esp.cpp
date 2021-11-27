@@ -115,7 +115,7 @@ namespace features::visuals::esp {
     }
 
     void draw_player(const int idx, c_entity *entity) {
-        if (!entity || !entity->is_player()) {
+        if (!entity) {
             return;
         }
 
