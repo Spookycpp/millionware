@@ -27,7 +27,8 @@
 
 namespace features::visuals::world {
 
-    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {}
+    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
+    }
 
     void indicators() {
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
@@ -111,7 +112,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-            // clang-format off
+                // clang-format off
                 case OBS_MODE_IN_EYE:    return xs("firstperson");
                 case OBS_MODE_CHASE:     return xs("thirdperson");
                 default:                 return "";
@@ -132,9 +133,6 @@ namespace features::visuals::world {
             if (ent->get_life_state() == LIFE_STATE_ALIVE)
                 continue;
 
-            if (ent->get_team_num() != cheat::local_player->get_team_num())
-                continue;
-
             const auto obs_target = ent->get_observer_target().get();
             const auto obs_mode = ent->get_observer_mode();
 
@@ -143,7 +141,19 @@ namespace features::visuals::world {
             if (!interfaces::engine_client->get_player_info(i, info))
                 continue;
 
+            if (!strcmp(info.name, xs("GOTV")))
+                continue;
+
             if (obs_target) {
+
+                if (cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
+                    if (obs_target != cheat::local_player)
+                        continue;
+                } else {
+                    if (obs_target != cheat::local_player->get_observer_target().get())
+                        continue;
+                }
+
                 player_info_t target_info;
 
                 if (!interfaces::engine_client->get_player_info(obs_target->get_networkable()->index(), target_info))
@@ -154,7 +164,7 @@ namespace features::visuals::world {
                 if (obs_mode_str.empty())
                     continue;
 
-                const auto string = std::format(xs("{} -> {} ({})"), info.name, target_info.name, obs_mode_str);
+                const auto string = std::format(xs("{}"), info.name);
                 const auto screen_size = render::get_screen_size();
                 const auto text_size = render::measure_text(string.c_str(), FONT_TAHOMA_11);
 
