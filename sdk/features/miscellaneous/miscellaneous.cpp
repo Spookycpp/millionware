@@ -226,7 +226,7 @@ namespace features::miscellaneous {
     void skybox_changer(const int skybox) {
 
         // kek
-        if (settings.visuals.world.skybox == 0 || !interfaces::engine_client->is_in_game()) 
+        if (settings.visuals.world.skybox == 0 || !interfaces::engine_client->is_in_game())
             return;
 
         static auto sv_skyname = interfaces::convar_system->find_convar(xs("sv_skyname"));
@@ -302,40 +302,29 @@ namespace features::miscellaneous {
 
     void preserve_killfeed() {
 
+        if (!interfaces::engine_client->is_in_game())
+            return;
+
+        static auto *death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
         static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
-        static auto death_notice_hud = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
 
-        if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE || !interfaces::engine_client->is_in_game()) {
-            death_notice_hud = nullptr;
-            return;
+        // note - laine;
+        // only doing spawn_time check because in warmup
+        // obviously the round_start event won't occur
+        static float last_spawntime = cheat::local_player->spawn_time();
+
+        if (last_spawntime != cheat::local_player->spawn_time() || cheat::reset_killfeed == true) {
+            death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
+
+            if (death_notice)
+                clear_notices(((uintptr_t) death_notice - 0x14));
+
+            last_spawntime = cheat::local_player->spawn_time();
+            cheat::reset_killfeed = false;
         }
 
-        if (!c_game_rules::get())
-            return;
-
-        if (!death_notice_hud)
-            death_notice_hud = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
-
-        if (death_notice_hud) {
-            if (settings.miscellaneous.preserve_killfeed) {
-                if (!c_game_rules::get()->get_freeze_period() && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE) {
-                    auto local_death_notice = (float *) ((uintptr_t) death_notice_hud + 0x50);
-
-                    if (local_death_notice)
-                        *local_death_notice = 300.f;
-                }
-            }
-
-            static float LastSpawnTime = 0.0f;
-            float flSpawnTime = cheat::local_player->spawn_time();
-            auto local_death_notice = (float *) ((uintptr_t) death_notice_hud + 0x50);
-
-            if (*(float *) (local_death_notice) > 1.5f && (!settings.miscellaneous.preserve_killfeed || LastSpawnTime != flSpawnTime)) {
-                *(float *) (local_death_notice) = 1.5f;
-                clear_notices((uintptr_t) death_notice_hud - 0x14);
-                LastSpawnTime = flSpawnTime;
-            }
-        }
+        if (death_notice)
+            *(float *) ((uintptr_t) death_notice + 0x50) = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
     }
 
     void unlock_hidden_convars() {
