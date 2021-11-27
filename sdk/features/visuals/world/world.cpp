@@ -180,7 +180,7 @@ namespace features::visuals::world {
             return;
         }
 
-        if (!entity->get_is_bomb_ticking() && cheat::reset_bomb == true) {
+        if (!entity->get_is_bomb_ticking() && cheat::round_changed == true) {
             return;
         }
 
