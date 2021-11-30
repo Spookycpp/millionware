@@ -288,7 +288,7 @@ static config_item_t items[] = {
     config_item_t{settings.miscellaneous.movement.edge_bug_assist_hotkey, CONFIG_ITEM_INT, xs("miscellaneous"), xs("movement"), xs("edge_bug_assist_hotkey")},
     config_item_t{settings.miscellaneous.movement.edge_bug_radius, CONFIG_ITEM_INT, xs("miscellaneous"), xs("movement"), xs("edge_bug_radius")},
     config_item_t{settings.miscellaneous.movement.edgebug_rage_amount, CONFIG_ITEM_FLOAT, xs("miscellaneous"), xs("movement"), xs("edgebug_rage_amount")},
-    config_item_t{settings.miscellaneous.movement.auto_strafe, CONFIG_ITEM_INT, xs("miscellaneous"), xs("movement"), xs("auto_strafe")},
+    config_item_t{settings.miscellaneous.movement.auto_strafe, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("movement"), xs("auto_strafe")},
     config_item_t{settings.miscellaneous.movement.air_duck, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("movement"), xs("air_duck")},
     config_item_t{settings.miscellaneous.movement.no_duck_cooldown, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("movement"), xs("no_duck_cooldown")},
     config_item_t{settings.miscellaneous.movement.slide_walk, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("movement"), xs("slide_walk")},

@@ -32,6 +32,7 @@ void features::movement::pre_prediction(c_user_cmd *user_cmd) {
         if (!(cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND))
             user_cmd->buttons |= BUTTON_IN_DUCK;
     }
+
 }
 
 void features::movement::post_prediction(c_user_cmd *user_cmd, int pre_flags, int post_flags) {
@@ -409,6 +410,56 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
                     user_cmd->side_move = 450.f;
                 else if (angle.y > 0.0f)
                     user_cmd->side_move = -450.f;
+            }
+        }
+    }
+}
+
+void features::movement::rotate_movement(c_user_cmd *user_cmd, float rotation) {
+
+    float cos_rot = cos(rotation);
+    float sin_rot = sin(rotation);
+
+    float new_forwardmove = (cos_rot * user_cmd->forward_move) - (sin_rot * user_cmd->side_move);
+    float new_sidemove = (sin_rot * user_cmd->forward_move) + (cos_rot * user_cmd->side_move);
+
+    user_cmd->forward_move = new_forwardmove;
+    user_cmd->side_move = new_sidemove;
+}
+
+void features::movement::autostrafer(c_user_cmd *user_cmd) { // moneybonk
+    if (!settings.miscellaneous.movement.auto_strafe) 
+        return;
+
+    const int move_type = cheat::local_player->get_move_type();
+
+    if (move_type == MOVE_TYPE_LADDER || move_type == MOVE_TYPE_NOCLIP)
+        return;
+
+    const auto rotate_movement = [&](float rot, const float forward, const float side) {
+        rot *= static_cast<float>(math::pi_rad);
+
+        const float cos_rot = std::cos(rot);
+        const float sin_rot = std::sin(rot);
+
+        user_cmd->forward_move = cos_rot * forward - sin_rot * side;
+        user_cmd->side_move = sin_rot * forward + cos_rot * side;
+    };
+
+    const vector_t vel = cheat::local_player->get_velocity();
+    const float speed = vel.length_2d();
+
+    const auto on_ground = cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND;
+
+    if (user_cmd->buttons & BUTTON_IN_JUMP && (speed >= 0.0f || settings.miscellaneous.movement.air_duck) && !on_ground) {
+        if (user_cmd->forward_move == 0.0f && user_cmd->side_move == 0.0f) {
+            if (!user_cmd->mouse_dx) {
+                const float ideal_rot = std::min(math::rad_to_deg(std::asin(30.0f / std::max(speed, FLT_EPSILON))) * 0.5f, 45.0f);
+                const float sign = user_cmd->command_number % 2 ? 1.0f : -1.0f;
+
+                rotate_movement((ideal_rot - 90.0f) * sign, 450.0f, 0.0f);
+            } else {
+                user_cmd->side_move = user_cmd->mouse_dx < 0 ? -450.0f : 450.0f;
             }
         }
     }

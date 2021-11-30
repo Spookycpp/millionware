@@ -416,6 +416,8 @@ void ui::init() {
                 group->new_checkbox(xs("Bunnyhop"), settings.miscellaneous.movement.bunny_hop);
                 group->new_checkbox(xs("Instant crouch"), settings.miscellaneous.movement.no_duck_cooldown);
 
+                group->new_checkbox(xs("Autostrafe"), settings.miscellaneous.movement.auto_strafe);
+
                 group->new_checkbox(xs("Jumpbug"), settings.miscellaneous.movement.jump_bug)
                     ->add_key_bind(settings.miscellaneous.movement.jump_bug_hotkey);
 

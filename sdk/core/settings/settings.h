@@ -279,7 +279,7 @@ struct settings_t {
             int edge_bug_radius = 0;
             float edgebug_rage_amount = 0.f;
 
-            int auto_strafe = 0;
+            bool auto_strafe = false;
             bool air_duck = false;
             bool no_duck_cooldown = false;
             bool slide_walk = false;
