@@ -182,4 +182,23 @@ namespace features::game_events {
         report_player_fn(std::to_string(info.xuid).c_str(), xs("aimbot,wallhack,"));
     }
 
+    void on_player_given_c4(c_game_event *game_event) {
+
+        if (!settings.miscellaneous.bomb_holder_log)
+            return;
+
+        player_info_t info;
+
+        const int user_id = interfaces::engine_client->get_player_for_user_id(game_event->get_int(xs("userid")));
+        const auto user = (c_player *) interfaces::entity_list->get_entity(user_id);
+
+        if (user == cheat::local_player)
+            return;
+
+        if (!interfaces::engine_client->get_player_info(user->get_networkable()->index(), info))
+            return;
+
+        logging::info(xs("{} received the bomb"), info.name);
+    }
+
 } // namespace features::game_events

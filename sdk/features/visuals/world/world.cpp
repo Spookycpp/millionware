@@ -154,6 +154,9 @@ namespace features::visuals::world {
                         continue;
                 }
 
+                if (obs_target == cheat::local_player)
+                    continue;
+
                 player_info_t target_info;
 
                 if (!interfaces::engine_client->get_player_info(obs_target->get_networkable()->index(), target_info))

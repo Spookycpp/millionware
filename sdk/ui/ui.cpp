@@ -271,7 +271,8 @@ void ui::init() {
                 group->new_checkbox(xs("Player (behind walls)"), settings.visuals.player.chams.invisible)
                     ->add_color_picker(settings.visuals.player.chams.invisible_color);
 
-                group->new_checkbox(xs("Add glow"), settings.visuals.player.chams.glow)->add_color_picker(settings.visuals.player.chams.glow_color);
+                group->new_checkbox(xs("Add glow"), settings.visuals.player.chams.glow)
+                    ->add_color_picker(settings.visuals.player.chams.glow_color);
             }
 
             if (const auto group = players_tab->new_group(xs("Viewmodel"))) {
@@ -335,6 +336,8 @@ void ui::init() {
                 group->new_checkbox(xs("Bomb timer"), settings.visuals.world.planted_bomb);
                 group->new_checkbox(xs("Log bomb plants"), settings.miscellaneous.bomb_log);
                 group->new_checkbox(xs("Bomb plant sounds"), settings.miscellaneous.bomb_log_sounds)
+                    ->add_dependency(settings.miscellaneous.bomb_log);
+                group->new_checkbox(xs("Bomb holder"), settings.miscellaneous.bomb_holder_log)
                     ->add_dependency(settings.miscellaneous.bomb_log);
 
                 // group->new_select(XORSTR("Region selector"), settings.miscellaneous.server_regions, {
@@ -459,7 +462,11 @@ void ui::init() {
                 group->new_checkbox(xs("Discord rich presence"), settings.miscellaneous.discord_rpc);
                 group->new_checkbox(xs("Clan tag"), settings.miscellaneous.clantag);
                 group->new_checkbox(xs("Auto accept"), settings.miscellaneous.auto_accept);
+
                 group->new_checkbox(xs("Fake latency"), settings.miscellaneous.fake_ping.enabled);
+                group->new_slider(xs("Desired ping"), settings.miscellaneous.fake_ping.max_ping, 0.f, 200.f, xs("{:.0f}"))
+                    ->add_dependency(settings.miscellaneous.fake_ping.enabled);
+
                 group->new_checkbox(xs("Player privacy"), settings.miscellaneous.player_privacy);
                 group->new_checkbox(xs("Auto pistol"), settings.miscellaneous.auto_pistol);
                 group->new_checkbox(xs("Vote revealer"), settings.miscellaneous.vote_reveal);

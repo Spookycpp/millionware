@@ -34,6 +34,7 @@ c_event_listener::c_event_listener() {
     interfaces::game_events->add_listener(this, xs("decoy_started"), false);
     interfaces::game_events->add_listener(this, xs("round_start"), false);
     interfaces::game_events->add_listener(this, xs("round_end"), false);
+    interfaces::game_events->add_listener(this, xs("player_given_c4"), false);
 }
 
 c_event_listener::~c_event_listener() {
@@ -107,6 +108,9 @@ void c_event_listener::on_fired_game_event(c_game_event *game_event) {
     else if (std::strncmp(game_event->get_name(), xs("round_end"), 10) == 0) {
         cheat::round_changed = true;
         //logging::debug(xs("round_end"));
+    } 
+    else if (std::strncmp(game_event->get_name(), xs("player_given_c4"), 16) == 0) {
+        features::game_events::on_player_given_c4(game_event);
     }
 
     lua::callbacks::run_events(game_event);

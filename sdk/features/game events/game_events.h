@@ -8,4 +8,5 @@ namespace features::game_events {
     void on_begin_plant(c_game_event *game_event);
     void on_vote_cast(c_game_event *game_event);
     void on_player_death(c_game_event *game_event);
+    void on_player_given_c4(c_game_event *game_event);
 } // namespace features::game_events

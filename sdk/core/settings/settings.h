@@ -248,6 +248,7 @@ struct settings_t {
         bool buy_log = false;
         bool bomb_log = false;
         bool bomb_log_sounds = false;
+        bool bomb_holder_log = false;
         bool report_player_on_death = false;
         bool vote_reveal = false;
         bool discord_rpc = false;
@@ -312,6 +313,7 @@ struct settings_t {
 
         struct {
             bool enabled = false;
+            float max_ping = 100.f;
         } fake_ping;
 
         struct {
@@ -330,6 +332,7 @@ struct settings_t {
             int tick_shift = 12;
             int wait_ticks = 3;
         } rapid_lag;
+
     } miscellaneous;
 
     void save();

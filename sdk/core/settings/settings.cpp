@@ -260,6 +260,7 @@ static config_item_t items[] = {
     config_item_t{settings.miscellaneous.buy_log, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("buy_log")},
     config_item_t{settings.miscellaneous.bomb_log, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("bomb_log")},
     config_item_t{settings.miscellaneous.bomb_log_sounds, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("bomb_log_sounds")},
+    config_item_t{settings.miscellaneous.bomb_holder_log, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("bomb_holder_log")},
     config_item_t{settings.miscellaneous.report_player_on_death, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("report_player_on_death")},
     config_item_t{settings.miscellaneous.vote_reveal, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("vote_reveal")},
     config_item_t{settings.miscellaneous.discord_rpc, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("discord_rpc")},
@@ -315,6 +316,7 @@ static config_item_t items[] = {
     config_item_t{settings.miscellaneous.fake_lag.choke_indicator, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("fake_lag"), xs("choke_indicator")},
     // Miscellaneous fake ping
     config_item_t{settings.miscellaneous.fake_ping.enabled, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("fake_ping"), xs("enabled")},
+    config_item_t{settings.miscellaneous.fake_ping.max_ping, CONFIG_ITEM_FLOAT, xs("miscellaneous"), xs("fake_ping"), xs("max_ping")},
     // Miscellaneous legit AA
     config_item_t{settings.miscellaneous.legit_aa.enabled, CONFIG_ITEM_BOOL, xs("settings"), xs("miscellaneous"), xs("legit_aa"), xs("enabled")},
     config_item_t{settings.miscellaneous.legit_aa.balance, CONFIG_ITEM_BOOL, xs("settings"), xs("miscellaneous"), xs("legit_aa"), xs("balance")},
