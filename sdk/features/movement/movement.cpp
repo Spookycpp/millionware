@@ -415,18 +415,6 @@ void features::movement::blockbot(c_user_cmd *user_cmd) {
     }
 }
 
-void features::movement::rotate_movement(c_user_cmd *user_cmd, float rotation) {
-
-    float cos_rot = cos(rotation);
-    float sin_rot = sin(rotation);
-
-    float new_forwardmove = (cos_rot * user_cmd->forward_move) - (sin_rot * user_cmd->side_move);
-    float new_sidemove = (sin_rot * user_cmd->forward_move) + (cos_rot * user_cmd->side_move);
-
-    user_cmd->forward_move = new_forwardmove;
-    user_cmd->side_move = new_sidemove;
-}
-
 void features::movement::autostrafer(c_user_cmd *user_cmd) { // moneybonk
     if (!settings.miscellaneous.movement.auto_strafe) 
         return;

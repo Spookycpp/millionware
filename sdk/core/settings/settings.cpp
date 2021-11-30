@@ -439,11 +439,17 @@ void settings_t::load() {
 
         if (value.is_null())
             continue;
-        
+
         if (item.type == CONFIG_ITEM_BOOL) {
-            *(bool *) item.pointer = value.get<bool>();
-        } else if (item.type == CONFIG_ITEM_INT) {
-            *(int *) item.pointer = value.get<int>();
+            if (value.is_boolean())
+                *(bool *) item.pointer = value.get<bool>();
+            else if (value.is_number())
+                *(bool *) item.pointer = (bool) value.get<int>();
+        } else if (item.type == CONFIG_ITEM_INT) { // laine is a fat cunt
+            if (value.is_boolean())
+                *(int *) item.pointer = value.get<bool>() ? 1 : 0;
+            else if (value.is_number())
+                *(int *) item.pointer = value.get<int>();
         } else if (item.type == CONFIG_ITEM_FLOAT) {
             *(float *) item.pointer = value.get<float>();
         } else if (item.type == CONFIG_ITEM_COLOR) {
