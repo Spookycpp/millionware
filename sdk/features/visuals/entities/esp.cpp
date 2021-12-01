@@ -134,7 +134,7 @@ namespace features::visuals::esp {
         const bounding_box_t entity_box = get_bounding_box(entity);
 
         if (!entity_box.valid()) {
-            //logging::debug("entity_box not valid");
+            // logging::debug("entity_box not valid");
             return;
         }
 
@@ -836,14 +836,22 @@ namespace features::visuals::esp {
         point_t min_corner{FLT_MAX, FLT_MAX};
         point_t max_corner{FLT_MIN, FLT_MIN};
 
-        std::array<matrix3x4_t, 128> bone_matrix = {};
-        memcpy(bone_matrix.data(), player->get_cached_bone_data().get_elements(),
-               player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
+        matrix3x4_t bone_matrix[128];
+        memcpy(bone_matrix, player->get_cached_bone_data().get_elements(), player->get_cached_bone_data().count() * sizeof(matrix3x4_t));
 
-        studio_hdr_t *hdr = interfaces::model_info->get_studio_model(player->get_renderable()->get_model());
+        auto model = player->get_renderable()->get_model();
 
-        if (!hdr)
+        if (!model) {
+            logging::debug(xs("model = nullptr"));
             return {};
+        }
+
+        auto hdr = interfaces::model_info->get_studio_model(model);
+
+        if (!hdr) {
+            logging::debug(xs("hdr = nullptr"));
+            return {};
+        }
 
         for (int i = 0; i < hdr->bones_count; ++i) {
             studio_bone_t *bone = hdr->get_bone(i);
@@ -898,13 +906,8 @@ namespace features::visuals::esp {
     }
 
     bool get_bounding_box(c_entity *entity, bounding_box_t &out_box) {
-        c_collideable *collideable = entity->get_collideable();
-
-        if (!collideable)
-            return false;
-
-        const vector_t mins = collideable->get_mins();
-        const vector_t maxs = collideable->get_maxs();
+        const vector_t mins = entity->get_mins();
+        const vector_t maxs = entity->get_maxs();
 
         vector_t points[8] = {{mins.x, mins.y, mins.z}, {mins.x, maxs.y, mins.z}, {maxs.x, maxs.y, mins.z}, {maxs.x, mins.y, mins.z},
                               {maxs.x, maxs.y, maxs.z}, {mins.x, maxs.y, maxs.z}, {mins.x, mins.y, maxs.z}, {maxs.x, mins.y, maxs.z}};
