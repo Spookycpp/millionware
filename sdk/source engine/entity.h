@@ -297,7 +297,6 @@ public:
 
 class c_entity {
 public:
-    // networked variables
     DECLARE_OFFSET(get_renderable(), (c_renderable *) ((uintptr_t) this + 0x4));
     DECLARE_OFFSET(get_networkable(), (c_networkable *) ((uintptr_t) this + 0x8));
 

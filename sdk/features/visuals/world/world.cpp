@@ -112,7 +112,7 @@ namespace features::visuals::world {
 
         const auto obs_mode_to_string = [](int obs_mode) -> std::string {
             switch (obs_mode) {
-                // clang-format off
+            // clang-format off
                 case OBS_MODE_IN_EYE:    return xs("firstperson");
                 case OBS_MODE_CHASE:     return xs("thirdperson");
                 default:                 return "";
@@ -152,10 +152,10 @@ namespace features::visuals::world {
                 } else {
                     if (obs_target != cheat::local_player->get_observer_target().get())
                         continue;
-                }
 
-                if (obs_target == cheat::local_player)
-                    continue;
+                    if (obs_target == cheat::local_player)
+                        continue;
+                }
 
                 player_info_t target_info;
 

@@ -1,5 +1,4 @@
 #include "weather.h"
-
 #include "../../../core/cheat/cheat.h"
 #include "../../../core/interfaces/interfaces.h"
 #include "../../../core/settings/settings.h"
@@ -26,7 +25,7 @@ namespace features::visuals::weather {
     void reset_weather(const bool cleanup) {
         created_rain = false;
 
-        if (rain_entity && cleanup) {
+        if (rain_entity && !IsBadReadPtr(rain_entity, 4) && cleanup) {
 
             if (const auto networkable = rain_entity->get_networkable())
                 networkable->release();
