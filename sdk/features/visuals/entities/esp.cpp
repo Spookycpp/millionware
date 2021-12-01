@@ -519,6 +519,10 @@ namespace features::visuals::esp {
             return;
         }
 
+        if (weapon->get_networkable()->is_dormant()) {
+            return;
+        }
+
         weapon_info_t *weapon_info = interfaces::weapon_system->get_weapon_info(weapon->get_item_definition_index());
         if (!weapon_info) {
             return;
