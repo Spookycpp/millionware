@@ -36,4 +36,5 @@ namespace features::miscellaneous {
     void preserve_killfeed();
     void unlock_hidden_convars();
     void viewmodel_offset();
+    void remove_smoke();
 } // namespace features::miscellaneous

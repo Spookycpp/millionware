@@ -382,6 +382,7 @@ void ui::init() {
                 group->new_checkbox(xs("Disable post processing"), settings.visuals.local.disable_post_processing);
                 group->new_checkbox(xs("Disable panorama blur"), settings.visuals.local.disable_panorama_blur);
                 group->new_checkbox(xs("Remove fog"), settings.visuals.world.remove_fog);
+                group->new_select(xs("Smoke"), settings.visuals.world.smoke_type, {xs("None"), xs("Wireframe"), xs("Remove")});
             }
 
             if (const auto group = view_tab->new_group(xs("Model"))) {

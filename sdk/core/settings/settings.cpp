@@ -205,6 +205,7 @@ static config_item_t items[] = {
     config_item_t{settings.visuals.world.defusal_kit_color, CONFIG_ITEM_COLOR, xs("visuals"), xs("world"), xs("defusal_kit_color")},
     config_item_t{settings.visuals.world.chicken, CONFIG_ITEM_BOOL, xs("visuals"), xs("world"), xs("chicken")},
     config_item_t{settings.visuals.world.remove_fog, CONFIG_ITEM_BOOL, xs("visuals"), xs("world"), xs("remove_fog")},
+    config_item_t{settings.visuals.world.smoke_type, CONFIG_ITEM_INT, xs("visuals"), xs("local"), xs("smoke_type")},
     config_item_t{settings.visuals.world.weather, CONFIG_ITEM_BOOL, xs("visuals"), xs("world"), xs("weather")},
     // Visuals local
     config_item_t{settings.visuals.local.recoil_crosshair, CONFIG_ITEM_INT, xs("visuals"), xs("local"), xs("recoil_crosshair")},

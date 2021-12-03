@@ -171,6 +171,7 @@ struct settings_t {
             color_t defusal_kit_color = {255, 255, 255};
             bool chicken = false;
             bool remove_fog = false;
+            int  smoke_type = 0;
             bool weather = false;
         } world;
 

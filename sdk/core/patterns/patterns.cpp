@@ -305,6 +305,9 @@ bool patterns::init() {
         return false;
 
     if ((is_using_static_prop_debug_modes = get_pattern(xs("engine.dll"), xs("8B 0D ???? 81 F9 ???? 75 ? A1 ???? 35 ???? EB ? 8B 01 FF 50 ? 83 F8 ? 0F 85 ???? 8B 0D"))) == 0u)
+        return false;    
+    
+    if ((smoke_count = get_pattern(xs("client.dll"), xs("A3 ???? 57 8B CB"))) == 0u)
         return false;
 
     return true;

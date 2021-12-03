@@ -22,7 +22,7 @@ namespace features::miscellaneous {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-        // clang-format off
+            // clang-format off
             case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
                 post_processing();
 
@@ -32,6 +32,8 @@ namespace features::miscellaneous {
 
                 ragdoll_float();
                 ragdoll_push();
+
+                remove_smoke();
             }
             // clang-format on
         }
@@ -378,6 +380,45 @@ namespace features::miscellaneous {
         viewmodel_offset_x->set_value(settings.visuals.local.viewmodel_offset_x);
         viewmodel_offset_y->set_value(settings.visuals.local.viewmodel_offset_y);
         viewmodel_offset_z->set_value(settings.visuals.local.viewmodel_offset_z);
+    }
+
+    void remove_smoke() {
+        // used for removing the smoke overlay once you're inside of it.
+        static uint32_t *smoke_count = nullptr;
+        if (!smoke_count)
+            smoke_count = *reinterpret_cast<uint32_t **>(patterns::get_smoke_count() + 1);
+
+        // if smoke_count is nullptr or client is not ingame, exit out.
+        if (!smoke_count || !interfaces::engine_client->is_in_game())
+            return;
+
+        // obtain material we desire to remove.
+        const auto material = interfaces::material_system->find_material(xs("particle\\vistasmokev1\\vistasmokev1_smokegrenade"));
+
+        // obtain what value to set smoke to.
+        const int smoke_type = settings.visuals.world.smoke_type;
+
+        switch (smoke_type) {
+        case 0: { // no smoke change.
+            material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
+            material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
+            *(int *) smoke_count = 1;
+            break;
+        }
+        case 1: { // wireframe smoke.
+            material->set_flag(MATERIAL_FLAG_WIREFRAME, true);
+            material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
+            *(int *) smoke_count = 0;
+            break;
+        }
+        case 2: { // remove smoke.
+            material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
+            material->set_flag(MATERIAL_FLAG_NO_DRAW, true);
+            *(int *) smoke_count = 0;
+            break;
+        }
+        default:; break;
+        }
     }
 
 } // namespace features::miscellaneous

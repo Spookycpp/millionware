@@ -107,7 +107,7 @@ namespace util {
         }
 
         if (should_update && interfaces::global_vars->current_time > update_time && interfaces::client_state->delta_tick != -1) {
-            logging::info("Forcing game update");
+            logging::debug(xs("Forcing game update"));
             interfaces::client_state->delta_tick = -1;
 
             should_update = false;
