@@ -280,7 +280,7 @@ namespace features::miscellaneous {
 			case 20: skybox_name = xs("sky_dust");					break;
 			case 21: skybox_name = xs("vietnam");					break;
 			case 22: skybox_name = xs("custom");					break;
-			default: skybox_name = sv_skyname->string;			        break;
+			default: skybox_name = sv_skyname->string;			    break;
 		}
         // clang-format on
 
@@ -411,26 +411,33 @@ namespace features::miscellaneous {
         // obtain what value to set smoke to.
         const int smoke_type = settings.visuals.world.smoke_type;
 
-        switch (smoke_type) {
-        case 0: { // no smoke change.
-            material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
-            material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
-            *(int *) smoke_count = 1;
-            break;
-        }
-        case 1: { // wireframe smoke.
-            material->set_flag(MATERIAL_FLAG_WIREFRAME, true);
-            material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
-            *(int *) smoke_count = 0;
-            break;
-        }
-        case 2: { // remove smoke.
-            material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
-            material->set_flag(MATERIAL_FLAG_NO_DRAW, true);
-            *(int *) smoke_count = 0;
-            break;
-        }
-        default:; break;
+        // ensure the code is only ran once.
+        static int last_state = smoke_type;
+
+        if (last_state != smoke_type) {
+            switch (smoke_type) {
+            case 0: { // no smoke change.
+                material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
+                material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
+                *(int *) smoke_count = 1;
+                break;
+            }
+            case 1: { // wireframe smoke.
+                material->set_flag(MATERIAL_FLAG_WIREFRAME, true);
+                material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
+                *(int *) smoke_count = 0;
+                break;
+            }
+            case 2: { // remove smoke.
+                material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
+                material->set_flag(MATERIAL_FLAG_NO_DRAW, true);
+                *(int *) smoke_count = 0;
+                break;
+            }
+            default:; break;
+            }
+
+            last_state = smoke_type;
         }
     }
 
