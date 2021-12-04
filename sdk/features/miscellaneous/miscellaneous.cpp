@@ -108,21 +108,34 @@ namespace features::miscellaneous {
         if (!interfaces::engine_client->get_net_channel_info())
             return;
 
-        static bool should_clear = false;
-
         static auto cl_clanid = interfaces::convar_system->find_convar(xs("cl_clanid"));
         static int cl_clanid_value = cl_clanid->get_int();
 
         // doing it this way because doing set_value just didn't work so, fuck it.
         auto tag = std::format(xs("cl_clanid {}"), cl_clanid_value);
 
-        if (!settings.miscellaneous.clantag && should_clear) {
-            interfaces::engine_client->execute_command(tag.c_str());
-            should_clear = false;
-        } else if (settings.miscellaneous.clantag) {
-            set_clantag(xs("millionware"));
-            should_clear = true;
+        static bool reset_tag = false;
+        static int last_time = 0;
+
+        // account for server latency.
+        int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+
+        if (!settings.miscellaneous.clantag && reset_tag) {
+            if (interfaces::global_vars->tick_count % 99 == 2) {
+                interfaces::engine_client->execute_command(tag.c_str());
+                reset_tag = false;
+            }
+        } else if (server_time != last_time) {
+            static std::string clantag = xs("millionware ");
+
+            std::rotate(clantag.begin(), clantag.begin() + 1, clantag.end());
+
+            set_clantag(clantag);
+            last_time = server_time;
         }
+
+        if (!settings.miscellaneous.clantag)
+            reset_tag = true;
     }
 
     void post_processing() {
