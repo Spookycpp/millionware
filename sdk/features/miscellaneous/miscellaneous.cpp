@@ -338,7 +338,7 @@ namespace features::miscellaneous {
             cheat::reset_killfeed = false;
         }
 
-        if (death_notice)
+        if (death_notice && cheat::local_player->is_alive())
             *(float *) ((uintptr_t) death_notice + 0x50) = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
     }
 
