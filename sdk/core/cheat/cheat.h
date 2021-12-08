@@ -24,6 +24,7 @@ namespace cheat {
     inline bool created_rain = false;   // used for weather sanity
     inline bool round_changed = false;  // used for preventing bomb esp from bugging out
     inline bool reset_killfeed = false; // used for resetting killfeed
+    inline bool set_skybox = false;     // used for setting skybox on new map
     inline uintptr_t run_command;       // used for lua run command
     inline int tick_base_shift;         // used for tickbase manipulation
     inline float fov;                   // used for rendered recoil crosshair

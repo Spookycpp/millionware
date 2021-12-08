@@ -293,9 +293,19 @@ namespace features::miscellaneous {
         if (!load_named_sky_fn)
             return;
 
-        load_named_sky_fn(skybox_name.c_str());
+        const int skybox_type = settings.visuals.world.skybox;
 
-        r_3dsky->set_value(skybox != 0 ? 0 : 1);
+        static int last_state = skybox_type;
+
+        if (last_state != skybox_type || cheat::set_skybox == true) {
+
+            load_named_sky_fn(skybox_name.c_str());
+
+            r_3dsky->set_value(skybox != 0 ? 0 : 1);
+
+            last_state = settings.visuals.world.skybox;
+            cheat::set_skybox = false;
+        }
     }
 
     void foot_fx() {

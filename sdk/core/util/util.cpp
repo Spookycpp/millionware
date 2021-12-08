@@ -125,18 +125,6 @@ namespace util {
         random_seed_fn(seed);
     }
 
-    void on_map_load() {
-        features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
-    }
-
-    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
-
-        if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_START)
-            return;
-
-        features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
-    }
-
     void play_sound(const char *file_path, int volume) {
 
         if (volume == -1)
