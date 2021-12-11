@@ -268,7 +268,7 @@ bool patterns::init() {
     // if ((relay_cluster = get_pattern(xs("steamnetworkingsockets.dll"), XORSTR("B8 ???? B9 ???? 0F 43"))) == 0u)
     //    return false;
 
-    if ((inventory_unlocker = get_pattern(xs("client.dll"), xs("84 C0 75 04 B0 01 5F"))) == 0u)
+    if ((inventory_unlocker = get_pattern(xs("client.dll"), xs("84 C0 75 05 B0 01 5F"))) == 0u)
         return false;
 
     if ((key_values_system = get_pattern(xs("client.dll"), xs("55 8B EC 51 33 C0 C7 45"))) == 0u)
