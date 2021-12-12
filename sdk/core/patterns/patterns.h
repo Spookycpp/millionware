@@ -11,6 +11,8 @@
 class c_player;
 
 namespace patterns {
+    inline uintptr_t present;
+    inline uintptr_t reset;
     inline uintptr_t engine_vgui_start_drawing;
     inline uintptr_t engine_vgui_finish_drawing;
     inline uintptr_t input;
@@ -80,6 +82,8 @@ namespace patterns {
     inline uintptr_t is_using_static_prop_debug_modes;
     inline uintptr_t smoke_count;
 
+    PATTERN_GET(present, present);
+    PATTERN_GET(reset, reset);
     PATTERN_GET(engine_vgui_start_drawing, engine_vgui_start_drawing);
     PATTERN_GET(engine_vgui_finish_drawing, engine_vgui_finish_drawing);
     PATTERN_GET(input, *(uintptr_t *) (input + 1u));

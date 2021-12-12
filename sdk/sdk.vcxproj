@@ -278,6 +278,7 @@
     <ClCompile Include="hooks\play_step_sound.cpp" />
     <ClCompile Include="hooks\present.cpp" />
     <ClCompile Include="hooks\push_notice.cpp" />
+    <ClCompile Include="hooks\reset.cpp" />
     <ClCompile Include="hooks\screen_size_changed.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
     <ClCompile Include="hooks\write_user_cmd_delta_to_buffer.cpp" />

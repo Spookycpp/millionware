@@ -310,5 +310,11 @@ bool patterns::init() {
     if ((smoke_count = get_pattern(xs("client.dll"), xs("A3 ???? 57 8B CB"))) == 0u)
         return false;
 
+    if ((present = get_pattern(xs("gameoverlayrenderer.dll"), xs("FF 15 ???? 8B F0 85 FF"))) == 0u)
+        return false;    
+    
+    if ((reset = get_pattern(xs("gameoverlayrenderer.dll"), xs("C7 45 ????? FF 15 ???? 8B D8"))) == 0u)
+        return false;
+
     return true;
 }

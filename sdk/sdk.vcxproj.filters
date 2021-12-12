@@ -93,6 +93,7 @@
     <ClCompile Include="gui\label\label.cpp" />
     <ClCompile Include="hooks\get_color_modulation.cpp" />
     <ClCompile Include="hooks\is_using_static_prop_debug_modes.cpp" />
+    <ClCompile Include="hooks\reset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />

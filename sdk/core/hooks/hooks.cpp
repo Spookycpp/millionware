@@ -67,7 +67,17 @@ bool hooks::init() {
     push_notice_original = decltype(&push_notice)(create_hook(patterns::push_notice, (uintptr_t) &push_notice));
     play_step_sound_original = decltype(&play_step_sound)(create_hook(patterns::play_step_sound, (uintptr_t) &play_step_sound));
 
-    present_original = create_hook((uintptr_t) interfaces::d3d9_device, 17, &present);
+	std::uintptr_t present_addr = (patterns::get_present() + 2);
+    std::uintptr_t reset_addr = (patterns::get_reset() + 9);
+
+    present_original = **reinterpret_cast<decltype(&present_original) *>(present_addr);
+    reset_original = **reinterpret_cast<decltype(&reset_original) *>(reset_addr);
+
+    **reinterpret_cast<void ***>(present_addr) = reinterpret_cast<void *>(&present);
+    **reinterpret_cast<void ***>(reset_addr) = reinterpret_cast<void *>(&reset);
+
+    //present_original = decltype(&present)(create_hook(present_ptr_fn, (uintptr_t) &present));
+    //reset_original = decltype(&reset)(create_hook(reset_ptr_fn, (uintptr_t) &reset));
 
     cheat::run_command = get_vfunc<uintptr_t>(interfaces::prediction, 19);
 
@@ -103,6 +113,7 @@ bool hooks::init() {
     INIT_HOOK(push_notice_original, "PushNotice");
     INIT_HOOK(play_step_sound_original, "PlayStepSound");
 
+    INIT_HOOK(reset_original, "Reset");
     INIT_HOOK(present_original, "Present");
 
     MH_EnableHook(MH_ALL_HOOKS);

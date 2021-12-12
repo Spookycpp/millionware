@@ -47,6 +47,8 @@ namespace hooks {
     bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
     void __fastcall push_notice(uintptr_t, uintptr_t, const char *, int, const char *);
     void __fastcall play_step_sound(c_player *ecx, uintptr_t edx, vector_t &origin, void *surface, float vol, bool force, void *arg);
+
+    long __stdcall reset(IDirect3DDevice9 *device, D3DPRESENT_PARAMETERS *present_parameters);
     long __stdcall present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region);
 
     inline decltype(&calc_view) calc_view_original;
@@ -79,6 +81,7 @@ namespace hooks {
     inline decltype(&push_notice) push_notice_original;
     inline decltype(&play_step_sound) play_step_sound_original;
 
+    inline decltype(&reset) reset_original;
     inline decltype(&present) present_original;
 
 } // namespace hooks
