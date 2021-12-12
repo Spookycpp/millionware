@@ -291,6 +291,16 @@ bool c_player::has_bomb() {
     return has_bomb(this);
 }
 
+bool c_player::is_sane() {
+    if (!this)
+        return false;
+
+    if (!get_health())
+        return false;
+
+    return true;
+}
+
 bool c_player::is_valid(const bool check_alive) {
     if (!this || this->get_networkable()->is_dormant() || !this->is_player())
         return false;

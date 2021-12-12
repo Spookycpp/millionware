@@ -52,7 +52,6 @@ void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx,
     features::lag_compensation::on_frame_stage_notify(frame_stage);
     features::miscellaneous::on_frame_stage_notify(frame_stage);
     features::visuals::weather::on_frame_stage_notify(frame_stage);
-    features::visuals::world::on_frame_stage_notify(frame_stage);
     features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
 
     frame_stage_notify_original(ecx, edx, frame_stage);

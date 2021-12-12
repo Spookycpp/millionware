@@ -430,6 +430,7 @@ public:
     bool is_reloading();
     bool is_smoked();
     bool has_bomb();
+    bool is_sane();
 };
 
 class i_client_unknown {

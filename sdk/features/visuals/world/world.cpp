@@ -26,10 +26,6 @@
 #include "../../../ui/ui.h"
 
 namespace features::visuals::world {
-
-    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
-    }
-
     void indicators() {
         if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
             return;
@@ -37,26 +33,32 @@ namespace features::visuals::world {
         if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
             return;
 
-        const auto screen_center = render::get_screen_size() * 0.5f;
+        const point_t screen_size = render::get_screen_size();
 
-        auto draw_indicator = [screen_center, offset = 400.0f](const char *text, const color_t &color) mutable {
-            const auto measure = render::measure_text(text, FONT_VERDANA_24);
+        auto draw_indicator = [screen_size, offset = 8.f](const char *text, const color_t &color) mutable {
+            static c_convar *safezoney = interfaces::convar_system->find_convar(xs("safezoney"));
+            static c_convar *hud_scaling = interfaces::convar_system->find_convar(xs("hud_scaling"));
 
-            render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset) + 2, {0, 0, 0, 100}, text, FONT_VERDANA_24);
-            render::draw_text(screen_center - measure * 0.5f + point_t(0.0f, offset), color, text, FONT_VERDANA_24);
+            float y_pos = 900.f * hud_scaling->get_float() + (screen_size.y - screen_size.y * safezoney->get_float() + 1.f) / 2.f;
+            const point_t indicator_text_size = render::measure_text(text, FONT_VERDANA_24);
 
-            offset += measure.y + 8.0f;
+            render::draw_text_outlined({screen_size.x / 2.0f - indicator_text_size.x / 2.0f, y_pos - 15.0f + (0.f + offset)}, color,
+                                       {5, 5, 5, 220}, text, FONT_VERDANA_24);
+
+            offset += indicator_text_size.y + 8.f;
         };
 
         if (settings.visuals.local.indicators & (1 << 0)) {
+            static auto vel = 0;
+            static bool on_ground = false;
             static auto tick_prev = 0;
             static auto last_velocity = 0;
             static auto take_off = 0;
             static auto take_off_time = 0.0f;
             static auto last_on_ground = false;
 
-            const auto vel = (int) (cheat::local_player->get_velocity().length_2d() + 0.5f);
-            const auto on_ground = (cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND);
+            vel = (int) (cheat::local_player->get_velocity().length_2d() + 0.5f);
+            on_ground = (cheat::local_player->get_flags() & ENTITY_FLAG_ONGROUND);
 
             if (last_on_ground && !on_ground) {
                 take_off = vel;
@@ -77,6 +79,17 @@ namespace features::visuals::world {
                 sprintf_s(buffer, xs("%i (%i)"), (int) vel, (int) take_off);
             else
                 sprintf_s(buffer, xs("%i"), (int) vel);
+
+            // don't look at me like that.
+            if (!cheat::local_player->is_sane()) {
+                vel = 0;
+                on_ground = false;
+                tick_prev = 0;
+                last_velocity = 0;
+                take_off = 0;
+                take_off_time = 0.0f;
+                last_on_ground = false;
+            }
 
             draw_indicator(buffer, color);
 
