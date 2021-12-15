@@ -35,7 +35,7 @@ namespace features::visuals::world {
 
         const point_t screen_size = render::get_screen_size();
 
-        auto draw_indicator = [screen_size, offset = 8.f](const char *text, const color_t &color) mutable {
+        auto draw_indicator = [screen_size, offset = 140.f](const char *text, const color_t &color) mutable {
             static c_convar *safezoney = interfaces::convar_system->find_convar(xs("safezoney"));
             static c_convar *hud_scaling = interfaces::convar_system->find_convar(xs("hud_scaling"));
 

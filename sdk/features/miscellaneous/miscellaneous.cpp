@@ -239,8 +239,8 @@ namespace features::miscellaneous {
             xs("sto"), xs("lhr"), xs("atl"), xs("eat"), xs("ord"),  xs("lax"), xs("mwh"), xs("okc"), xs("sea"), xs("iad")
         };
 
-        static const char *relay_cluster = *(const char **) (patterns::get_relay_cluster() + 1);
-        relay_cluster = regions[settings.miscellaneous.server_regions];
+        static std::string *relay_cluster = *(std::string **) (patterns::get_relay_cluster() + 1);
+        *relay_cluster = regions[settings.miscellaneous.server_regions];
     }
 
     void skybox_changer(const int skybox) {
