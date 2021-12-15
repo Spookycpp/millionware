@@ -22,7 +22,7 @@ namespace features::miscellaneous {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            // clang-format off
+        // clang-format off
             case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
                 post_processing();
 
@@ -118,7 +118,8 @@ namespace features::miscellaneous {
         static int last_time = 0;
 
         // account for server latency.
-        int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+        int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) -
+                                           interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
 
         if (!settings.miscellaneous.clantag && reset_tag) {
             if (interfaces::global_vars->tick_count % 99 == 2) {
@@ -227,15 +228,19 @@ namespace features::miscellaneous {
         name->set_value(buffer);
     }
 
-    void server_selector() {
-        // const char *regions[] = {
-        //    (""),    ("syd"), ("vie"), ("gru"), ("scl"),  ("dxb"), ("par"), ("fra"), ("hkg"), ("maa"),
-        //    ("bom"), ("tyo"), ("lux"), ("ams"), ("limc"), ("man"), ("waw"), ("sgp"), ("jnb"), ("mad"),
-        //    ("sto"), ("lhr"), ("atl"), ("ord"), ("lax"),  ("mwh"), ("okc"), ("sea"), ("iad")};
+    void server_selector() { // https://www.unknowncheats.me/forum/counterstrike-global-offensive/381959-forcing-datacenter.html
 
-        // static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9
-        // ? ? ? ? 0F 43") + 1);
-        //*relay_cluster = "lax";
+        if (interfaces::engine_client->is_in_game())
+            return;
+
+        const char *regions[] = {
+            xs(""),    xs("syd"), xs("vie"), xs("gru"), xs("scl"),  xs("dxb"), xs("par"), xs("fra"), xs("hkg"), xs("maa"),
+            xs("bom"), xs("tyo"), xs("lux"), xs("ams"), xs("limc"), xs("man"), xs("waw"), xs("sgp"), xs("jnb"), xs("mad"),
+            xs("sto"), xs("lhr"), xs("atl"), xs("eat"), xs("ord"),  xs("lax"), xs("mwh"), xs("okc"), xs("sea"), xs("iad")
+        };
+
+        static const char *relay_cluster = *(const char **) (patterns::get_relay_cluster() + 1);
+        relay_cluster = regions[settings.miscellaneous.server_regions];
     }
 
     void skybox_changer(const int skybox) {

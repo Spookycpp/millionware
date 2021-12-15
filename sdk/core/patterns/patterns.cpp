@@ -265,8 +265,8 @@ bool patterns::init() {
     if ((game_rules_proxy = get_pattern(xs("client.dll"), xs("A1 ???? 8B 0D ???? 6A 00 68 ???? C6"))) == 0u)
         return false;
 
-    // if ((relay_cluster = get_pattern(xs("steamnetworkingsockets.dll"), XORSTR("B8 ???? B9 ???? 0F 43"))) == 0u)
-    //    return false;
+    if ((relay_cluster = get_pattern(xs("steamnetworkingsockets.dll"), xs("B8 ???? B9 ???? 0F 43"))) == 0u)
+        return false;
 
     if ((inventory_unlocker = get_pattern(xs("client.dll"), xs("84 C0 75 05 B0 01 5F"))) == 0u)
         return false;
@@ -299,20 +299,21 @@ bool patterns::init() {
         return false;
 
     if ((calc_view = get_pattern(xs("client.dll"), xs("55 8B EC 83 EC 14 53 56 57 FF 75 18"))) == 0u)
-        return false; 
-    
+        return false;
+
     if ((get_color_modulation = get_pattern(xs("materialsystem.dll"), xs("55 8B EC 83 EC ? 56 8B F1 8A 46"))) == 0u)
         return false;
 
-    if ((is_using_static_prop_debug_modes = get_pattern(xs("engine.dll"), xs("8B 0D ???? 81 F9 ???? 75 ? A1 ???? 35 ???? EB ? 8B 01 FF 50 ? 83 F8 ? 0F 85 ???? 8B 0D"))) == 0u)
-        return false;    
-    
+    if ((is_using_static_prop_debug_modes = get_pattern(
+             xs("engine.dll"), xs("8B 0D ???? 81 F9 ???? 75 ? A1 ???? 35 ???? EB ? 8B 01 FF 50 ? 83 F8 ? 0F 85 ???? 8B 0D"))) == 0u)
+        return false;
+
     if ((smoke_count = get_pattern(xs("client.dll"), xs("A3 ???? 57 8B CB"))) == 0u)
         return false;
 
     if ((present = get_pattern(xs("gameoverlayrenderer.dll"), xs("FF 15 ???? 8B F0 85 FF"))) == 0u)
-        return false;    
-    
+        return false;
+
     if ((reset = get_pattern(xs("gameoverlayrenderer.dll"), xs("C7 45 ????? FF 15 ???? 8B D8"))) == 0u)
         return false;
 

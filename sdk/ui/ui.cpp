@@ -339,16 +339,6 @@ void ui::init() {
                     ->add_dependency(settings.miscellaneous.bomb_log);
                 group->new_checkbox(xs("Bomb holder"), settings.miscellaneous.bomb_holder_log)
                     ->add_dependency(settings.miscellaneous.bomb_log);
-
-                // group->new_select(XORSTR("Region selector"), settings.miscellaneous.server_regions, {
-                //    XORSTR("Disabled"),          XORSTR("Australia"),        XORSTR("Austria"),        XORSTR("Brazil"), XORSTR("Chile"),
-                //    XORSTR("Dubai"), XORSTR("France"),            XORSTR("Germany"),          XORSTR("Hong Kong"),      XORSTR("India
-                //    (Chennai)"), XORSTR("India (Mumbai)"),     XORSTR("Japan"), XORSTR("Luxembourg"),        XORSTR("Netherlands"),
-                //    XORSTR("Peru"),           XORSTR("Philipines"),      XORSTR("Poland"),             XORSTR("Singapore"), XORSTR("South
-                //    Africa"),      XORSTR("Spain"),            XORSTR("Sweden"),         XORSTR("United kingdom"),  XORSTR("USA
-                //    (Atlanta)"),      XORSTR("USA (Chicago)"), XORSTR("USA (Los Angeles)"), XORSTR("USA (Moses Lake)"), XORSTR("USA
-                //    (Oklahoma)"), XORSTR("USA (Seattle)"),   XORSTR("USA (Washington DC)")
-                //});
             }
         }
 
@@ -391,11 +381,11 @@ void ui::init() {
                 group->new_select(xs("Feet fx"), settings.visuals.local.feet_fx,
                                   {xs("None"), xs("Sparks"), xs("Dust"), xs("Energy splash")});
 
-                // group->new_checkbox(XORSTR("Feet trails"),
+                // group->new_checkbox(xs("Feet trails"),
                 // settings.visuals.local.foot_trail)->add_color_picker(settings.visuals.local.trail_color);
-                // group->new_slider(XORSTR("Time"), settings.visuals.local.trail_time, 0.f, 10.f,
-                // XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail); group->new_slider(XORSTR("Size"),
-                // settings.visuals.local.trail_size, 0.f, 10.f, XORSTR("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
+                // group->new_slider(xs("Time"), settings.visuals.local.trail_time, 0.f, 10.f,
+                // xs("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail); group->new_slider(xs("Size"),
+                // settings.visuals.local.trail_size, 0.f, 10.f, xs("{:.1f}"))->add_dependency(settings.visuals.local.foot_trail);
             }
         }
     }
@@ -503,6 +493,14 @@ void ui::init() {
 
         if (const auto scripts_tab = misc_category->new_tab(FONT_FA_SOLID_32, ICON_FA_FILE_CODE, xs("Lua"))) {
             if (const auto group = scripts_tab->new_group(xs("A"))) {
+                // clang-format off
+                group->new_select(xs("Region selector"), settings.miscellaneous.server_regions, {
+                    xs("Disabled"), xs("Australia"), xs("Austria"), xs("Brazil"), xs("Chile"), xs("Dubai"), xs("France"), xs("Germany"), xs("Hong Kong"),
+                    xs("India"), xs("Chennai"), xs("India (Mumbai)"), xs("Japan"), xs("Luxembourg"), xs("Netherlands"), xs("Peru"), xs("Philipines"),
+                    xs("Poland"), xs("Singapore"), xs("South Africa"), xs("Spain"), xs("Sweden"), xs("United kingdom"), xs("USA (Atlanta)"),
+                    xs("USA (Chicago)"), xs("USA (Los Angeles)"), xs("USA (Moses Lake)"), xs("USA (Oklahoma)"), xs("USA (Seattle)"), xs("USA (Washington DC)"),
+                });
+                // clang-format on
             }
 
             if (const auto group = scripts_tab->new_group(xs("Lua"))) {

@@ -66,7 +66,7 @@ namespace patterns {
     inline uintptr_t find_hud_element_addr_2;
     inline uintptr_t enable_world_fog;
     inline uintptr_t game_rules_proxy;
-    // inline uintptr_t relay_cluster;
+    inline uintptr_t relay_cluster;
     inline uintptr_t inventory_unlocker;
     inline uintptr_t demo_file_end_reached;
     inline uintptr_t key_values_system;
@@ -137,7 +137,7 @@ namespace patterns {
     PATTERN_GET(find_hud_element_addr_2, find_hud_element_addr_2);
     PATTERN_GET(enable_world_fog, enable_world_fog);
     PATTERN_GET(game_rules_proxy, game_rules_proxy);
-    // PATTERN_GET(relay_cluster, relay_cluster);
+    PATTERN_GET(relay_cluster, relay_cluster);
     PATTERN_GET(inventory_unlocker, inventory_unlocker);
     PATTERN_GET(demo_file_end_reached, demo_file_end_reached);
     PATTERN_GET(key_values_system, key_values_system);
@@ -154,5 +154,6 @@ namespace patterns {
     PATTERN_GET(smoke_count, smoke_count);
 
     uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
+    uint32_t v2_find_pattern(const char *module, const char *signature);
     bool init();
 } // namespace patterns

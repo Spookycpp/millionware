@@ -18,6 +18,7 @@ void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx,
 
     discord_rpc::update();
     features::miscellaneous::panorama_blur(); // main menu blur can be removed
+    features::miscellaneous::server_selector();
 
     if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
         return frame_stage_notify_original(ecx, edx, frame_stage);
