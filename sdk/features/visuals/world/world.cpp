@@ -39,7 +39,7 @@ namespace features::visuals::world {
             static c_convar *safezoney = interfaces::convar_system->find_convar(xs("safezoney"));
             static c_convar *hud_scaling = interfaces::convar_system->find_convar(xs("hud_scaling"));
 
-            float y_pos = 900.f * hud_scaling->get_float() + (screen_size.y - screen_size.y * safezoney->get_float() + 1.f) / 2.f;
+            float y_pos = 950.f * hud_scaling->get_float() + (screen_size.y - screen_size.y * safezoney->get_float() + 1.f) / 2.f;
             const point_t indicator_text_size = render::measure_text(text, FONT_VERDANA_24);
 
             render::draw_text_outlined({screen_size.x / 2.0f - indicator_text_size.x / 2.0f, y_pos - 15.0f + (0.f + offset)}, color,
