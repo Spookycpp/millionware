@@ -44,16 +44,19 @@ bool hooks::init() {
     draw_model_execute_original = create_hook((uintptr_t) interfaces::model_render, 21, &draw_model_execute);
     draw_print_text_original = create_hook((uintptr_t) interfaces::surface, 28, &draw_print_text);
     emit_sound_original = create_hook((uintptr_t) interfaces::engine_sound, 5, &emit_sound);
-    enable_world_fog_original = decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
+    enable_world_fog_original =
+        decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
     fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_events, 9, &fire_event_client_side);
     frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
-    get_color_modulation_original = decltype(&get_color_modulation)(create_hook(patterns::get_color_modulation, (uintptr_t) &get_color_modulation));
+    get_color_modulation_original =
+        decltype(&get_color_modulation)(create_hook(patterns::get_color_modulation, (uintptr_t) &get_color_modulation));
     get_demo_playback_parameters_original = create_hook((uintptr_t) interfaces::engine_client, 218, &get_demo_playback_parameters);
     get_screen_aspect_ratio_original = create_hook((uintptr_t) interfaces::engine_client, 101, &get_screen_aspect_ratio);
     get_player_info_original = create_hook((uintptr_t) interfaces::engine_client, 8, &get_player_info);
     is_connected_original = create_hook((uintptr_t) interfaces::engine_client, 27, &is_connected);
     is_playing_demo_original = create_hook((uintptr_t) interfaces::engine_client, 82, &is_playing_demo);
-    is_using_static_prop_debug_modes_original = decltype(&is_using_static_prop_debug_modes)(create_hook(patterns::is_using_static_prop_debug_modes, (uintptr_t) &is_using_static_prop_debug_modes));
+    is_using_static_prop_debug_modes_original = decltype(&is_using_static_prop_debug_modes)(
+        create_hook(patterns::is_using_static_prop_debug_modes, (uintptr_t) &is_using_static_prop_debug_modes));
     level_init_post_entity_original = create_hook((uintptr_t) interfaces::client_dll, 6, &level_init_post_entity);
     level_shutdown_pre_entity_original = create_hook((uintptr_t) interfaces::client_dll, 7, &level_shutdown_pre_entity);
     list_leaves_in_box_original = create_hook((uintptr_t) interfaces::engine_client->get_bsp_tree_query(), 6, &list_leaves_in_box);
@@ -67,7 +70,7 @@ bool hooks::init() {
     push_notice_original = decltype(&push_notice)(create_hook(patterns::push_notice, (uintptr_t) &push_notice));
     play_step_sound_original = decltype(&play_step_sound)(create_hook(patterns::play_step_sound, (uintptr_t) &play_step_sound));
 
-	std::uintptr_t present_addr = (patterns::get_present() + 2);
+    std::uintptr_t present_addr = (patterns::get_present() + 2);
     std::uintptr_t reset_addr = (patterns::get_reset() + 9);
 
     present_original = **reinterpret_cast<decltype(&present_original) *>(present_addr);
@@ -75,9 +78,6 @@ bool hooks::init() {
 
     **reinterpret_cast<void ***>(present_addr) = reinterpret_cast<void *>(&present);
     **reinterpret_cast<void ***>(reset_addr) = reinterpret_cast<void *>(&reset);
-
-    //present_original = decltype(&present)(create_hook(present_ptr_fn, (uintptr_t) &present));
-    //reset_original = decltype(&reset)(create_hook(reset_ptr_fn, (uintptr_t) &reset));
 
     cheat::run_command = get_vfunc<uintptr_t>(interfaces::prediction, 19);
 
@@ -113,8 +113,8 @@ bool hooks::init() {
     INIT_HOOK(push_notice_original, "PushNotice");
     INIT_HOOK(play_step_sound_original, "PlayStepSound");
 
-    INIT_HOOK(reset_original, "Reset");
     INIT_HOOK(present_original, "Present");
+    INIT_HOOK(reset_original, "Reset");
 
     MH_EnableHook(MH_ALL_HOOKS);
 
@@ -124,6 +124,12 @@ bool hooks::init() {
 bool hooks::undo() {
     MH_DisableHook(MH_ALL_HOOKS);
     MH_RemoveHook(MH_ALL_HOOKS);
+
+    std::uintptr_t present_addr = (patterns::get_present() + 2);
+    std::uintptr_t reset_addr = (patterns::get_reset() + 9);
+
+    **reinterpret_cast<void ***>(present_addr) = reinterpret_cast<void *>(present_original);
+    **reinterpret_cast<void ***>(reset_addr) = reinterpret_cast<void *>(reset_original);
 
     return true;
 }
