@@ -234,7 +234,7 @@ namespace features::visuals::esp {
     }
 
     void draw_armor(const bounding_box_t &entity_box, c_player *player) {
-        if (!settings.visuals.player.armor) {
+        if (!settings.visuals.player.armor || player->get_armor() == 0) {
             return;
         }
 
@@ -249,7 +249,7 @@ namespace features::visuals::esp {
         render::fill_rect({entity_box.x, entity_box.y + entity_box.height + entity_esp.at(idx).bottom_offset + 3.0f}, {box_width, 2.0f},
                           {255, 255, 255, col.a});
 
-        if (player->get_armor() < 90) {
+        if (player->is_sane() && player->get_armor() < 90) {
             const std::string armor_text = std::format(xs("{}"), player->get_armor());
             const point_t armor_text_size = render::measure_text(armor_text.c_str(), FONT_SMALL_TEXT);
 
