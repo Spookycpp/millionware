@@ -30,6 +30,10 @@ struct color_t {
         return src.r != this->r || src.g != this->g || src.b != this->b || src.a != this->a;
     }
 
+    constexpr uint32_t to_u32() const {
+        return ((b & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (r & 0x0ff);
+    }
+
     static color_t blend(const color_t lhs, const color_t rhs, const float t) {
         return color_t(lhs.r + static_cast<int>(t * (rhs.r - lhs.r)), lhs.g + static_cast<int>(t * (rhs.g - lhs.g)),
                        lhs.b + static_cast<int>(t * (rhs.b - lhs.b)), lhs.a + static_cast<int>(t * (rhs.a - lhs.a)));

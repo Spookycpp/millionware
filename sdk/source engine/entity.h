@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 
+#include "color.h"
 #include "client_class.h"
 #include "econ_item.h"
 #include "macros.h"
@@ -569,4 +570,14 @@ public:
 class c_precipitation_entity : public c_entity {
 public:
     DECLARE_NETVAR(int, precip_type, "DT_Precipitation", "m_nPrecipType");
+};
+
+class c_fog_controller : public c_entity { // why did valve name these so oddly?
+public:
+    DECLARE_NETVAR(bool, fog_enable, "DT_FogController", "m_fog.enable");
+    DECLARE_NETVAR(float, fog_start, "DT_FogController", "m_fog.start");
+    DECLARE_NETVAR(float, fog_end, "DT_FogController", "m_fog.end");
+    DECLARE_NETVAR(float, fog_max_density, "DT_FogController", "m_fog.maxdensity");
+    DECLARE_NETVAR(color_t, fog_color_primary, "DT_FogController", "m_fog.colorPrimary");
+    DECLARE_NETVAR(color_t, fog_color_secondary, "DT_FogController", "m_fog.colorSecondary");
 };

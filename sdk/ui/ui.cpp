@@ -314,7 +314,7 @@ void ui::init() {
                 group->new_checkbox(xs("Weather"), settings.visuals.world.weather);
 
                 group->new_checkbox(xs("Fog"), settings.visuals.world.fog)->add_color_picker(settings.visuals.world.fog_color);
-                group->new_slider(xs("Distance"), settings.visuals.world.fog_length, 0, 5000, xs("{}"))
+                group->new_slider(xs("Distance"), settings.visuals.world.fog_length, 1, 100, xs("{}"))
                     ->add_dependency(settings.visuals.world.fog);
 
                 // weather (rain, snow & wtv else we can do)
