@@ -219,11 +219,11 @@ struct settings_t {
             struct {
                 bool arms = false;
                 int  arms_material = 0;
-                color_t arms_color = {56, 159, 252};
+                color_t arms_color = {56, 159, 255};
 
                 bool weapon = false;
                 int weapon_material = 0;
-                color_t weapon_color = {28, 99, 214};
+                color_t weapon_color = {28, 99, 255};
 
                 bool sleeve = false;
                 int sleeve_material = 0;
