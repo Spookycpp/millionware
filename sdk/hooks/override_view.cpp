@@ -10,7 +10,7 @@
 int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setup_t *view_setup) {
 
     if (!view_setup)
-        return override_view_original(ecx, edx, view_setup);
+        return override_view_hk.call_original<decltype(&override_view)>(ecx, edx, view_setup);
 
     if (view_setup)
         features::miscellaneous::on_override_view(view_setup);
@@ -32,5 +32,5 @@ int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setu
 
     //lua::callbacks::override_view(view_setup);
 
-    return override_view_original(ecx, edx, view_setup);
+    return override_view_hk.call_original<decltype(&override_view)>(ecx, edx, view_setup);
 }

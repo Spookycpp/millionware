@@ -21,7 +21,7 @@ void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx,
     features::miscellaneous::server_selector();
 
     if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
-        return frame_stage_notify_original(ecx, edx, frame_stage);
+        return frame_stage_notify_hk.call_original<decltype(&frame_stage_notify)>(ecx, edx, frame_stage);
 
     if (frame_stage == e_client_frame_stage::FRAME_STAGE_RENDER_START) {
         static auto cl_csm_shadows = interfaces::convar_system->find_convar(xs("cl_csm_shadows"));
@@ -55,5 +55,5 @@ void __fastcall hooks::frame_stage_notify(c_base_client_dll *ecx, uintptr_t edx,
     features::visuals::weather::on_frame_stage_notify(frame_stage);
     features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
 
-    frame_stage_notify_original(ecx, edx, frame_stage);
+    frame_stage_notify_hk.call_original<decltype(&frame_stage_notify)>(ecx, edx, frame_stage);
 }

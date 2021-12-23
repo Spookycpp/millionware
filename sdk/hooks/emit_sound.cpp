@@ -43,6 +43,6 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
     if (cheat::predicting)
         volume = 0.f;
 
-    emit_sound_original(ecx, edx, filter, entity_index, channel, sound_entry, sound_entry_hash, sample_name, volume, attenuation, seed,
+    emit_sound_hk.call_original<decltype(&emit_sound)>(ecx, edx, filter, entity_index, channel, sound_entry, sound_entry_hash, sample_name, volume, attenuation, seed,
                         flags, pitch, origin, direction, utl_vec_origins, update_positions, sound_time, speaker_entity, fds);
 }

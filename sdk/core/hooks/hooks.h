@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "../../engine/hash/hash.h"
+#include "../../engine/hooking/hook.h"
 #include "../../source engine/client_dll.h"
 #include "../../source engine/engine_client.h"
 #include "../../source engine/game_events.h"
@@ -47,41 +48,39 @@ namespace hooks {
     bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
     void __fastcall push_notice(uintptr_t, uintptr_t, const char *, int, const char *);
     void __fastcall play_step_sound(c_player *ecx, uintptr_t edx, vector_t &origin, void *surface, float vol, bool force, void *arg);
-
     long __stdcall reset(IDirect3DDevice9 *device, D3DPRESENT_PARAMETERS *present_parameters);
     long __stdcall present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region);
 
-    inline decltype(&calc_view) calc_view_original;
-    inline decltype(&create_move) create_move_original;
-    inline decltype(&do_post_screen_effects) do_post_screen_effects_original;
-    inline decltype(&draw_model_execute) draw_model_execute_original;
-    inline decltype(&draw_print_text) draw_print_text_original;
-    inline decltype(&emit_sound) emit_sound_original;
-    inline decltype(&enable_world_fog) enable_world_fog_original;
-    inline decltype(&engine_paint) engine_paint_original;
-    inline decltype(&fire_event_client_side) fire_event_client_side_original;
-    inline decltype(&frame_stage_notify) frame_stage_notify_original;
-    inline decltype(&get_color_modulation) get_color_modulation_original;
-    inline decltype(&get_demo_playback_parameters) get_demo_playback_parameters_original;
-    inline decltype(&get_screen_aspect_ratio) get_screen_aspect_ratio_original;
-    inline decltype(&get_player_info) get_player_info_original;
-    inline decltype(&is_connected) is_connected_original;
-    inline decltype(&is_playing_demo) is_playing_demo_original;
-    inline decltype(&is_using_static_prop_debug_modes) is_using_static_prop_debug_modes_original;
-    inline decltype(&level_init_post_entity) level_init_post_entity_original;
-    inline decltype(&level_shutdown_pre_entity) level_shutdown_pre_entity_original;
-    inline decltype(&list_leaves_in_box) list_leaves_in_box_original;
-    inline decltype(&lock_cursor) lock_cursor_original;
-    inline decltype(&override_config) override_config_original;
-    inline decltype(&override_mouse_input) override_mouse_input_original;
-    inline decltype(&override_view) override_view_original;
-    inline decltype(&screen_size_changed) screen_size_changed_original;
-    inline decltype(&send_datagram) send_datagram_original;
-    inline decltype(&write_user_cmd_delta_to_buffer) write_user_cmd_delta_to_buffer_original;
-    inline decltype(&push_notice) push_notice_original;
-    inline decltype(&play_step_sound) play_step_sound_original;
-
-    inline decltype(&reset) reset_original;
-    inline decltype(&present) present_original;
+    inline InlineHook calc_view_hk;
+    inline InlineHook create_move_hk;
+    inline InlineHook do_post_screen_effects_hk;
+    inline InlineHook draw_model_execute_hk;
+    inline InlineHook draw_print_text_hk;
+    inline InlineHook emit_sound_hk;
+    inline InlineHook enable_world_fog_hk;
+    inline InlineHook engine_paint_hk;
+    inline InlineHook fire_event_client_side_hk;
+    inline InlineHook frame_stage_notify_hk;
+    inline InlineHook get_color_modulation_hk;
+    inline InlineHook get_demo_playback_parameters_hk;
+    inline InlineHook get_screen_aspect_ratio_hk;
+    inline InlineHook get_player_info_hk;
+    inline InlineHook is_connected_hk;
+    inline InlineHook is_playing_demo_hk;
+    inline InlineHook is_using_static_prop_debug_modes_hk;
+    inline InlineHook level_init_post_entity_hk;
+    inline InlineHook level_shutdown_pre_entity_hk;
+    inline InlineHook list_leaves_in_box_hk;
+    inline InlineHook lock_cursor_hk;
+    inline InlineHook override_config_hk;
+    inline InlineHook override_mouse_input_hk;
+    inline InlineHook override_view_hk;
+    inline InlineHook screen_size_changed_hk;
+    inline InlineHook send_datagram_hk;
+    inline InlineHook write_user_cmd_delta_to_buffer_hk;
+    inline InlineHook push_notice_hk;
+    inline InlineHook play_step_sound_hk;
+    inline InlineHook reset_hk;
+    inline InlineHook present_hk;
 
 } // namespace hooks

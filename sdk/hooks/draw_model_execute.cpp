@@ -51,7 +51,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
             weapon_material->set_flag(MATERIAL_FLAG_IGNORE_Z, true);
 
             interfaces::model_render->force_material_override(weapon_material);
-            draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+            draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
             interfaces::model_render->force_material_override(nullptr);
             return;
         }
@@ -64,7 +64,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
             arm_material->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
 
             interfaces::model_render->force_material_override(arm_material);
-            draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+            draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
             interfaces::model_render->force_material_override(nullptr);
             return;
         }
@@ -77,18 +77,18 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
             sleeve_material->set_flag(MATERIAL_FLAG_IGNORE_Z, false);
 
             interfaces::model_render->force_material_override(sleeve_material);
-            draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+            draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
             return;
         };
     }
 
     if (interfaces::model_render->is_forced_material_override())
-        return draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+        return draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
 
     // do any player model related chams below.
 
     if (info->flags != 1 || strstr(info->model->name, xs("models/player")) == nullptr) {
-        draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+        draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
         return;
     }
 
@@ -98,7 +98,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
     const auto invisible_color = settings.visuals.player.chams.invisible_color;
 
     if (entity == nullptr || !entity->is_enemy() || entity->get_life_state() != LIFE_STATE_ALIVE) {
-        draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+        draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
 
         return;
     }
@@ -117,7 +117,7 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
 
         interfaces::model_render->force_material_override(material);
 
-        draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+        draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
 
         if (!settings.visuals.player.chams.visible)
             interfaces::model_render->force_material_override(nullptr);
@@ -130,11 +130,11 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
 
         interfaces::model_render->force_material_override(material);
 
-        draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+        draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
     } else {
         interfaces::model_render->force_material_override(nullptr);
 
-        draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+        draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
     }
 
     const auto glow_color = settings.visuals.player.chams.glow_color;
@@ -154,9 +154,9 @@ void __fastcall hooks::draw_model_execute(uintptr_t ecx, uintptr_t edx, void *ct
             envmap->set(0.f, 1.f, 8.0f);
 
         interfaces::model_render->force_material_override(glow);
-        draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+        draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
     }
 
-    draw_model_execute_original(ecx, edx, ctx, state, info, matrix);
+    draw_model_execute_hk.call_original<decltype(&draw_model_execute)>(ecx, edx, ctx, state, info, matrix);
     interfaces::model_render->force_material_override(nullptr);
 }

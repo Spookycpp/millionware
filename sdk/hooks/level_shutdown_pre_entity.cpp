@@ -9,7 +9,7 @@
 #include "../features/visuals/world/weather.h"
 
 void __fastcall hooks::level_shutdown_pre_entity(c_base_client_dll *ecx, uintptr_t edx) {
-    level_shutdown_pre_entity_original(ecx, edx);
+    level_shutdown_pre_entity_hk.call_original<decltype(&level_shutdown_pre_entity)>(ecx, edx);
 
     logging::debug(xs("Detected level shutdown"));
 

@@ -130,7 +130,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;ntdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='beta debug|Win32'">
@@ -146,7 +146,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;ntdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='stable release|Win32'">
@@ -166,7 +166,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;ntdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
@@ -187,7 +187,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;ntdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
@@ -296,6 +296,7 @@
     <ClCompile Include="gui\checkbox\checkbox.cpp" />
     <ClCompile Include="gui\color_picker\color_picker.cpp" />
     <ClCompile Include="gui\group\group.cpp" />
+    <ClCompile Include="thirdparty\hde\hde32.c" />
     <ClCompile Include="ui\ui.cpp" />
     <ClCompile Include="gui\key_bind\key_bind.cpp" />
     <ClCompile Include="gui\select\select.cpp" />
@@ -318,6 +319,7 @@
     <ClInclude Include="engine\easing\easing.h" />
     <ClInclude Include="engine\hash\crc32.h" />
     <ClInclude Include="engine\hash\hash.h" />
+    <ClInclude Include="engine\hooking\hook.h" />
     <ClInclude Include="engine\input\input.h" />
     <ClInclude Include="engine\logging\logging.h" />
     <ClInclude Include="engine\math\math.h" />
@@ -422,6 +424,9 @@
     <ClInclude Include="gui\checkbox\checkbox.h" />
     <ClInclude Include="gui\color_picker\color_picker.h" />
     <ClInclude Include="gui\group\group.h" />
+    <ClInclude Include="thirdparty\hde\hde32.h" />
+    <ClInclude Include="thirdparty\hde\pstdint.h" />
+    <ClInclude Include="thirdparty\hde\table32.h" />
     <ClInclude Include="thirdparty\nanosvg\nanosvg.h" />
     <ClInclude Include="thirdparty\nanosvg\nanosvgrast.h" />
     <ClInclude Include="ui\ui.h" />

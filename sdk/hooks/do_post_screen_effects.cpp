@@ -16,17 +16,17 @@ int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, 
         glow_manager = *reinterpret_cast<void **>((patterns::get_glow_manager() + 3));
 
     if (!glow_manager)
-        return do_post_screen_effects_original(ecx, edx, effect_id);
+        return do_post_screen_effects_hk.call_original<decltype(&do_post_screen_effects)>(ecx, edx, effect_id);
 
     // sanity checks.
     if (!cheat::local_player)
-        return do_post_screen_effects_original(ecx, edx, effect_id);
+        return do_post_screen_effects_hk.call_original<decltype(&do_post_screen_effects)>(ecx, edx, effect_id);
 
     if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
-        return do_post_screen_effects_original(ecx, edx, effect_id);
+        return do_post_screen_effects_hk.call_original<decltype(&do_post_screen_effects)>(ecx, edx, effect_id);
 
     if (!settings.visuals.player.glow)
-        return do_post_screen_effects_original(ecx, edx, effect_id);
+        return do_post_screen_effects_hk.call_original<decltype(&do_post_screen_effects)>(ecx, edx, effect_id);
 
     glow_object_definition_t *glow_objects = *(glow_object_definition_t **) glow_manager;
     int glow_size = *(int *) ((uint32_t) glow_manager + 0x4);
@@ -54,5 +54,5 @@ int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, 
         // clang-format on
     }
 
-    return do_post_screen_effects_original(ecx, edx, effect_id);
+    return do_post_screen_effects_hk.call_original<decltype(&do_post_screen_effects)>(ecx, edx, effect_id);
 }

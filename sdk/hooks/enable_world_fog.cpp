@@ -5,5 +5,5 @@ void __fastcall hooks::enable_world_fog() {
     if (settings.visuals.world.remove_fog)
         return;
 
-    return enable_world_fog_original();
+    return enable_world_fog_hk.call_original<decltype(&enable_world_fog)>();
 }

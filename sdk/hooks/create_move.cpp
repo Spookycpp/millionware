@@ -27,16 +27,16 @@ bool __fastcall hooks::create_move(c_client_mode *ecx, uintptr_t edx, float fram
     PROFILE_WITH(create_move);
 
     if (!user_cmd || !cheat::local_player || !cheat::local_player->is_alive() || user_cmd->command_number == 0)
-        return create_move_original(ecx, edx, frame_time, user_cmd);
+        return create_move_hk.call_original<decltype(&create_move)>(ecx, edx, frame_time, user_cmd);
 
-    if (create_move_original(ecx, edx, frame_time, user_cmd))
+    if (create_move_hk.call_original<decltype(&create_move)>(ecx, edx, frame_time, user_cmd))
         interfaces::prediction->set_local_view_angles(user_cmd->view_angles);
 
     cheat::user_cmd = user_cmd;
     cheat::original_angles = user_cmd->view_angles;
 
     if (interfaces::client_state == nullptr)
-        return create_move_original(ecx, edx, frame_time, user_cmd);
+        return create_move_hk.call_original<decltype(&create_move)>(ecx, edx, frame_time, user_cmd);
 
     uintptr_t *frame_pointer;
     __asm mov frame_pointer, ebp;

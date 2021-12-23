@@ -11,9 +11,9 @@ void __fastcall hooks::push_notice(uintptr_t ecx, uintptr_t edx, const char *tex
     PROFILE_WITH(push_notice);
 
     if (text == "##" + cheat::notice_text) {
-        push_notice_original(ecx, edx, cheat::notice_text.c_str(), cheat::notice_text.length(), cheat::notice_text.c_str());
+        push_notice_hk.call_original<decltype(&push_notice)>(ecx, edx, cheat::notice_text.c_str(), cheat::notice_text.length(), cheat::notice_text.c_str());
         return;
     }
 
-    push_notice_original(ecx, edx, text, len, panel);
+    push_notice_hk.call_original<decltype(&push_notice)>(ecx, edx, text, len, panel);
 }

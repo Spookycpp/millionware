@@ -7,7 +7,7 @@
 long __stdcall hooks::reset(IDirect3DDevice9 *device, D3DPRESENT_PARAMETERS *present_parameters) {
     render::undo();
 
-    auto resolution = reset_original(device, present_parameters);
+    auto resolution = reset_hk.call_original<decltype(&reset)>(device, present_parameters);
 
     D3DDEVICE_CREATION_PARAMETERS creation_params;
 
