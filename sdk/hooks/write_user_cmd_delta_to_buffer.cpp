@@ -12,7 +12,7 @@ bool __fastcall hooks::write_user_cmd_delta_to_buffer(uintptr_t ecx, uintptr_t e
     PROFILE_WITH(write_user_cmd);
 
     if (!cheat::tick_base_shift)
-        return write_user_cmd_delta_to_buffer_hk.call_original<decltype(&write_user_cmd_delta_to_buffer)>(ecx, edx, slot, buf, from, to, new_user_cmd);
+        return write_user_cmd_delta_to_buffer_original(ecx, edx, slot, buf, from, to, new_user_cmd);
 
     if (from != -1)
         return true;
@@ -36,7 +36,7 @@ bool __fastcall hooks::write_user_cmd_delta_to_buffer(uintptr_t ecx, uintptr_t e
     to = next_command_number - new_commands + 1;
 
     for (; to <= next_command_number; to++) {
-        if (!write_user_cmd_delta_to_buffer_hk.call_original<decltype(&write_user_cmd_delta_to_buffer)>(ecx, edx, slot, buf, from, to, true)) {
+        if (!write_user_cmd_delta_to_buffer_original(ecx, edx, slot, buf, from, to, true)) {
             return false;
         }
 

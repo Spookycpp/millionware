@@ -29,20 +29,20 @@ int __fastcall hooks::list_leaves_in_box(uintptr_t ecx, uintptr_t edx, const vec
     // static auto insert_into_tree_addr = patterns::get_insert_into_tree_list_leaves_in_box_call() + 0x5;
     //
     // if (!settings.visuals.player.chams.invisible)
-    //    return list_leaves_in_box_hk.call_original<decltype(&list_leaves_in_box)>(ecx, edx, mins, maxs, leaves_list, max_leaves);
+    //    return list_leaves_in_box_original(ecx, edx, mins, maxs, leaves_list, max_leaves);
     //
     // if (uintptr_t(_ReturnAddress()) != insert_into_tree_addr)
-    //    return list_leaves_in_box_hk.call_original<decltype(&list_leaves_in_box)>(ecx, edx, mins, maxs, leaves_list, max_leaves);
+    //    return list_leaves_in_box_original(ecx, edx, mins, maxs, leaves_list, max_leaves);
     //
     // const auto info = *reinterpret_cast<renderable_info_t **>(uintptr_t(_AddressOfReturnAddress()) + 0x14);
     //
     // if (!info || !info->renderable)
-    //    return list_leaves_in_box_hk.call_original<decltype(&list_leaves_in_box)>(ecx, edx, mins, maxs, leaves_list, max_leaves);
+    //    return list_leaves_in_box_original(ecx, edx, mins, maxs, leaves_list, max_leaves);
     //
     // c_entity *ent = info->renderable->get_i_client_unknown()->get_base_entity();
     //
     // if (!ent || !ent->is_player())
-    //    return list_leaves_in_box_hk.call_original<decltype(&list_leaves_in_box)>(ecx, edx, mins, maxs, leaves_list, max_leaves);
+    //    return list_leaves_in_box_original(ecx, edx, mins, maxs, leaves_list, max_leaves);
     //
     // info->flags &= ~0x100;
     // info->flags_other |= 0xC0;
@@ -50,5 +50,5 @@ int __fastcall hooks::list_leaves_in_box(uintptr_t ecx, uintptr_t edx, const vec
     // const auto map_min = vector_t{-16384.f, -16384.f, -16384.f};
     // const auto map_max = vector_t{16384.f, 16384.f, 16384.f};
 
-    return list_leaves_in_box_hk.call_original<decltype(&list_leaves_in_box)>(ecx, edx, mins, maxs, leaves_list, max_leaves);
+    return list_leaves_in_box_original(ecx, edx, mins, maxs, leaves_list, max_leaves);
 }

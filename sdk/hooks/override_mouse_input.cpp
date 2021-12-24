@@ -16,7 +16,7 @@ void __fastcall hooks::override_mouse_input(c_client_mode *ecx, uintptr_t edx, f
 
     const auto &move_eb_rage = settings.miscellaneous.movement.edgebug_rage_amount;
 
-    override_mouse_input_hk.call_original<decltype(&override_mouse_input)>(ecx, edx, x, y);
+    override_mouse_input_original(ecx, edx, x, y);
 
     if (input::is_key_down(settings.miscellaneous.movement.edge_bug_assist_hotkey) && features::movement::predicted_successful)
         *x *= (1.f - (0.1 * move_eb_rage));

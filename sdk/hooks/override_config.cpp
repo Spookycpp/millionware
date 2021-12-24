@@ -6,5 +6,5 @@ bool __fastcall hooks::override_config(uintptr_t ecx, uintptr_t edx, material_sy
     if (settings.visuals.world.fullbright)
         config->full_bright = true;
 
-    return override_config_hk.call_original<decltype(&override_config)>(ecx, edx, config, update);
+    return override_config_original(ecx, edx, config, update);
 }

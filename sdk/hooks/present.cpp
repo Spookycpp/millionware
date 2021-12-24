@@ -43,5 +43,5 @@ long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT 
 
     render::finish();
 
-    return present_hk.call_original<decltype(&present)>(device, source_rect, dest_rect, dest_window_override, dirty_region);
+    return present_original(device, source_rect, dest_rect, dest_window_override, dirty_region);
 }

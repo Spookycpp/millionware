@@ -5,7 +5,7 @@
 // https://www.unknowncheats.me/forum/counterstrike-global-offensive/374249-somewhat-simpler-doing-night-mode.html
 void __fastcall hooks::get_color_modulation(uintptr_t ecx, uintptr_t edx, float &r, float &g, float &b) {
 
-    get_color_modulation_hk.call_original<decltype(&get_color_modulation)>(ecx, edx, r, g, b);
+    get_color_modulation_original(ecx, edx, r, g, b);
 
     if (!settings.visuals.world.nightmode)
         return;

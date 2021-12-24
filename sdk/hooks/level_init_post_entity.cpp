@@ -8,7 +8,7 @@
 
 void __fastcall hooks::level_init_post_entity(c_base_client_dll *ecx, uintptr_t edx) {
 
-    level_init_post_entity_hk.call_original<decltype(&level_init_post_entity)>(ecx, edx);
+    level_init_post_entity_original(ecx, edx);
 
     logging::debug(xs("Detected level initialization"));
 

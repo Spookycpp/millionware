@@ -12,8 +12,24 @@
 
 #include "../patterns/patterns.h"
 
+uintptr_t create_hook(uintptr_t from, uintptr_t to) {
+    uintptr_t original;
+
+    if (const auto status = MH_CreateHook((LPVOID) from, (LPVOID) to, (LPVOID *) &original); status != MH_OK)
+        return 0;
+
+    return original;
+}
+
 static uintptr_t *get_vtable(uintptr_t instance) {
     return *(uintptr_t **) instance;
+}
+
+template <typename F>
+F create_hook(uintptr_t instance, int index, F to) {
+    const auto vtable = get_vtable(instance);
+
+    return (F) create_hook(vtable[index], (uintptr_t) to);
 }
 
 bool hooks::init() {
@@ -22,79 +38,98 @@ bool hooks::init() {
     if (interfaces::engine_client->is_in_game())
         cheat::local_player = (c_player *) interfaces::entity_list->get_entity(interfaces::engine_client->get_local_player());
 
-#define UNDO_HOOK(name) name##_hk.restore();
-#define MK_HOOK_ADDR(from, name) name##_hk.make((uintptr_t) (from), (uintptr_t) name);
-#define MK_HOOK_VTBL(from, index, name) name##_hk.make(get_vtable((uintptr_t) (from))[index], (uintptr_t) name);
+    calc_view_original = decltype(&calc_view)(create_hook((uintptr_t) patterns::calc_view, (uintptr_t) &calc_view));
+    create_move_original = create_hook((uintptr_t) interfaces::client_mode, 24, &create_move);
+    do_post_screen_effects_original = create_hook((uintptr_t) interfaces::client_mode, 44, &do_post_screen_effects);
+    draw_model_execute_original = create_hook((uintptr_t) interfaces::model_render, 21, &draw_model_execute);
+    draw_print_text_original = create_hook((uintptr_t) interfaces::surface, 28, &draw_print_text);
+    emit_sound_original = create_hook((uintptr_t) interfaces::engine_sound, 5, &emit_sound);
+    enable_world_fog_original =
+        decltype(&enable_world_fog)(create_hook((uintptr_t) patterns::enable_world_fog, (uintptr_t) &enable_world_fog));
+    fire_event_client_side_original = create_hook((uintptr_t) interfaces::game_events, 9, &fire_event_client_side);
+    frame_stage_notify_original = create_hook((uintptr_t) interfaces::client_dll, 37, &frame_stage_notify);
+    get_color_modulation_original =
+        decltype(&get_color_modulation)(create_hook(patterns::get_color_modulation, (uintptr_t) &get_color_modulation));
+    get_demo_playback_parameters_original = create_hook((uintptr_t) interfaces::engine_client, 218, &get_demo_playback_parameters);
+    get_screen_aspect_ratio_original = create_hook((uintptr_t) interfaces::engine_client, 101, &get_screen_aspect_ratio);
+    get_player_info_original = create_hook((uintptr_t) interfaces::engine_client, 8, &get_player_info);
+    is_connected_original = create_hook((uintptr_t) interfaces::engine_client, 27, &is_connected);
+    is_playing_demo_original = create_hook((uintptr_t) interfaces::engine_client, 82, &is_playing_demo);
+    is_using_static_prop_debug_modes_original = decltype(&is_using_static_prop_debug_modes)(
+        create_hook(patterns::is_using_static_prop_debug_modes, (uintptr_t) &is_using_static_prop_debug_modes));
+    level_init_post_entity_original = create_hook((uintptr_t) interfaces::client_dll, 6, &level_init_post_entity);
+    level_shutdown_pre_entity_original = create_hook((uintptr_t) interfaces::client_dll, 7, &level_shutdown_pre_entity);
+    list_leaves_in_box_original = create_hook((uintptr_t) interfaces::engine_client->get_bsp_tree_query(), 6, &list_leaves_in_box);
+    lock_cursor_original = create_hook((uintptr_t) interfaces::surface, 67, &lock_cursor);
+    override_config_original = create_hook((uintptr_t) interfaces::material_system, 21, &override_config);
+    override_mouse_input_original = create_hook((uintptr_t) interfaces::client_mode, 23, &override_mouse_input);
+    override_view_original = create_hook((uintptr_t) interfaces::client_mode, 18, &override_view);
+    screen_size_changed_original = create_hook((uintptr_t) interfaces::surface, 116, &screen_size_changed);
+    send_datagram_original = decltype(&send_datagram)(create_hook((uintptr_t) patterns::send_datagram, (uintptr_t) &send_datagram));
+    engine_paint_original = create_hook((uintptr_t) interfaces::vgui_engine, 14, &engine_paint);
+    push_notice_original = decltype(&push_notice)(create_hook(patterns::push_notice, (uintptr_t) &push_notice));
+    play_step_sound_original = decltype(&play_step_sound)(create_hook(patterns::play_step_sound, (uintptr_t) &play_step_sound));
 
-    MK_HOOK_ADDR(*(uint32_t *) (patterns::present + 2), present);
-    MK_HOOK_ADDR(*(uint32_t *) (patterns::reset + 9), reset);
+    std::uintptr_t present_addr = (patterns::get_present() + 2);
+    std::uintptr_t reset_addr = (patterns::get_reset() + 9);
 
-    MK_HOOK_ADDR(patterns::calc_view, calc_view);
-    MK_HOOK_ADDR(patterns::enable_world_fog, enable_world_fog);
-    MK_HOOK_ADDR(patterns::get_color_modulation, get_color_modulation);
-    MK_HOOK_ADDR(patterns::is_using_static_prop_debug_modes, is_using_static_prop_debug_modes);
-    MK_HOOK_ADDR(patterns::send_datagram, send_datagram);
-    MK_HOOK_ADDR(patterns::push_notice, push_notice);
-    MK_HOOK_ADDR(patterns::play_step_sound, play_step_sound);
+    present_original = **reinterpret_cast<decltype(&present_original) *>(present_addr);
+    reset_original = **reinterpret_cast<decltype(&reset_original) *>(reset_addr);
 
-    MK_HOOK_VTBL(interfaces::client_mode, 24, create_move);
-    MK_HOOK_VTBL(interfaces::client_mode, 44, do_post_screen_effects);
-    MK_HOOK_VTBL(interfaces::model_render, 21, draw_model_execute);
-    MK_HOOK_VTBL(interfaces::surface, 28, draw_print_text);
-    MK_HOOK_VTBL(interfaces::engine_sound, 5, emit_sound);
-    MK_HOOK_VTBL(interfaces::game_events, 9, fire_event_client_side);
-    MK_HOOK_VTBL(interfaces::client_dll, 37, frame_stage_notify);
-    MK_HOOK_VTBL(interfaces::engine_client, 218, get_demo_playback_parameters);
-    MK_HOOK_VTBL(interfaces::engine_client, 101, get_screen_aspect_ratio);
-    MK_HOOK_VTBL(interfaces::engine_client, 8, get_player_info);
-    MK_HOOK_VTBL(interfaces::engine_client, 27, is_connected);
-    MK_HOOK_VTBL(interfaces::engine_client, 82, is_playing_demo);
-    MK_HOOK_VTBL(interfaces::client_dll, 6, level_init_post_entity);
-    MK_HOOK_VTBL(interfaces::client_dll, 7, level_shutdown_pre_entity);
-    MK_HOOK_VTBL(interfaces::engine_client->get_bsp_tree_query(), 6, list_leaves_in_box);
-    MK_HOOK_VTBL(interfaces::surface, 67, lock_cursor);
-    MK_HOOK_VTBL(interfaces::material_system, 21, override_config);
-    MK_HOOK_VTBL(interfaces::client_mode, 23, override_mouse_input);
-    MK_HOOK_VTBL(interfaces::client_mode, 18, override_view);
-    MK_HOOK_VTBL(interfaces::surface, 116, screen_size_changed);
-    MK_HOOK_VTBL(interfaces::vgui_engine, 14, engine_paint);
+    **reinterpret_cast<void ***>(present_addr) = reinterpret_cast<void *>(&present);
+    **reinterpret_cast<void ***>(reset_addr) = reinterpret_cast<void *>(&reset);
 
     cheat::run_command = get_vfunc<uintptr_t>(interfaces::prediction, 19);
+
+#define INIT_HOOK(h, n)                                                                                                                    \
+    if (h == 0) {                                                                                                                          \
+        logging::error(xs("failed to initialize hook " n));                                                                                \
+        return false;                                                                                                                      \
+    }
+
+    INIT_HOOK(calc_view_original, "Calculate view");
+    INIT_HOOK(create_move_original, "CreateMove");
+    INIT_HOOK(do_post_screen_effects_original, "DoPostScreenEffects");
+    INIT_HOOK(draw_model_execute_original, "DrawModelExecute");
+    INIT_HOOK(draw_print_text_original, "DrawPrintText");
+    INIT_HOOK(emit_sound_original, "EmitSound");
+    INIT_HOOK(enable_world_fog_original, "EnableWorldFog");
+    INIT_HOOK(fire_event_client_side_original, "FireEventClientSide");
+    INIT_HOOK(frame_stage_notify_original, "FrameStageNotify");
+    INIT_HOOK(get_demo_playback_parameters_original, "GetDemoPlayParameters");
+    INIT_HOOK(get_screen_aspect_ratio_original, "GetScreenAspectRatioOriginal");
+    INIT_HOOK(get_player_info_original, "GetPlayerInfo");
+    INIT_HOOK(is_connected_original, "IsConnected");
+    INIT_HOOK(is_playing_demo_original, "IsPlayingDemo");
+    INIT_HOOK(level_init_post_entity_original, "LevelInitPostEntry");
+    INIT_HOOK(level_shutdown_pre_entity_original, "LevelShutdownPreEntity");
+    INIT_HOOK(list_leaves_in_box_original, "ListLeavesInBox");
+    INIT_HOOK(lock_cursor_original, "LockCursor");
+    INIT_HOOK(override_mouse_input_original, "OverrideMouseInput");
+    INIT_HOOK(override_view_original, "OverrideView");
+    INIT_HOOK(screen_size_changed_original, "ScreenSizeChanged");
+    INIT_HOOK(send_datagram_original, "SendDatagram");
+    INIT_HOOK(engine_paint_original, "EnginePaint");
+    INIT_HOOK(push_notice_original, "PushNotice");
+    INIT_HOOK(play_step_sound_original, "PlayStepSound");
+
+    INIT_HOOK(present_original, "Present");
+    INIT_HOOK(reset_original, "Reset");
+
+    MH_EnableHook(MH_ALL_HOOKS);
 
     return true;
 }
 
 bool hooks::undo() {
-    UNDO_HOOK(present);
-    UNDO_HOOK(reset);
-    UNDO_HOOK(calc_view);
-    UNDO_HOOK(enable_world_fog);
-    UNDO_HOOK(get_color_modulation);
-    UNDO_HOOK(is_using_static_prop_debug_modes);
-    UNDO_HOOK(send_datagram);
-    UNDO_HOOK(push_notice);
-    UNDO_HOOK(play_step_sound);
-    UNDO_HOOK(create_move);
-    UNDO_HOOK(do_post_screen_effects);
-    UNDO_HOOK(draw_model_execute);
-    UNDO_HOOK(draw_print_text);
-    UNDO_HOOK(emit_sound);
-    UNDO_HOOK(fire_event_client_side);
-    UNDO_HOOK(frame_stage_notify);
-    UNDO_HOOK(get_demo_playback_parameters);
-    UNDO_HOOK(get_screen_aspect_ratio);
-    UNDO_HOOK(get_player_info);
-    UNDO_HOOK(is_connected);
-    UNDO_HOOK(is_playing_demo);
-    UNDO_HOOK(level_init_post_entity);
-    UNDO_HOOK(level_shutdown_pre_entity);
-    UNDO_HOOK(list_leaves_in_box);
-    UNDO_HOOK(lock_cursor);
-    UNDO_HOOK(override_config);
-    UNDO_HOOK(override_mouse_input);
-    UNDO_HOOK(override_view);
-    UNDO_HOOK(screen_size_changed);
-    UNDO_HOOK(engine_paint);
+    MH_DisableHook(MH_ALL_HOOKS);
+    MH_RemoveHook(MH_ALL_HOOKS);
+
+    std::uintptr_t present_addr = (patterns::get_present() + 2);
+    std::uintptr_t reset_addr = (patterns::get_reset() + 9);
+
+    **reinterpret_cast<void ***>(present_addr) = reinterpret_cast<void *>(present_original);
+    **reinterpret_cast<void ***>(reset_addr) = reinterpret_cast<void *>(reset_original);
 
     return true;
 }
