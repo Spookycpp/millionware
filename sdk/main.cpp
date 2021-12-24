@@ -209,9 +209,8 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
 }
 
 long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
-
     if (cheat::panic)
-        return {};
+        return EXCEPTION_CONTINUE_SEARCH;
 
     if (info->ExceptionRecord->ExceptionCode != EXCEPTION_ACCESS_VIOLATION)
         return EXCEPTION_CONTINUE_SEARCH;
