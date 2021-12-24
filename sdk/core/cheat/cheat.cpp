@@ -47,14 +47,10 @@ bool cheat::init() {
     if (!interfaces::init())
         return false;
 
-    /* readd this once we release out of beta.
-
-    if (interfaces::engine_client->get_engine_build_number() != 13804) {
-        logging::info(xs("tell laine 'big bash bosh'"));
-        return false;
-    }
-
-    */
+    //if (interfaces::engine_client->get_engine_build_number() != 13811) {
+    //    logging::error(xs("Out of date, report on forums."));
+    //    return false;
+    //}
 
     netvars::init();
 

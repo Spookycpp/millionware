@@ -44,6 +44,7 @@ namespace hooks {
     int __fastcall override_view(c_client_mode *ecx, uintptr_t edx, view_setup_t *view_setup);
     void __fastcall screen_size_changed(uintptr_t, uintptr_t, int, int);
     int __fastcall send_datagram(c_net_channel *, uintptr_t *, void *);
+    void __fastcall shutdown(uintptr_t, uintptr_t);
     bool __fastcall write_user_cmd_delta_to_buffer(uintptr_t, uintptr_t, int slot, bf_write *buf, int from, int to, bool new_user_cmd);
     void __fastcall push_notice(uintptr_t, uintptr_t, const char *, int, const char *);
     void __fastcall play_step_sound(c_player *ecx, uintptr_t edx, vector_t &origin, void *surface, float vol, bool force, void *arg);
@@ -77,6 +78,7 @@ namespace hooks {
     inline decltype(&override_view) override_view_original;
     inline decltype(&screen_size_changed) screen_size_changed_original;
     inline decltype(&send_datagram) send_datagram_original;
+    inline decltype(&shutdown) shutdown_original;
     inline decltype(&write_user_cmd_delta_to_buffer) write_user_cmd_delta_to_buffer_original;
     inline decltype(&push_notice) push_notice_original;
     inline decltype(&play_step_sound) play_step_sound_original;

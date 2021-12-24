@@ -94,6 +94,7 @@
     <ClCompile Include="hooks\get_color_modulation.cpp" />
     <ClCompile Include="hooks\is_using_static_prop_debug_modes.cpp" />
     <ClCompile Include="hooks\reset.cpp" />
+    <ClCompile Include="hooks\shutdown.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -223,5 +224,6 @@
     <ClInclude Include="features\game events\decoy\decoy.h" />
     <ClInclude Include="engine\debug\debug_overlay.h" />
     <ClInclude Include="gui\label\label.h" />
+    <ClInclude Include="core\hooks\hook.h" />
   </ItemGroup>
 </Project>

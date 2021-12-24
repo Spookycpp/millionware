@@ -4,8 +4,9 @@
 #include "../../source engine/input.h"
 
 namespace cheat {
-    bool init(); // cheat initialization
-    bool undo(); // cheat un-initialization
+    bool init();               // cheat initialization
+    bool undo();               // cheat un-initialization
+    inline bool panic = false; // used for preventing ensuring the cheat exits without issue
 
     inline c_player *local_player;   // used for obtaining the local player
     inline c_user_cmd *user_cmd;     // used for obtaining the user commands

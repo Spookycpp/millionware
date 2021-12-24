@@ -281,6 +281,7 @@
     <ClCompile Include="hooks\reset.cpp" />
     <ClCompile Include="hooks\screen_size_changed.cpp" />
     <ClCompile Include="hooks\send_datagram.cpp" />
+    <ClCompile Include="hooks\shutdown.cpp" />
     <ClCompile Include="hooks\write_user_cmd_delta_to_buffer.cpp" />
     <ClCompile Include="lua\lua_game.cpp" />
     <ClCompile Include="lua\lua_callback.cpp" />
