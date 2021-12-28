@@ -14,27 +14,26 @@ void __fastcall hooks::emit_sound(uintptr_t ecx, uintptr_t edx, uintptr_t filter
                                   int pitch, const vector_t *origin, const vector_t *direction, vector_t *utl_vec_origins,
                                   bool update_positions, float sound_time, int speaker_entity, uintptr_t fds) {
 
-    if (settings.miscellaneous.auto_accept && !std::strcmp(sound_entry, xs("UIPanorama.popup_accept_match_beep"))) {
-
-        auto window = FindWindowW(xs(L"Valve001"), NULL);
-        FLASHWINFO flash{sizeof(FLASHWINFO), window, FLASHW_TRAY | FLASHW_TIMERNOFG, 0, 0};
-        FlashWindowEx(&flash);
-        ShowWindow(window, SW_RESTORE);
-
+    const std::string beep_entry = xs("UIPanorama.popup_accept_match_beep");
+    if (!interfaces::engine_client->is_in_game() && settings.miscellaneous.auto_accept && sound_entry == beep_entry) {
         util::auto_accept();
 
-        if (std::strstr(sample_name, xs("competitive_accept_beep")))
+        const std::string accept_beep = sample_name;
+        if (accept_beep.compare(xs("competitive_accept_beep")) != std::string::npos) {
             volume = 0.0f;
+        }
     }
 
-    if (entity_index == interfaces::engine_client->get_local_player()) {
-        if (std::strstr(sample_name, xs("land")) && cheat::impact_sound) {
+    if (interfaces::engine_client->is_in_game() && entity_index == interfaces::engine_client->get_local_player()) {
+        const std::string land_sound = sample_name;
+        if (land_sound.compare(xs("land")) != std::string::npos && cheat::impact_sound) {
             cheat::impact_sound = false;
             cheat::landed = true;
             return;
         }
 
-        if (std::strstr(sample_name, xs("suit")) && cheat::landed) {
+        const std::string suit_sound = sample_name;
+        if (suit_sound.compare(xs("suit")) != std::string::npos && cheat::landed) {
             cheat::landed = false;
             return;
         }
