@@ -254,6 +254,7 @@ struct settings_t {
         bool vote_reveal = false;
         bool discord_rpc = false;
         bool kill_say = false;
+        bool custom_netgraph = false;
         int hit_sound = 0;
         int kill_sound = 0;
         int server_regions = 0;

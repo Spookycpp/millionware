@@ -266,6 +266,7 @@ static config_item_t items[] = {
     config_item_t{settings.miscellaneous.vote_reveal, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("vote_reveal")},
     config_item_t{settings.miscellaneous.discord_rpc, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("discord_rpc")},
     config_item_t{settings.miscellaneous.kill_say, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("kill_say")},
+    config_item_t{settings.miscellaneous.custom_netgraph, CONFIG_ITEM_BOOL, xs("miscellaneous"), xs("custom_netgraph")},
     config_item_t{settings.miscellaneous.hit_sound, CONFIG_ITEM_INT, xs("miscellaneous"), xs("hit_sound")},
     config_item_t{settings.miscellaneous.kill_sound, CONFIG_ITEM_INT, xs("miscellaneous"), xs("kill_sound")},
     config_item_t{settings.miscellaneous.server_regions, CONFIG_ITEM_INT, xs("miscellaneous"), xs("server_regions")},

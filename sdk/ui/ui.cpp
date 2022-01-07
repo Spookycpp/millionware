@@ -464,6 +464,7 @@ void ui::init() {
                 group->new_checkbox(xs("Auto pistol"), settings.miscellaneous.auto_pistol);
                 group->new_checkbox(xs("Vote revealer"), settings.miscellaneous.vote_reveal);
                 group->new_checkbox(xs("Inventory unlocker"), settings.miscellaneous.unlock_inventory);
+                group->new_checkbox(xs("Custom netgraph"), settings.miscellaneous.custom_netgraph);
                 group->new_checkbox(xs("Reveal overwatch suspect"), settings.miscellaneous.reveal_overwatch_suspect);
                 group->new_checkbox(xs("Kill say"), settings.miscellaneous.kill_say);
                 group->new_checkbox(xs("Report player on death"), settings.miscellaneous.report_player_on_death);
