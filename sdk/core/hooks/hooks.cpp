@@ -84,8 +84,6 @@ bool hooks::init() {
     **reinterpret_cast<void ***>(present_addr) = reinterpret_cast<void *>(&present);
     **reinterpret_cast<void ***>(reset_addr) = reinterpret_cast<void *>(&reset);
 
-    cheat::run_command = get_vfunc<uintptr_t>(interfaces::prediction, 19);
-
 #define INIT_HOOK(h, n)                                                                                                                    \
     if (h == 0) {                                                                                                                          \
         logging::error(xs("failed to initialize hook " n));                                                                                \
