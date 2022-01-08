@@ -95,6 +95,7 @@
     <ClCompile Include="hooks\is_using_static_prop_debug_modes.cpp" />
     <ClCompile Include="hooks\reset.cpp" />
     <ClCompile Include="hooks\shutdown.cpp" />
+    <ClCompile Include="engine\security\security.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -225,5 +226,6 @@
     <ClInclude Include="engine\debug\debug_overlay.h" />
     <ClInclude Include="gui\label\label.h" />
     <ClInclude Include="core\hooks\hook.h" />
+    <ClInclude Include="engine\security\security.h" />
   </ItemGroup>
 </Project>

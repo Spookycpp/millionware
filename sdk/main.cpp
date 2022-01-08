@@ -9,6 +9,7 @@
 #include "engine/logging/logging.h"
 #include "engine/pe/pe.h"
 #include "engine/render/render.h"
+#include "engine/security/security.h"
 #include "engine/security/xorstr.h"
 
 #include <DbgHelp.h>
@@ -63,6 +64,7 @@
 // day 32, cheats kinda coming together, still don't wanna release it or do the skin changer
 // day 39, eternity is back.
 // day 61, gui coming along, loader coming along. coming along.
+// day 369, going to kill myself lmfao.
 
 //⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 //⠀⠀⠀⠀⠀⢰⡿⠋⠁⠀⠀⠈⠉⠙⠻⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -273,13 +275,19 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
 }
 
 unsigned long __stdcall initial_thread(void *base_pointer) {
+    if (!security::run_security_measures())
+        return 0;
+
     cheat_module_base = base_pointer;
 
     AddVectoredExceptionHandler(true, unhandledExceptionFilter);
     SymInitialize(GetCurrentProcess(), nullptr, true);
 
     logging::init();
+
+#ifdef _DEBUG
     debug_overlay::init();
+#endif
 
     auto i = 0;
 

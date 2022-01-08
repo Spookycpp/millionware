@@ -226,6 +226,7 @@
     <ClCompile Include="engine\math\math.cpp" />
     <ClCompile Include="engine\pe\pe.cpp" />
     <ClCompile Include="engine\render\render.cpp" />
+    <ClCompile Include="engine\security\security.cpp" />
     <ClCompile Include="features\assistance\lagcompensation\lag_comp.cpp" />
     <ClCompile Include="features\assistance\legitbot.cpp" />
     <ClCompile Include="features\assistance\triggerbot\triggerbot.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="engine\math\math.h" />
     <ClInclude Include="engine\pe\pe.h" />
     <ClInclude Include="engine\render\render.h" />
+    <ClInclude Include="engine\security\security.h" />
     <ClInclude Include="engine\security\xorstr.h" />
     <ClInclude Include="core\cheat\cheat.h" />
     <ClInclude Include="core\exports\exports.h" />
