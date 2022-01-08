@@ -61,40 +61,6 @@ static std::string text_input_value1;
 void ui::init() {
     main_window = std::make_shared<c_window>(point_t(64.0f, 64.0f), point_t(1000.0f, 704.0f));
 
-    /*group->new_checkbox("Example checkbox", checkbox_value1)
-        ->add_color_picker(ui::get_accent_color(), false)
-        ->add_key_bind(key_bind_value1);
-
-    group->new_checkbox("Example checkbox", checkbox_value2)
-        ->add_color_picker(color_picker_value1)
-        ->add_key_bind(key_bind_value2);
-
-    group->new_select("Example select", select_value1, { "Test option 1", "Test option 2", "Test option 3", "Test option 4", "Test option 5"
-    })
-        ->add_color_picker(color_picker_value1)
-        ->add_key_bind(key_bind_value1);
-
-    group->new_select("Example multi select", multi_select_value1, { "Test oasfddddption 1", "Test option 2", "Test option 3", "Test option
-    4", "Testdfhgderherwsdf option 5" }, true)
-        ->add_color_picker(color_picker_value1)
-        ->add_key_bind(key_bind_value2);
-
-    group->new_slider("Example float slider", slider_float_value1, -50.0f, 50.0f, "{:.1f}")
-        ->add_color_picker(color_picker_value1)
-        ->add_key_bind(key_bind_value1);
-
-    group->new_slider("Example int slider", slider_int_value1, 0, 50, "{}")
-        ->add_key_bind(key_bind_value2)
-        ->add_key_bind(key_bind_value2);
-
-    group->new_button("Example button", [] () { printf("Nigger 1 \n"); });
-    group->new_button("Example button", [] () { printf("Nigger 2 \n"); }, ICON_FA_TAG, FONT_FA_SOLID_32)
-        ->add_key_bind(key_bind_value1);
-
-    group->new_text_input("Example text input", text_input_value1)
-        ->add_color_picker(color_picker_value1)
-        ->add_key_bind(key_bind_value2);*/
-
     if (const auto aim_category = main_window->new_category(xs("Aim Assistance"))) {
         if (const auto legit_tab = aim_category->new_tab(FONT_FA_SOLID_32, ICON_FA_CROSSHAIRS, xs("Legit"))) {
             settings_t::legitbot_t *legitbot_settings = &settings.lbot_pistols;
