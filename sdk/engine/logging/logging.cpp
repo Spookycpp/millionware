@@ -45,6 +45,9 @@ void logging::render() {
         return displayed_for >= message.duration;
     });
 
+    if (messages.empty())
+        return;
+
     messages.erase(messages_to_remove, messages.end());
 
     auto offset = 0.0f;
