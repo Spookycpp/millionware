@@ -1,2 +1,3 @@
-holy fuck im horny
-fuck you laine give me creddit on auto edge bug dumb cunt
+put together by laine, czapek, and me (eternity)
+
+buy now at https://millionware.vip/
