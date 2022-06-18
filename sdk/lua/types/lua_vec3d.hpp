@@ -1,11 +1,13 @@
 #pragma once
 
 class vec3d {
-  public:
+public:
     float x, y, z;
 
-    vec3d() : x{0.0f}, y{0.0f}, z{0.0f} {}
-    vec3d(const float x, const float y, const float z) : x{x}, y{y}, z{z} {}
+    vec3d() : x{0.0f}, y{0.0f}, z{0.0f} {
+    }
+    vec3d(const float x, const float y, const float z) : x{x}, y{y}, z{z} {
+    }
 
     vec3d operator+(const vec3d &v) const {
         return vec3d(x + v.x, y + v.y, z + v.z);

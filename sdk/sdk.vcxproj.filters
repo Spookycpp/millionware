@@ -81,7 +81,6 @@
     <ClCompile Include="hooks\draw_print_text.cpp" />
     <ClCompile Include="hooks\get_demo_playback_parameters.cpp" />
     <ClCompile Include="hooks\engine_paint.cpp" />
-    <ClCompile Include="engine\render\surface.cpp" />
     <ClCompile Include="hooks\screen_size_changed.cpp" />
     <ClCompile Include="hooks\push_notice.cpp" />
     <ClCompile Include="features\game events\inferno\inferno.cpp" />
@@ -89,6 +88,14 @@
     <ClCompile Include="features\game events\smoke\smoke.cpp" />
     <ClCompile Include="features\game events\decoy\decoy.cpp" />
     <ClCompile Include="hooks\play_step_sound.cpp" />
+    <ClCompile Include="engine\debug\debug_overlay.cpp" />
+    <ClCompile Include="hooks\calc_view.cpp" />
+    <ClCompile Include="gui\label\label.cpp" />
+    <ClCompile Include="hooks\get_color_modulation.cpp" />
+    <ClCompile Include="hooks\is_using_static_prop_debug_modes.cpp" />
+    <ClCompile Include="hooks\reset.cpp" />
+    <ClCompile Include="hooks\shutdown.cpp" />
+    <ClCompile Include="engine\security\security.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\hooks\hooks.h" />
@@ -210,12 +217,15 @@
     <ClInclude Include="source engine\key_values.h" />
     <ClInclude Include="source engine\glow_object_definition.h" />
     <ClInclude Include="source engine\client_mode_shared.h" />
-    <ClInclude Include="engine\render\surface.h" />
     <ClInclude Include="lua\tables\lua_input.hpp" />
     <ClInclude Include="features\game events\inferno\inferno.h" />
     <ClInclude Include="source engine\filesystem.h" />
     <ClInclude Include="features\game events\footsteps\footsteps.h" />
     <ClInclude Include="features\game events\smoke\smoke.h" />
     <ClInclude Include="features\game events\decoy\decoy.h" />
+    <ClInclude Include="engine\debug\debug_overlay.h" />
+    <ClInclude Include="gui\label\label.h" />
+    <ClInclude Include="core\hooks\hook.h" />
+    <ClInclude Include="engine\security\security.h" />
   </ItemGroup>
 </Project>

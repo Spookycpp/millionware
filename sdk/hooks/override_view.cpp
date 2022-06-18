@@ -8,16 +8,18 @@
 #include "../lua/lua_game.hpp"
 
 int __fastcall hooks::override_view(c_client_mode *ecx, uintptr_t edx, view_setup_t *view_setup) {
+
     if (!view_setup)
         return override_view_original(ecx, edx, view_setup);
 
     if (view_setup)
         features::miscellaneous::on_override_view(view_setup);
 
-    if (interfaces::engine_client->is_in_game()) {
-        auto view_model = (c_player *) cheat::local_player->get_view_model_handle().get();
+    cheat::fov = view_setup->fov;
 
-        if (view_model) {
+    if (interfaces::engine_client->is_in_game()) {
+
+        if (const auto view_model = static_cast<c_player *>(cheat::local_player->get_view_model_handle().get())) {
             auto eye_angles = view_setup->angles;
 
             if (settings.visuals.local.viewmodel_offset) {

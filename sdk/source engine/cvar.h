@@ -33,7 +33,7 @@ enum e_convar_flags {
 using change_callback_t = void(__cdecl *)(void *var, const char *old, float flold);
 
 class c_convar {
-  public:
+public:
     DECLARE_VFUNC(12, get_float(), float(__thiscall *)(void *))();
     DECLARE_VFUNC(13, get_int(), int(__thiscall *)(void *))();
     DECLARE_VFUNC(13, get_bool(), bool(__thiscall *)(void *))();
@@ -42,10 +42,10 @@ class c_convar {
     DECLARE_VFUNC(16, set_value(int value), void(__thiscall *)(void *, int))(value);
     DECLARE_VFUNC(16, set_value(bool value), void(__thiscall *)(void *, int))((int) value);
 
-  private:
+private:
     void *vtable; // 0x0000
 
-  public:
+public:
     c_convar *next;     // 0x0004
     __int32 registered; // 0x0008
     char *name;         // 0x000C
@@ -66,6 +66,6 @@ class c_convar {
 };
 
 class c_cvar {
-  public:
+public:
     DECLARE_VFUNC(16, find_convar(const char *key), c_convar *(__thiscall *) (void *, const char *) )(key);
 };

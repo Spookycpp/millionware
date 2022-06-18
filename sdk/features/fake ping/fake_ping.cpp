@@ -31,8 +31,9 @@ namespace features::fake_ping {
 
         for (size_t i = 0; i < sequences.size(); ++i) {
             const float delta = interfaces::global_vars->current_time - sequences.at(i).current_time;
+            const float max_ping = settings.miscellaneous.fake_ping.max_ping / 1000;
 
-            if (delta > 0.2f) {
+            if (delta > max_ping) {
                 sequences.erase(sequences.begin() + i);
             }
         }
@@ -46,7 +47,8 @@ namespace features::fake_ping {
             return;
 
         const float cur_time = interfaces::global_vars->current_time;
-        const float latency = 0.15f - (interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING) + interfaces::global_vars->frame_time) - TICK_INTERVAL();
+        const float desired_ping = settings.miscellaneous.fake_ping.max_ping / 1000;
+        const float latency = desired_ping - (interfaces::engine_client->get_net_channel_info()->get_latency(FLOW_OUTGOING) + interfaces::global_vars->frame_time) - TICK_INTERVAL();
 
         for (auto &it : sequences) {
             const float delta = cur_time - it.current_time;

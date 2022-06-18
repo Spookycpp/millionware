@@ -1,11 +1,16 @@
 #pragma once
 
-#include "../core/cheat/cheat.h"
-#include "../core/interfaces/interfaces.h"
-#include "../core/hooks/hooks.h"
+#include "../engine/debug/debug_overlay.h"
 
-bool __fastcall hooks::write_user_cmd_delta_to_buffer(uintptr_t ecx, uintptr_t edx, int slot, bf_write *buf, int from, int to, bool new_user_cmd) {
-    
+#include "../core/cheat/cheat.h"
+#include "../core/hooks/hooks.h"
+#include "../core/interfaces/interfaces.h"
+
+bool __fastcall hooks::write_user_cmd_delta_to_buffer(uintptr_t ecx, uintptr_t edx, int slot, bf_write *buf, int from, int to,
+                                                      bool new_user_cmd) {
+
+    PROFILE_WITH(write_user_cmd);
+
     if (!cheat::tick_base_shift)
         return write_user_cmd_delta_to_buffer_original(ecx, edx, slot, buf, from, to, new_user_cmd);
 
@@ -16,7 +21,7 @@ bool __fastcall hooks::write_user_cmd_delta_to_buffer(uintptr_t ecx, uintptr_t e
     cheat::tick_base_shift = 0;
 
     // CCLMsg_Move
-    int *new_cmds        = reinterpret_cast<int *>(reinterpret_cast<uintptr_t>(buf) - 0x2C);
+    int *new_cmds = reinterpret_cast<int *>(reinterpret_cast<uintptr_t>(buf) - 0x2C);
     int *backup_commands = reinterpret_cast<int *>(reinterpret_cast<uintptr_t>(buf) - 0x30);
 
     const int new_commands = *new_cmds;
@@ -53,11 +58,11 @@ bool __fastcall hooks::write_user_cmd_delta_to_buffer(uintptr_t ecx, uintptr_t e
             static auto write_user_cmd = patterns::get_write_user_command();
 
             __asm {
-		    mov     ecx, buf
-		    mov     edx, to_command
-		    push	from_command
-		    call    write_user_cmd
-		    add     esp, 4
+				mov     ecx, buf
+				mov     edx, to_command
+				push	from_command
+				call    write_user_cmd
+				add     esp, 4
             }
 
             from_command = to_command;

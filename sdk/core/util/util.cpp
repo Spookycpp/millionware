@@ -107,7 +107,7 @@ namespace util {
         }
 
         if (should_update && interfaces::global_vars->current_time > update_time && interfaces::client_state->delta_tick != -1) {
-            logging::info("Forcing game update");
+            logging::debug(xs("Forcing game update"));
             interfaces::client_state->delta_tick = -1;
 
             should_update = false;
@@ -125,22 +125,10 @@ namespace util {
         random_seed_fn(seed);
     }
 
-    void on_map_load() {
-        features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
-    }
-
-    void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
-
-        if (frame_stage != e_client_frame_stage::FRAME_STAGE_RENDER_START)
-            return;
-
-        features::miscellaneous::skybox_changer(settings.visuals.world.skybox);
-    }
-
     void play_sound(const char *file_path, int volume) {
 
         if (volume == -1)
-            volume = settings.global.sound_fx_volume;
+            volume = 100;
 
         char buffer[256] = {};
         sprintf_s(buffer, xs("playvol \"%s\" \"%s\""), file_path, std::to_string(static_cast<float>(volume) / 100.0f).c_str());
@@ -184,13 +172,16 @@ namespace util {
         const float v27 = norm_wish_up.z * user_cmd->up_move;
         const float v29 = norm_wish_up.y * user_cmd->up_move;
 
-        user_cmd->forward_move = norm_view_fwd.x * v24 + norm_view_fwd.y * v23 + norm_view_fwd.z * v25 + (norm_view_fwd.x * v22 + norm_view_fwd.y * v26 + norm_view_fwd.z * v28) +
+        user_cmd->forward_move = norm_view_fwd.x * v24 + norm_view_fwd.y * v23 + norm_view_fwd.z * v25 +
+                                 (norm_view_fwd.x * v22 + norm_view_fwd.y * v26 + norm_view_fwd.z * v28) +
                                  (norm_view_fwd.y * v30 + norm_view_fwd.x * v29 + norm_view_fwd.z * v27);
 
-        user_cmd->side_move = norm_view_right.x * v24 + norm_view_right.y * v23 + norm_view_right.z * v25 + (norm_view_right.x * v22 + norm_view_right.y * v26 + norm_view_right.z * v28) +
+        user_cmd->side_move = norm_view_right.x * v24 + norm_view_right.y * v23 + norm_view_right.z * v25 +
+                              (norm_view_right.x * v22 + norm_view_right.y * v26 + norm_view_right.z * v28) +
                               (norm_view_right.x * v29 + norm_view_right.y * v30 + norm_view_right.z * v27);
 
-        user_cmd->up_move = norm_view_up.x * v23 + norm_view_up.y * v24 + norm_view_up.z * v25 + (norm_view_up.x * v26 + norm_view_up.y * v22 + norm_view_up.z * v28) +
+        user_cmd->up_move = norm_view_up.x * v23 + norm_view_up.y * v24 + norm_view_up.z * v25 +
+                            (norm_view_up.x * v26 + norm_view_up.y * v22 + norm_view_up.z * v28) +
                             (norm_view_up.x * v30 + norm_view_up.y * v29 + norm_view_up.z * v27);
 
         user_cmd->forward_move = std::clamp(user_cmd->forward_move, -450.0f, 450.0f);
@@ -230,10 +221,20 @@ namespace util {
         }
     }
 
+    void open_settings_folder() {
+        const std::string path = xs(".\\mw\\configs");
+        ShellExecuteA(NULL, NULL, path.data(), NULL, NULL, SW_SHOWNORMAL);
+    }
+
+    void open_lua_folder() {
+        const std::string path = xs(".\\mw\\scripts");
+        ShellExecuteA(NULL, NULL, path.data(), NULL, NULL, SW_SHOWNORMAL);
+    }
+
     point_t screen_transform(const vector_t &world) {
 
         const auto screen_transform = [&](const vector_t &in, point_t &out) -> bool {
-            //const static auto &matrix = *(matrix4x4_t *) patterns::get_view_matrix();
+            // const static auto &matrix = *(matrix4x4_t *) patterns::get_view_matrix();
             const static auto &matrix = cheat::view_matrix;
             out.x = matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3];
             out.y = matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3];
@@ -306,7 +307,8 @@ namespace util {
         return reinterpret_cast<uintptr_t *>(find_hud_element_fn(this_ptr, name));
     }
 
-    std::optional<vector_t> get_intersection(const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs, float radius) {
+    std::optional<vector_t> get_intersection(const vector_t &start, const vector_t &end, const vector_t &mins, const vector_t &maxs,
+                                             float radius) {
 
         const auto sphere_ray_intersection = [start, end, radius](auto &&center) -> std::optional<vector_t> {
             auto direction = end - start;
@@ -349,11 +351,8 @@ namespace util {
             case '"':
             case '\\':
             case ';':
-            case '\n':
-                it = ' ';
-                break;
-            default:
-                break;
+            case '\n': it = ' '; break;
+            default: break;
             }
         }
 

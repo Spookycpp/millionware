@@ -40,17 +40,16 @@ bool entity_handle_t::operator!=(c_entity *entity) const {
 
 bool c_entity::is_grenade() {
     auto classid = this->get_networkable()->get_client_class()->class_id;
-    return classid == CBaseCSGrenadeProjectile || classid == CSmokeGrenadeProjectile || classid == CMolotovProjectile || classid == CDecoyProjectile;
+    return classid == CBaseCSGrenadeProjectile || classid == CSmokeGrenadeProjectile || classid == CMolotovProjectile ||
+           classid == CDecoyProjectile;
 }
 
 CUtlVector<c_animation_layer> &c_player::animation_overlay() {
-    const static auto offset = netvars::get(CRC_CT("DT_BaseAnimating:m_hLightingOrigin"));
-
-    return *(CUtlVector<c_animation_layer> *) ((uintptr_t) this + offset + 0x3c);
+    return *(CUtlVector<c_animation_layer> *) ((uintptr_t) this + 0x2990);
 }
 
 CUtlVector<matrix3x4_t> &c_player::get_cached_bone_data() {
-    return *(CUtlVector<matrix3x4_t> *) ((uintptr_t) this + 0x290C + sizeof(void *));
+    return *(CUtlVector<matrix3x4_t> *) ((uintptr_t) this + 0x2914);
 }
 
 void c_player::set_abs_angles(const vector_t &angle) {
@@ -119,6 +118,11 @@ float c_player::get_flash_time() {
     return *reinterpret_cast<float *>(uintptr_t(this) + patterns::get_flash_time());
 }
 
+float &c_player::spawn_time() {
+    static auto m_iAddonBits = netvars::get(CRC_CT("DT_CSPlayer:m_iAddonBits"));
+    return *(float *) (uintptr_t(this) + m_iAddonBits - 4);
+}
+
 int c_player::max_health() {
 
     // dangerzone check
@@ -139,7 +143,7 @@ int c_player::sequence_activity(int sequence) {
         return -1;
     }
 
-    return reinterpret_cast<int(__fastcall *)(void *, studio_hdr_t *, int)>(patterns::get_sequence_activity)(this, hdr, sequence);
+    return reinterpret_cast<int(__fastcall *)(void *, studio_hdr_t *, int)>(patterns::get_sequence_activity())(this, hdr, sequence);
 }
 
 bool c_player::is_flashed() {
@@ -161,7 +165,8 @@ bool c_player::can_shoot(c_weapon *weapon) {
     if (this->get_next_attack() > server_time)
         return false;
 
-    if ((weapon->get_item_definition_index() == WEAPON_FAMAS || weapon->get_item_definition_index() == WEAPON_GLOCK) && weapon->get_is_burst_mode() && weapon->get_burst_shots_remaining() > 0)
+    if ((weapon->get_item_definition_index() == WEAPON_FAMAS || weapon->get_item_definition_index() == WEAPON_GLOCK) &&
+        weapon->get_is_burst_mode() && weapon->get_burst_shots_remaining() > 0)
         return false;
 
     if (weapon->get_next_primary_attack() > server_time)
@@ -286,6 +291,16 @@ bool c_player::has_bomb() {
     return has_bomb(this);
 }
 
+bool c_player::is_sane() {
+    if (!this)
+        return false;
+
+    if (!get_health())
+        return false;
+
+    return true;
+}
+
 bool c_player::is_valid(const bool check_alive) {
     if (!this || this->get_networkable()->is_dormant() || !this->is_player())
         return false;
@@ -299,7 +314,8 @@ c_econ_item_view *c_economy_item::get_econ_item_view() {
     if (!address)
         return nullptr;
 
-    static auto get_econ_item_view_fn = reinterpret_cast<c_econ_item_view *(__thiscall *) (void *)>(*reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
+    static auto get_econ_item_view_fn =
+        reinterpret_cast<c_econ_item_view *(__thiscall *) (void *)>(*reinterpret_cast<uintptr_t *>(&address + 1) + &address + 5);
 
     if (!get_econ_item_view_fn)
         return nullptr;
@@ -313,157 +329,88 @@ weapon_info_t *c_weapon::get_info() {
 
 int c_weapon::get_weapon_type() {
     switch (this->get_item_definition_index()) {
-    case WEAPON_DEAGLE:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_ELITE:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_FIVESEVEN:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_GLOCK:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_AK47:
-        return WEAPON_TYPE_RIFLE;
-    case WEAPON_AUG:
-        return WEAPON_TYPE_RIFLE;
-    case WEAPON_AWP:
-        return WEAPON_TYPE_SNIPER;
-    case WEAPON_FAMAS:
-        return WEAPON_TYPE_RIFLE;
-    case WEAPON_G3SG1:
-        return WEAPON_TYPE_SNIPER;
-    case WEAPON_GALILAR:
-        return WEAPON_TYPE_RIFLE;
-    case WEAPON_M249:
-        return WEAPON_TYPE_MG;
-    case WEAPON_M4A1:
-        return WEAPON_TYPE_RIFLE;
-    case WEAPON_MAC10:
-        return WEAPON_TYPE_SMG;
-    case WEAPON_P90:
-        return WEAPON_TYPE_SMG;
-    case WEAPON_UMP45:
-        return WEAPON_TYPE_SMG;
-    case WEAPON_XM1014:
-        return WEAPON_TYPE_SHOTGUN;
-    case WEAPON_BIZON:
-        return WEAPON_TYPE_SMG;
-    case WEAPON_MAG7:
-        return WEAPON_TYPE_SHOTGUN;
-    case WEAPON_NEGEV:
-        return WEAPON_TYPE_MG;
-    case WEAPON_SAWEDOFF:
-        return WEAPON_TYPE_SHOTGUN;
-    case WEAPON_TEC9:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_TASER:
-        return WEAPON_TYPE_TASER;
-    case WEAPON_HKP2000:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_MP7:
-        return WEAPON_TYPE_SMG;
-    case WEAPON_MP9:
-        return WEAPON_TYPE_SMG;
-    case WEAPON_NOVA:
-        return WEAPON_TYPE_SHOTGUN;
-    case WEAPON_P250:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_SCAR20:
-        return WEAPON_TYPE_SNIPER;
-    case WEAPON_SG556:
-        return WEAPON_TYPE_RIFLE;
-    case WEAPON_SSG08:
-        return WEAPON_TYPE_SNIPER;
-    case WEAPON_KNIFE:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_FLASHBANG:
-        return WEAPON_TYPE_GRENADE;
-    case WEAPON_HEGRENADE:
-        return WEAPON_TYPE_GRENADE;
-    case WEAPON_SMOKEGRENADE:
-        return WEAPON_TYPE_GRENADE;
-    case WEAPON_MOLOTOV:
-        return WEAPON_TYPE_GRENADE;
-    case WEAPON_DECOY:
-        return WEAPON_TYPE_GRENADE;
-    case WEAPON_INCGRENADE:
-        return WEAPON_TYPE_GRENADE;
-    case WEAPON_C4:
-        return WEAPON_TYPE_INVALID;
-    case WEAPON_KNIFE_T:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_M4A1_SILENCER:
-        return WEAPON_TYPE_RIFLE;
-    case WEAPON_USP_SILENCER:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_CZ75A:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_REVOLVER:
-        return WEAPON_TYPE_PISTOL;
-    case WEAPON_KNIFE_BAYONET:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_CSS:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_FLIP:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_GUT:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_KARAMBIT:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_M9_BAYONET:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_TACTICAL:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_FALCHION:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_SURVIVAL_BOWIE:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_BUTTERFLY:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_PUSH:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_CORD:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_CANIS:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_URSUS:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_GYPSY_JACKKNIFE:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_OUTDOOR:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_STILETTO:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_WIDOWMAKER:
-        return WEAPON_TYPE_KNIFE;
-    case WEAPON_KNIFE_SKELETON:
-        return WEAPON_TYPE_KNIFE;
-    default:
-        return WEAPON_TYPE_INVALID;
+    case WEAPON_DEAGLE: return WEAPON_TYPE_PISTOL;
+    case WEAPON_ELITE: return WEAPON_TYPE_PISTOL;
+    case WEAPON_FIVESEVEN: return WEAPON_TYPE_PISTOL;
+    case WEAPON_GLOCK: return WEAPON_TYPE_PISTOL;
+    case WEAPON_AK47: return WEAPON_TYPE_RIFLE;
+    case WEAPON_AUG: return WEAPON_TYPE_RIFLE;
+    case WEAPON_AWP: return WEAPON_TYPE_SNIPER;
+    case WEAPON_FAMAS: return WEAPON_TYPE_RIFLE;
+    case WEAPON_G3SG1: return WEAPON_TYPE_SNIPER;
+    case WEAPON_GALILAR: return WEAPON_TYPE_RIFLE;
+    case WEAPON_M249: return WEAPON_TYPE_MG;
+    case WEAPON_M4A1: return WEAPON_TYPE_RIFLE;
+    case WEAPON_MAC10: return WEAPON_TYPE_SMG;
+    case WEAPON_P90: return WEAPON_TYPE_SMG;
+    case WEAPON_UMP45: return WEAPON_TYPE_SMG;
+    case WEAPON_XM1014: return WEAPON_TYPE_SHOTGUN;
+    case WEAPON_BIZON: return WEAPON_TYPE_SMG;
+    case WEAPON_MAG7: return WEAPON_TYPE_SHOTGUN;
+    case WEAPON_NEGEV: return WEAPON_TYPE_MG;
+    case WEAPON_SAWEDOFF: return WEAPON_TYPE_SHOTGUN;
+    case WEAPON_TEC9: return WEAPON_TYPE_PISTOL;
+    case WEAPON_TASER: return WEAPON_TYPE_TASER;
+    case WEAPON_HKP2000: return WEAPON_TYPE_PISTOL;
+    case WEAPON_MP7: return WEAPON_TYPE_SMG;
+    case WEAPON_MP9: return WEAPON_TYPE_SMG;
+    case WEAPON_NOVA: return WEAPON_TYPE_SHOTGUN;
+    case WEAPON_P250: return WEAPON_TYPE_PISTOL;
+    case WEAPON_SCAR20: return WEAPON_TYPE_SNIPER;
+    case WEAPON_SG556: return WEAPON_TYPE_RIFLE;
+    case WEAPON_SSG08: return WEAPON_TYPE_SNIPER;
+    case WEAPON_KNIFE: return WEAPON_TYPE_KNIFE;
+    case WEAPON_FLASHBANG: return WEAPON_TYPE_GRENADE;
+    case WEAPON_HEGRENADE: return WEAPON_TYPE_GRENADE;
+    case WEAPON_SMOKEGRENADE: return WEAPON_TYPE_GRENADE;
+    case WEAPON_MOLOTOV: return WEAPON_TYPE_GRENADE;
+    case WEAPON_DECOY: return WEAPON_TYPE_GRENADE;
+    case WEAPON_INCGRENADE: return WEAPON_TYPE_GRENADE;
+    case WEAPON_C4: return WEAPON_TYPE_INVALID;
+    case WEAPON_KNIFE_T: return WEAPON_TYPE_KNIFE;
+    case WEAPON_M4A1_SILENCER: return WEAPON_TYPE_RIFLE;
+    case WEAPON_USP_SILENCER: return WEAPON_TYPE_PISTOL;
+    case WEAPON_CZ75A: return WEAPON_TYPE_PISTOL;
+    case WEAPON_REVOLVER: return WEAPON_TYPE_PISTOL;
+    case WEAPON_KNIFE_BAYONET: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_CSS: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_FLIP: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_GUT: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_KARAMBIT: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_M9_BAYONET: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_TACTICAL: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_FALCHION: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_SURVIVAL_BOWIE: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_BUTTERFLY: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_PUSH: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_CORD: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_CANIS: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_URSUS: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_GYPSY_JACKKNIFE: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_OUTDOOR: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_STILETTO: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_WIDOWMAKER: return WEAPON_TYPE_KNIFE;
+    case WEAPON_KNIFE_SKELETON: return WEAPON_TYPE_KNIFE;
+    default: return WEAPON_TYPE_INVALID;
     }
 }
 
 bool c_weapon::has_scope() {
     const int weapon_index = this->get_item_definition_index();
 
-    return weapon_index == WEAPON_G3SG1 || weapon_index == WEAPON_SCAR20 || weapon_index == WEAPON_AWP || weapon_index == WEAPON_AUG || weapon_index == WEAPON_SG556 || weapon_index == WEAPON_SSG08;
+    return weapon_index == WEAPON_G3SG1 || weapon_index == WEAPON_SCAR20 || weapon_index == WEAPON_AWP || weapon_index == WEAPON_AUG ||
+           weapon_index == WEAPON_SG556 || weapon_index == WEAPON_SSG08;
 }
 
 bool c_weapon::is_valid(const bool check_clip) {
     switch (this->get_weapon_type()) {
-    case WEAPON_TYPE_PISTOL:
-        break;
-    case WEAPON_TYPE_SHOTGUN:
-        break;
-    case WEAPON_TYPE_SMG:
-        break;
-    case WEAPON_TYPE_RIFLE:
-        break;
-    case WEAPON_TYPE_MG:
-        break;
-    case WEAPON_TYPE_SNIPER:
-        break;
-    default:
-        return false;
+    case WEAPON_TYPE_PISTOL: break;
+    case WEAPON_TYPE_SHOTGUN: break;
+    case WEAPON_TYPE_SMG: break;
+    case WEAPON_TYPE_RIFLE: break;
+    case WEAPON_TYPE_MG: break;
+    case WEAPON_TYPE_SNIPER: break;
+    default: return false;
     }
 
     return check_clip ? this->get_ammo1() > 0 : true;

@@ -1,20 +1,22 @@
-﻿#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 #include <windows.h>
 
 #include "core/cheat/cheat.h"
+#include "engine/debug/debug_overlay.h"
 #include "engine/hash/hash.h"
 #include "engine/input/input.h"
 #include "engine/logging/logging.h"
 #include "engine/pe/pe.h"
 #include "engine/render/render.h"
+#include "engine/security/security.h"
 #include "engine/security/xorstr.h"
 
 #include <DbgHelp.h>
-#include <winternl.h>
-#include <locale>
 #include <codecvt>
 #include <format>
+#include <locale>
+#include <winternl.h>
 
 // shoutout navewindre 4 dis one
 // i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
@@ -26,24 +28,24 @@
 // i love you hayden for being so light-hearted and cheerful
 // i love you carol for showing me whats it like to care for someone with your life
 // i love you bowish for falling for my lie that my girlfriend had died >.<
-// i love you swoopae for giving me the gift of ebog
 
 // im in love with navewindre
 // why is this still here
 // im in love with laine
 
-// fuck you duxe u pasting fucking retard i want to fucking slap your fucking mother so god damn hard for not drowning you at birth you stupid dumb fucking rat bastard im going to literally shut your
-// fucking power off and then make ur fridge run down the street
+// fuck you duxe u pasting fucking retard i want to fucking slap your fucking mother so god damn hard for not drowning you at birth you
+// stupid dumb fucking rat bastard im going to literally shut your fucking power off and then make ur fridge run down the street
 
 // https://i.imgur.com/xD24aJu.jpg
 
 // this cheats going to have my unironic suicide note in it one day
 
-// if this source gets leaked, this is all of our real notes, this is from no one else this is purely our thoughts and nothing else why would u even remotely suspect that we would be lying about such
-// things you are a fake and a lame and a snake and a opp u gonna get smoked on ur own set if you keep talking shit im going to send duxe after you with his pink egirl gaming chair and he'll run u
-// over in his bmw that he somehow bought from pasting a dogshit rust hack that fucking bluescreened my pc 9 times in 1 sitting using that shitty remote desktop bypass as well fucking aids as fuck
-// shoutout daum 4 the cerb bypass tho was fun raging w/o any fkn bans for like a week str8 miss those days ngl
-// nigga
+// if this source gets leaked, this is all of our real notes, this is from no one else this is purely our thoughts and nothing else why
+// would u even remotely suspect that we would be lying about such things you are a fake and a lame and a snake and a opp u gonna get smoked
+// on ur own set if you keep talking shit im going to send duxe after you with his pink egirl gaming chair and he'll run u over in his bmw
+// that he somehow bought from pasting a dogshit rust hack that fucking bluescreened my pc 9 times in 1 sitting using that shitty remote
+// desktop bypass as well fucking aids as fuck shoutout daum 4 the cerb bypass tho was fun raging w/o any fkn bans for like a week str8 miss
+// those days ngl nigga
 
 // i should be writing this hack but i can't think of anything to do rn i cbf to finish inventory changer man
 // gonna be on a fbi watchlist if this gets out ngl
@@ -61,19 +63,105 @@
 // day 10, loader has been fixed. millionware is a go.
 // day 32, cheats kinda coming together, still don't wanna release it or do the skin changer
 // day 39, eternity is back.
+// day 61, gui coming along, loader coming along. coming along.
+// day 369, going to kill myself lmfao.
 
-//⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⠀⠀⠀⢰⡿⠋⠁⠀⠀⠈⠉⠙⠻⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⠀⠀⢀⣿⠇⠀⢀⣴⣶⡾⠿⠿⠿⢿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⣀⣀⣸⡿⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠙⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
-//⠀⣾⡟⠛⣿⡇⠀⠀⢸⣿⣿⣷⣤⣤⣤⣤⣶⣶⣿⠇⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀  
-//⢀⣿⠀⢀⣿⡇⠀⠀⠀⠻⢿⣿⣿⣿⣿⣿⠿⣿⡏⠀⠀⠀⠀⢴⣶⣶⣿⣿⣿⣆  
-//⢸⣿⠀⢸⣿⡇⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⣿⡇⣀⣠⣴⣾⣮⣝⠿⠿⠿⣻⡟  
-//⢸⣿⠀⠘⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠉⠀  
-//⠸⣿⠀⠀⣿⡇⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠉⠀⠀⠀⠀  
-//⠀⠻⣷⣶⣿⣇⠀⠀⠀⢠⣼⣿⣿⣿⣿⣿⣿⣿⣛⣛⣻⠉⠁⠀⠀⠀⠀⠀⠀⠀  
-//⠀⠀⠀⠀⢸⣿⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀  
+//⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⠀⠀⠀⢰⡿⠋⠁⠀⠀⠈⠉⠙⠻⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⠀⠀⢀⣿⠇⠀⢀⣴⣶⡾⠿⠿⠿⢿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⣀⣀⣸⡿⠀⠀⢸⣿⣇⠀⠀⠀⠀⠀⠀⠙⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//⠀⣾⡟⠛⣿⡇⠀⠀⢸⣿⣿⣷⣤⣤⣤⣤⣶⣶⣿⠇⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀
+//⢀⣿⠀⢀⣿⡇⠀⠀⠀⠻⢿⣿⣿⣿⣿⣿⠿⣿⡏⠀⠀⠀⠀⢴⣶⣶⣿⣿⣿⣆
+//⢸⣿⠀⢸⣿⡇⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⣿⡇⣀⣠⣴⣾⣮⣝⠿⠿⠿⣻⡟
+//⢸⣿⠀⠘⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠉⠀
+//⠸⣿⠀⠀⣿⡇⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠉⠀⠀⠀⠀
+//⠀⠻⣷⣶⣿⣇⠀⠀⠀⢠⣼⣿⣿⣿⣿⣿⣿⣿⣛⣛⣻⠉⠁⠀⠀⠀⠀⠀⠀⠀
+//⠀⠀⠀⠀⢸⣿⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀
 //⠀⠀⠀⠀⢸⣿⣀⣀⣀⣼⡿⢿⣿⣿⣿⣿⣿⡿⣿⣿⣿
+
+//     when million, doesnt million.
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⡠⠔⠉⠀⠀⠀⠀⠀⠉⠒⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⢀⣞⣀⣀⡀⠀⢀⣀⣀⣀⡀⠀⠀⠱⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⡌⢾⣿⡇⠀⠀⠰⣿⣷⠀⠀⠀⠀⢀⢱⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⡇⠀⠉⠀⠀⠀⣠⣬⣵⣤⣄⠀⠀⠀⠙⡄⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⢣⠀⠀⠀⠴⢿⣿⣿⣿⣿⠟⡣⡀⠀⣠⠃⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠳⡀⠀⠀⠀⠈⠉⠉⠉⠁⠂⢁⠞⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠠⢦⣤⣀⡀⠀⠈⠒⠤⣀⣀⡀⣀⣀⠤⠐⠳⣦⣤⣤⣤⠶⠶⠶⢦⣤⡀⠀
+// ⠀⠀⠀⠀⠈⠉⠙⠛⠻⠶⠶⠶⠶⠶⠶⠶⠶⠾⡟⠋⠻⣶⡒⠒⠦⠤⡤⡈⢻⡆
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⢀⠀⠘⣷⠀⠀⠀⡇⡇⣸⠇
+// ⠀⠀⠀⣀⣀⣀⣀⣠⣤⣤⣤⣤⣤⣖⣺⢻⣝⣋⣽⣳⣶⣶⣿⣦⡴⣼⢷⡟⠋⠀
+// ⠛⠛⠛⠉⠉⠉⠉⠉⠀⠀⠀⠀⠀⠳⣌⠉⠉⠉⣡⠞⠉⠉⠛⠳⢶⣼⢸⠂⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠙⣿⡀⠀⠀
+//
+//       when million, millions.
+// ⠀⠀⠀⠀⠀⠀⠀⣠⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⢀⣀⣕⡋⠘⠐⠂⡑⠃⠉⢲⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⢻⠃⢀⡤⠰⡎⠈⣉⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⡀⢀⡎⠀⠠⣀⠀⠈⠉⠁⠠⢄⠈⡗⠲⣤⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// ⠀⢥⣦⠶⣗⢩⣰⢈⢁⠀⣀⠀⠀⢀⠨⢠⠇⠀⢹⢳⡉⣓⣶⣄⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⢀⠀⠉⠙⠢⠥⣄⣀⣀⣀⣤⠴⠋⠀⠀⢸⡎⣿⡀⠀⢹⣏⠉⠉⠒⢦⠀
+// ⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠀⢸⣇⣴⠈⣿⡄⠀⢀⠻⠀
+// ⣠⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠴⣶⣭⣽⣻⣻⣯⣽⣿⣿⣀⣻⡇⠀⠀⡅⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠚⠋⠳⣀⣀⣀⣀⣀⣠⠞⠃⠀⠀⠉⠉⠉⠙⠓
+
+//                       %%.   (%#     %&%     #%/    %&.    (%&/    .%&.   #&#    .%&&
+//                       @@.   %@&    &@*@&    &@#    @@.   *@#%@,   .@@    %@%    &@*@&
+//                       @@@@@@@@&   %@* *@%   &@@@@@@@@.  ,@@  @@.  .@@@@@@@@%   &@* *@#
+//                       @@.   #@&  #@@@@@@@(  &@#    @@. .@@@@@@@@  .@@.   %@%  %@@@@@@@(
+//                       @@    #@% *@&     &@* &@#    @@. @@*    ,@& .@@    %@% /@&     &@*
+//
+
+//
+//                                 .,/#%&@@@@@@@@@@@@@@@@@@@@@@&&&&&&&&&&&&&&&&@@@@@@@@@@@@@@#.
+//                         *%@@@@@@@@&(#*,                                                  .%@@&.
+//                  .*&@@//*.                                                                  ,&@@/
+//               /@@@&,                                                                          ,@@@,
+//            /@@@%.                                                                               %@@(
+//            &@*   (@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@        (@@(
+//           ,@@                   .,,.                     *###/.                                   ,@@(
+//          *&@%               .(    .   (.             (/          (.                                 &&@.
+//        *&@@*                %   (@&&   &            &    %@@@&    #.                                 *@@@/
+//     .&@@&,                   #,      ,#              #    */*.   .(                                     @@@&,
+//    &@@%                                                *&/****##                                           *@@%
+//   &@@*                                  #@#                                                                  .&@&
+//   @@#                                   #@%                                                                    #@@
+//   &@#                                .%@@@(                                                                     @@(
+//   (@&                              #@@%,                @@@@@@#                                                 &@&
+//    (@&                             %@%             ./(/*.    &@*                                               .@@*
+//     /@@(                            ,@@(         (&&&%#%&@ (@@&                                               ,@@%
+//      ,&@&                             .#@@%%@&              .                                               ,@@@,
+//        &@&                                                                                               ,%@@&.
+//        *@@,             .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.                            .#&@*
+//         &@(                &.     %@     @#      /@.    @/         .@.                               .@@@,
+//         &@#                 ,@.   %@     @#      /@.    @/        %/                                .@@(
+//         &@(                   #(((&@#((((@&((((((%@#(#((@%((((((#@.                                 @@/
+//         &@(                     &,%@     @#      /@.    @/     &,                                 *@@*
+//         @@.                      .@@     @#      (@.    @/   #(                                 /@@&
+//        /@@.                        (#    @#      &@     @/ /&                                .&@@#
+//        &@#                           ##  @#      &@    ,@#&.                              /@@@&.
+//        &@/                             (#@#      &@    /@,                            /&@@@/
+//       *@@.                               &&.     &@  #%.                         ,%@@@&*
+//       /@@.                                  ,&%((@&(                        *%@@@@(.
+//       (@@                                                             .(&@@@%/
+//       /@@.                                                       .#@@@@#.
+//        %@&.                                                 .*&@@@#.
+//         ,&@&,                                   .,(&@@@@@@@@&(,
+//            #@@@&/.                     ..*#&@@@@@@&&%(..
+//                /&@@@@@@@@@@@@@@@@@@@@@@&%(.
+//
+//
+//
+//           .@@,   (@@@@@#  #@@@@@%    /@,  .&#  ,%@@&*   @/   &@       #@%    @@,  *@   *%@@&/  (@@@@@# .@#   (@,
+//          .@*,@.  (@.   &% #@*,,,       &#/@,  &%    (@  @/   &@      #& &%   @.&/ *@ .@*       (@.   @%  *@.&#
+//          @%/*#@. (@,,%@.  #@            &@    &#    (@  @/   &@     (@/**@%  @. ##*@ .@,  .,&@ (@*,%@.    .@*
+//        .@#    (@.(@.   &% #@@@@@&.      %@     /@@@@(   *&@@@%.    (@.    @# @.  /@@   #@@@@%/ (@.   &%   .@*   #@
+//                                                                                                                 ,,
+//
+//         *@&&&@#  (@.   @* #@&&&@(  %@&&&&( ,@@&@%
+//         /@.   && (@.   @* #@    @( &@%%%%.     (@,
+//         /@.   &# /@.   @* #@    @/ &@.       %&
+//         *&&&&#.   ,#&&#.  #&&&&(.  #&&&&&@   %&
 
 static void *cheat_module_base = 0;
 
@@ -104,7 +192,8 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
         if (address >= module_start && address <= module_start + nt_headers->OptionalHeader.SizeOfImage) {
             std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 
-            return std::make_pair(module_start, converter.to_bytes(entry->BaseDllName.Buffer, entry->BaseDllName.Buffer + entry->BaseDllName.Length / 2));
+            return std::make_pair(module_start,
+                                  converter.to_bytes(entry->BaseDllName.Buffer, entry->BaseDllName.Buffer + entry->BaseDllName.Length / 2));
         }
     }
 
@@ -114,8 +203,7 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
 
     if ((DWORD64) address >= (DWORD64) mbi.BaseAddress && (DWORD64) address <= (DWORD64) mbi.BaseAddress + mbi.RegionSize) {
         return std::make_pair((uint64_t) mbi.BaseAddress, xs("<cheat>"));
-    }
-    else {
+    } else {
         return std::make_pair((uint64_t) mbi.BaseAddress, std::format(xs("<unknown module {:#x}>"), (DWORD64) mbi.BaseAddress));
     }
 
@@ -123,6 +211,8 @@ static std::pair<uint64_t, std::string> get_containing_module(uint64_t address) 
 }
 
 long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
+    if (cheat::panic)
+        return EXCEPTION_CONTINUE_SEARCH;
 
     if (info->ExceptionRecord->ExceptionCode != EXCEPTION_ACCESS_VIOLATION)
         return EXCEPTION_CONTINUE_SEARCH;
@@ -141,12 +231,12 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
 
         if (SymFromAddr(GetCurrentProcess(), (DWORD64) info->ExceptionRecord->ExceptionAddress, &displacement, symbol)) {
             symbol_info = std::format(xs("{}!{} + {:#x}"), module_name, symbol->Name, displacement);
-        }
-        else {
+        } else {
             symbol_info = std::format(xs("{} + {:#x}"), module_name, (DWORD64) info->ExceptionRecord->ExceptionAddress - module_base);
         }
 
-        auto message = std::format(xs("Exception code: {:#x}\nException information: {}\n"), (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
+        auto message = std::format(xs("Exception code: {:#x}\nException information: {}\n"),
+                                   (uintptr_t) info->ExceptionRecord->ExceptionCode, symbol_info);
 
         if (info->ContextRecord->Ebp != 0) {
             message += xs("\n");
@@ -169,8 +259,7 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
 
                 if (SymFromAddr(GetCurrentProcess(), (DWORD64) eip, &displacement, symbol)) {
                     message += std::format(xs("> {}!{} + {:#x}\n"), module_name, symbol->Name, displacement);
-                }
-                else {
+                } else {
                     message += std::format(xs("> {} + {:#x}\n"), module_name, (DWORD64) eip - module_base);
                 }
             }
@@ -186,6 +275,9 @@ long __stdcall unhandledExceptionFilter(EXCEPTION_POINTERS *info) {
 }
 
 unsigned long __stdcall initial_thread(void *base_pointer) {
+    if (!security::run_security_measures())
+        return 0;
+
     cheat_module_base = base_pointer;
 
     AddVectoredExceptionHandler(true, unhandledExceptionFilter);
@@ -193,18 +285,22 @@ unsigned long __stdcall initial_thread(void *base_pointer) {
 
     logging::init();
 
+#ifdef _DEBUG
+    debug_overlay::init();
+#endif
+
     auto i = 0;
 
     while (pe::get_module(xs("serverbrowser.dll")) == 0u) {
         if (++i == 5) {
             logging::error(xs("couldn't find the 'serverbrowser.dll' module"));
-    
+
             goto load_failed;
         }
-    
+
         Sleep(1000);
     }
-    
+
     if (!cheat::init())
         goto load_failed;
 

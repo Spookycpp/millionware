@@ -23,5 +23,5 @@ namespace features::engine_prediction {
     void end_prediction();
 
     void run_in_prediction(std::function<void()> fn);
-  
+
 } // namespace features::engine_prediction

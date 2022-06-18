@@ -1,5 +1,5 @@
-#include "item_definitions.h"
 #include "skin_changer.h"
+#include "item_definitions.h"
 
 #include "../../core/cheat/cheat.h"
 #include "../../core/interfaces/interfaces.h"
@@ -30,22 +30,17 @@ namespace features::skin_changer {
     }
 
     void apply_weapon_skins(const player_info_t &player_info) {
-
     }
 
     void apply_glove_skins(const player_info_t &player_info) {
-
     }
 
     void update_inventory() {
-
     }
 
     void remove_inventory() {
-
     }
 
     void update_hud_icons() {
-
     }
 } // namespace features::skin_changer

@@ -2,6 +2,7 @@
 #include "../core/hooks/hooks.h"
 #include "../core/interfaces/interfaces.h"
 
+#include "../engine/debug/debug_overlay.h"
 #include "../engine/logging/logging.h"
 #include "../engine/render/render.h"
 #include "../engine/security/xorstr.h"
@@ -15,12 +16,16 @@
 
 #include "../ui/ui.h"
 
-static int active_tab = 0;
+long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override,
+                              RGNDATA *dirty_region) {
 
-long __stdcall hooks::present(IDirect3DDevice9 *device, RECT *source_rect, RECT *dest_rect, HWND dest_window_override, RGNDATA *dirty_region) {
+    PROFILE_WITH(present[0]);
+
     render::begin();
 
     logging::render();
+
+    debug_overlay::draw();
 
     lua::callbacks::draw();
 

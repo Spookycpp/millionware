@@ -1,7 +1,7 @@
 #pragma once
 
-#include <format>
 #include "../../source engine/color.h"
+#include <format>
 
 #ifdef _DEBUG
 #define MIN_SEVERITY LOG_SEVERITY_DEBUG
@@ -23,10 +23,11 @@ struct valve_color_t {
     int a : 8;
 };
 
-#define IMPL_LOGGING_LEVEL(level_name, level_severity)                                                                                                                                                 \
-    template <typename... A> void level_name(const std::string &format_str, A &&...args) {                                                                                                             \
-        if constexpr (level_severity >= MIN_SEVERITY)                                                                                                                                                            \
-            print(level_severity, std::format(format_str, std::forward<A>(args)...));                                                                                                                  \
+#define IMPL_LOGGING_LEVEL(level_name, level_severity)                                                                                     \
+    template <typename... A>                                                                                                               \
+    void level_name(const std::string &format_str, A &&...args) {                                                                          \
+        if constexpr (level_severity >= MIN_SEVERITY)                                                                                      \
+            print(level_severity, std::format(format_str, std::forward<A>(args)...));                                                      \
     }
 
 namespace logging {

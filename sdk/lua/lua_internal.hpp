@@ -1,7 +1,9 @@
 #pragma once
 
+// clang-format off
 #include <luajit/lua.hpp>
 #include <LuaBridge/LuaBridge.h>
+// clang-format on
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -48,7 +50,8 @@ namespace lua_internal {
         return ss.str();
     }
 
-    template <class T1, class T2 = T1> T2 user_data_argument(lua_State *l, const int arg, const bool can_be_const = true) {
+    template <class T1, class T2 = T1>
+    T2 user_data_argument(lua_State *l, const int arg, const bool can_be_const = true) {
         if (!luabridge::LuaRef::fromStack(l, arg).isUserdata()) {
             return {};
         }

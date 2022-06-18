@@ -23,8 +23,7 @@ void discord_rpc::update() {
 
         is_initialized = false;
         last_presence_update = 0.0f;
-    }
-    else if (!is_initialized && settings.miscellaneous.discord_rpc) {
+    } else if (!is_initialized && settings.miscellaneous.discord_rpc) {
         DiscordEventHandlers handlers;
 
         memset(&handlers, 0, sizeof(handlers));
@@ -54,8 +53,7 @@ void discord_rpc::update() {
 
     if (!interfaces::engine_client->is_in_game()) {
         presence.state = xs("In main menu");
-    }
-    else {
+    } else {
         auto map_name = interfaces::engine_client->get_map_name();
         char presence_status_buffer[64];
 

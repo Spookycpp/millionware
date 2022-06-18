@@ -6,7 +6,7 @@ __declspec(dllexport) interfaces_t g_interfaces;
 
 __declspec(dllexport) patterns_t g_patterns{
     7,
-    
+
     pattern_t{"gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 DB", 0},
     pattern_t{"gameoverlayrenderer.dll", "C7 45 ? ? ? ? ? FF 15 ? ? ? ? 8B F8", 0},
     pattern_t{"gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F0 85 FF", 0},

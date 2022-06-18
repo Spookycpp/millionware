@@ -22,7 +22,7 @@ namespace features::miscellaneous {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            // clang-format off
+        // clang-format off
             case e_client_frame_stage::FRAME_STAGE_NET_UPDATE_POSTDATAUPDATE_START: {
                 post_processing();
 
@@ -32,6 +32,8 @@ namespace features::miscellaneous {
 
                 ragdoll_float();
                 ragdoll_push();
+
+                remove_smoke();
             }
             // clang-format on
         }
@@ -57,8 +59,7 @@ namespace features::miscellaneous {
         if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() == WEAPON_REVOLVER) {
             if (weapon->get_next_secondary_attack() > cheat::local_player->get_tick_base() * interfaces::global_vars->interval_per_tick)
                 user_cmd->buttons &= ~BUTTON_IN_ATTACK2;
-        }
-        else if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() != WEAPON_REVOLVER) {
+        } else if (user_cmd->buttons & BUTTON_IN_ATTACK && weapon->get_item_definition_index() != WEAPON_REVOLVER) {
             if (weapon->get_next_primary_attack() > cheat::local_player->get_tick_base() * interfaces::global_vars->interval_per_tick)
                 user_cmd->buttons &= ~BUTTON_IN_ATTACK;
         }
@@ -76,8 +77,22 @@ namespace features::miscellaneous {
     }
 
     void override_fov(view_setup_t *view_setup) {
-        if (cheat::local_player && !cheat::local_player->get_is_scoped() && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE)
+
+        if (settings.visuals.local.override_fov == 90)
+            return;
+
+        if (!cheat::local_player)
+            return;
+
+        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
+            auto obs_mode = cheat::local_player->get_observer_mode();
+            auto obs_target = (c_player *) cheat::local_player->get_observer_target().get();
+
+            if ((obs_mode == OBS_MODE_IN_EYE || obs_mode == OBS_MODE_DEATHCAM) && !obs_target->get_is_scoped())
+                view_setup->fov = (float) settings.visuals.local.override_fov;
+        } else if (!cheat::local_player->get_is_scoped()) {
             view_setup->fov = (float) settings.visuals.local.override_fov;
+        }
     }
 
     void clantag() {
@@ -93,29 +108,35 @@ namespace features::miscellaneous {
         if (!interfaces::engine_client->get_net_channel_info())
             return;
 
-        static bool clear_tag = false;
-        static int tick_count = 0;
+        static auto cl_clanid = interfaces::convar_system->find_convar(xs("cl_clanid"));
+        static int cl_clanid_value = cl_clanid->get_int();
 
-        const int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) - interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+        // doing it this way because doing set_value just didn't work so, fuck it.
+        auto tag = std::format(xs("cl_clanid {}"), cl_clanid_value);
 
-        if (!settings.miscellaneous.clantag && clear_tag) {
+        static bool reset_tag = false;
+        static int last_time = 0;
+
+        // account for server latency.
+        int server_time = static_cast<int>(((interfaces::global_vars->current_time / 0.296875f) + 5.60925f - 0.07f) -
+                                           interfaces::engine_client->get_net_channel_info()->get_average_latency(0));
+
+        if (!settings.miscellaneous.clantag && reset_tag) {
             if (interfaces::global_vars->tick_count % 99 == 2) {
-                set_clantag(xs(""));
-                clear_tag = false;
+                interfaces::engine_client->execute_command(tag.c_str());
+                reset_tag = false;
             }
-        }
-        else if (settings.miscellaneous.clantag && server_time != tick_count) {
+        } else if (server_time != last_time) {
             static std::string clantag = xs("millionware ");
-            std::rotate(clantag.begin(), clantag.begin() + 1, clantag.end());
-            std::string prefix = xs("$ ");
-            prefix.append(clantag);
 
-            set_clantag(prefix);
-            tick_count = server_time;
+            std::rotate(clantag.begin(), clantag.begin() + 1, clantag.end());
+
+            set_clantag(clantag);
+            last_time = server_time;
         }
 
         if (!settings.miscellaneous.clantag)
-            clear_tag = true;
+            reset_tag = true;
     }
 
     void post_processing() {
@@ -142,8 +163,9 @@ namespace features::miscellaneous {
     void force_crosshair() {
         const static auto weapon_debug_spread_show = interfaces::convar_system->find_convar(xs("weapon_debug_spread_show"));
 
-        const auto should_draw_crosshair =
-            settings.visuals.local.sniper_crosshair && cheat::local_player && cheat::local_player->get_life_state() == LIFE_STATE_ALIVE && !cheat::local_player->get_is_scoped();
+        const auto should_draw_crosshair = settings.visuals.local.sniper_crosshair && cheat::local_player &&
+                                           cheat::local_player->get_life_state() == LIFE_STATE_ALIVE &&
+                                           !cheat::local_player->get_is_scoped();
 
         weapon_debug_spread_show->set_value(should_draw_crosshair ? 3 : 0);
     }
@@ -158,7 +180,14 @@ namespace features::miscellaneous {
     void recoil_crosshair() {
         const static auto recoil_crosshair = interfaces::convar_system->find_convar(xs("cl_crosshair_recoil"));
 
-        recoil_crosshair->set_value(settings.visuals.local.recoil_crosshair);
+        // lord forgive me
+        if (settings.visuals.local.recoil_crosshair == 0) {
+            recoil_crosshair->set_value(0);
+        } else if (settings.visuals.local.recoil_crosshair == 1) {
+            recoil_crosshair->set_value(1);
+        } else if (settings.visuals.local.recoil_crosshair == 2) {
+            recoil_crosshair->set_value(0);
+        }
     }
 
     void ragdoll_push() {
@@ -167,8 +196,7 @@ namespace features::miscellaneous {
         if (settings.miscellaneous.ragdoll_push) {
             phys_pushscale->callbacks.clear();
             phys_pushscale->set_value(3000);
-        }
-        else {
+        } else {
             phys_pushscale->set_value(1);
         }
     }
@@ -179,8 +207,7 @@ namespace features::miscellaneous {
         if (settings.miscellaneous.ragdoll_float) {
             cl_ragdoll_gravity->callbacks.clear();
             cl_ragdoll_gravity->set_value(-100);
-        }
-        else {
+        } else {
             cl_ragdoll_gravity->set_value(600);
         }
     }
@@ -201,18 +228,25 @@ namespace features::miscellaneous {
         name->set_value(buffer);
     }
 
-    void server_selector() {
-        // const char *regions[] = {
-        //    (""),    ("syd"), ("vie"), ("gru"), ("scl"),  ("dxb"), ("par"), ("fra"), ("hkg"), ("maa"),
-        //    ("bom"), ("tyo"), ("lux"), ("ams"), ("limc"), ("man"), ("waw"), ("sgp"), ("jnb"), ("mad"),
-        //    ("sto"), ("lhr"), ("atl"), ("ord"), ("lax"),  ("mwh"), ("okc"), ("sea"), ("iad")};
+    void server_selector() { // https://www.unknowncheats.me/forum/counterstrike-global-offensive/381959-forcing-datacenter.html
 
-        // static std::string *relay_cluster = *(std::string **) (patterns::get_pattern("steamnetworkingsockets.dll", "B8 ? ? ? ? B9 ? ? ? ? 0F 43") + 1);
-        //*relay_cluster = "lax";
+        if (interfaces::engine_client->is_in_game())
+            return;
+
+        const char *regions[] = {
+            xs(""),    xs("syd"), xs("vie"), xs("gru"), xs("scl"),  xs("dxb"), xs("par"), xs("fra"), xs("hkg"), xs("maa"),
+            xs("bom"), xs("tyo"), xs("lux"), xs("ams"), xs("limc"), xs("man"), xs("waw"), xs("sgp"), xs("jnb"), xs("mad"),
+            xs("sto"), xs("lhr"), xs("atl"), xs("eat"), xs("ord"),  xs("lax"), xs("mwh"), xs("okc"), xs("sea"), xs("iad")
+        };
+
+        static std::string *relay_cluster = *(std::string **) (patterns::get_relay_cluster() + 1);
+        *relay_cluster = regions[settings.miscellaneous.server_regions];
     }
 
     void skybox_changer(const int skybox) {
-        if (!interfaces::engine_client->is_in_game())
+
+        // kek
+        if (settings.visuals.world.skybox == 0 || !interfaces::engine_client->is_in_game())
             return;
 
         static auto sv_skyname = interfaces::convar_system->find_convar(xs("sv_skyname"));
@@ -251,7 +285,7 @@ namespace features::miscellaneous {
 			case 20: skybox_name = xs("sky_dust");					break;
 			case 21: skybox_name = xs("vietnam");					break;
 			case 22: skybox_name = xs("custom");					break;
-			default: skybox_name = sv_skyname->string;			        break;
+			default: skybox_name = sv_skyname->string;			    break;
 		}
         // clang-format on
 
@@ -264,9 +298,19 @@ namespace features::miscellaneous {
         if (!load_named_sky_fn)
             return;
 
-        load_named_sky_fn(skybox_name.c_str());
+        const int skybox_type = settings.visuals.world.skybox;
 
-        r_3dsky->set_value(skybox != 0 ? 0 : 1);
+        static int last_state = skybox_type;
+
+        if (last_state != skybox_type || cheat::set_skybox == true) {
+
+            load_named_sky_fn(skybox_name.c_str());
+
+            r_3dsky->set_value(skybox != 0 ? 0 : 1);
+
+            last_state = settings.visuals.world.skybox;
+            cheat::set_skybox = false;
+        }
     }
 
     void foot_fx() {
@@ -286,33 +330,31 @@ namespace features::miscellaneous {
         // clang-format on
     }
 
-    static uintptr_t *death_notice = nullptr;
-
     void preserve_killfeed() {
 
-        const auto game_rules = c_game_rules::get(); !game_rules || game_rules->get_freeze_period();
-
-        if (!cheat::local_player || cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) {
-            death_notice = nullptr;
+        if (!interfaces::engine_client->is_in_game())
             return;
-        }
 
-        if (!death_notice)
+        static auto *death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
+        static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
+
+        // note - laine;
+        // only doing spawn_time check because in warmup
+        // obviously the round_start event won't occur
+        static float last_spawntime = cheat::local_player->spawn_time();
+
+        if (last_spawntime != cheat::local_player->spawn_time() || cheat::reset_killfeed == true) {
             death_notice = util::find_hud_element(xs("CCSGO_HudDeathNotice"));
 
-        if (death_notice) {
-            auto local_death_notice = (float *) ((uintptr_t) death_notice + 0x50);
+            if (death_notice)
+                clear_notices(((uintptr_t) death_notice - 0x14));
 
-            if (local_death_notice)
-                *local_death_notice = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
-
-            if (game_rules->get_freeze_period()) {
-
-                static auto clear_notices = (void(__thiscall *)(uintptr_t)) patterns::get_clear_death_notices();
-
-                clear_notices((uintptr_t) death_notice - 0x14);
-            }
+            last_spawntime = cheat::local_player->spawn_time();
+            cheat::reset_killfeed = false;
         }
+
+        if (death_notice && cheat::local_player->is_alive())
+            *(float *) ((uintptr_t) death_notice + 0x50) = settings.miscellaneous.preserve_killfeed ? FLT_MAX : 1.5f;
     }
 
     void unlock_hidden_convars() {
@@ -351,8 +393,7 @@ namespace features::miscellaneous {
                 old_x = viewmodel_offset_x->get_float();
                 old_y = viewmodel_offset_y->get_float();
                 old_z = viewmodel_offset_z->get_float();
-            }
-            else {
+            } else {
                 viewmodel_offset_x->set_value(old_x);
                 viewmodel_offset_y->set_value(old_y);
                 viewmodel_offset_z->set_value(old_z);
@@ -367,6 +408,52 @@ namespace features::miscellaneous {
         viewmodel_offset_x->set_value(settings.visuals.local.viewmodel_offset_x);
         viewmodel_offset_y->set_value(settings.visuals.local.viewmodel_offset_y);
         viewmodel_offset_z->set_value(settings.visuals.local.viewmodel_offset_z);
+    }
+
+    void remove_smoke() {
+        // used for removing the smoke overlay once you're inside of it.
+        static uint32_t *smoke_count = nullptr;
+        if (!smoke_count)
+            smoke_count = *reinterpret_cast<uint32_t **>(patterns::get_smoke_count() + 1);
+
+        // if smoke_count is nullptr or client is not ingame, exit out.
+        if (!smoke_count || !interfaces::engine_client->is_in_game())
+            return;
+
+        // obtain material we desire to remove.
+        const auto material = interfaces::material_system->find_material(xs("particle\\vistasmokev1\\vistasmokev1_smokegrenade"));
+
+        // obtain what value to set smoke to.
+        const int smoke_type = settings.visuals.world.smoke_type;
+
+        // ensure the code is only ran once.
+        static int last_state = smoke_type;
+
+        if (last_state != smoke_type) {
+            switch (smoke_type) {
+            case 0: { // no smoke change.
+                material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
+                material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
+                *(int *) smoke_count = 1;
+                break;
+            }
+            case 1: { // wireframe smoke.
+                material->set_flag(MATERIAL_FLAG_WIREFRAME, true);
+                material->set_flag(MATERIAL_FLAG_NO_DRAW, false);
+                *(int *) smoke_count = 0;
+                break;
+            }
+            case 2: { // remove smoke.
+                material->set_flag(MATERIAL_FLAG_WIREFRAME, false);
+                material->set_flag(MATERIAL_FLAG_NO_DRAW, true);
+                *(int *) smoke_count = 0;
+                break;
+            }
+            default:; break;
+            }
+
+            last_state = smoke_type;
+        }
     }
 
 } // namespace features::miscellaneous

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "lua_entity.hpp"
 #include "../lua_internal.hpp"
 #include "../types/lua_vec2d.hpp"
+#include "lua_entity.hpp"
 
-#include "../../engine/render/render.h"
 #include "../../engine/logging/logging.h"
-#include "../../engine/security/xorstr.h"
 #include "../../engine/math/math.h"
+#include "../../engine/render/render.h"
+#include "../../engine/security/xorstr.h"
 
 //@todo: CLEAN THIS UP
 
@@ -30,15 +30,14 @@ namespace lua_internal::tables::draw {
         const auto pos = user_data_argument<vec2d, point_t>(l, 1);
         const auto col = user_data_argument<color, color_t>(l, 2);
 
-        render::draw_text(pos, col, luaL_checklstring(l, 4, &len), FONT_TAHOMA_11, 
-            static_cast<float>(luaL_checknumber(l, 3)));
+        render::draw_text(pos, col, luaL_checklstring(l, 4, &len), FONT_TAHOMA_11, static_cast<float>(luaL_checknumber(l, 3)));
     }
 
     inline vec2d text_size(lua_State *l) {
         size_t len;
 
-        const point_t size = render::measure_text(luaL_checklstring(l, 1, &len), FONT_TAHOMA_11, 
-            static_cast<float>(luaL_checkinteger(l, 2)), static_cast<float>(luaL_checkinteger(l, 3)));
+        const point_t size = render::measure_text(luaL_checklstring(l, 1, &len), FONT_TAHOMA_11,
+                                                  static_cast<float>(luaL_checkinteger(l, 2)), static_cast<float>(luaL_checkinteger(l, 3)));
 
         return vec2d{size.x, size.y};
     }
@@ -140,15 +139,14 @@ namespace lua_internal::tables::draw {
         std::vector<point_t> points;
 
         lua_pushvalue(l, 1); // -1 table
-        lua_pushnil(l); // -1 nil, -2 table
+        lua_pushnil(l);      // -1 nil, -2 table
 
         while (lua_next(l, -2)) {
             // -1 value, -2 key, -3 table
             lua_pushvalue(l, -2);
             // -1 key, -2 value, -3 key, -4 table
             if (luabridge::LuaRef::fromStack(l, -2).isUserdata()) {
-                if (const auto *ptr = reinterpret_cast<point_t *>(
-                    luabridge::detail::Userdata::get<vec2d>(l, -2, true)); ptr) {
+                if (const auto *ptr = reinterpret_cast<point_t *>(luabridge::detail::Userdata::get<vec2d>(l, -2, true)); ptr) {
                     points.push_back(*ptr);
                 }
             }
@@ -165,7 +163,7 @@ namespace lua_internal::tables::draw {
         }
 
         const auto col = user_data_argument<color, color_t>(l, 2);
-        render::draw_poly_line(points.data(), points.size(), col, static_cast<float>(luaL_checknumber(l, 3)));   
+        render::draw_poly_line(points.data(), points.size(), col, static_cast<float>(luaL_checknumber(l, 3)));
     }
 
     //@todo: redo this
@@ -202,8 +200,7 @@ namespace lua_internal::tables::draw {
         std::vector bytes((std::istreambuf_iterator(input)), (std::istreambuf_iterator<char>()));
         input.close();
 
-        IDirect3DTexture9 *texture = render::rasterize_vector(bytes.data(), 
-            static_cast<float>(luaL_checknumber(l, 2)));
+        IDirect3DTexture9 *texture = render::rasterize_vector(bytes.data(), static_cast<float>(luaL_checknumber(l, 2)));
         if (!texture) {
             return 0;
         }
@@ -226,8 +223,7 @@ namespace lua_internal::tables::draw {
         const auto n = std::strlen(str);
         std::memcpy(bytes.data(), str, n);
 
-        IDirect3DTexture9 *texture = render::rasterize_vector(bytes.data(), 
-            static_cast<float>(luaL_checknumber(l, 2)));
+        IDirect3DTexture9 *texture = render::rasterize_vector(bytes.data(), static_cast<float>(luaL_checknumber(l, 2)));
         if (!texture) {
             return 0;
         }
@@ -261,8 +257,7 @@ namespace lua_internal::tables::draw {
 
         const size_t idx = luaL_checkinteger(l, 5);
         if (idx > _textures.size()) {
-            logging::error(xs("image index of {} is out of bounds, current size is {}"), 
-                idx, _textures.size());
+            logging::error(xs("image index of {} is out of bounds, current size is {}"), idx, _textures.size());
             return;
         }
 
@@ -270,8 +265,7 @@ namespace lua_internal::tables::draw {
         const auto size = user_data_argument<vec2d, point_t>(l, 2);
         const auto col = user_data_argument<color, color_t>(l, 3);
 
-        render::draw_image(pos, size, col, _textures.at(idx), 
-            static_cast<float>(luaL_checknumber(l, 4)), CORNER_ALL);
+        render::draw_image(pos, size, col, _textures.at(idx), static_cast<float>(luaL_checknumber(l, 4)), CORNER_ALL);
     }
 
     //@todo: redo this
@@ -291,8 +285,7 @@ namespace lua_internal::tables::draw {
         const auto size = user_data_argument<vec2d, point_t>(l, 2);
         const auto col = user_data_argument<color, color_t>(l, 3);
 
-        _gifs.at(idx).draw(pos, size, col, 
-            static_cast<float>(luaL_checknumber(l, 4)), CORNER_ALL);
+        _gifs.at(idx).draw(pos, size, col, static_cast<float>(luaL_checknumber(l, 4)), CORNER_ALL);
     }
 
     inline vec2d world_to_screen(lua_State *l) {
@@ -305,7 +298,7 @@ namespace lua_internal::tables::draw {
 
         return {point.x, point.y};
     }
-} // namespace lua_internal::draw
+} // namespace lua_internal::tables::draw
 
 inline void lua_internal::context::lua_draw() {
     static bool once = false;
@@ -318,7 +311,7 @@ inline void lua_internal::context::lua_draw() {
     }
 
     luabridge::getGlobalNamespace(l)
-    .beginNamespace("draw")
+        .beginNamespace("draw")
         .addFunction("text", std::function([this]() { tables::draw::text(l); }))
         .addFunction("wrap_text", std::function([this]() { tables::draw::wrap_text(l); }))
         .addFunction("text_size", std::function([this]() { return tables::draw::text_size(l); }))
@@ -340,5 +333,5 @@ inline void lua_internal::context::lua_draw() {
         .addFunction("image", std::function([this]() { tables::draw::image(l); }))
         .addFunction("gif", std::function([this]() { tables::draw::gif(l); }))
         .addFunction("world_to_screen", std::function([this]() { return tables::draw::world_to_screen(l); }))
-    .endNamespace();
+        .endNamespace();
 }

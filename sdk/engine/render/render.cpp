@@ -32,8 +32,8 @@
 #include "../hash/hash.h"
 #include "../security/xorstr.h"
 
-#include "render.h"
 #include "../../resources/pixelmix.h"
+#include "render.h"
 
 static std::array<ImFont *, FONT_MAX> fonts;
 static std::array<IDirect3DTexture9 *, TEXTURE_MAX> textures;
@@ -67,7 +67,8 @@ static bool get_system_font_path(std::string_view font_name, std::string &result
         auto value_data_size = MAX_PATH;
         auto value_type = 0u;
 
-        const auto error = RegEnumValueA(registry_key, index, value_name, (DWORD *) &value_name_size, nullptr, (DWORD *) &value_type, (BYTE *) value_data, (DWORD *) &value_data_size);
+        const auto error = RegEnumValueA(registry_key, index, value_name, (DWORD *) &value_name_size, nullptr, (DWORD *) &value_type,
+                                         (BYTE *) value_data, (DWORD *) &value_data_size);
 
         index++;
 
@@ -91,7 +92,8 @@ static bool get_system_font_path(std::string_view font_name, std::string &result
     } while (true);
 }
 
-static ImFont *create_from_system(ImGuiIO &io, std::string_view font_name, float size, int rasterizer_flags = 0, std::initializer_list<ImWchar> glyph_ranges = {}) {
+static ImFont *create_from_system(ImGuiIO &io, std::string_view font_name, float size, int rasterizer_flags = 0,
+                                  std::initializer_list<ImWchar> glyph_ranges = {}) {
     std::string font_path;
 
     if (!get_system_font_path(font_name, font_path))
@@ -104,7 +106,8 @@ static ImFont *create_from_system(ImGuiIO &io, std::string_view font_name, float
     return io.Fonts->AddFontFromFileTTF(font_path.data(), size, &font_config, glyph_ranges.size() == 0 ? nullptr : glyph_ranges.begin());
 }
 
-static ImFont *create_from_ttf(ImGuiIO &io, const uint8_t *ttf_data, int ttf_data_size, float size, int rasterizer_flags = 0, std::initializer_list<ImWchar> glyph_ranges = {}) {
+static ImFont *create_from_ttf(ImGuiIO &io, const uint8_t *ttf_data, int ttf_data_size, float size, int rasterizer_flags = 0,
+                               std::initializer_list<ImWchar> glyph_ranges = {}) {
     ImFontConfig font_config;
 
     font_config.FontData = std::malloc(ttf_data_size);
@@ -178,19 +181,35 @@ IDirect3DTexture9 *render::rasterize_vector(char *data, const float scale) {
     const int w = (int) (image->width * scale);
     const int h = (int) (image->height * scale);
 
-    const auto bytes = new unsigned char[w * h * 4];
+    auto bytes = std::make_unique<uint8_t[]>(w * h * 4);
 
-    nsvgRasterize(rasterizer, image, 0, 0, scale, bytes, w, h, w * 4);
+    nsvgRasterize(rasterizer, image, 0, 0, scale, bytes.get(), w, h, w * 4);
 
-    int len;
-    unsigned char *buf = stbi_write_png_to_mem(bytes, w * 4, w, h, 4, &len);
-    if (!buf) {
-        delete[] bytes;
+    IDirect3DTexture9 *texture;
+
+    if (d3d9_device->CreateTexture(w, h, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texture, NULL) < 0)
         return nullptr;
+
+    D3DLOCKED_RECT tex_locked_rect;
+
+    if (texture->LockRect(0, &tex_locked_rect, NULL, 0) != D3D_OK)
+        return nullptr;
+
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            const unsigned char *source_pixel = bytes.get() + w * 4 * y + x * 4;
+            unsigned char *destination_pixel = static_cast<unsigned char *>(tex_locked_rect.pBits) + tex_locked_rect.Pitch * y + x * 4;
+
+            destination_pixel[0] = source_pixel[2];
+            destination_pixel[1] = source_pixel[1];
+            destination_pixel[2] = source_pixel[0];
+            destination_pixel[3] = source_pixel[3];
+        }
     }
 
-    delete[] bytes;
-    return create_from_png(buf, len);
+    texture->UnlockRect(0);
+
+    return texture;
 }
 
 void render::init(HWND window, IDirect3DDevice9 *device) {
@@ -212,22 +231,30 @@ void render::init(HWND window, IDirect3DDevice9 *device) {
     io.LogFilename = nullptr;
 
     fonts[FONT_VERDANA_12] = create_from_system(io, xs("Verdana"), 13.0f);
-    fonts[FONT_VERDANA_14] = create_from_system(io, xs("Verdana"), 15.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
-    fonts[FONT_VERDANA_24] = create_from_system(io, xs("Verdana"), 25.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
-    fonts[FONT_TAHOMA_11] = create_from_system(io, xs("Tahoma"), 12.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
-    fonts[FONT_TAHOMA_12] = create_from_system(io, xs("Tahoma"), 13.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
-    fonts[FONT_VERDANA_12_BOLD] = create_from_system(io, xs("Verdana Bold"), 12.0f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
-    fonts[FONT_SMALL_TEXT] = create_from_ttf(io, pixelmix_ttf, sizeof(pixelmix_ttf), 10.f, ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome);
-	//fonts[FONT_SMALL_TEXT] = create_from_system(io, xs("Verdana"), 10.f, ImGuiFreeTypeBuilderFlags_Monochrome);
-	fonts[FONT_CEREBRI_SANS_BOLD_13] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
-	fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
-	fonts[FONT_CEREBRI_SANS_MEDIUM_18] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 18.0f);
-	fonts[FONT_CEREBRI_SANS_BOLD_32] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 32.0f, ImGuiFreeTypeBuilderFlags_Bold);
-	fonts[FONT_WEAPONS_16] = create_from_ttf(io,csgo_icons_ttf, sizeof(csgo_icons_ttf), 16.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON });
-	fonts[FONT_WEAPONS_32] = create_from_ttf(io,csgo_icons_ttf, sizeof(csgo_icons_ttf), 32.0f, 0, { ICON_MIN_WEAPON, ICON_MAX_WEAPON });
-	fonts[FONT_FA_BRANDS_32] = create_from_ttf(io, fa_brands_400_ttf, sizeof(fa_brands_400_ttf), 32.0f, 0, { ICON_MIN_FAB, ICON_MAX_FAB });
-	fonts[FONT_FA_REGULAR_32] = create_from_ttf(io, fa_regular_400_ttf, sizeof(fa_regular_400_ttf), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA });
-	fonts[FONT_FA_SOLID_32] = create_from_ttf(io, fa_solid_900_ttf, sizeof(fa_solid_900_ttf), 32.0f, 0, { ICON_MIN_FA, ICON_MAX_FA });
+    fonts[FONT_VERDANA_14] =
+        create_from_system(io, xs("Verdana"), 15.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_VERDANA_24] =
+        create_from_system(io, xs("Verdana"), 25.0f, ImGuiFreeTypeBuilderFlags_Bold | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_TAHOMA_11] =
+        create_from_system(io, xs("Tahoma"), 12.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_TAHOMA_12] =
+        create_from_system(io, xs("Tahoma"), 13.f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_VERDANA_12_BOLD] =
+        create_from_system(io, xs("Verdana Bold"), 12.0f, ImGuiFreeTypeBuilderFlags_Monochrome | ImGuiFreeTypeBuilderFlags_MonoHinting);
+    fonts[FONT_SMALL_TEXT] = create_from_ttf(io, pixelmix_ttf, sizeof(pixelmix_ttf), 10.f,
+                                             ImGuiFreeTypeBuilderFlags_MonoHinting | ImGuiFreeTypeBuilderFlags_Monochrome);
+    // fonts[FONT_SMALL_TEXT] = create_from_system(io, xs("Verdana"), 10.f, ImGuiFreeTypeBuilderFlags_Monochrome);
+    fonts[FONT_CEREBRI_SANS_BOLD_13] =
+        create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 13.0f, ImGuiFreeTypeBuilderFlags_Bold);
+    fonts[FONT_CEREBRI_SANS_MEDIUM_14] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 14.0f);
+    fonts[FONT_CEREBRI_SANS_MEDIUM_18] = create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 18.0f);
+    fonts[FONT_CEREBRI_SANS_BOLD_32] =
+        create_from_ttf(io, cerebri_sans_medium_ttf, sizeof(cerebri_sans_medium_ttf), 32.0f, ImGuiFreeTypeBuilderFlags_Bold);
+    fonts[FONT_WEAPONS_16] = create_from_ttf(io, csgo_icons_ttf, sizeof(csgo_icons_ttf), 16.0f, 0, {ICON_MIN_WEAPON, ICON_MAX_WEAPON});
+    fonts[FONT_WEAPONS_32] = create_from_ttf(io, csgo_icons_ttf, sizeof(csgo_icons_ttf), 32.0f, 0, {ICON_MIN_WEAPON, ICON_MAX_WEAPON});
+    fonts[FONT_FA_BRANDS_32] = create_from_ttf(io, fa_brands_400_ttf, sizeof(fa_brands_400_ttf), 32.0f, 0, {ICON_MIN_FAB, ICON_MAX_FAB});
+    fonts[FONT_FA_REGULAR_32] = create_from_ttf(io, fa_regular_400_ttf, sizeof(fa_regular_400_ttf), 32.0f, 0, {ICON_MIN_FA, ICON_MAX_FA});
+    fonts[FONT_FA_SOLID_32] = create_from_ttf(io, fa_solid_900_ttf, sizeof(fa_solid_900_ttf), 32.0f, 0, {ICON_MIN_FA, ICON_MAX_FA});
 
     textures[TEXTURE_MW_LOGO_BASE] = create_from_png(mw_logo_base_png, sizeof(mw_logo_base_png));
     textures[TEXTURE_MW_LOGO_DOLLAR] = create_from_png(mw_logo_dollar_png, sizeof(mw_logo_dollar_png));
@@ -285,14 +312,15 @@ void render::begin() {
 
     ImGui::NewFrame();
 
-    ImGui::GetOverlayDrawList()->ChannelsSplit(8);
-    ImGui::GetOverlayDrawList()->ChannelsSetCurrent(0);
+    ImGui::GetForegroundDrawList()->ChannelsSplit(8);
+    ImGui::GetForegroundDrawList()->ChannelsSetCurrent(0);
 
-    draw_list = ImGui::GetOverlayDrawList();
+    draw_list = ImGui::GetForegroundDrawList();
 }
 
 void render::finish() {
-    ImGui::GetOverlayDrawList()->ChannelsMerge();
+    ImGui::GetForegroundDrawList()->ChannelsMerge();
+    ImGui::GetIO().KeyMods = ImGui::GetMergedKeyModFlags();
 
     ImGui::EndFrame();
     ImGui::Render();
@@ -303,7 +331,7 @@ void render::finish() {
 }
 
 void render::set_layer(int index) {
-    ImGui::GetOverlayDrawList()->ChannelsSetCurrent(index);
+    ImGui::GetForegroundDrawList()->ChannelsSetCurrent(index);
 }
 
 void render::push_clip(const point_t &position, const point_t &size, bool intersect) {
@@ -323,23 +351,28 @@ void render::draw_line(const point_t &start, const point_t &end, const color_t &
 }
 
 void render::draw_rect(const point_t &position, const point_t &size, const color_t &color, float rounding, int corners) {
-    draw_list->AddRect({floor(position.x), floor(position.y)}, {floor(position.x + size.x), floor(position.y + size.y)}, IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
+    draw_list->AddRect({floor(position.x), floor(position.y)}, {floor(position.x + size.x), floor(position.y + size.y)},
+                       IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
 }
 
 void render::fill_rect(const point_t &position, const point_t &size, const color_t &color, float rounding, int corners) {
-    draw_list->AddRectFilled({floor(position.x), floor(position.y)}, {floor(position.x + size.x), floor(position.y + size.y)}, IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
+    draw_list->AddRectFilled({floor(position.x), floor(position.y)}, {floor(position.x + size.x), floor(position.y + size.y)},
+                             IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
 }
 
 void render::gradient_h(const point_t &position, const point_t &size, const color_t &color_start, const color_t &color_end) {
-    ImGui::GetOverlayDrawList()->AddRectFilledMultiColor({position.x, position.y}, {position.x + size.x, position.y + size.y}, IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
-                                                         IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a),
-                                                         IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a));
+    ImGui::GetForegroundDrawList()->AddRectFilledMultiColor(
+        {position.x, position.y}, {position.x + size.x, position.y + size.y},
+        IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a),
+        IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a), IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a));
 }
 
 void render::gradient_v(const point_t &position, const point_t &size, const color_t &color_start, const color_t &color_end) {
-    ImGui::GetOverlayDrawList()->AddRectFilledMultiColor({position.x, position.y}, {position.x + size.x, position.y + size.y}, IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
-                                                         IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a), IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a),
-                                                         IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a));
+    ImGui::GetForegroundDrawList()->AddRectFilledMultiColor({position.x, position.y}, {position.x + size.x, position.y + size.y},
+                                                            IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
+                                                            IM_COL32(color_start.r, color_start.g, color_start.b, color_start.a),
+                                                            IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a),
+                                                            IM_COL32(color_end.r, color_end.g, color_end.b, color_end.a));
 }
 
 void render::draw_triangle(const point_t &point1, const point_t &point2, const point_t &point3, const color_t &color) {
@@ -347,7 +380,8 @@ void render::draw_triangle(const point_t &point1, const point_t &point2, const p
 }
 
 void render::fill_triangle(const point_t &point1, const point_t &point2, const point_t &point3, const color_t &color) {
-    draw_list->AddTriangleFilled({point1.x, point1.y}, {point2.x, point2.y}, {point3.x, point3.y}, IM_COL32(color.r, color.g, color.b, color.a));
+    draw_list->AddTriangleFilled({point1.x, point1.y}, {point2.x, point2.y}, {point3.x, point3.y},
+                                 IM_COL32(color.r, color.g, color.b, color.a));
 }
 
 void render::draw_circle(const point_t &center, float radius, const color_t &color, int segments) {
@@ -359,48 +393,57 @@ void render::fill_circle(const point_t &center, float radius, const color_t &col
 }
 
 void render::fill_convex_poly(const point_t *points, int num_points, const color_t &color) {
-    draw_list->AddConvexPolyFilled((ImVec2 *)points, num_points, IM_COL32(color.r, color.g, color.b, color.a));
+    draw_list->AddConvexPolyFilled((ImVec2 *) points, num_points, IM_COL32(color.r, color.g, color.b, color.a));
 }
 
 void render::draw_text(const point_t &position, const color_t &color, const char *text, int font, float wrap_width, float font_size) {
     if (font_size < 0.0f)
         font_size = fonts[font]->FontSize;
 
-    draw_list->AddText(fonts[font], font_size, {position.x, position.y}, IM_COL32(color.r, color.g, color.b, color.a), text, nullptr, wrap_width);
+    draw_list->AddText(fonts[font], font_size, {position.x, position.y}, IM_COL32(color.r, color.g, color.b, color.a), text, nullptr,
+                       wrap_width);
 }
 
-void render::draw_text_outlined(const point_t &position, const color_t &color, const color_t &outline_color, const char *text, int font, float wrap_width, float font_size) {
+void render::draw_text_outlined(const point_t &position, const color_t &color, const color_t &outline_color, const char *text, int font,
+                                float wrap_width, float font_size) {
     if (font_size < 0.0f)
         font_size = fonts[font]->FontSize;
 
-    render::draw_text({ position.x, position.y + 1.0f }, outline_color, text, font, wrap_width);
-    render::draw_text({ position.x, position.y - 1.0f }, outline_color, text, font, wrap_width);
-    render::draw_text({ position.x + 1.0f, position.y }, outline_color, text, font, wrap_width);
-    render::draw_text({ position.x - 1.0f, position.y }, outline_color, text, font, wrap_width);
+    render::draw_text({position.x, position.y + 1.0f}, outline_color, text, font, wrap_width);
+    render::draw_text({position.x, position.y - 1.0f}, outline_color, text, font, wrap_width);
+    render::draw_text({position.x + 1.0f, position.y}, outline_color, text, font, wrap_width);
+    render::draw_text({position.x - 1.0f, position.y}, outline_color, text, font, wrap_width);
 
-    draw_list->AddText(fonts[font], font_size, { position.x, position.y }, IM_COL32(color.r, color.g, color.b, color.a), text, nullptr, wrap_width);
+    draw_list->AddText(fonts[font], font_size, {position.x, position.y}, IM_COL32(color.r, color.g, color.b, color.a), text, nullptr,
+                       wrap_width);
 }
 
 void render::draw_image(const point_t &position, const point_t &size, const color_t &color, int texture, float rounding, int corners) {
-    draw_list->AddImageRounded(textures[texture], { floor(position.x), floor(position.y) }, { floor(position.x + size.x), floor(position.y + size.y)}, {0.0f, 0.0f}, {1.0f, 1.0f}, IM_COL32(color.r, color.g, color.b, color.a),
-                               rounding, corners);
+    draw_list->AddImageRounded(textures[texture], {floor(position.x), floor(position.y)},
+                               {floor(position.x + size.x), floor(position.y + size.y)}, {0.0f, 0.0f}, {1.0f, 1.0f},
+                               IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
 }
 
-void render::draw_image(const point_t &position, const point_t &size, const color_t &color, IDirect3DTexture9 *texture, float rounding, int corners) {
-    draw_list->AddImageRounded(texture, {position.x, position.y}, {position.x + size.x, position.y + size.y}, {0.0f, 0.0f}, {1.0f, 1.0f}, IM_COL32(color.r, color.g, color.b, color.a), rounding,
-                               corners);
+void render::draw_image(const point_t &position, const point_t &size, const color_t &color, IDirect3DTexture9 *texture, float rounding,
+                        int corners) {
+    draw_list->AddImageRounded(texture, {position.x, position.y}, {position.x + size.x, position.y + size.y}, {0.0f, 0.0f}, {1.0f, 1.0f},
+                               IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
 }
 
 void render::draw_poly_line(const point_t *points, const int num_points, const color_t &color, const float thickness) {
     draw_list->AddPolyline((ImVec2 *) points, num_points, IM_COL32(color.r, color.g, color.b, color.a), 0, thickness);
 }
 
-void render::draw_bezier_cubic(const point_t &point1, const point_t &point2, const point_t &point3, const point_t &point4, const color_t &color, const float thickness) {
-    draw_list->AddBezierCubic({point1.x, point1.y}, {point2.x, point2.y}, {point3.x, point3.y}, {point4.x, point4.y}, IM_COL32(color.r, color.g, color.b, color.a), thickness);
+void render::draw_bezier_cubic(const point_t &point1, const point_t &point2, const point_t &point3, const point_t &point4,
+                               const color_t &color, const float thickness) {
+    draw_list->AddBezierCubic({point1.x, point1.y}, {point2.x, point2.y}, {point3.x, point3.y}, {point4.x, point4.y},
+                              IM_COL32(color.r, color.g, color.b, color.a), thickness);
 }
 
-void render::draw_bezier_quad(const point_t &point1, const point_t &point2, const point_t &point3, const color_t &color, const float thickness) {
-    draw_list->AddBezierQuadratic({point1.x, point1.y}, {point2.x, point2.y}, {point3.x, point3.y}, IM_COL32(color.r, color.g, color.b, color.a), thickness);
+void render::draw_bezier_quad(const point_t &point1, const point_t &point2, const point_t &point3, const color_t &color,
+                              const float thickness) {
+    draw_list->AddBezierQuadratic({point1.x, point1.y}, {point2.x, point2.y}, {point3.x, point3.y},
+                                  IM_COL32(color.r, color.g, color.b, color.a), thickness);
 }
 
 point_t render::measure_text(const char *text, int font, float wrap_width, float font_size) {
@@ -467,8 +510,8 @@ void render::animated_gif::create_texture(const unsigned char *buffer) {
 
 void render::animated_gif::draw(const point_t &position, const point_t &size, const color_t &color, float rounding, int corners) {
     update();
-    draw_list->AddImageRounded(m_texture, {position.x, position.y}, {position.x + size.x, position.y + size.y}, {0.0f, 0.0f}, {1.0f, 1.0f}, IM_COL32(color.r, color.g, color.b, color.a), rounding,
-                               corners);
+    draw_list->AddImageRounded(m_texture, {position.x, position.y}, {position.x + size.x, position.y + size.y}, {0.0f, 0.0f}, {1.0f, 1.0f},
+                               IM_COL32(color.r, color.g, color.b, color.a), rounding, corners);
 }
 
 void render::animated_gif::update() {

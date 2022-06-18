@@ -34,7 +34,8 @@ namespace features::hit_chance {
             const float rand_b = util::get_random_float(0.0f, 1.0f);
             const float rand_pi_b = util::get_random_float(0.0f, math::pi_2);
 
-            hit_chance_records[i] = {std::make_pair(rand_a, rand_b), std::make_pair(std::cos(rand_pi_a), std::sin(rand_pi_b)), std::make_pair(std::cos(rand_pi_b), std::sin(rand_pi_a))};
+            hit_chance_records[i] = {std::make_pair(rand_a, rand_b), std::make_pair(std::cos(rand_pi_a), std::sin(rand_pi_b)),
+                                     std::make_pair(std::cos(rand_pi_b), std::sin(rand_pi_a))};
         }
     }
 
@@ -90,7 +91,8 @@ namespace features::hit_chance {
             return {};
 
         std::array<matrix3x4_t, 128> bone_matrix = {};
-        std::memcpy(bone_matrix.data(), target->get_cached_bone_data().get_elements(), target->get_cached_bone_data().count() * sizeof(matrix3x4_t));
+        std::memcpy(bone_matrix.data(), target->get_cached_bone_data().get_elements(),
+                    target->get_cached_bone_data().count() * sizeof(matrix3x4_t));
 
         if (hitbox == -1) {
             for (int i = 0; i < set->hitbox_count; ++i) {
@@ -108,8 +110,7 @@ namespace features::hit_chance {
 
                     hitbox_data.emplace_back(hitbox_data_t{min, max, radius});
             }
-        }
-        else {
+        } else {
             const auto box = set->get_hitbox(hitbox);
 
             if (!box)

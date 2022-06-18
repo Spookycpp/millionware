@@ -69,8 +69,7 @@ bool interfaces::init() {
 
     if ((game_events = (c_game_event_manager2 *) get_interface(xs("engine.dll"), xs("GAMEEVENTSMANAGER002"))) == nullptr) {
         return false;
-    }
-    else {
+    } else {
         _event_listener = std::make_unique<c_event_listener>();
     }
 
@@ -92,8 +91,8 @@ bool interfaces::init() {
     if ((vgui_engine = (void *) get_interface(xs("engine.dll"), xs("VEngineVGui001"))) == nullptr)
         return false;
 
-	if ((d3d9_device = (IDirect3DDevice9 *) patterns::get_d3d9_device()) == nullptr) 
-		logging::error(xs("failed to find d3d9 device pattern"));
+    if ((d3d9_device = (IDirect3DDevice9 *) patterns::get_d3d9_device()) == nullptr)
+        logging::error(xs("failed to find d3d9 device pattern"));
 
     if ((surface = (c_vgui_surface *) get_interface(xs("vguimatsurface.dll"), xs("VGUI_Surface031"))) == nullptr)
         return false;
@@ -107,7 +106,7 @@ bool interfaces::init() {
     if ((localize = (c_localize *) get_interface(xs("localize.dll"), xs("Localize_001"))) == nullptr)
         return false;
 
-    if ((file_system = (c_base_file_system *)get_interface(xs("filesystem_stdio.dll"), xs("VBaseFileSystem011"))) == nullptr)
+    if ((file_system = (c_base_file_system *) get_interface(xs("filesystem_stdio.dll"), xs("VBaseFileSystem011"))) == nullptr)
         return false;
 
     if ((d3d9_device = (IDirect3DDevice9 *) patterns::get_d3d9_device()) == nullptr) {

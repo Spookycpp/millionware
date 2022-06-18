@@ -40,16 +40,16 @@ enum e_material_flag {
 };
 
 class c_material_var {
-  public:
+public:
     DECLARE_VFUNC(4, set(float value), void(__thiscall *)(void *, float))(value);
     DECLARE_VFUNC(5, set(int value), void(__thiscall *)(void *, int))(value);
     DECLARE_VFUNC(6, set(const char *value), void(__thiscall *)(void *, const char *))(value);
-    DECLARE_VFUNC(11, set(vector_t value), void(__thiscall *)(void *, float, float, float))(value.x, value.y, value.z);
+    DECLARE_VFUNC(11, set(float value1, float value2, float value3), void(__thiscall *)(void *, float, float, float))(value1, value2, value3);
     DECLARE_VFUNC(26, set_component(float value, int component), void(__thiscall *)(void *, float, int))(value, component);
 };
 
 class c_material {
-  public:
+public:
     DECLARE_VFUNC(0, get_name(), const char *(__thiscall *) (void *) )();
     DECLARE_VFUNC(1, get_group_name(), const char *(__thiscall *) (void *) )();
     DECLARE_VFUNC(11, find_var(const char *name, bool *found, bool complain = true), c_material_var *(__thiscall *) (void *, const char *, bool *, bool) )(name, found, complain);

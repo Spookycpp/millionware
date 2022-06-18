@@ -22,7 +22,8 @@ namespace features::legitbot::lag_comp {
 
         bool is_valid() const {
             const float correct = std::clamp(util::get_total_latency(), 0.0f, 0.2f); // todo: account for non valveds
-            const float delta = correct - (float(cheat::local_player->get_tick_base()) * interfaces::global_vars->interval_per_tick - TICKS_TO_TIME(tick_count));
+            const float delta = correct - (float(cheat::local_player->get_tick_base()) * interfaces::global_vars->interval_per_tick -
+                                           TICKS_TO_TIME(tick_count));
 
             return std::abs(delta) < 0.2f;
         }

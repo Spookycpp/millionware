@@ -1,7 +1,7 @@
 #pragma once
 
 class c_global_vars {
-  public:
+public:
     float real_time;
     int frame_count;
     float absolute_frame_time;
@@ -16,13 +16,13 @@ class c_global_vars {
     int network_protocol;
     void *save_data;
 
-  private:
+private:
     bool client;
 
-  public:
+public:
     bool remote_client;
 
-  private:
+private:
     int timestamp_networking_base;
     int timestamp_randomize_window;
 };

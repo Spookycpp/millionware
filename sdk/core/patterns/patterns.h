@@ -3,14 +3,16 @@
 #include <cstdint>
 #include <string_view>
 
-#define PATTERN_GET(p, a)                                                                                                                                                                              \
-    inline auto get_##p() {                                                                                                                                                                            \
-        return p == 0u ? 0u : (a);                                                                                                                                                                     \
+#define PATTERN_GET(p, a)                                                                                                                  \
+    inline auto get_##p() {                                                                                                                \
+        return p == 0u ? 0u : (a);                                                                                                         \
     }
 
 class c_player;
 
 namespace patterns {
+    inline uintptr_t present;
+    inline uintptr_t reset;
     inline uintptr_t engine_vgui_start_drawing;
     inline uintptr_t engine_vgui_finish_drawing;
     inline uintptr_t input;
@@ -32,7 +34,7 @@ namespace patterns {
     inline uintptr_t send_datagram;
     inline uintptr_t load_named_sky;
     inline uintptr_t set_abs_angles;
-    inline uintptr_t get_sequence_activity;
+    inline uintptr_t sequence_activity;
     inline uintptr_t has_bomb;
     inline uintptr_t set_absolute_origin;
     inline uintptr_t report_player;
@@ -64,7 +66,7 @@ namespace patterns {
     inline uintptr_t find_hud_element_addr_2;
     inline uintptr_t enable_world_fog;
     inline uintptr_t game_rules_proxy;
-    // inline uintptr_t relay_cluster;
+    inline uintptr_t relay_cluster;
     inline uintptr_t inventory_unlocker;
     inline uintptr_t demo_file_end_reached;
     inline uintptr_t key_values_system;
@@ -75,7 +77,13 @@ namespace patterns {
     inline uintptr_t push_notice;
     inline uintptr_t is_breakable;
     inline uintptr_t play_step_sound;
+    inline uintptr_t calc_view;
+    inline uintptr_t get_color_modulation;
+    inline uintptr_t is_using_static_prop_debug_modes;
+    inline uintptr_t smoke_count;
 
+    PATTERN_GET(present, present);
+    PATTERN_GET(reset, reset);
     PATTERN_GET(engine_vgui_start_drawing, engine_vgui_start_drawing);
     PATTERN_GET(engine_vgui_finish_drawing, engine_vgui_finish_drawing);
     PATTERN_GET(input, *(uintptr_t *) (input + 1u));
@@ -97,7 +105,7 @@ namespace patterns {
     PATTERN_GET(send_datagram, send_datagram);
     PATTERN_GET(load_named_sky, load_named_sky);
     PATTERN_GET(set_abs_angles, set_abs_angles);
-    PATTERN_GET(get_sequence_activity, get_sequence_activity);
+    PATTERN_GET(sequence_activity, sequence_activity);
     PATTERN_GET(has_bomb, has_bomb);
     PATTERN_GET(set_absolute_origin, set_absolute_origin);
     PATTERN_GET(report_player, report_player);
@@ -129,7 +137,7 @@ namespace patterns {
     PATTERN_GET(find_hud_element_addr_2, find_hud_element_addr_2);
     PATTERN_GET(enable_world_fog, enable_world_fog);
     PATTERN_GET(game_rules_proxy, game_rules_proxy);
-    // PATTERN_GET(relay_cluster, relay_cluster);
+    PATTERN_GET(relay_cluster, relay_cluster);
     PATTERN_GET(inventory_unlocker, inventory_unlocker);
     PATTERN_GET(demo_file_end_reached, demo_file_end_reached);
     PATTERN_GET(key_values_system, key_values_system);
@@ -140,7 +148,12 @@ namespace patterns {
     PATTERN_GET(push_notice, push_notice);
     PATTERN_GET(is_breakable, is_breakable);
     PATTERN_GET(play_step_sound, play_step_sound);
+    PATTERN_GET(calc_view, calc_view);
+    PATTERN_GET(get_color_modulation, get_color_modulation);
+    PATTERN_GET(is_using_static_prop_debug_modes, is_using_static_prop_debug_modes);
+    PATTERN_GET(smoke_count, smoke_count);
 
     uint32_t get_pattern(std::string_view module_name, std::string_view pattern);
+    uint32_t v2_find_pattern(const char *module, const char *signature);
     bool init();
 } // namespace patterns

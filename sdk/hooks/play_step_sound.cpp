@@ -13,7 +13,7 @@ void __fastcall hooks::play_step_sound(c_player *ecx, uintptr_t edx, vector_t &o
         }
 
         std::unique_lock lock(features::visuals::esp::footsteps_mutex);
-        features::visuals::esp::footsteps.push_back({ origin, interfaces::global_vars->current_time, 1.0f });
+        features::visuals::esp::footsteps.push_back({origin, interfaces::global_vars->current_time, 1.0f});
     }
 
     play_step_sound_original(ecx, edx, origin, surface, vol, force, arg);

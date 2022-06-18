@@ -3,7 +3,7 @@
 #include "vector.h"
 
 class glow_object_definition_t {
-  public:
+public:
     void set(const float r, const float g, const float b, const float a) {
         color = vector_t(r, g, b);
         alpha = a;

@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 
+#include "color.h"
 #include "client_class.h"
 #include "econ_item.h"
 #include "macros.h"
@@ -163,7 +164,6 @@ enum observer_mode_t {
     OBS_MODE_CHASE,     // follow a player in third person view
     OBS_MODE_POI,       // PASSTIME point of interest - game objective, big fight, anything interesting; added in the middle of the enum due to tons of hard-coded "<ROAMING" enum compares
     OBS_MODE_ROAMING,   // free roaming
-
     NUM_OBSERVER_MODES,
 };
 
@@ -200,8 +200,8 @@ enum e_player_hitboxes : int {
 enum e_bone_mask_t {
     BONE_USED_MASK = 0x0007FF00,
     BONE_USED_BY_ANYTHING = 0x0007FF00,
-    BONE_USED_BY_HITBOX = 0x00000100,     // bone (or child) is used by a hit box
-    BONE_USED_BY_ATTACHMENT = 0x00000200, // bone (or child) is used by an attachment point
+    BONE_USED_BY_HITBOX = 0x00000100,      // bone (or child) is used by a hit box
+    BONE_USED_BY_ATTACHMENT = 0x00000200,  // bone (or child) is used by an attachment point
     BONE_USED_BY_VERTEX_MASK = 0x0003FC00,
     BONE_USED_BY_VERTEX_LOD0 = 0x00000400, // bone (or child) is used by the toplevel model via skinned vertex
     BONE_USED_BY_VERTEX_LOD1 = 0x00000800,
@@ -211,7 +211,7 @@ enum e_bone_mask_t {
     BONE_USED_BY_VERTEX_LOD5 = 0x00008000,
     BONE_USED_BY_VERTEX_LOD6 = 0x00010000,
     BONE_USED_BY_VERTEX_LOD7 = 0x00020000,
-    BONE_USED_BY_BONE_MERGE = 0x00040000 // bone is available for bone merge to occur against it
+    BONE_USED_BY_BONE_MERGE = 0x00040000   // bone is available for bone merge to occur against it
 };
 
 // How many bits to use to encode an edict.
@@ -233,29 +233,31 @@ enum precipitation_type_t {
 };
 
 class c_animation_layer {
-  public:
-    bool client_blend;
-    float layer_fade_time;
-    void *studio_hdr;
-    int dispatch_sequence_primary;
-    int dispatch_sequence_secondary;
-    int order;
-    int sequence;
-    float prev_cycle;
-    float weight;
-    float weight_delta_rate;
-    float playback_rate;
-    float cycle;
-    void *owner;
-    char pad[4];
+public:
+    bool client_blend;       // 0x0000
+    float blend_in;          // 0x0004
+    void *studio_hdr;        // 0x0008
+    int dispatch_sequence;   // 0x000C
+    int dispatch_sequence_2; // 0x0010
+    int order;               // 0x0014
+    int sequence;            // 0x0018
+    float prev_cycle;        // 0x001C
+    float weight;            // 0x0020
+    float weight_delta_rate; // 0x0024
+    float playback_rate;     // 0x0028
+    float cycle;             // 0x002C
+    void *owner;             // 0x0030
+    char pad_0038[4];        // 0x0034
 };
 
 struct entity_handle_t {
     uintptr_t handle;
 
-    constexpr entity_handle_t() : handle(0xFFFFFFFF) {}
+    constexpr entity_handle_t() : handle(0xFFFFFFFF) {
+    }
 
-    constexpr entity_handle_t(unsigned long handle) : handle(handle) {}
+    constexpr entity_handle_t(unsigned long handle) : handle(handle) {
+    }
 
     class c_entity *get() const;
 
@@ -267,13 +269,13 @@ struct entity_handle_t {
 };
 
 class c_collideable {
-  public:
+public:
     DECLARE_VFUNC(1, get_mins(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(2, get_maxs(), vector_t &(__thiscall *) (void *) )();
 };
 
 class c_networkable {
-  public:
+public:
     DECLARE_VFUNC(1, release(), void(__thiscall *)(void *))();
     DECLARE_VFUNC(2, get_client_class(), c_client_class *(__thiscall *) (void *) )();
     DECLARE_VFUNC(4, on_pre_data_changed(int type), void(__thiscall *)(void *, int))(type);
@@ -285,26 +287,25 @@ class c_networkable {
 };
 
 class c_renderable {
-  public:
+public:
     DECLARE_VFUNC(1, get_render_origin(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(2, get_render_angles(), vector_t &(__thiscall *) (void *) )();
     DECLARE_VFUNC(3, should_draw(), bool(__thiscall *)(void *))();
     DECLARE_VFUNC(8, get_model(), c_model *(__thiscall *) (void *) )();
-    DECLARE_VFUNC(13, setup_bones(matrix3x4_t *bone_to_world_out, int max_bones, int bone_mask, float current_time), bool(__thiscall *)(void *, matrix3x4_t *, int, int, float))
-    (bone_to_world_out, max_bones, bone_mask, current_time);
+    DECLARE_VFUNC(13, setup_bones(matrix3x4_t *bone_to_world_out, int max_bones, int bone_mask, float current_time), bool(__thiscall *)
+    (void *, matrix3x4_t *, int, int, float)) (bone_to_world_out, max_bones, bone_mask, current_time);
 };
 
 class c_entity {
-  public:
-    // networked variables
+public:
     DECLARE_OFFSET(get_renderable(), (c_renderable *) ((uintptr_t) this + 0x4));
     DECLARE_OFFSET(get_networkable(), (c_networkable *) ((uintptr_t) this + 0x8));
 
     DECLARE_VFUNC(3, get_collideable(), c_collideable *(__thiscall *) (void *) )();
     DECLARE_VFUNC(10, get_abs_origin(), vector_t &(__thiscall *) (void *) )();
-    DECLARE_VFUNC(142, get_class_name(), const char *(__thiscall *)(void *))();
-    DECLARE_VFUNC(157, is_player(), bool(__thiscall *)(void *))();
-    DECLARE_VFUNC(165, is_weapon(), bool(__thiscall *)(void *))();
+    DECLARE_VFUNC(142, get_class_name(), const char *(__thiscall *) (void *) )();
+    DECLARE_VFUNC(158, is_player(), bool(__thiscall *)(void *))(); // @xref: "effects/nightvision"
+    DECLARE_VFUNC(166, is_weapon(), bool(__thiscall *)(void *))();
 
     DECLARE_NETVAR(float, simulation_time, "DT_BaseEntity", "m_flSimulationTime");
     DECLARE_NETVAR(float, c4_blow, "DT_PlantedC4", "m_flC4Blow");
@@ -335,25 +336,38 @@ class c_entity {
 
     bool is_grenade();
 
-    template <typename T> T &get(const uintptr_t offset) {
-        return *reinterpret_cast<T *>(reinterpret_cast<uintptr_t>(this) + offset);
+	template <typename t>
+    __forceinline t &get(size_t offset) {
+        return *(t *) ((uintptr_t) this + offset);
+    }
+
+    template <typename t>
+    __forceinline void set(size_t offset, const t &val) {
+        *(t *) ((uintptr_t) this + offset) = val;
+    }
+
+    template <typename t>
+    __forceinline t as() {
+        return (t) this;
     }
 };
 
 class c_player : public c_entity {
-  public:
+public:
     DECLARE_NETVAR(bool, has_defuser, "DT_CSPlayer", "m_bHasDefuser");
     DECLARE_NETVAR(bool, has_gun_game_immunity, "DT_CSPlayer", "m_bGunGameImmunity");
     DECLARE_NETVAR(bool, has_helmet, "DT_CSPlayer", "m_bHasHelmet");
     DECLARE_NETVAR(bool, is_scoped, "DT_CSPlayer", "m_bIsScoped");
     DECLARE_NETVAR(bool, is_defusing, "DT_CSPlayer", "m_bIsDefusing");
     DECLARE_NETVAR(bool, has_heavy_armor, "DT_CSPlayer", "m_bHasHeavyArmor");
+
     DECLARE_NETVAR(float, flash_duration, "DT_CSPlayer", "m_flFlashDuration");
     DECLARE_NETVAR(float, flash_alpha, "DT_CSPlayer", "m_flFlashMaxAlpha");
     DECLARE_NETVAR(float, lower_body_yaw, "DT_CSPlayer", "m_flLowerBodyYawTarget");
     DECLARE_NETVAR(float, health_shot_boost_time, "DT_CSPlayer", "m_flHealthShotBoostExpirationTime");
     DECLARE_NETVAR(float, next_attack, "DT_BCCLocalPlayerExclusive", "m_flNextAttack");
     DECLARE_NETVAR(float, fall_velocity, "DT_Local", "m_flFallVelocity");
+
     DECLARE_NETVAR(int, shots_fired, "DT_CSLocalPlayerExclusive", "m_iShotsFired");
     DECLARE_NETVAR(int, armor, "DT_CSPlayer", "m_ArmorValue");
     DECLARE_NETVAR(int, health, "DT_BasePlayer", "m_iHealth");
@@ -365,11 +379,13 @@ class c_player : public c_entity {
     DECLARE_NETVAR(int, money, "DT_CSPlayer", "m_iAccount");
     DECLARE_NETVAR(int, observer_mode, "DT_BasePlayer", "m_iObserverMode");
     DECLARE_NETVAR(int, survival_team, "DT_BasePlayer", "m_nSurvivalTeam");
+
     DECLARE_NETVAR(vector_t, eye_angles, "DT_CSPlayer", "m_angEyeAngles[0]");
     DECLARE_NETVAR(vector_t, punch_angle, "DT_Local", "m_viewPunchAngle");
     DECLARE_NETVAR(vector_t, aim_punch_angle, "DT_Local", "m_aimPunchAngle");
     DECLARE_NETVAR(vector_t, velocity, "DT_LocalPlayerExclusive", "m_vecVelocity[0]");
     DECLARE_NETVAR(vector_t, view_offset, "DT_LocalPlayerExclusive", "m_vecViewOffset[0]");
+
     DECLARE_NETVAR(entity_handle_t, observer_target, "DT_BasePlayer", "m_hObserverTarget");
     DECLARE_NETVAR(entity_handle_t, active_weapon_handle, "DT_BaseCombatCharacter", "m_hActiveWeapon");
     DECLARE_NETVAR(entity_handle_t, view_model_handle, "DT_BasePlayer", "m_hViewModel[0]");
@@ -386,6 +402,11 @@ class c_player : public c_entity {
     CUtlVector<c_animation_layer> &animation_overlay();
     CUtlVector<matrix3x4_t> &get_cached_bone_data();
 
+    std::array<int, 5> &player_patch_econ_indices() {
+        static uint32_t _offset = netvars::get(CRC_CT("DT_CSPlayer:m_vecPlayerPatchEconIndices"));
+        return *(std::array<int, 5> *) ((uintptr_t) this + _offset);
+    }
+
     void set_abs_angles(const vector_t &angle);
     void set_absolute_origin(const vector_t &new_origin);
 
@@ -394,6 +415,7 @@ class c_player : public c_entity {
     vector_t get_hitbox_pos(int idx);
 
     float get_flash_time();
+    float &spawn_time();
 
     int max_health();
     int sequence_activity(int sequence);
@@ -409,22 +431,25 @@ class c_player : public c_entity {
     bool is_reloading();
     bool is_smoked();
     bool has_bomb();
+    bool is_sane();
 };
 
 class i_client_unknown {
-  public:
+public:
     DECLARE_VFUNC(6, get_base_entity(), c_entity *(__thiscall *) (i_client_unknown *) )();
 };
 
 class i_client_renderable {
-  public:
+public:
     DECLARE_VFUNC(0, get_i_client_unknown(), i_client_unknown *(__thiscall *) (i_client_renderable *) )();
 };
 
 class c_economy_item : public c_entity {
-  public:
+public:
     DECLARE_NETVAR(short, item_definition_index, "DT_ScriptCreatedItem", "m_iItemDefinitionIndex");
+
     DECLARE_NETVAR(bool, is_initialized, "DT_ScriptCreatedItem", "m_bInitialized");
+
     DECLARE_NETVAR(int, entity_level, "DT_ScriptCreatedItem", "m_iEntityLevel");
     DECLARE_NETVAR(int, account_id, "DT_ScriptCreatedItem", "m_iAccountID");
     DECLARE_NETVAR(int, item_id_low, "DT_ScriptCreatedItem", "m_iItemIDLow");
@@ -440,24 +465,28 @@ class c_grenade : public c_entity {
 public:
     DECLARE_NETVAR(int, explode_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nExplodeEffectTickBegin");
     DECLARE_NETVAR(int, smoke_effect_tick_begin, "DT_BaseCSGrenadeProjectile", "m_nSmokeEffectTickBegin");
+
     DECLARE_NETVAR(vector_t, initial_velocity, "DT_BaseCSGrenadeProjectile", "m_vInitialVelocity");
+
     DECLARE_NETVAR_OFFSET(float, spawn_time, "DT_BaseCSGrenadeProjectile", "m_vecExplodeEffectOrigin", 12);
 };
 
 class c_weapon : public c_economy_item {
-  public:
+public:
     DECLARE_NETVAR(bool, is_burst_mode, "DT_WeaponCSBase", "m_bBurstMode");
+
     DECLARE_NETVAR(float, next_primary_attack, "DT_LocalActiveWeaponData", "m_flNextPrimaryAttack");
     DECLARE_NETVAR(float, next_secondary_attack, "DT_LocalActiveWeaponData", "m_flNextSecondaryAttack");
     DECLARE_NETVAR(float, ready_time, "DT_WeaponCSBase", "m_flPostponeFireReadyTime");
     DECLARE_NETVAR(float, recoil_index, "DT_WeaponCSBase", "m_flRecoilIndex");
+
     DECLARE_NETVAR(int, ammo1, "DT_BaseCombatWeapon", "m_iClip1");
     DECLARE_NETVAR(int, ammo2, "DT_BaseCombatWeapon", "m_iClip2");
     DECLARE_NETVAR(int, reserve_ammo_count, "DT_BaseCombatWeapon", "m_iPrimaryReserveAmmoCount");
     DECLARE_NETVAR(int, burst_shots_remaining, "DT_WeaponCSBaseGun", "m_iBurstShotsRemaining");
 
-    DECLARE_VFUNC(452, get_spread(), float(__thiscall *)(void *))();
-    DECLARE_VFUNC(482, get_inaccuracy(), float(__thiscall *)(void *))();
+    DECLARE_VFUNC(453, get_spread(), float(__thiscall *)(void *))();
+    DECLARE_VFUNC(483, get_inaccuracy(), float(__thiscall *)(void *))();
 
     weapon_info_t *get_info();
 
@@ -474,7 +503,7 @@ class c_weapon : public c_economy_item {
         return get_item_definition_index() == WEAPON_AWP;
     }
     inline bool is_scout() {
-        return get_weapon_type() == WEAPON_SSG08;
+        return get_item_definition_index() == WEAPON_SSG08;
     }
     inline bool is_auto() {
         return get_item_definition_index() == WEAPON_SCAR20 || get_item_definition_index() == WEAPON_G3SG1;
@@ -505,14 +534,14 @@ class c_weapon : public c_economy_item {
 };
 
 class c_base_grenade : public c_weapon {
-  public:
+public:
     DECLARE_NETVAR(bool, pin_pulled, "DT_BaseCSGrenade", "m_bPinPulled");
     DECLARE_NETVAR(float, throw_time, "DT_BaseCSGrenade", "m_fThrowTime");
     DECLARE_NETVAR(float, throw_strength, "DT_BaseCSGrenade", "m_flThrowStrength");
 };
 
 class c_game_rules {
-  public:
+public:
     DECLARE_NETVAR(bool, freeze_period, "DT_CSGameRules", "m_bFreezePeriod");
 
     static c_game_rules *get() {
@@ -521,7 +550,7 @@ class c_game_rules {
 };
 
 class c_player_resource {
-  public:
+public:
     bool is_c4_carrier(int index) {
         const static auto offset = netvars::get(CRC_CT("DT_CSPlayerResource:m_iPlayerC4"));
 
@@ -539,6 +568,16 @@ class c_player_resource {
 };
 
 class c_precipitation_entity : public c_entity {
-  public:
+public:
     DECLARE_NETVAR(int, precip_type, "DT_Precipitation", "m_nPrecipType");
+};
+
+class c_fog_controller : public c_entity { // why did valve name these so oddly?
+public:
+    DECLARE_NETVAR(bool, fog_enable, "DT_FogController", "m_fog.enable");
+    DECLARE_NETVAR(float, fog_start, "DT_FogController", "m_fog.start");
+    DECLARE_NETVAR(float, fog_end, "DT_FogController", "m_fog.end");
+    DECLARE_NETVAR(float, fog_max_density, "DT_FogController", "m_fog.maxdensity");
+    DECLARE_NETVAR(color_t, fog_color_primary, "DT_FogController", "m_fog.colorPrimary");
+    DECLARE_NETVAR(color_t, fog_color_secondary, "DT_FogController", "m_fog.colorSecondary");
 };

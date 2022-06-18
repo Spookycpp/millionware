@@ -4,8 +4,7 @@
 inline int UtlMemory_CalcNewAllocationCount(int allocation_count, int grow_size, int new_size, int bytes_item) {
     if (grow_size) {
         allocation_count = ((1 + ((new_size - 1) / grow_size)) * grow_size);
-    }
-    else {
+    } else {
         if (!allocation_count) {
             // Compute an allocation which is at least as big as a cache line...
             allocation_count = (31 + bytes_item) / bytes_item;
@@ -19,8 +18,9 @@ inline int UtlMemory_CalcNewAllocationCount(int allocation_count, int grow_size,
     return allocation_count;
 }
 
-template <class T, class I = int> class CUtlMemory {
-  public:
+template <class T, class I = int>
+class CUtlMemory {
+public:
     bool is_idx_valid(I i) const {
         long x = i;
         return (x >= 0) && (x < allocation_amount);
@@ -49,10 +49,9 @@ template <class T, class I = int> class CUtlMemory {
 
         // if m_allocation_requested wraps index type I, recalculate
         if ((int) (I) new_allocation_count < allocation_requested) {
-            if ((int) (I) new_allocation_count == 0 && (int) (I)(new_allocation_count - 1) >= allocation_requested) {
+            if ((int) (I) new_allocation_count == 0 && (int) (I) (new_allocation_count - 1) >= allocation_requested) {
                 --new_allocation_count; // deal w/ the common case of allocation_amount == MAX_USHORT + 1
-            }
-            else {
+            } else {
                 if ((int) (I) allocation_requested != allocation_requested) {
                     // we've been asked to grow memory to a size s.t. the index type can't address the requested amount of memory
                     assert(0);
@@ -71,47 +70,52 @@ template <class T, class I = int> class CUtlMemory {
 
             memcpy(ptr, memory, old_allocation_amount * sizeof(T));
             memory = (T *) ptr;
-        }
-        else {
+        } else {
             memory = (T *) new uint8_t[allocation_amount * sizeof(T)];
         }
     }
 
-  protected:
+protected:
     T *memory;
     int allocation_amount;
     int grow_size;
 };
 
-template <class T, class I> T &CUtlMemory<T, I>::operator[](I i) {
+template <class T, class I>
+T &CUtlMemory<T, I>::operator[](I i) {
     assert(is_idx_valid(i));
     return memory[i];
 }
 
-template <class T, class I> const T &CUtlMemory<T, I>::operator[](I i) const {
+template <class T, class I>
+const T &CUtlMemory<T, I>::operator[](I i) const {
     assert(is_idx_valid(i));
     return memory[i];
 }
 
-template <class T> void destruct(T *memory) {
+template <class T>
+void destruct(T *memory) {
     memory->~T();
 }
 
-template <class T> T *construct(T *memory) {
+template <class T>
+T *construct(T *memory) {
     return ::new (memory) T;
 }
 
-template <class T> T *copy_construct(T *memory, T const &src) {
+template <class T>
+T *copy_construct(T *memory, T const &src) {
     return ::new (memory) T(src);
 }
 
-template <class T, class A = CUtlMemory<T>> class CUtlVector {
+template <class T, class A = CUtlMemory<T>>
+class CUtlVector {
     typedef A CAllocator;
 
     typedef T *iterator;
     typedef const T *const_iterator;
 
-  public:
+public:
     T &operator[](int i);
     const T &operator[](int i) const;
 
@@ -245,18 +249,20 @@ template <class T, class A = CUtlMemory<T>> class CUtlVector {
         return base() + count();
     }
 
-  protected:
+protected:
     CAllocator memory;
     int size;
     T *elements;
 };
 
-template <typename T, class A> T &CUtlVector<T, A>::operator[](int i) {
+template <typename T, class A>
+T &CUtlVector<T, A>::operator[](int i) {
     assert(i < size);
     return memory[i];
 }
 
-template <typename T, class A> const T &CUtlVector<T, A>::operator[](int i) const {
+template <typename T, class A>
+const T &CUtlVector<T, A>::operator[](int i) const {
     assert(i < size);
     return memory[i];
 }

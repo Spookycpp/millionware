@@ -3,7 +3,7 @@
 #include "vector.h"
 
 struct view_setup_t {
-  public:
+public:
     int x;
     int x_old;
     int y;
@@ -13,10 +13,10 @@ struct view_setup_t {
     int height;
     int height_old;
 
-  private:
+private:
     char padding0[0x90];
 
-  public:
+public:
     float fov;
     float viewmodel_fov;
 

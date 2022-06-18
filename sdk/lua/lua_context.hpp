@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lua_internal.hpp"
 #include "lua_callback.hpp"
+#include "lua_internal.hpp"
 
 namespace lua_internal {
     class context {
@@ -32,4 +32,4 @@ namespace lua_internal {
 
         std::string filename() const;
     };
-}
+} // namespace lua_internal

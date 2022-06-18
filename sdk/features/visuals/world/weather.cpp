@@ -3,6 +3,9 @@
 #include "../../../core/cheat/cheat.h"
 #include "../../../core/interfaces/interfaces.h"
 #include "../../../core/settings/settings.h"
+
+#include "../../../engine/logging/logging.h"
+
 #include <format>
 
 namespace features::visuals::weather {
@@ -15,18 +18,18 @@ namespace features::visuals::weather {
 
     void on_frame_stage_notify(const e_client_frame_stage frame_stage) {
         switch (frame_stage) {
-            case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
-                update_weather();
-                do_fog();
-            }
-            default: ;
+        case e_client_frame_stage::FRAME_STAGE_RENDER_START: {
+            update_weather();
+            do_fog();
+        }
+        default:;
         }
     }
 
     void reset_weather(const bool cleanup) {
         created_rain = false;
 
-        if (rain_entity && cleanup) {
+        if (rain_entity && !IsBadReadPtr(rain_entity, 4) && cleanup) {
 
             if (const auto networkable = rain_entity->get_networkable())
                 networkable->release();
@@ -38,7 +41,8 @@ namespace features::visuals::weather {
     void update_weather() {
 
         if (!precipitation) {
-            for (auto client_class = interfaces::client_dll->get_all_classes(); client_class && !precipitation; client_class = client_class->next) {
+            for (auto client_class = interfaces::client_dll->get_all_classes(); client_class && !precipitation;
+                 client_class = client_class->next) {
                 if (client_class->class_id == CPrecipitation)
                     precipitation = client_class;
             }
@@ -66,8 +70,7 @@ namespace features::visuals::weather {
 
                 created_rain = true;
             }
-        }
-        else if (created_rain && !settings.visuals.world.weather && last_state) {
+        } else if (created_rain && !settings.visuals.world.weather && last_state) {
             reset_weather();
         }
 
@@ -79,12 +82,6 @@ namespace features::visuals::weather {
         if (!interfaces::engine_client->is_in_game() || !interfaces::engine_client->is_connected())
             return;
 
-        static auto fog_override = interfaces::convar_system->find_convar(xs("fog_override"));
-        static auto fog_start = interfaces::convar_system->find_convar(xs("fog_start"));
-        static auto fog_end = interfaces::convar_system->find_convar(xs("fog_end"));
-        static auto fog_maxdensity = interfaces::convar_system->find_convar(xs("fog_maxdensity"));
-        static auto fog_color_cvar = interfaces::convar_system->find_convar(xs("fog_color"));
-
         const auto fog_enable = settings.visuals.world.fog;
         const auto fog_length = settings.visuals.world.fog_length;
         const auto fog_color = settings.visuals.world.fog_color;
@@ -93,16 +90,30 @@ namespace features::visuals::weather {
         static int old_length = 0;
         static color_t old_color;
 
-        // ghetto but simple way for it to actually disable
-        if (fog_enable != old_enable || fog_length != old_length || fog_color != old_color) { // credits: swoopae / crescent
-            fog_override->set_value(fog_enable);
-            fog_start->set_value(0);
-            fog_end->set_value(fog_length);
-            fog_maxdensity->set_value(fog_color.a / 255.f);
-            fog_color_cvar->set_value(std::format(xs("{} {} {}"), fog_color.r, fog_color.g, fog_color.b).data());
-            old_enable = fog_enable;
-            old_length = fog_length;
-            old_color = fog_color;
+        for (int i = 1; i < interfaces::entity_list->get_highest_ent_index(); i++) {
+            auto fog = reinterpret_cast<c_fog_controller *>(interfaces::entity_list->get_entity(i));
+
+            if (!fog) {
+                continue;
+            }
+
+            if (fog->get_networkable()->get_client_class()->class_id != CFogController) {
+                continue;
+            }
+
+            if (fog_enable != old_enable || fog_length != old_length || fog_color != old_color) { // https://i.imgur.com/xD24aJu.jpg
+                fog->get_fog_enable() = fog_enable;
+                fog->get_fog_start() = 0.f;
+                fog->get_fog_end() = float(fog_length) * 100.f;
+                fog->get_fog_max_density() = fog_color.a / 100.f;
+
+                fog->get_fog_color_primary() = fog_color.to_u32();
+                fog->get_fog_color_secondary() = fog_color.to_u32();
+
+                old_enable = fog_enable;
+                old_length = fog_length;
+                old_color = fog_color;
+            }
         }
     }
 } // namespace features::visuals::weather

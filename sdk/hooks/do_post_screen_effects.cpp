@@ -3,9 +3,12 @@
 #include "../core/interfaces/interfaces.h"
 #include "../core/settings/settings.h"
 
+#include "../engine/debug/debug_overlay.h"
 #include "../source engine/glow_object_definition.h"
 
 int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, int effect_id) {
+
+    PROFILE_WITH(do_psfx);
 
     static void *glow_manager = nullptr;
 
@@ -33,6 +36,9 @@ int __fastcall hooks::do_post_screen_effects(c_client_mode *ecx, uintptr_t edx, 
         auto entity = (c_player *) interfaces::entity_list->get_entity(i);
 
         if (!entity || entity->get_team_num() == cheat::local_player->get_team_num())
+            continue;
+
+        if (entity->get_networkable()->get_client_class()->class_id != CCSPlayer)
             continue;
 
         auto index = entity->get_glow_index();

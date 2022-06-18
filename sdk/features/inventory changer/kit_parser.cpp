@@ -16,7 +16,8 @@ std::vector<kit_parser::paint_kit_t> kit_parser::sticker_kits;
 class CCStrike15ItemSchema;
 class CCStrike15ItemSystem;
 
-template <typename Key, typename value> struct node_t {
+template <typename Key, typename value>
+struct node_t {
     int previous_id;    // 0x0000
     int next_id;        // 0x0004
     void *_unknown_ptr; // 0x0008
@@ -25,7 +26,8 @@ template <typename Key, typename value> struct node_t {
     value value;        // 0x0014
 };
 
-template <typename Key, typename value> struct head_t {
+template <typename Key, typename value>
+struct head_t {
     node_t<Key, value> *memory; // 0x0000
     int allocation_count;       // 0x0004
     int grow_size;              // 0x0008
@@ -77,10 +79,11 @@ struct sticker_kit_data_t {
 
 void kit_parser::initialize_kits() {
 
-    using  usc2_to_utf8_t = int(__cdecl *)(const wchar_t *ucs2, char *utf8, int length);
+    using usc2_to_utf8_t = int(__cdecl *)(const wchar_t *ucs2, char *utf8, int length);
     static usc2_to_utf8_t usc2_to_utf8_fn = (usc2_to_utf8_t) GetProcAddress(GetModuleHandleA(xs("vstdlib.dll")), xs("V_UCS2ToUTF8"));
 
-    //static auto usc2_to_utf8_fn = pe::get_export<int (*)(const wchar_t *ucs2, char *utf8, int length)>(pe::get_module(XORSTR("vstdlib.dll")), XORSTR("V_UCS2ToUTF8"));
+    // static auto usc2_to_utf8_fn = pe::get_export<int (*)(const wchar_t *ucs2, char *utf8, int
+    // length)>(pe::get_module(XORSTR("vstdlib.dll")), XORSTR("V_UCS2ToUTF8"));
 
     static auto address = patterns::get_kit_parser_data_1();
 
@@ -89,12 +92,14 @@ void kit_parser::initialize_kits() {
         return;
     }
 
-    static auto item_system_fn = reinterpret_cast<CCStrike15ItemSystem *(*) ()>(&address + 5 + *reinterpret_cast<uintptr_t *>(&address + 1));
+    static auto item_system_fn =
+        reinterpret_cast<CCStrike15ItemSystem *(*) ()>(&address + 5 + *reinterpret_cast<uintptr_t *>(&address + 1));
     static auto item_schema = reinterpret_cast<CCStrike15ItemSchema *>(reinterpret_cast<uintptr_t>(item_system_fn()) + sizeof(void *));
 
     {
         static auto get_paint_kit_definition_offset = *reinterpret_cast<uintptr_t *>(&address + 12);
-        static auto get_paint_kit_definition_fn = reinterpret_cast<paint_kit_data_t *(__thiscall *) (CCStrike15ItemSchema *, int)>(&address + 16 + get_paint_kit_definition_offset);
+        static auto get_paint_kit_definition_fn = reinterpret_cast<paint_kit_data_t *(__thiscall *) (CCStrike15ItemSchema *, int)>(
+            &address + 16 + get_paint_kit_definition_offset);
 
         static auto start_element_offset = *reinterpret_cast<intptr_t *>(uintptr_t(get_paint_kit_definition_fn) + 10);
         static auto head_offset = start_element_offset - 12;
@@ -114,12 +119,12 @@ void kit_parser::initialize_kits() {
 
             const auto wide_name = interfaces::localize->find(paint_kit->item_name.buffer + 1);
 
-                char name[256] = {0};
+            char name[256] = {0};
             usc2_to_utf8_fn(wide_name, name, sizeof(name));
 
             if (paint_kit->id < 10000)
                 skin_kits.emplace_back(paint_kit_t{paint_kit->id, name});
-            else 
+            else
                 glove_kits.emplace_back(paint_kit_t{paint_kit->id, name});
         }
 
@@ -138,10 +143,11 @@ void kit_parser::initialize_kits() {
             return;
         }
 
-        (uintptr_t&)address += 4;
+        (uintptr_t &) address += 4;
 
         const auto get_sticker_kit_definition_offset = *reinterpret_cast<intptr_t *>(&address + 1);
-        const auto get_sticker_kit_definition_fn = reinterpret_cast<sticker_kit_data_t *(__thiscall *) (CCStrike15ItemSchema *, int)>(&address + 5 + get_sticker_kit_definition_offset);
+        const auto get_sticker_kit_definition_fn = reinterpret_cast<sticker_kit_data_t *(__thiscall *) (CCStrike15ItemSchema *, int)>(
+            &address + 5 + get_sticker_kit_definition_offset);
 
         const auto start_element_offset = *reinterpret_cast<intptr_t *>(uintptr_t(get_sticker_kit_definition_fn) + 8 + 2);
         const auto head_offset = start_element_offset - 12;

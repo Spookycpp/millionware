@@ -7,7 +7,18 @@ class i_client_entity;
 class i_trace_filter;
 class i_texture;
 
-enum { TE_BEAMPOINTS = 0, TE_SPRITE = 1, TE_BEAMDISK = 2, TE_BEAMCYLINDER = 3, TE_BEAMFOLLOW = 4, TE_BEAMRING = 5, TE_bmsPLINE = 6, TE_BEAMRINGPOINT = 7, TE_BEAMLASER = 8, TE_BEAMTESLA = 9 };
+enum {
+    TE_BEAMPOINTS = 0,
+    TE_SPRITE = 1,
+    TE_BEAMDISK = 2,
+    TE_BEAMCYLINDER = 3,
+    TE_BEAMFOLLOW = 4,
+    TE_BEAMRING = 5,
+    TE_bmsPLINE = 6,
+    TE_BEAMRINGPOINT = 7,
+    TE_BEAMLASER = 8,
+    TE_BEAMTESLA = 9
+};
 
 enum {
     FBEAM_STARTENTITY = 0x00000001,
@@ -38,7 +49,7 @@ struct beam_trail_t {
 };
 
 class c_beam {
-  public:
+public:
     float m_flred;       /* 224 */
     float m_flgreen;     /* 228 */
     float m_flblue;      /* 232 */
@@ -91,7 +102,7 @@ struct beam_info_t {
 };
 
 class c_view_render_beams {
-  public:
+public:
     void draw_beam(beam_t *beam) {
         /* sig: client , 55 8B EC 83 E4 F8 83 EC 28 89 4C 24 0C */
         /* xref: "CViewRenderBeams::DrawBeam:  Unknown beam type %i\n" */

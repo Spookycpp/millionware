@@ -45,6 +45,9 @@ void logging::render() {
         return displayed_for >= message.duration;
     });
 
+    if (messages.empty())
+        return;
+
     messages.erase(messages_to_remove, messages.end());
 
     auto offset = 0.0f;
@@ -62,8 +65,7 @@ void logging::render() {
 
         if (message.custom) {
             color = message.color;
-        }
-        else {
+        } else {
             if (message.severity == LOG_SEVERITY_DEBUG)
                 color = {82, 235, 224};
             else if (message.severity == LOG_SEVERITY_INFO)
@@ -85,8 +87,7 @@ void logging::render() {
 
             if (what1)
                 position.x -= (1.0f - what4) * 150.0f;
-        }
-        else {
+        } else {
             color.a = 255;
             offset += message_increment;
         }
@@ -94,7 +95,8 @@ void logging::render() {
         render::draw_text(position + 1, {10, 10, 10, color.a / 3}, tag_text.c_str(), FONT_TAHOMA_11);
         render::draw_text(position, color, tag_text.c_str(), FONT_TAHOMA_11);
 
-        render::draw_text({position.x + tag_size.x + 1, position.y + 1}, {10, 10, 10, color.a / 3}, message.message.c_str(), FONT_TAHOMA_11);
+        render::draw_text({position.x + tag_size.x + 1, position.y + 1}, {10, 10, 10, color.a / 3}, message.message.c_str(),
+                          FONT_TAHOMA_11);
         render::draw_text({position.x + tag_size.x, position.y}, {255, 255, 255, color.a}, message.message.c_str(), FONT_TAHOMA_11);
     }
 }

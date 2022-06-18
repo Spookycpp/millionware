@@ -3,22 +3,22 @@
 #include "input.h"
 
 class c_move_helper {
-  private:
+private:
     virtual void _vpad() = 0;
 
-  public:
+public:
     virtual void set_host(class c_entity *host) = 0;
 
-  private:
+private:
     virtual void unknown1() = 0;
     virtual void unknown2() = 0;
 
-  public:
+public:
     virtual bool process_impacts() = 0;
 };
 
 class movedata_t {
-  public:
+public:
     bool m_bFirstRunOfFunctions : 1;
     bool m_bGameCodeMovedPlayer : 1;
     bool m_bNoAirControl : 1;
@@ -55,14 +55,15 @@ class movedata_t {
     void SetAbsOrigin(const vector_t &vec);
     const vector_t &GetAbsOrigin() const;
 
-  private:
+private:
     vector_t m_vecAbsOrigin;
     char pad_0x160[0x160];
 };
 
 class c_game_movement {
-  public:
-    virtual ~c_game_movement(void) {}
+public:
+    virtual ~c_game_movement(void) {
+    }
 
     virtual void process_movement(void *player, movedata_t *movement) = 0;
     virtual void reset(void) = 0;
@@ -79,12 +80,12 @@ class c_game_movement {
 };
 
 class c_prediction {
-  public:
+public:
     virtual ~c_prediction(void) = 0;
     virtual void initialize(void) = 0;
     virtual void shutdown(void) = 0;
 
-  public:
+public:
     virtual void update(int startframe, bool validframe, int incoming_acknowledged, int outgoing_command);
     virtual void pre_entity_packet_recieved(int commands_acknowledged, int current_world_update_packet);
     virtual void post_entity_packet_recieved(void);

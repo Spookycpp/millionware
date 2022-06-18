@@ -6,21 +6,27 @@
 struct point_t {
     float x, y;
 
-    constexpr point_t() : x(0.0f), y(0.0f) {}
+    constexpr point_t() : x(0.0f), y(0.0f) {
+    }
 
-    constexpr point_t(float value) : x(value), y(value) {}
+    constexpr point_t(float value) : x(value), y(value) {
+    }
 
-    constexpr point_t(float x, float y) : x(x), y(y) {}
+    constexpr point_t(float x, float y) : x(x), y(y) {
+    }
 };
 
 struct vector_t {
     float x, y, z;
 
-    constexpr vector_t() : x(0.0f), y(0.0f), z(0.0f) {}
+    constexpr vector_t() : x(0.0f), y(0.0f), z(0.0f) {
+    }
 
-    constexpr vector_t(float value) : x(value), y(value), z(value) {}
+    constexpr vector_t(float value) : x(value), y(value), z(value) {
+    }
 
-    constexpr vector_t(float x, float y, float z) : x(x), y(y), z(z) {}
+    constexpr vector_t(float x, float y, float z) : x(x), y(y), z(z) {
+    }
 
     inline float length() const {
         return std::sqrtf(x * x + y * y + z * z);
@@ -31,7 +37,16 @@ struct vector_t {
     }
 
     inline float length_2d() const {
-        return std::sqrtf(x * x + y * y);
+        float root = 0.0f;
+        float sqst = x * x + y * y;
+
+        __asm
+        {
+			sqrtss xmm0, sqst
+			movss root, xmm0
+        }
+
+        return root;
     }
 
     inline float length_2d_square() const {
@@ -135,8 +150,7 @@ struct vector_t {
                 if (t - x <= -0.5)
                     t += 1.0;
                 return t;
-            }
-            else {
+            } else {
                 t = floorf(-x);
                 if (t + x <= -0.5)
                     t += 1.0;

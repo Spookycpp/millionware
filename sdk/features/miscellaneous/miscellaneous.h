@@ -14,7 +14,6 @@ namespace features::miscellaneous {
 
     // usercmd
     void auto_pistol(c_user_cmd *user_cmd);
-    void auto_accept();
     void rank_reveal(c_user_cmd *user_cmd);
 
     // override view
@@ -37,4 +36,5 @@ namespace features::miscellaneous {
     void preserve_killfeed();
     void unlock_hidden_convars();
     void viewmodel_offset();
+    void remove_smoke();
 } // namespace features::miscellaneous

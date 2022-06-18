@@ -25,8 +25,7 @@ uint32_t scan_module_for_pattern(uint32_t module_base, int module_size, std::str
             mask_list.push_back(true);
 
             pattern_char++;
-        }
-        else if (isxdigit(pattern_char[0])) {
+        } else if (isxdigit(pattern_char[0])) {
             const auto lower = (pattern_char[1] >= 'A') ? (pattern_char[1] - 'A' + 10) : (pattern_char[1] - '0');
             const auto upper = (pattern_char[0] >= 'A') ? (pattern_char[0] - 'A' + 10) : (pattern_char[0] - '0');
 
@@ -34,8 +33,7 @@ uint32_t scan_module_for_pattern(uint32_t module_base, int module_size, std::str
             mask_list.push_back(false);
 
             pattern_char += 2;
-        }
-        else if (isspace(pattern_char[0])) {
+        } else if (isspace(pattern_char[0])) {
             pattern_char++;
         }
     }
@@ -90,10 +88,12 @@ uint32_t get_pattern_internal(std::string_view module_name, std::string_view pat
 uint32_t patterns::get_pattern(std::string_view module_name, std::string_view pattern) {
     const auto result = get_pattern_internal(module_name, pattern);
 
-    if (result != 0u)
+    if (result != 0u) {
         logging::debug(xs("found pattern '{}' in {} at 0x{:08x}"), pattern.data(), module_name.data(), result);
-    else
-        logging::error(xs("couldn't find pattern '{}' in {}"), pattern.data(), module_name.data());
+    } else {
+        logging::debug(xs("couldn't find pattern '{}' in {}"), pattern.data(), module_name.data());
+        logging::error(xs("couldn't find pattern, report this on the forum."));
+    }
 
     return result;
 }
@@ -162,7 +162,7 @@ bool patterns::init() {
     if ((set_abs_angles = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8"))) == 0u)
         return false;
 
-    if ((get_sequence_activity = get_pattern(xs("client.dll"), xs("55 8B EC 53 8B 5D 08 56 8B F1 83"))) == 0u)
+    if ((sequence_activity = get_pattern(xs("client.dll"), xs("55 8B EC 53 8B 5D 08 56 8B F1 83"))) == 0u)
         return false;
 
     if ((has_bomb = get_pattern(xs("client.dll"), xs("56 8B F1 85 F6 74 31"))) == 0u)
@@ -180,10 +180,11 @@ bool patterns::init() {
     if ((create_econ_item = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 51 53 56 8B D9 8B 0D"))) == 0u)
         return false;
 
-    // if ((create_econ_item = get_pattern(XORSTR("client.dll"), XORSTR("C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7
-    // 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45
-    // ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D
-    // 45 E4 50 E8 ???? 8D 45 E4"))) == 0u) 	return false;
+    // if ((create_econ_item = get_pattern(XORSTR("client.dll"), XORSTR("C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45
+    // ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ????? C7 45 ?????
+    // C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ????? C7 45
+    // ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4 C7 45 ????? 50 C7 45 ????? C7 45 ????? C7 45 ?????
+    // C7 45 ????? C7 45 ????? C7 45 ????? E8 ???? 83 F8 FF 75 09 8D 45 E4 50 E8 ???? 8D 45 E4"))) == 0u) 	return false;
 
     if ((item_schema = get_pattern(xs("client.dll"), xs("A1 ???? 85 C0 75 53"))) == 0u)
         return false;
@@ -245,7 +246,8 @@ bool patterns::init() {
     if ((render_beams = get_pattern(xs("client.dll"), xs("A1 ???? 56 8B F1 B9 ???? FF 50 08"))) == 0u)
         return false;
 
-    if ((client_precipitation = get_pattern(xs("client.dll"), xs("55 8B EC 51 53 56 57 8B D9 C6 45 FF 01 33 FF 90 83 3C BD ????? 0F 85 ???? A1 ???? 68 ????"))) == 0u)
+    if ((client_precipitation = get_pattern(
+             xs("client.dll"), xs("55 8B EC 51 53 56 57 8B D9 C6 45 FF 01 33 FF 90 83 3C BD ????? 0F 85 ???? A1 ???? 68 ????"))) == 0u)
         return false;
 
     if ((clear_death_notices = get_pattern(xs("client.dll"), xs("55 8B EC 83 EC 0C 53 56 8B 71 58"))) == 0u)
@@ -263,10 +265,10 @@ bool patterns::init() {
     if ((game_rules_proxy = get_pattern(xs("client.dll"), xs("A1 ???? 8B 0D ???? 6A 00 68 ???? C6"))) == 0u)
         return false;
 
-    // if ((relay_cluster = get_pattern(xs("steamnetworkingsockets.dll"), XORSTR("B8 ???? B9 ???? 0F 43"))) == 0u)
-    //    return false;
+    if ((relay_cluster = get_pattern(xs("steamnetworkingsockets.dll"), xs("B8 ???? B9 ???? 0F 43"))) == 0u)
+        return false;
 
-    if ((inventory_unlocker = get_pattern(xs("client.dll"), xs("84 C0 75 04 B0 01 5F"))) == 0u)
+    if ((inventory_unlocker = get_pattern(xs("client.dll"), xs("84 C0 75 05 B0 01 5F"))) == 0u)
         return false;
 
     if ((key_values_system = get_pattern(xs("client.dll"), xs("55 8B EC 51 33 C0 C7 45"))) == 0u)
@@ -284,7 +286,10 @@ bool patterns::init() {
     if ((glow_manager = get_pattern(xs("client.dll"), xs("0F 11 05 ???? 83 C8 01"))) == 0u)
         return false;
 
-    if ((push_notice = get_pattern(xs("client.dll"), xs("55 8B EC 83 E4 F8 B8 ???? E8 ???? 53 8B D9 8B 0D ???? 56 57 81 F9 ???? 75 0C A1 ???? 35 ???? EB 05 8B 01 FF 50 34"))) == 0u)
+    if ((push_notice = get_pattern(
+             xs("client.dll"),
+             xs("55 8B EC 83 E4 F8 B8 ???? E8 ???? 53 8B D9 8B 0D ???? 56 57 81 F9 ???? 75 0C A1 ???? 35 ???? EB 05 8B 01 FF 50 34"))) ==
+        0u)
         return false;
 
     if ((is_breakable = get_pattern(xs("client.dll"), xs("55 8B EC 51 56 8B F1 85 F6 74 68"))) == 0u)
@@ -292,6 +297,25 @@ bool patterns::init() {
 
     if ((play_step_sound = get_pattern(xs("client.dll"), xs("55 8B EC 8B 45 18 81 EC"))) == 0u)
         return false;
-    
+
+    if ((calc_view = get_pattern(xs("client.dll"), xs("55 8B EC 83 EC 14 53 56 57 FF 75 18"))) == 0u)
+        return false;
+
+    if ((get_color_modulation = get_pattern(xs("materialsystem.dll"), xs("55 8B EC 83 EC ? 56 8B F1 8A 46"))) == 0u)
+        return false;
+
+    if ((is_using_static_prop_debug_modes = get_pattern(
+             xs("engine.dll"), xs("8B 0D ???? 81 F9 ???? 75 ? A1 ???? 35 ???? EB ? 8B 01 FF 50 ? 83 F8 ? 0F 85 ???? 8B 0D"))) == 0u)
+        return false;
+
+    if ((smoke_count = get_pattern(xs("client.dll"), xs("A3 ???? 57 8B CB"))) == 0u)
+        return false;
+
+    if ((present = get_pattern(xs("gameoverlayrenderer.dll"), xs("FF 15 ???? 8B F0 85 FF"))) == 0u)
+        return false;
+
+    if ((reset = get_pattern(xs("gameoverlayrenderer.dll"), xs("C7 45 ????? FF 15 ???? 8B D8"))) == 0u)
+        return false;
+
     return true;
 }

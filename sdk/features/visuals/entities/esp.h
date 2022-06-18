@@ -8,6 +8,10 @@ namespace features::visuals::esp {
         float y;
         float width;
         float height;
+
+        bool valid() const {
+            return x != -100.0f && y != 100.0f;
+        }
     };
 
     struct entity_esp_t {
@@ -42,16 +46,18 @@ namespace features::visuals::esp {
     void draw_skeleton(c_player *player);
     void draw_headspot(c_player *player);
 
-    void draw_planted_bomb(c_entity* entity);
+    void draw_planted_bomb(c_entity *entity);
     void draw_dropped_weapon(c_entity *entity, const float dist_to_local);
     void draw_thrown_utility(c_entity *entity);
     void draw_defusal_kit(c_entity *entity, float dist_to_local);
+
+    void draw_recoil_crosshair();
 
     bounding_box_t get_bounding_box(c_entity *entity);
     bool get_bounding_box(c_entity *entity, bounding_box_t &out_box);
     IDirect3DTexture9 *get_weapon_texture(std::string weapon_name, float scale = 4.0f);
     color_t get_color(c_entity *entity, color_t col);
-    bool update_dormancy(int idx, c_entity *entity, float dist_to_local);   
+    bool update_dormancy(int idx, c_entity *entity, float dist_to_local);
     void update_positions();
     void update_position(int idx, const vector_t &pos, bool force_update = false);
     void reset_position();

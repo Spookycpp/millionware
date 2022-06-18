@@ -7,28 +7,32 @@ extern bool is_glove(int index);
 
 namespace item_definitions {
     struct item_info_t {
-        constexpr item_info_t(const char *model, const char *icon = nullptr) : model(model), icon(icon) {}
+        constexpr item_info_t(const char *model, const char *icon = nullptr) : model(model), icon(icon) {
+        }
 
         const char *model = nullptr;
         const char *icon = nullptr;
     };
 
     struct item_name_t {
-        constexpr item_name_t(const int id, const char *name) : id(id), name(name) {}
+        constexpr item_name_t(const int id, const char *name) : id(id), name(name) {
+        }
 
         int id = 0;
         const char *name = nullptr;
     };
 
     struct quality_name_t {
-        constexpr quality_name_t(const int id, const char *name) : id(id), name(name) {}
+        constexpr quality_name_t(const int id, const char *name) : id(id), name(name) {
+        }
 
         int id = 0;
         const char *name = nullptr;
     };
 
     struct rarity_name_t {
-        constexpr rarity_name_t(const int id, const char *name) : id(id), name(name) {}
+        constexpr rarity_name_t(const int id, const char *name) : id(id), name(name) {
+        }
 
         int id = 0;
         const char *name = nullptr;

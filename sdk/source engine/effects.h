@@ -2,11 +2,12 @@
 #include "vector.h"
 
 class c_effects {
-  public:
+public:
     virtual ~c_effects(){};
 
-    virtual void beam(const vector_t &Start, const vector_t &End, int model_index, int halo_index, unsigned char frame_start, unsigned char frame_rate, float life, unsigned char width,
-                      unsigned char end_width, unsigned char fade_length, unsigned char noise, unsigned char red, unsigned char green, unsigned char blue, unsigned char brightness,
+    virtual void beam(const vector_t &Start, const vector_t &End, int model_index, int halo_index, unsigned char frame_start,
+                      unsigned char frame_rate, float life, unsigned char width, unsigned char end_width, unsigned char fade_length,
+                      unsigned char noise, unsigned char red, unsigned char green, unsigned char blue, unsigned char brightness,
                       unsigned char speed) = 0;
 
     //-----------------------------------------------------------------------------

@@ -2,8 +2,8 @@
 
 #include "../../core/cheat/cheat.h"
 #include "../../core/interfaces/interfaces.h"
-#include "../../core/util/util.h"
 #include "../../core/settings/settings.h"
+#include "../../core/util/util.h"
 #include "../../engine/math/math.h"
 #include "../../engine/render/render.h"
 
@@ -19,18 +19,18 @@ namespace features::nade_prediction {
         if (!settings.visuals.local.grenade_prediction)
             return;
 
-        if (!grenade_type || grenade_point.empty()) 
+        if (!grenade_type || grenade_point.empty())
             return;
-        
-        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE) 
+
+        if (cheat::local_player->get_life_state() != LIFE_STATE_ALIVE)
             return;
-        
-        auto weapon = (c_weapon*)cheat::local_player->get_active_weapon_handle().get();
+
+        auto weapon = (c_weapon *) cheat::local_player->get_active_weapon_handle().get();
 
         if (!weapon || !weapon->is_grenade())
             return;
 
-		auto grenade = static_cast<c_base_grenade *>(weapon);
+        auto grenade = static_cast<c_base_grenade *>(weapon);
 
         if (!grenade->get_pin_pulled())
             return;
@@ -48,7 +48,8 @@ namespace features::nade_prediction {
 
             if (it.detonate || it.plane) {
 
-				//render::draw_rect({end.x - 2.0f, end.y - 2.0f}, 5.0f, 5.0f, {it.detonate ? color_t(255, 0, 255) : color_t(255, 255, 255)});
+                // render::draw_rect({end.x - 2.0f, end.y - 2.0f}, 5.0f, 5.0f, {it.detonate ? color_t(255, 0, 255) : color_t(255, 255,
+                // 255)});
 
                 if (it.detonate) {
                     constexpr float fill = 0.25f * 180.0f;
@@ -76,9 +77,10 @@ namespace features::nade_prediction {
                             const point_t new_screen = util::screen_transform(rotated_pos);
                             const point_t old_screen = util::screen_transform(last_pos);
 
-                            //render::draw_line({old_screen.x - 1.0f, old_screen.y - 1.0f}, {new_screen.x - 1.0f, new_screen.y - 1.0f}, {33, 33, 33, static_cast<int>(col.Value.w * 200.0f)});
-                            //render::draw_line({old_screen.x + 1.0f, old_screen.y + 1.0f}, {new_screen.x + 1.0f, new_screen.y + 1.0f}, {33, 33, 33, static_cast<int>(col.Value.w * 200.0f)});
-                            //render::draw_line({old_screen.x, old_screen.y}, {new_screen.x, new_screen.y}, col);
+                            // render::draw_line({old_screen.x - 1.0f, old_screen.y - 1.0f}, {new_screen.x - 1.0f, new_screen.y - 1.0f},
+                            // {33, 33, 33, static_cast<int>(col.Value.w * 200.0f)}); render::draw_line({old_screen.x + 1.0f, old_screen.y
+                            // + 1.0f}, {new_screen.x + 1.0f, new_screen.y + 1.0f}, {33, 33, 33, static_cast<int>(col.Value.w * 200.0f)});
+                            // render::draw_line({old_screen.x, old_screen.y}, {new_screen.x, new_screen.y}, col);
                         }
 
                         last_pos = rotated_pos;
@@ -96,10 +98,10 @@ namespace features::nade_prediction {
 
         if (!settings.visuals.local.grenade_prediction)
             return;
-        
-        if (!weapon->is_grenade()) 
+
+        if (!weapon->is_grenade())
             return;
-        
+
         auto grenade = static_cast<c_base_grenade *>(weapon);
 
         if (grenade->get_pin_pulled()) {
@@ -107,8 +109,7 @@ namespace features::nade_prediction {
             hit_glass_already = false;
 
             simulate(grenade, user_cmd->view_angles);
-        }
-        else {
+        } else {
             grenade_type = 0;
         }
     }
@@ -117,7 +118,7 @@ namespace features::nade_prediction {
 
         if (!cheat::local_player || !cheat::local_player->is_valid(true))
             return;
-        
+
         vector_t thrown_angle = view;
 
         float pitch = thrown_angle.x;
@@ -126,8 +127,7 @@ namespace features::nade_prediction {
             if (pitch < -90.0f) {
                 pitch += 360.0f;
             }
-        }
-        else {
+        } else {
             pitch -= 360.0f;
         }
 
@@ -175,7 +175,7 @@ namespace features::nade_prediction {
 
             interfaces::trace->trace_ray(ray, CONTENTS_WINDOW, &filter, &tr);
 
-            if (tr.fraction != 1.0f) 
+            if (tr.fraction != 1.0f)
                 *hit_glass = true;
         }
 
@@ -208,10 +208,8 @@ namespace features::nade_prediction {
             return static_cast<float>(tick) * interval > 2.1f && !(tick % static_cast<int>(0.050f / interval));
         }
         case WEAPON_FLASHBANG:
-        case WEAPON_HEGRENADE:
-            return static_cast<float>(tick) * interval > 1.5f && !(tick % static_cast<int>(0.1f / interval));
-        default:
-            return true;
+        case WEAPON_HEGRENADE: return static_cast<float>(tick) * interval > 1.5f && !(tick % static_cast<int>(0.1f / interval));
+        default: return true;
         }
     }
 
@@ -262,8 +260,7 @@ namespace features::nade_prediction {
             abs_end += abs_velocity;
 
             trace_hull(tr.end_pos, abs_end, tr);
-        }
-        else {
+        } else {
             velocity = abs_velocity;
         }
     }
@@ -277,8 +274,7 @@ namespace features::nade_prediction {
 
             if (on_ground) {
                 move.z = (vel.z + base_vel.z) * frame_time;
-            }
-            else {
+            } else {
                 const float gravity = 800.0f * 0.4f;
 
                 const float new_z = vel.z - gravity * frame_time;
@@ -351,11 +347,9 @@ namespace features::nade_prediction {
 
             if (log_timer >= log_step) {
                 log_timer = 0;
-            }
-            else if (s & 2) {
+            } else if (s & 2) {
                 log_timer = 0;
-            }
-            else {
+            } else {
                 ++log_timer;
             }
         }

@@ -31,19 +31,24 @@
 #include <windows.h>
 
 bool cheat::init() {
+
+    if (!std::filesystem::exists(xs(".\\mw")))
+        std::filesystem::create_directories(xs(".\\mw"));
+
+    if (!std::filesystem::exists(xs(".\\mw\\scripts")))
+        std::filesystem::create_directories(xs(".\\mw\\scripts"));
+
+    if (!std::filesystem::exists(xs(".\\mw\\configs")))
+        std::filesystem::create_directories(xs(".\\mw\\configs"));
+
     if (!patterns::init())
         return false;
 
     if (!interfaces::init())
         return false;
 
-    // on csgo updates this'll change, anti-crack method i guess
-    // if the cheat doesn't inject open your console in csgo
-    // and type "version" & grab the "Exe version" value
-    // remove the dots & you have the build number
-    // big bash bosh
-    if (interfaces::engine_client->get_engine_build_number() != 13800) {
-        logging::info(xs("tell laine 'big bash bosh'"));
+    if (interfaces::engine_client->get_engine_build_number() != 13813) {
+        logging::error(xs("Out of date, report on forums."));
         return false;
     }
 
@@ -70,6 +75,11 @@ bool cheat::init() {
     logging::info(xs("executing lua scripts..."));
 
     lua::init();
+
+    if (!std::filesystem::exists(xs(".\\mw\\configs\\default.json")))
+        settings.save();
+    else
+        settings.load();
 
     return true;
 }

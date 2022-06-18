@@ -9,13 +9,13 @@
 #include "pe.h"
 
 inline uint32_t get_module_handle(const char *module_name) {
-    return (uint32_t)GetModuleHandleA(module_name);
+    return (uint32_t) GetModuleHandleA(module_name);
 }
 
 inline uint32_t get_proc_address(const char *module_name, const char *function_name) {
     auto module_handle = get_module_handle(module_name);
-  
-    return (uint32_t)GetProcAddress((HMODULE) module_handle, function_name);
+
+    return (uint32_t) GetProcAddress((HMODULE) module_handle, function_name);
 }
 
 uint32_t pe::get_module(std::string_view module_name) {
