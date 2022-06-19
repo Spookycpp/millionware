@@ -2,3 +2,6 @@ This source is from *Jan 12, 2022* (not much has been done since then anyways). 
 
 ## Questions?
 **eternity#0001** or use the provided e-mail on my GitHub profile.
+
+## Media
+![image](https://user-images.githubusercontent.com/4403000/174470942-8584126c-402b-4604-bbb7-68b8a966497b.png)
