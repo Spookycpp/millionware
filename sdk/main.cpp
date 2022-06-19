@@ -18,21 +18,6 @@
 #include <locale>
 #include <winternl.h>
 
-// shoutout navewindre 4 dis one
-// i love you, i love all of you, i love you chiddy for being that positive guy that used to always bring a smile to my face
-// i love chawndi for always being here
-// i love you dylan for showing me what it really means to love someone for who they really are
-// i love you grassii for doing everything you could in spite of not understanding
-// i love you sim for understanding me like noone else before
-// i love you h0pde for being the greatest and most honest friend i ever met
-// i love you hayden for being so light-hearted and cheerful
-// i love you carol for showing me whats it like to care for someone with your life
-// i love you bowish for falling for my lie that my girlfriend had died >.<
-
-// im in love with navewindre
-// why is this still here
-// im in love with laine
-
 // fuck you duxe u pasting fucking retard i want to fucking slap your fucking mother so god damn hard for not drowning you at birth you
 // stupid dumb fucking rat bastard im going to literally shut your fucking power off and then make ur fridge run down the street
 
